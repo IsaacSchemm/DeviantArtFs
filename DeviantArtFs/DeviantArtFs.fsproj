@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Types.fs" />
+    <Compile Include="DeviantArtAuth.fs" />
+    <Compile Include="dafs.fs" />
+    <Compile Include="Data\Countries.fs" />
+    <Compile Include="Data\Privacy.fs" />
+    <Compile Include="Data\Submission.fs" />
+    <Compile Include="Data\Tos.fs" />
+    <Compile Include="Deviation\Id.fs" />
+    <Compile Include="Deviation\Content.fs" />
+    <Compile Include="Deviation\Download.fs" />
+    <Compile Include="Deviation\EmbeddedContent.fs" />
+    <Compile Include="Deviation\WhoFaved.fs" />
+    <Compile Include="Deviation\Metadata.fs" />
+    <Compile Include="Gallery\All.fs" />
+    <Compile Include="Gallery\Folders.fs" />
+    <Compile Include="Stash\Delete.fs" />
+    <Compile Include="Stash\Delta.fs" />
+    <Compile Include="Stash\Publish.fs" />
+    <Compile Include="Stash\PublishCategoryTree.fs" />
+    <Compile Include="Stash\Submit.fs" />
+    <Compile Include="User\Profile.fs" />
+    <Compile Include="User\StatusesId.fs" />
+    <Compile Include="User\Statuses.fs" />
+    <Compile Include="User\StatusesPost.fs" />
+    <Compile Include="User\Whoami.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.Data" Version="3.0.0" />
+  </ItemGroup>
+
+</Project>
