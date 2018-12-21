@@ -3,17 +3,14 @@
 An F# library (.NET Standard 2.0) to interact with the [DeviantArt / Sta.sh API.](https://www.deviantart.com/developers/http/v1/20160316)
 Uses [FSharp.Data](http://fsharp.github.io/FSharp.Data/) to parse JSON.
 
-Not all response objects are consumable from within languages other than F#.
+Not all features/objects can be used from languages other than F#.
 If you want more C# / VB.NET compatibility, you'll need to make additions to this project (feel free to send pull requests) or write a wrapper library.
+
+Much of the library is still untested - use at your own risk.
 
 ## Currently unsupported features
 
-* Much of this library is not consumable from languages other than F#. If you
-  want C# / VB.NET support, you'll probably need to add wrapper types and
-  functions returning Task<...> (feel free to send pull requests), or write
-  your own wrapper library.
 * The "expand" parameter (user.details, user.geo, etc) is not currently supported.
-* Much of the library is still untested - use at your own risk.
 
 ## Supported endpoints
 
@@ -53,6 +50,10 @@ If you want more C# / VB.NET compatibility, you'll need to make additions to thi
 * GET /user/statuses/{statusid}
 * POST /user/statuses/post
 * GET /user/whoami
+
+## Util
+
+* GET /placebo
 
 ## Authentication
 

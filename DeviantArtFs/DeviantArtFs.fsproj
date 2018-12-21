@@ -30,6 +30,7 @@
     <Compile Include="User\Statuses.fs" />
     <Compile Include="User\StatusesPost.fs" />
     <Compile Include="User\Whoami.fs" />
+    <Compile Include="Util\Placebo.fs" />
   </ItemGroup>
 
   <ItemGroup>

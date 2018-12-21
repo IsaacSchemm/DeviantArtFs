@@ -19,7 +19,7 @@ namespace DeviantArtFs.WinForms {
 		public string AccessToken { get; private set; }
 		public DateTimeOffset? ExpiresAt { get; private set; }
 
-		public DeviantArtImplicitGrantForm(string clientId, Uri callbackUrl, IEnumerable<string> scopes = null) {
+		public DeviantArtImplicitGrantForm(int clientId, Uri callbackUrl, IEnumerable<string> scopes = null) {
 			_state = Guid.NewGuid().ToString();
 
 			this.Width = 322;
@@ -47,6 +47,7 @@ namespace DeviantArtFs.WinForms {
 
 			webBrowser1.Navigated += (o, e) => {
 				if (e.Url.Authority == callbackUrl.Authority && e.Url.AbsolutePath == callbackUrl.AbsolutePath) {
+                    if (e.Url.Fragment.Length == 0) return;
 					var psd = QueryHelpers.ParseQuery(e.Url.Fragment.Substring(1));
 					if (!psd.TryGetValue("access_token", out StringValues access_token)) return;
 					if (!psd.TryGetValue("token_type", out StringValues token_type)) return;
