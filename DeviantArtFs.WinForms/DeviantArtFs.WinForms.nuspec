@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>DeviantArtFs.WinForms</id>
+    <version>0.1.0-alpha</version>
+    <title>DeviantArtFs.WinForms</title>
+    <authors>libertyernie</authors>
+    <owners>libertyernie</owners>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/libertyernie/DeviantArtFs</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A set of Windows Forms dialogs for obtaining a DeviantArt access token</description>
+    <releaseNotes>Supports the authorization code and implicit grant types</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>deviantart winforms</tags>
+  </metadata>
+</package>
