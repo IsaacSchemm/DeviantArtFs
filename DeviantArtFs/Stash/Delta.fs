@@ -10,122 +10,62 @@ type DeltaResponse = JsonProvider<"""[{
     "reset": false,
     "entries": [
         {
-            "stackid": 1519924909236375,
+            "stackid": 1555555555555555,
             "metadata": {
-                "title": "Sta.sh Uploads 367",
+                "title": "Title 1",
                 "path": "Saved Submissions/Sta.sh Uploads 367",
                 "size": 1,
                 "description": "",
-                "parentid": 8092856735860464,
+                "parentid": 8888888888888888,
                 "thumb": {
-                    "src": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/intermediary/f/a26676ed-5753-4a81-8907-199bd9057960/dcbtbto-f5b6fc2c-f18a-45ce-8cd9-d173f6d1e428.png",
+                    "src": "https://www.example.com",
                     "height": 128,
                     "width": 128,
                     "transparency": false
                 },
-                "stackid": 1519924909236375
+                "stackid": 1555555555555555
             },
             "position": 40
         },
         {
-            "itemid": 5041946760955267,
-            "stackid": 82528086903970,
+            "itemid": 5555555555555555,
+            "stackid": 88888888888880,
             "metadata": {
-                "title": "Bsictiu",
+                "title": "Title 2",
                 "description": null,
-                "artist_comments": "A",
-                "original_url": "O",
-                "category": "C",
+                "artist_comments": "<b>comments</b>",
+                "original_url": "https://wwww.example.com",
+                "category": "anthro/digital/other",
                 "creation_time": 1539568626,
                 "files": [
                     {
-                        "src": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/intermediary/f/a26676ed-5753-4a81-8907-199bd9057960/dcpgrkn-be42e4a4-de0d-4980-bc0f-c8ab47fcfe82.png/v1/fit/w_150,h_150,q_70,strp/bsictiu_by_lizard_socks_dcpgrkn-150.jpg",
-                        "height": 146,
-                        "width": 150,
-                        "transparency": false
-                    },
-                    {
-                        "src": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/intermediary/f/a26676ed-5753-4a81-8907-199bd9057960/dcpgrkn-be42e4a4-de0d-4980-bc0f-c8ab47fcfe82.png/v1/fit/w_300,h_760,q_70,strp/bsictiu_by_lizard_socks_dcpgrkn-300w.jpg",
-                        "height": 292,
-                        "width": 300,
-                        "transparency": false
-                    },
-                    {
-                        "src": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/intermediary/f/a26676ed-5753-4a81-8907-199bd9057960/dcpgrkn-be42e4a4-de0d-4980-bc0f-c8ab47fcfe82.png/v1/fill/w_205,h_200,q_70,strp/bsictiu_by_lizard_socks_dcpgrkn-200h.jpg",
-                        "height": 200,
-                        "width": 205,
-                        "transparency": false
-                    },
-                    {
-                        "src": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/intermediary/f/a26676ed-5753-4a81-8907-199bd9057960/dcpgrkn-be42e4a4-de0d-4980-bc0f-c8ab47fcfe82.png",
-                        "height": 760,
-                        "width": 780,
-                        "transparency": false
-                    },
-                    {
-                        "src": "https://api-da.wixmp.com/_api/download/file?downloadToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsImV4cCI6MTU0NTI3ODMxMiwiaWF0IjoxNTQ1Mjc3NzAyLCJqdGkiOiI1YzFiMTExMDBjOGFjIiwib2JqIjpudWxsLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdLCJwYXlsb2FkIjp7InBhdGgiOiJcL2ZcL2EyNjY3NmVkLTU3NTMtNGE4MS04OTA3LTE5OWJkOTA1Nzk2MFwvZGNwZ3Jrbi1iZTQyZTRhNC1kZTBkLTQ5ODAtYmMwZi1jOGFiNDdmY2ZlODIucG5nIn19.mCoY1NuNcU5GqXsqfbFdc768Ow1ji3Ewpo8wdM8P3bE",
+                        "src": "https://www.example.com",
                         "height": 760,
                         "width": 780,
                         "transparency": false
                     }
                 ],
-                "submission": {
-                    "file_size": "67.9 KB",
-                    "resolution": "780x760",
-                    "submitted_with": {
-                        "app": "DeviantArt",
-                        "url": "https://www.deviantart.com"
-                    }
-                },
-                "stats": {
-                    "views": 0,
-                    "views_today": 0,
-                    "downloads": 0,
-                    "downloads_today": 0
-                },
-                "stackid": 82528086903970,
-                "itemid": 5041946760955267,
-                "tags": ["t"]
+                "submission": {},
+                "stats": {},
+                "stackid": 88888888888880,
+                "itemid": 5555555555555555,
+                "tags": ["tag1"]
             },
             "position": 0
         },
         {
-            "itemid": 7793405659318437,
-            "stackid": 3512995493952651,
+            "itemid": 7777777777777777,
+            "stackid": 3555555555555551,
             "metadata": {
                 "title": "100 0500",
-                "description": null,
+                "description": "Something",
                 "artist_comments": "",
                 "original_url": "",
                 "category": "",
                 "creation_time": 1532042965,
                 "files": [
                     {
-                        "src": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/intermediary/f/a26676ed-5753-4a81-8907-199bd9057960/dchppsq-a028929d-255a-4e2c-866c-fcd940fda423.jpg/v1/fit/w_150,h_150,q_70,strp/100_0500_by_lizard_socks_dchppsq-150.jpg",
-                        "height": 100,
-                        "width": 150,
-                        "transparency": false
-                    },
-                    {
-                        "src": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/intermediary/f/a26676ed-5753-4a81-8907-199bd9057960/dchppsq-a028929d-255a-4e2c-866c-fcd940fda423.jpg/v1/fit/w_300,h_900,q_70,strp/100_0500_by_lizard_socks_dchppsq-300w.jpg",
-                        "height": 200,
-                        "width": 300,
-                        "transparency": false
-                    },
-                    {
-                        "src": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/intermediary/f/a26676ed-5753-4a81-8907-199bd9057960/dchppsq-a028929d-255a-4e2c-866c-fcd940fda423.jpg/v1/fill/w_300,h_200,q_70,strp/100_0500_by_lizard_socks_dchppsq-200h.jpg",
-                        "height": 200,
-                        "width": 300,
-                        "transparency": false
-                    },
-                    {
-                        "src": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/intermediary/f/a26676ed-5753-4a81-8907-199bd9057960/dchppsq-a028929d-255a-4e2c-866c-fcd940fda423.jpg/v1/fill/w_1024,h_683,q_70,strp/100_0500_by_lizard_socks_dchppsq-fullview.jpg",
-                        "height": 683,
-                        "width": 1024,
-                        "transparency": false
-                    },
-                    {
-                        "src": "https://api-da.wixmp.com/_api/download/file?downloadToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsImV4cCI6MTU0NTI3ODQ3OCwiaWF0IjoxNTQ1Mjc3ODY4LCJqdGkiOiI1YzFiMTFiNmYzMjk3Iiwib2JqIjpudWxsLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdLCJwYXlsb2FkIjp7InBhdGgiOiJcL2ZcL2EyNjY3NmVkLTU3NTMtNGE4MS04OTA3LTE5OWJkOTA1Nzk2MFwvZGNocHBzcS1hMDI4OTI5ZC0yNTVhLTRlMmMtODY2Yy1mY2Q5NDBmZGE0MjMuanBnIn19.2b_WBBfn1MmCG9gz2Ht7R42DUqWSVVNKda3KWhmhWDI",
+                        "src": "https://www.example.com",
                         "height": 1440,
                         "width": 2160,
                         "transparency": false
@@ -145,17 +85,9 @@ type DeltaResponse = JsonProvider<"""[{
                     "downloads": 0,
                     "downloads_today": 0
                 },
-                "camera": {
-                    "make": "EASTMAN KODAK COMPANY",
-                    "model": "KODAK DX4330 DIGITAL CAMERA",
-                    "shutter_speed": "1/32 second",
-                    "aperture": "F/2.8",
-                    "focal_length": "8 mm",
-                    "date_taken": "Jan 23, 2002, 5:23:24 AM",
-                    "orientation": "1"
-                },
-                "stackid": 3512995493952651,
-                "itemid": 7793405659318437,
+                "camera": {},
+                "stackid": 3555555555555551,
+                "itemid": 7777777777777777,
                 "tags": []
             },
             "position": 0

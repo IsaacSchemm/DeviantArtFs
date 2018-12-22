@@ -82,6 +82,41 @@ let sandbox token_string = async {
         printfn "Most recent status: %s (%O)" s.Body s.Ts
         printfn ""
     | None -> ()
+
+    printfn "Sta.sh"
+    printfn ""
+
+    let mutable offset = 0
+    let mutable more = true
+    while more do
+        let! delta =
+            new DeviantArtFs.Stash.DeltaRequest(Offset = offset, ExtCamera = true)
+            |> DeviantArtFs.Stash.Delta.AsyncExecute token
+        offset <- delta.NextOffset |> Option.defaultValue offset
+        more <- delta.HasMore
+        for r in delta.Entries do
+            printfn "%s" r.Metadata.Title
+            match r.Metadata.ArtistComments with
+            | Some s -> printfn "    Artist Comments: %s" s
+            | None -> ()
+            match r.Metadata.Description with
+            | Some s -> printfn "    Description: %s" s
+            | None -> ()
+
+            match r.Metadata.Camera with
+            | Some c -> printfn "    Camera: %O" c.JsonValue
+            | None -> ()
+
+            match r.Itemid with
+            | Some id ->
+                let! item =
+                    id
+                    |> DeviantArtFs.Stash.ItemRequest
+                    |> DeviantArtFs.Stash.Item.AsyncExecute token
+                match item.Html with
+                | Some s -> printfn "    Html: %s" s
+                | None -> ()
+            | None -> ()
 }
 
 [<EntryPoint>]

@@ -39,6 +39,7 @@ Much of the library is still untested - use at your own risk.
 
 * POST /stash/delete
 * GET /stash/delta
+* GET /stash/item/{itemid}
 * POST /stash/publish
 * GET /stash/publish/categorytree
 * POST /stash/submit
