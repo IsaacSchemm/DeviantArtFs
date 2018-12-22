@@ -37,6 +37,7 @@ Much of the library is still untested - use at your own risk.
 
 ### Stash
 
+* GET /stash/{stackid}
 * POST /stash/delete
 * GET /stash/delta
 * GET /stash/item/{itemid}

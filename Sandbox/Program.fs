@@ -18,14 +18,15 @@ let get_token =
     if valid then
         token_string
     else
-        printfn "Please enter the client ID (e.g. 1234)"
+        printf "Please enter the client ID (e.g. 1234)"
         let client_id = System.Console.ReadLine() |> Int32.Parse
 
-        printfn "Please enter the redirect URL (default: https://www.example.com)"
+        printf "Please enter the redirect URL (default: https://www.example.com)"
         let url1 = System.Console.ReadLine()
-        let url2 = match url1 with
-        | "" -> "https://www.example.com"
-        | s -> s
+        let url2 =
+            match url1 with
+            | "" -> "https://www.example.com"
+            | s -> s
 
         use form = new DeviantArtFs.WinForms.DeviantArtImplicitGrantForm(client_id, new Uri(url2), ["browse"; "user"; "stash"; "publish"; "user.manage"])
         if form.ShowDialog() <> System.Windows.Forms.DialogResult.OK then
@@ -35,15 +36,16 @@ let get_token =
             form.AccessToken
 
 let sandbox token_string = async {
-    printfn "Enter a username (leave blank to see your own submissions):"
+    printf "Enter a username (leave blank to see your own submissions):"
     let read = Console.ReadLine()
 
     let token = create_token_obj token_string
     let! me = DeviantArtFs.User.Whoami.AsyncExecute token
 
-    let username = match read with
-    | "" -> me.Username
-    | s -> s
+    let username =
+        match read with
+        | "" -> me.Username
+        | s -> s
 
     printfn "Most recent submissions:"
     printfn ""
@@ -82,43 +84,6 @@ let sandbox token_string = async {
         printfn "Most recent status: %s (%O)" s.Body s.Ts
         printfn ""
     | None -> ()
-
-    printfn "Sta.sh"
-    printfn ""
-
-    let mutable offset = 0
-    let mutable more = true
-    while more do
-        let! delta =
-            new DeviantArtFs.Stash.DeltaRequest(Offset = offset, ExtCamera = true)
-            |> DeviantArtFs.Stash.Delta.AsyncExecute token
-        offset <- delta.NextOffset |> Option.defaultValue offset
-        more <- delta.HasMore
-        for r in delta.Entries do
-            printfn "%s" r.Metadata.Title
-
-            match r.Metadata.ArtistComments with
-            | Some s -> printfn "    Artist Comments: %s" s
-            | None -> ()
-            match r.Metadata.Description with
-            | Some s -> printfn "    Description: %s" s
-            | None -> ()
-
-            match r.Metadata.Camera with
-            | Some c -> printfn "    Camera data: %O" c.JsonValue
-            | None -> ()
-
-            // Literature submissions
-            match r.Itemid with
-            | Some id ->
-                let! item =
-                    id
-                    |> DeviantArtFs.Stash.ItemRequest
-                    |> DeviantArtFs.Stash.Item.AsyncExecute token
-                match item.Html with
-                | Some s -> printfn "    Html: %s" s
-                | None -> ()
-            | None -> ()
 }
 
 [<EntryPoint>]
