@@ -26,7 +26,7 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
     <Compile Include="Data\Privacy.fs" />
     <Compile Include="Data\Submission.fs" />
     <Compile Include="Data\Tos.fs" />
-    <Compile Include="Deviation\Id.fs" />
+    <Compile Include="Deviation\Deviation.fs" />
     <Compile Include="Deviation\Content.fs" />
     <Compile Include="Deviation\Download.fs" />
     <Compile Include="Deviation\EmbeddedContent.fs" />

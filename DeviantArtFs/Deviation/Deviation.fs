@@ -4,7 +4,7 @@ open DeviantArtFs
 open FSharp.Data
 open System
 
-type IdResponse = JsonProvider<"""[{
+type DeviationResponse = JsonProvider<"""[{
     "deviationid": "F9921FC4-3A0F-90A9-3625-AA8E105747AD",
     "printid": null,
     "url": "https://justgalym.deviantart.com/journal/Another-post-written-in-stash-446384730",
@@ -74,11 +74,11 @@ type IdResponse = JsonProvider<"""[{
     "is_deleted": true
 }]""", SampleIsList=true>
 
-module Id =
+module Deviation =
     let AsyncExecute token (id: Guid) = async {
         let req =
             sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/%O" id
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return IdResponse.Parse json
+        return DeviationResponse.Parse json
     }
