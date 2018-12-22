@@ -96,6 +96,7 @@ let sandbox token_string = async {
         more <- delta.HasMore
         for r in delta.Entries do
             printfn "%s" r.Metadata.Title
+
             match r.Metadata.ArtistComments with
             | Some s -> printfn "    Artist Comments: %s" s
             | None -> ()
@@ -104,9 +105,10 @@ let sandbox token_string = async {
             | None -> ()
 
             match r.Metadata.Camera with
-            | Some c -> printfn "    Camera: %O" c.JsonValue
+            | Some c -> printfn "    Camera data: %O" c.JsonValue
             | None -> ()
 
+            // Literature submissions
             match r.Itemid with
             | Some id ->
                 let! item =

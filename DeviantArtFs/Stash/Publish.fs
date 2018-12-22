@@ -31,7 +31,7 @@ type LicenseOptions() =
     member val Commercial = false with get, set
     member val Modify = LicenseModifyOption.No with get, set
 
-type PublishRequest(itemId: int64) =
+type PublishRequest(itemid: int64) =
     member val IsMature = false with get, set
     member val MatureLevel = MatureLevel.None with get, set
     member val MatureClassification = MatureClassification.None with get, set
@@ -44,10 +44,10 @@ type PublishRequest(itemId: int64) =
     member val DisplayResolution = DisplayResolution.Original with get, set
     member val Sharing = Sharing.Allow with get, set
     member val LicenseOptions = new LicenseOptions() with get, set
-    member val GalleryIds = Seq.empty<Guid> with get, set
+    member val Galleryids = Seq.empty<Guid> with get, set
     member val AllowFreeDownload = false with get, set
     member val AddWatermark = false with get, set
-    member val ItemId = itemId
+    member val Itemid = itemid
 
 module Publish =
     open System.IO
@@ -88,11 +88,11 @@ module Publish =
             | LicenseModifyOption.No -> yield "license_options[modify]=no"
             | LicenseModifyOption.ShareAlike -> yield "license_options[modify]=share"
             | _ -> ()
-            for id in req.GalleryIds do
+            for id in req.Galleryids do
                 yield sprintf "galleryids[]=%O" id
             yield sprintf "allow_free_download=%b" req.AllowFreeDownload
             yield sprintf "add_watermark=%b" req.AddWatermark
-            yield sprintf "itemid=%d" req.ItemId
+            yield sprintf "itemid=%d" req.Itemid
         }
 
         let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/publish"

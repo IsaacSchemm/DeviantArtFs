@@ -32,14 +32,14 @@ type WhoFavedResponse = JsonProvider<"""[
 ]""", SampleIsList=true>
 
 type WhoFavedRequest(deviationid: Guid) =
-    member __.DeviationId = deviationid
+    member __.Deviationid = deviationid
     member val Offset = 0 with get, set
     member val Limit = 10 with get, set
 
 module WhoFaved =
     let AsyncExecute token (req: WhoFavedRequest) = async {
         let query = seq {
-            yield sprintf "deviationid=%O" req.DeviationId
+            yield sprintf "deviationid=%O" req.Deviationid
             yield sprintf "offset=%d" req.Offset
             yield sprintf "limit=%d" req.Limit
         }

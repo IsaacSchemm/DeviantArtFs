@@ -81,16 +81,16 @@ type EmbeddedContentResponse = JsonProvider<"""[
 ]""", SampleIsList=true>
 
 type EmbeddedContentRequest(deviationid: Guid) =
-    member __.DeviationId = deviationid
-    member val OffsetDeviationId = Nullable<Guid>() with get, set
+    member __.Deviationid = deviationid
+    member val OffsetDeviationid = Nullable<Guid>() with get, set
     member val Offset = 0 with get, set
     member val Limit = 10 with get, set
 
 module EmbeddedContent =
     let AsyncExecute token (req: EmbeddedContentRequest) = async {
         let query = seq {
-            yield sprintf "deviationid=%O" req.DeviationId
-            match Option.ofNullable req.OffsetDeviationId with
+            yield sprintf "deviationid=%O" req.Deviationid
+            match Option.ofNullable req.OffsetDeviationid with
             | Some s -> yield sprintf "offset_deviationid=%O" s
             | None -> ()
             yield sprintf "offset=%d" req.Offset

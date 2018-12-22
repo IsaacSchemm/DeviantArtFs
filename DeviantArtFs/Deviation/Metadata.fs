@@ -46,114 +46,9 @@ type MetadataResponse = JsonProvider<"""{
             "allows_comments": true,
             "tags": [
                 {
-                    "tag_name": "brasil",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "brazil",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "color",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "colorful",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "colors",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "dusk",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "dust",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "orange",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "red",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "set",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "sky",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "sun",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "sunset",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "colorred",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "colorssky",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "redorange",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "setsunset",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "sunsetsunset",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "orangedust",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "brazilbrasil",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "colorfulcolor",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "skycolorful",
-                    "sponsored": false,
-                    "sponsor": ""
+                    "tag_name": "name_of_tag",
+                    "sponsored": true,
+                    "sponsor": "sponsor name"
                 }
             ],
             "is_mature": false,
@@ -223,118 +118,7 @@ type MetadataResponse = JsonProvider<"""{
             "description": "if you miss a sunset, looking on the  bright side of it (pun not  intentional), there is always another  one tomorrow, especially if you live in  central Brazil, where the sunsets  almost make you stay for the sunrise.<br />\n<br />\nthe silhoutte is of some banana trees  in my backyard at home in Brazil.",
             "license": "No License",
             "allows_comments": true,
-            "tags": [
-                {
-                    "tag_name": "brasil",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "brazil",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "color",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "colorful",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "colors",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "dusk",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "dust",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "orange",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "red",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "set",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "sky",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "sun",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "sunset",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "colorred",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "colorssky",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "redorange",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "setsunset",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "sunsetsunset",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "orangedust",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "brazilbrasil",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "colorfulcolor",
-                    "sponsored": false,
-                    "sponsor": ""
-                },
-                {
-                    "tag_name": "skycolorful",
-                    "sponsored": false,
-                    "sponsor": ""
-                }
-            ],
+            "tags": [],
             "is_mature": false,
             "is_favourited": false,
             "submission": {
@@ -361,7 +145,7 @@ type MetadataResponse = JsonProvider<"""{
 }""">
 
 type MetadataRequest(deviationids: seq<Guid>) =
-    member __.DeviationIds = deviationids
+    member __.Deviationids = deviationids
     member val ExtSubmission = false with get, set
     member val ExtCamera = false with get, set
     member val ExtStats = false with get, set
@@ -374,7 +158,10 @@ module Metadata =
             yield sprintf "ext_camera=%b" req.ExtCamera
             yield sprintf "ext_stats=%b" req.ExtStats
             yield sprintf "ext_collection=%b" req.ExtCollection
-            yield req.DeviationIds |> Seq.map (fun o -> o.ToString()) |> String.concat "," |> sprintf "deviationids[]=%s"
+            yield req.Deviationids
+                |> Seq.map (fun o -> o.ToString())
+                |> String.concat ","
+                |> sprintf "deviationids[]=%s"
         }
         let req =
             query

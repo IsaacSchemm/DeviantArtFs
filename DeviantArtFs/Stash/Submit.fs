@@ -21,9 +21,9 @@ type SubmitRequest(filename: string, contentType: string, data: byte[]) =
     member val Tags = Seq.empty with get, set
     member val OriginalUrl = null with get, set
     member val IsDirty = Nullable<bool>() with get, set
-    member val ItemId = Nullable<int64>() with get, set
+    member val Itemid = Nullable<int64>() with get, set
     member val Stack = null with get, set
-    member val StackId = Nullable<int64>() with get, set
+    member val Stackid = Nullable<int64>() with get, set
 
 module Submit =
     let AsyncExecute token (ps: SubmitRequest) = async {
@@ -85,7 +85,7 @@ module Submit =
                 w (sprintf "%b" s)
             | None -> ()
 
-            match Option.ofNullable ps.ItemId with
+            match Option.ofNullable ps.Itemid with
             | Some s ->
                 w h2
                 w "Content-Disposition: form-data; name=\"itemid\""
@@ -101,7 +101,7 @@ module Submit =
                 w s
             | None -> ()
 
-            match Option.ofNullable ps.StackId with
+            match Option.ofNullable ps.Stackid with
             | Some s ->
                 w h2
                 w "Content-Disposition: form-data; name=\"stackid\""

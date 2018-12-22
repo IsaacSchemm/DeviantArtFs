@@ -63,7 +63,7 @@ type ItemResponse = JsonProvider<"""[
 ]""", SampleIsList=true>
 
 type ItemRequest(itemid: int64) = 
-    member __.ItemId = itemid
+    member __.Itemid = itemid
     member val ExtSubmission = false with get, set
     member val ExtCamera = false with get, set
     member val ExtStats = false with get, set
@@ -78,7 +78,7 @@ module Item =
         let req =
             query
             |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/item/%d?%s" req.ItemId
+            |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/item/%d?%s" req.Itemid
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
         return ItemResponse.Parse json

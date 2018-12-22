@@ -10,9 +10,9 @@ type StatusPostResponse = JsonProvider<"""{
 
 type StatusPostRequest(body: string) =
     member __.Body = body
-    member val StatusId = Nullable<Guid>() with get, set
-    member val ParentId = Nullable<Guid>() with get, set
-    member val StashId = Nullable<int64>() with get, set
+    member val Statusid = Nullable<Guid>() with get, set
+    member val Parentid = Nullable<Guid>() with get, set
+    member val Stashid = Nullable<int64>() with get, set
 
 module StatusPost =
     open System.IO
@@ -22,13 +22,13 @@ module StatusPost =
             match Option.ofObj ps.Body with
             | Some s -> yield sprintf "body=%s" s
             | None -> ()
-            match Option.ofNullable ps.ParentId with
+            match Option.ofNullable ps.Parentid with
             | Some s -> yield sprintf "parentid=%O" s
             | None -> ()
-            match Option.ofNullable ps.StatusId with
+            match Option.ofNullable ps.Statusid with
             | Some s -> yield sprintf "id=%O" s
             | None -> ()
-            match Option.ofNullable ps.StashId with
+            match Option.ofNullable ps.Stashid with
             | Some s -> yield sprintf "stashid=%O" s
             | None -> ()
         }
