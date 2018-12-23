@@ -14,4 +14,4 @@ module Placebo =
             | :? DeviantArtException as e when e.ResponseBody.Error = "invalid_token" -> return false
     }
 
-    let IsValidAsync token = AsyncIsValid token |> Async.StartAsTask :> Task
+    let IsValidAsync token = AsyncIsValid token |> Async.StartAsTask
