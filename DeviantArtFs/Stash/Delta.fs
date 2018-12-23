@@ -44,7 +44,7 @@ type DeltaResultEntry = {
 type DeltaResult = {
     Cursor: string
     HasMore: bool
-    NextOffset: int option
+    NextOffset: System.Nullable<int>
     Reset: bool
     Entries: seq<DeltaResultEntry>
 }
@@ -52,7 +52,7 @@ type DeltaResult = {
 type DeltaRequest() = 
     member val Cursor = null with get, set
     member val Offset = 0 with get, set
-    member val Limit = 12 with get, set
+    member val Limit = 120 with get, set
     member val ExtSubmission = false with get, set
     member val ExtCamera = false with get, set
     member val ExtStats = false with get, set
@@ -79,7 +79,7 @@ module Delta =
         return {
             Cursor = resp.Cursor
             HasMore = resp.HasMore
-            NextOffset = resp.NextOffset
+            NextOffset = resp.NextOffset |> Option.toNullable
             Reset = resp.Reset
             Entries = seq {
                 for e in resp.Entries do
@@ -92,3 +92,5 @@ module Delta =
             }
         }
     }
+
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

@@ -24,7 +24,7 @@ type StackResponse = JsonProvider<"""[
     "artist_comments": "<b>comments</b>",
     "original_url": "https://wwww.example.com",
     "category": "anthro/digital/other",
-    "creation_time": 1539568626,
+    "creation_time": 2208988800,
     "files": [
         {
             "src": "https://www.example.com",
@@ -72,7 +72,8 @@ type StackResponse = JsonProvider<"""[
     "stackid": 3555555555555551,
     "itemid": 7777777777777777,
     "tags": []
-}
+},
+{}
 ]""", SampleIsList=true>
 
 module Stack =
