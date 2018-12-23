@@ -25,6 +25,13 @@ type DeviantArtException(resp: WebResponse, body: DeviantArtErrorResponse.Root) 
         | :? HttpWebResponse as h -> Nullable h.StatusCode
         | _ -> Nullable()
 
+type ExtParams =
+    struct
+        val ExtSubmission: bool
+        val ExtCamera: bool
+        val ExtStats: bool
+    end
+
 type DeviantArtPagedResult<'a> = {
     HasMore: bool
     NextOffset: int option

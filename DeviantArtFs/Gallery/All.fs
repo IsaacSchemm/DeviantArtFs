@@ -42,7 +42,7 @@ module All =
             Results = seq {
                 for element in o.Results do
                     let json = element.JsonValue.ToString()
-                    yield DeviantArtFs.Deviation.IdResponse.Parse json
+                    yield DeviantArtFs.Deviation.DeviationResponse.Parse json
             }
         }
     }

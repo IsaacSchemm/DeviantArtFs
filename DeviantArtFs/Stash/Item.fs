@@ -64,16 +64,14 @@ type ItemResponse = JsonProvider<"""[
 
 type ItemRequest(itemid: int64) = 
     member __.Itemid = itemid
-    member val ExtSubmission = false with get, set
-    member val ExtCamera = false with get, set
-    member val ExtStats = false with get, set
+    member val ExtParams = new ExtParams() with get, set
 
 module Item =
     let AsyncExecute token (req: ItemRequest) = async {
         let query = seq {
-            yield sprintf "ext_submission=%b" req.ExtSubmission
-            yield sprintf "ext_camera=%b" req.ExtCamera
-            yield sprintf "ext_stats=%b" req.ExtStats
+            yield sprintf "ext_submission=%b" req.ExtParams.ExtSubmission
+            yield sprintf "ext_camera=%b" req.ExtParams.ExtCamera
+            yield sprintf "ext_stats=%b" req.ExtParams.ExtStats
         }
         let req =
             query

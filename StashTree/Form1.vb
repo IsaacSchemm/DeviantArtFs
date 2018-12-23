@@ -2,7 +2,7 @@
 Imports DeviantArtFs.Stash.DeltaMarshal
 
 Public Class Form1
-    Private Token As IDeviantArtAccessToken = New AccessToken("ddc1e78588ebb25ee034851d15c7c972b8daa6602d29bc810e")
+    Private Token As IDeviantArtAccessToken = New AccessToken("cffc550be7f98fec6e5b44bad2a30a3bc355c974c40a889a00")
     Private StashRoot As New StashRoot
     Private StashCursor As String = Nothing
 
@@ -29,29 +29,12 @@ Public Class Form1
         End If
 
         If Token IsNot Nothing Then
-            Dim offset = 0
-            Do
-                Dim req As New Stash.DeltaRequest With {
-                    .Cursor = StashCursor,
-                    .Offset = offset
-                }
-                Dim resp = Await Stash.Delta.ExecuteAsync(Token, req)
+            Dim delta = Await Stash.Delta.GetAllAsync(Token, New Stash.DeltaAllRequest With {.Cursor = StashCursor})
 
-                For Each entry In resp.Entries
-                    Try
-                        StashRoot.Apply(entry)
-                    Catch ex As StashDeltaApplyException
-                        StashRoot.Defer(entry)
-                    End Try
-                Next
-
-                StashCursor = resp.Cursor
-                offset = If(resp.NextOffset, offset)
-
-                If Not resp.HasMore Then
-                    Exit Do
-                End If
-            Loop
+            StashCursor = delta.Cursor
+            For Each entry In delta.Entries
+                StashRoot.ApplyOrDefer(entry)
+            Next
         End If
 
         StashRoot.ApplyDeferred()

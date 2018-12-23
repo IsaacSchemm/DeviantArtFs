@@ -146,17 +146,15 @@ type MetadataResponse = JsonProvider<"""{
 
 type MetadataRequest(deviationids: seq<Guid>) =
     member __.Deviationids = deviationids
-    member val ExtSubmission = false with get, set
-    member val ExtCamera = false with get, set
-    member val ExtStats = false with get, set
+    member val ExtParams = new ExtParams() with get, set
     member val ExtCollection = false with get, set
 
 module Metadata =
     let AsyncExecute token (req: MetadataRequest) = async {
         let query = seq {
-            yield sprintf "ext_submission=%b" req.ExtSubmission
-            yield sprintf "ext_camera=%b" req.ExtCamera
-            yield sprintf "ext_stats=%b" req.ExtStats
+            yield sprintf "ext_submission=%b" req.ExtParams.ExtSubmission
+            yield sprintf "ext_camera=%b" req.ExtParams.ExtCamera
+            yield sprintf "ext_stats=%b" req.ExtParams.ExtStats
             yield sprintf "ext_collection=%b" req.ExtCollection
             yield req.Deviationids
                 |> Seq.map (fun o -> o.ToString())

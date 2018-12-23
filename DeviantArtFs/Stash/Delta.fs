@@ -53,9 +53,16 @@ type DeltaRequest() =
     member val Cursor = null with get, set
     member val Offset = 0 with get, set
     member val Limit = 120 with get, set
-    member val ExtSubmission = false with get, set
-    member val ExtCamera = false with get, set
-    member val ExtStats = false with get, set
+    member val ExtParams = new ExtParams() with get, set
+
+type DeltaAllRequest() = 
+    member val Cursor = null with get, set
+    member val ExtParams = new ExtParams() with get, set
+
+type DeltaAllResponse = {
+    Cursor: string
+    Entries: seq<DeltaResultEntry>
+}
 
 module Delta =
     let AsyncExecute token (req: DeltaRequest) = async {
@@ -65,9 +72,9 @@ module Delta =
             | None -> ()
             yield sprintf "offset=%d" req.Offset
             yield sprintf "limit=%d" req.Limit
-            yield sprintf "ext_submission=%b" req.ExtSubmission
-            yield sprintf "ext_camera=%b" req.ExtCamera
-            yield sprintf "ext_stats=%b" req.ExtStats
+            yield sprintf "ext_submission=%b" req.ExtParams.ExtSubmission
+            yield sprintf "ext_camera=%b" req.ExtParams.ExtCamera
+            yield sprintf "ext_stats=%b" req.ExtParams.ExtStats
         }
         let req =
             query
@@ -93,4 +100,27 @@ module Delta =
         }
     }
 
+    let AsyncGetAll token (allReq: DeltaAllRequest) = async {
+        let list = new ResizeArray<DeltaResultEntry>()
+        let mutable cursor = ""
+        let mutable has_more = true
+        
+        let req = new DeltaRequest(Cursor = allReq.Cursor, ExtParams = allReq.ExtParams)
+        req.Limit <- 13
+
+        while has_more do
+            let! resp = AsyncExecute token req
+            list.AddRange(resp.Entries)
+            if resp.HasMore then
+                req.Offset <- resp.NextOffset.GetValueOrDefault()
+            else
+                cursor <- resp.Cursor
+                has_more <- false
+        return {
+            Cursor = cursor
+            Entries = list
+        }
+    }
+
     let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let GetAllAsync token req = AsyncGetAll token req |> Async.StartAsTask
