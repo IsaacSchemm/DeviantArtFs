@@ -65,3 +65,12 @@ Both Authorization Code (recommended) and Implicit grant types are supported.
 If you are writing a Windows desktop application, you can use the forms in the DeviantArtFs.WinForms package to get a code or token from the user.
 
 The DeviantArtAuth class provides methods to support the Authorization Code grant type (getting tokens from an authorization code and refreshing tokens).
+
+## Delta
+
+The namespace DeltaMarshal contains tools to help you deal with Sta.sh delta requests.
+
+Known bugs so far:
+
+* Moving an item and then refreshing does not move it to the proper position
+* Deleting an item and then refreshing throws an exception

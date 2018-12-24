@@ -19,7 +19,6 @@ module StashPartialMetadataApplication =
             StackResponse.Parse parent_json
 
 type StashNode =
-    //abstract member Metadata: StackResponse.Root
     abstract member Title: string
 
 type StashPlaceholderNode() =
@@ -263,10 +262,14 @@ type StashRoot() =
             match (delta.Itemid, delta.Stackid) with
             | (Some itemid, None) ->
                 // Delete item
-                ()
+                let parent = (StashUtils.findParentForItem itemid this).Value
+                let item = (this.FindItemById itemid).Value
+                parent.Nodes.Remove(item) |> ignore
             | (None, Some stackid) ->
                 // Delete stack
-                ()
+                let parent = (StashUtils.findParentForStack stackid this).Value
+                let stack = (this.FindStackById stackid).Value
+                parent.Nodes.Remove(stack) |> ignore
             | _ -> failwithf "Invalid combination of stackid/itemid without metadata"
 
     member __.DeferredCount = deferred.Count
