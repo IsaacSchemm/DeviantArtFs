@@ -2,7 +2,7 @@
 Imports DeviantArtFs.Stash.DeltaMarshal
 
 Public Class Form1
-    Private Token As IDeviantArtAccessToken = New AccessToken("cffc550be7f98fec6e5b44bad2a30a3bc355c974c40a889a00")
+    Private Token As IDeviantArtAccessToken = New AccessToken("6951853ad45f223c5f68b39c3de93f3ab1baef72793e0885a4")
     Private StashRoot As New StashRoot
     Private StashCursor As String = Nothing
 
@@ -29,6 +29,11 @@ Public Class Form1
         End If
 
         If Token IsNot Nothing Then
+            TextBox2.Text = Token.AccessToken
+
+            Dim user = Await DeviantArtFs.User.Whoami.GetUsernameAsync(Token)
+            TextBox1.Text = user
+
             Dim delta = Await Stash.Delta.GetAllAsync(Token, New Stash.DeltaAllRequest With {.Cursor = StashCursor})
 
             StashCursor = delta.Cursor
@@ -61,7 +66,13 @@ Public Class Form1
     End Sub
 
     Private Sub TreeView1_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles TreeView1.AfterSelect
-        PropertyGrid1.SelectedObject = If(NodeToItem.ContainsKey(TreeView1.SelectedNode), NodeToItem(TreeView1.SelectedNode), nothing)
+        Dim item = If(NodeToItem.ContainsKey(TreeView1.SelectedNode), NodeToItem(TreeView1.SelectedNode), Nothing)
+        PropertyGrid1.SelectedObject = item
+        If TypeOf item Is StashItem Then
+            PictureBox1.ImageLocation = CType(item, StashItem).OriginalImageUrl
+        Else
+            PictureBox1.ImageLocation = Nothing
+        End If
     End Sub
 End Class
 

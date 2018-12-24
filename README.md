@@ -70,3 +70,7 @@ The DeviantArtAuth class provides methods to support the Authorization Code gran
 
 The namespace DeltaMarshal can help you deal with Sta.sh delta requests and build a tree model of the current user's Sta.sh.
 It hasn't undergone a lot of testing, so let me know (via GitHub) if there are any issues.
+
+Known bugs:
+
+* The position of newly uploaded items is not reflected properly.
