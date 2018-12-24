@@ -72,5 +72,4 @@ The namespace DeltaMarshal contains tools to help you deal with Sta.sh delta req
 
 Known bugs so far:
 
-* Moving an item and then refreshing does not move it to the proper position
 * Deleting an item and then refreshing throws an exception

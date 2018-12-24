@@ -21,10 +21,6 @@ module StashPartialMetadataApplication =
 type StashNode =
     abstract member Title: string
 
-type StashPlaceholderNode() =
-    interface StashNode with
-        member __.Title = ""
-
 type StashItem(itemid: int64, metadata: StackResponse.Root) =
     member __.Itemid = itemid
     member val Metadata = metadata with get, set
@@ -140,9 +136,7 @@ module StashUtils =
     let findParentForItem id root = findParentsForItem id root |> Seq.tryHead
 
     let insert (index: int) (item: StashNode) (list: ResizeArray<StashNode>) =
-        while list.Count < index do
-            list.Add(new StashPlaceholderNode() :> StashNode)
-        list.Insert(index, item)
+        list.Insert(System.Math.Min(index, list.Count), item)
 
 type StashDeltaApplyException() =
     inherit System.Exception()
