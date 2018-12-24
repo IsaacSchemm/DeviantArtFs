@@ -33,7 +33,11 @@ Public Class Form1
 
             StashCursor = delta.Cursor
             For Each entry In delta.Entries
-                StashRoot.ApplyOrDefer(entry)
+                Try
+                    StashRoot.Apply(entry)
+                Catch ex As StashDeltaApplyException
+                    StashRoot.Defer(entry)
+                End Try
             Next
         End If
 
@@ -47,10 +51,6 @@ Public Class Form1
 
     Private Sub AddNodes(node As TreeNode, nodes As IEnumerable(Of StashNode))
         For Each n In nodes
-            If TypeOf n Is StashPlaceholderNode Then
-                'Continue For
-            End If
-
             Dim stackNode = node.Nodes.Add($"{n.Title} ({n.GetType().Name})")
             NodeToItem.Add(stackNode, n)
             If TypeOf n Is StashStack Then

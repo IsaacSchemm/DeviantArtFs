@@ -163,12 +163,6 @@ type StashRoot() =
         |> Seq.collect (fun s -> s.FindItemsById itemid)
         |> Seq.tryHead
 
-    //member this.CreatePlaceholderStack stackid =
-    //    printfn "Creating new placeholder stack %d" stackid
-    //    let stack = new StashStack(stackid, sprintf "{ \"title\": \"%d\" }" stackid |> StackResponse.Parse)
-    //    this.Nodes.Insert(0, stack)
-    //    stack
-
     member this.FindStackById stackid =
         this.Stacks
         |> Seq.collect (fun s -> s.FindStacksById stackid)
@@ -178,10 +172,6 @@ type StashRoot() =
         match this.FindStackById stackid with
         | Some x -> x
         | None -> raise (new StashDeltaApplyException())
-
-    //member this.FindOrCreateStackById stackid =
-    //    this.FindStackById stackid
-    //    |> Option.defaultValue (this.CreatePlaceholderStack stackid)
 
     member this.Apply (delta: DeltaResultEntry) =
         match delta.Metadata with
@@ -256,17 +246,29 @@ type StashRoot() =
             match (delta.Itemid, delta.Stackid) with
             | (Some itemid, None) ->
                 // Delete item
-                let parent = (StashUtils.findParentForItem itemid this).Value
-                let item = (this.FindItemById itemid).Value
-                parent.Nodes.Remove(item) |> ignore
+                match StashUtils.findParentForItem itemid this with
+                | Some parent ->
+                    let item = (this.FindItemById itemid).Value
+                    parent.Nodes.Remove(item) |> ignore
+                | None ->
+                    // This item's parent stack may have been already removed
+                    ()
             | (None, Some stackid) ->
                 // Delete stack
-                let parent = (StashUtils.findParentForStack stackid this).Value
-                let stack = (this.FindStackById stackid).Value
-                parent.Nodes.Remove(stack) |> ignore
+                match StashUtils.findParentForStack stackid this with
+                | Some parent ->
+                    let stack = (this.FindStackById stackid).Value
+                    parent.Nodes.Remove(stack) |> ignore
+                | None ->
+                    // This stack's parent stack may have been already removed
+                    ()
             | _ -> failwithf "Invalid combination of stackid/itemid without metadata"
 
     member __.DeferredCount = deferred.Count
+
+    member __.Defer delta =
+        //printfn "Deferring: %O %O" delta.Stackid delta.Itemid
+        deferred.Enqueue(delta)
 
     member this.ApplyDeferred() =
         let initialSize = deferred.Count
@@ -279,10 +281,6 @@ type StashRoot() =
         let processed = initialSize - deferred.Count
         if processed > 0 then
             this.ApplyDeferred()
-
-    member this.Defer delta =
-        printfn "Deferring: %O %O" delta.Stackid delta.Itemid
-        deferred.Enqueue(delta)
 
     member this.ApplyOrDefer delta =
         try

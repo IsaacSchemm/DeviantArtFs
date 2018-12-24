@@ -68,8 +68,5 @@ The DeviantArtAuth class provides methods to support the Authorization Code gran
 
 ## Delta
 
-The namespace DeltaMarshal contains tools to help you deal with Sta.sh delta requests.
-
-Known bugs so far:
-
-* Deleting an item and then refreshing throws an exception
+The namespace DeltaMarshal can help you deal with Sta.sh delta requests and build a tree model of the current user's Sta.sh.
+It hasn't undergone a lot of testing, so let me know (via GitHub) if there are any issues.
