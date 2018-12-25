@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Utils.fs" />
+    <Compile Include="IStashNode.fs" />
+    <Compile Include="IStashRoot.fs" />
+    <Compile Include="StashItem.fs" />
+    <Compile Include="StashStack.fs" />
+    <Compile Include="StashRoot.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DeviantArtFs\DeviantArtFs.fsproj" />
+  </ItemGroup>
+
+</Project>
