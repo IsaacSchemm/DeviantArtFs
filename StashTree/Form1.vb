@@ -1,8 +1,8 @@
 ﻿Imports DeviantArtFs
-Imports DeviantArtFs.Stash.DeltaMarshal
+Imports DeviantArtFs.Stash.Marshal
 
 Public Class Form1
-    Private Token As IDeviantArtAccessToken = New AccessToken("6951853ad45f223c5f68b39c3de93f3ab1baef72793e0885a4")
+    Private Token As IDeviantArtAccessToken = New AccessToken("177f826cc4210c3b097853afe966076b51187d25c124aca1f3")
     Private StashRoot As New StashRoot
     Private StashCursor As String = Nothing
 
@@ -38,29 +38,31 @@ Public Class Form1
 
             StashCursor = delta.Cursor
             For Each entry In delta.Entries
-                Try
-                    StashRoot.Apply(entry)
-                Catch ex As StashDeltaApplyException
-                    StashRoot.Defer(entry)
-                End Try
+                StashRoot.Apply(entry)
             Next
         End If
-
-        StashRoot.ApplyDeferred()
 
         TreeView1.Nodes.Clear()
 
         Dim rootNode = TreeView1.Nodes.Add("Root")
-        AddNodes(rootNode, StashRoot.Stacks)
+        AddNodes(rootNode, StashRoot.Children)
     End Sub
 
     Private Sub AddNodes(node As TreeNode, nodes As IEnumerable(Of StashNode))
         For Each n In nodes
+            If TypeOf n Is StashStack Then
+                Dim s = CType(n, StashStack)
+                If Not s.Children.Skip(1).Any() Then
+                    AddNodes(node, s.Children)
+                    Continue For
+                End If
+            End If
+
             Dim stackNode = node.Nodes.Add($"{n.Title} ({n.GetType().Name})")
             NodeToItem.Add(stackNode, n)
             If TypeOf n Is StashStack Then
                 Dim s = CType(n, StashStack)
-                AddNodes(stackNode, s.Nodes)
+                AddNodes(stackNode, s.Children)
             End If
         Next
     End Sub

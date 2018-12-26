@@ -6,8 +6,7 @@
 
   <ItemGroup>
     <Compile Include="Utils.fs" />
-    <Compile Include="IStashNode.fs" />
-    <Compile Include="IStashRoot.fs" />
+    <Compile Include="StashNode.fs" />
     <Compile Include="StashItem.fs" />
     <Compile Include="StashStack.fs" />
     <Compile Include="StashRoot.fs" />

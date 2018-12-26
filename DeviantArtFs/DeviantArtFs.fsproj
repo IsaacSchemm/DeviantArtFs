@@ -37,7 +37,6 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
     <Compile Include="Stash\Stack.fs" />
     <Compile Include="Stash\Delete.fs" />
     <Compile Include="Stash\Delta.fs" />
-    <Compile Include="Stash\DeltaMarshal.fs" />
     <Compile Include="Stash\Item.fs" />
     <Compile Include="Stash\Publish.fs" />
     <Compile Include="Stash\PublishCategoryTree.fs" />

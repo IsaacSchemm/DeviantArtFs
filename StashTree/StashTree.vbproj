@@ -120,6 +120,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DeviantArtFs.Stash.Marshal\DeviantArtFs.Stash.Marshal.fsproj">
+      <Project>{933c59ed-2c09-4ff2-8eb8-c6385ec93cbe}</Project>
+      <Name>DeviantArtFs.Stash.Marshal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DeviantArtFs.WinForms\DeviantArtFs.WinForms.csproj">
       <Project>{9a66e829-3d74-4ae9-a200-21b5c9f170b6}</Project>
       <Name>DeviantArtFs.WinForms</Name>

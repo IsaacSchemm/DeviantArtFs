@@ -3,10 +3,10 @@
 open DeviantArtFs.Stash
 
 type StashItem(root: IStashRoot, itemid: int64, metadata: StackResponse.Root) =
-    member __.Itemid = itemid
-    member val Metadata = metadata with get, set
+    inherit StashNode(root, metadata)
 
-    member this.Title = this.Metadata.Title |> Option.toObj
+    member __.Itemid = itemid
+
     member this.ArtistComments = this.Metadata.ArtistComments |> Option.toObj
     member this.OriginalUrl = this.Metadata.OriginalUrl |> Option.toObj
     member this.Category = this.Metadata.Category |> Option.toObj
@@ -14,9 +14,21 @@ type StashItem(root: IStashRoot, itemid: int64, metadata: StackResponse.Root) =
     member this.Files = this.Metadata.Files |> Seq.map Utils.toStashFile
     member this.Tags = this.Metadata.Tags
 
-    member this.Submission = this.Metadata.Submission
-    member this.Stats = this.Metadata.Stats
-    member this.Camera = this.Metadata.Camera
+    member this.OptSubmission = this.Metadata.Submission
+    member this.OptStats = this.Metadata.Stats
+    member this.OptCamera = this.Metadata.Camera
+    
+    override this.ParentStackId =
+        match this.Metadata.Stackid with
+        | Some s -> Some s
+        | None -> failwithf "Item %d does not belong to a stack" itemid
+
+    override this.Serialize() = {
+        Itemid = Some this.Itemid
+        Stackid = this.ParentStackId
+        Metadata = Some this.Metadata
+        Position = Some this.Position
+    }
 
     member this.OriginalImageUrl =
         this.Metadata.Files
@@ -31,12 +43,3 @@ type StashItem(root: IStashRoot, itemid: int64, metadata: StackResponse.Root) =
         |> Seq.map (fun f -> f.Src)
         |> Seq.tryHead
         |> Option.toObj
-
-    member internal this.Apply (modifications: StackResponse.Root) =
-        let v = Utils.apply(this.Metadata, modifications)
-        this.Metadata <- v
-
-    interface IStashNode with
-        member this.Title = this.Title
-
-    override this.ToString() = this.Title
