@@ -2,7 +2,8 @@
 Imports DeviantArtFs.Stash.Marshal
 
 Public Class Form1
-    Private Token As IDeviantArtAccessToken = New AccessToken("177f826cc4210c3b097853afe966076b51187d25c124aca1f3")
+    Private Token As IDeviantArtAccessToken = New AccessToken("00000000000000000000000000000000000000000000000000")
+    Private User As UserResult = Nothing
     Private StashRoot As New StashRoot
     Private StashCursor As String = Nothing
 
@@ -24,6 +25,7 @@ Public Class Form1
             Using form = New WinForms.DeviantArtImplicitGrantForm(clientId, url, {"stash"})
                 If form.ShowDialog() = DialogResult.OK Then
                     Token = New AccessToken(form.AccessToken)
+                    User = Nothing
                 End If
             End Using
         End If
@@ -31,8 +33,11 @@ Public Class Form1
         If Token IsNot Nothing Then
             TextBox2.Text = Token.AccessToken
 
-            Dim user = Await DeviantArtFs.User.Whoami.GetUsernameAsync(Token)
-            TextBox1.Text = user
+            If User Is Nothing Then
+                User = Await DeviantArtFs.User.Whoami.ExecuteAsync(Token)
+                TextBox1.Text = User.Username
+                PictureBox2.ImageLocation = User.Usericon
+            End If
 
             Dim delta = Await Stash.Delta.GetAllAsync(Token, New Stash.DeltaAllRequest With {.Cursor = StashCursor})
 
@@ -48,9 +53,15 @@ Public Class Form1
         AddNodes(rootNode, StashRoot.Children)
     End Sub
 
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        StashCursor = Nothing
+        StashRoot.Clear()
+        TreeView1.Nodes.Clear()
+    End Sub
+
     Private Sub AddNodes(node As TreeNode, nodes As IEnumerable(Of StashNode))
         For Each n In nodes
-            If TypeOf n Is StashStack Then
+            If TypeOf n Is StashStack And CheckBox1.Checked Then
                 Dim s = CType(n, StashStack)
                 If Not s.Children.Skip(1).Any() Then
                     AddNodes(node, s.Children)

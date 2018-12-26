@@ -101,3 +101,5 @@ type StashRoot() =
                 | Some x -> nodes.Remove(x) |> ignore
                 | None -> () // This stack's parent stack may have been already removed
             | _ -> failwithf "Invalid combination of stackid/itemid without metadata"
+
+    member __.Clear() = nodes.Clear()
