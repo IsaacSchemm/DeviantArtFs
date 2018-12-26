@@ -5,6 +5,33 @@ open DeviantArtFs.Stash
 type StashRoot() =
     let nodes = new ResizeArray<StashNode>()
 
+    let insert absolute_pos (node: StashNode) =
+        nodes.Remove(node) |> ignore
+        nodes.Insert(absolute_pos, node)
+
+    let move relative_pos (node: StashNode) =
+        let siblings =
+            nodes
+            |> Seq.where (fun n -> n.ParentStackId = node.ParentStackId)
+            |> ResizeArray
+        let current_pos = siblings.IndexOf(node)
+        let new_pos = current_pos + relative_pos
+        let insert_before = siblings.[new_pos]
+
+        let new_master_pos = nodes.IndexOf(insert_before)
+        insert new_master_pos node
+
+    let update pos (node: StashNode) (metadata: StackResponse.Root) =
+        let original_stackid = node.ParentStackId
+        node.Metadata <- metadata
+
+        if original_stackid <> node.ParentStackId then
+            node |> insert 0
+
+        match pos with
+        | Some s -> node |> move s
+        | None -> ()
+
     interface IStashRoot with
         member __.Nodes = nodes :> seq<StashNode>
 
@@ -49,76 +76,16 @@ type StashRoot() =
                 // Add or update item
                 match this.FindItemById itemid with
                 | Some existing ->
-                    let parent_changed = existing.ParentStackId <> metadata.Stackid
-
-                    // Update item
-                    existing.Apply metadata
-
-                    match delta.Position with
-                    | Some pos ->
-                        if parent_changed then
-                            // Move node to new stack
-                            let new_item = new StashItem(this, itemid, metadata)
-                            match delta.Position with
-                            | Some pos -> nodes.Insert(System.Math.Min(pos, nodes.Count), new_item)
-                            | None -> nodes.Insert(0, new_item)
-                        else
-                            // Move node within stack
-                            let siblings =
-                                nodes
-                                |> Seq.where (fun n -> n.ParentStackId = existing.ParentStackId)
-                                |> ResizeArray
-                            let current_pos = siblings.IndexOf(existing)
-                            let new_pos = current_pos + pos
-                            let insert_before = siblings.[new_pos]
-
-                            let new_master_pos = nodes.IndexOf(insert_before)
-                            nodes.Remove(existing) |> ignore
-                            nodes.Insert(System.Math.Min(new_master_pos, nodes.Count), existing)
-                    | None -> ()
+                    update delta.Position existing metadata
                 | None ->
-                    // Add item
-                    let new_item = new StashItem(this, itemid, metadata)
-                    match delta.Position with
-                    | Some pos -> nodes.Insert(System.Math.Min(pos, nodes.Count), new_item)
-                    | None -> nodes.Insert(0, new_item)
+                    new StashItem(this, itemid, metadata) |> insert (delta.Position |> Option.defaultValue 0)
             | (None, Some stackid) ->
                 // Add or update stack
                 match this.FindStackById stackid with
                 | Some existing ->
-                    let parent_changed = existing.ParentStackId <> metadata.Parentid
-
-                    // Update item
-                    existing.Apply metadata
-
-                    match delta.Position with
-                    | Some pos ->
-                        if parent_changed then
-                            // Move node to new stack
-                            let new_stack = new StashStack(this, stackid, metadata)
-                            match delta.Position with
-                            | Some pos -> nodes.Insert(System.Math.Min(pos, nodes.Count), new_stack)
-                            | None -> nodes.Insert(0, new_stack)
-                        else
-                            // Move node within stack
-                            let siblings =
-                                nodes
-                                |> Seq.where (fun n -> n.ParentStackId = existing.ParentStackId)
-                                |> ResizeArray
-                            let current_pos = siblings.IndexOf(existing)
-                            let new_pos = current_pos + pos
-                            let insert_before = siblings.[new_pos]
-
-                            let new_master_pos = nodes.IndexOf(insert_before)
-                            nodes.Remove(existing) |> ignore
-                            nodes.Insert(System.Math.Min(new_master_pos, nodes.Count), existing)
-                    | None -> ()
+                    update delta.Position existing metadata
                 | None ->
-                    // Add stack
-                    let new_stack = new StashStack(this, stackid, metadata)
-                    match delta.Position with
-                    | Some pos -> nodes.Insert(System.Math.Min(pos, nodes.Count), new_stack)
-                    | None -> nodes.Insert(0, new_stack)
+                    new StashStack(this, stackid, metadata) |> insert (delta.Position |> Option.defaultValue 0)
             | _ -> failwithf "Invalid combination of stackid/itemid with metadata"
         | None ->
             // Deletion

@@ -15,10 +15,6 @@ type StashNode(root: IStashRoot, metadata: StackResponse.Root) =
     abstract member ParentStackId: int64 option
     abstract member Serialize: unit -> DeltaResultEntry
 
-    member internal this.Apply (modifications: StackResponse.Root) =
-        let v = Utils.apply(this.Metadata, modifications)
-        this.Metadata <- v
-
     override this.ToString() = this.Title
 and IStashRoot =
     abstract member Nodes: seq<StashNode>

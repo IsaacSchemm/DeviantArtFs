@@ -10,9 +10,6 @@ type IStashFile =
     abstract member Transparency: bool
 
 module internal Utils =
-    let apply (original: StackResponse.Root, modifications: StackResponse.Root) =
-        modifications
-
     let toStashFile (f: StackResponse.Thumb) =
         {
             new IStashFile with
