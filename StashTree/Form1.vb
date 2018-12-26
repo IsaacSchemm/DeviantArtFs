@@ -50,13 +50,37 @@ Public Class Form1
         TreeView1.Nodes.Clear()
 
         Dim rootNode = TreeView1.Nodes.Add("Root")
-        AddNodes(rootNode, StashRoot.Children)
+        If CheckBox2.Checked Then
+            AddNodes(rootNode, StashRoot.AllItems)
+        Else
+            AddNodes(rootNode, StashRoot.Children)
+        End If
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         StashCursor = Nothing
         StashRoot.Clear()
         TreeView1.Nodes.Clear()
+    End Sub
+
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        Dim list = StashRoot.Nodes.Select(Function(c) c.Serialize()).ToList()
+        For Each x In list
+            Console.WriteLine(x.Metadata.Value.JsonValue)
+        Next
+
+        StashRoot.Clear()
+        For Each x In list
+            StashRoot.Apply(x)
+        Next
+
+        TreeView1.Nodes.Clear()
+        Dim rootNode = TreeView1.Nodes.Add("Deserialized")
+        If CheckBox2.Checked Then
+            AddNodes(rootNode, StashRoot.AllItems)
+        Else
+            AddNodes(rootNode, StashRoot.Children)
+        End If
     End Sub
 
     Private Sub AddNodes(node As TreeNode, nodes As IEnumerable(Of StashNode))

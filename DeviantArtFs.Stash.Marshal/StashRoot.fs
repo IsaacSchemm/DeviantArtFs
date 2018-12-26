@@ -32,8 +32,9 @@ type StashRoot() =
         | Some s -> node |> move s
         | None -> ()
 
+    member __.Nodes = nodes :> seq<StashNode>
     interface IStashRoot with
-        member __.Nodes = nodes :> seq<StashNode>
+        member this.Nodes = this.Nodes
 
     member __.FindItemById itemid =
         seq {
@@ -58,14 +59,15 @@ type StashRoot() =
     }
 
     member __.AllItems =
-        let rec grab (list: seq<StashNode>) = seq {
+        let rec grab (list: seq<StashNode>) (stackid: int64 option) = seq {
             for n in list do
-                match n with
-                | :? StashItem as i -> yield i
-                | :? StashStack as s -> yield! grab s.Children
-                | _ -> ()
+                if n.ParentStackId = stackid then
+                    match n with
+                    | :? StashItem as i -> yield i
+                    | :? StashStack as s -> yield! grab s.Children (Some s.Stackid)
+                    | _ -> ()
         }
-        grab nodes
+        grab nodes None
 
     member this.Apply (delta: DeltaResultEntry) =
         match delta.Metadata with

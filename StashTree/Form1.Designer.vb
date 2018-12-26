@@ -36,6 +36,8 @@ Partial Class Form1
         Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
+        Me.CheckBox2 = New System.Windows.Forms.CheckBox()
+        Me.Button3 = New System.Windows.Forms.Button()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
@@ -112,6 +114,8 @@ Partial Class Form1
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.Button3)
+        Me.Panel1.Controls.Add(Me.CheckBox2)
         Me.Panel1.Controls.Add(Me.PictureBox2)
         Me.Panel1.Controls.Add(Me.CheckBox1)
         Me.Panel1.Controls.Add(Me.Button2)
@@ -141,7 +145,7 @@ Partial Class Form1
         Me.CheckBox1.AutoSize = True
         Me.CheckBox1.Checked = True
         Me.CheckBox1.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.CheckBox1.Location = New System.Drawing.Point(431, 5)
+        Me.CheckBox1.Location = New System.Drawing.Point(256, 5)
         Me.CheckBox1.Name = "CheckBox1"
         Me.CheckBox1.Size = New System.Drawing.Size(157, 17)
         Me.CheckBox1.TabIndex = 4
@@ -151,7 +155,7 @@ Partial Class Form1
         'Button2
         '
         Me.Button2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button2.Location = New System.Drawing.Point(513, 29)
+        Me.Button2.Location = New System.Drawing.Point(407, 29)
         Me.Button2.Name = "Button2"
         Me.Button2.Size = New System.Drawing.Size(75, 20)
         Me.Button2.TabIndex = 6
@@ -174,7 +178,7 @@ Partial Class Form1
         Me.TextBox2.Location = New System.Drawing.Point(103, 29)
         Me.TextBox2.Name = "TextBox2"
         Me.TextBox2.ReadOnly = True
-        Me.TextBox2.Size = New System.Drawing.Size(322, 20)
+        Me.TextBox2.Size = New System.Drawing.Size(147, 20)
         Me.TextBox2.TabIndex = 3
         '
         'TextBox1
@@ -184,13 +188,13 @@ Partial Class Form1
         Me.TextBox1.Location = New System.Drawing.Point(103, 3)
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.ReadOnly = True
-        Me.TextBox1.Size = New System.Drawing.Size(322, 20)
+        Me.TextBox1.Size = New System.Drawing.Size(147, 20)
         Me.TextBox1.TabIndex = 1
         '
         'Button1
         '
         Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button1.Location = New System.Drawing.Point(432, 29)
+        Me.Button1.Location = New System.Drawing.Point(326, 30)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(75, 20)
         Me.Button1.TabIndex = 5
@@ -205,6 +209,27 @@ Partial Class Form1
         Me.Label2.Size = New System.Drawing.Size(38, 13)
         Me.Label2.TabIndex = 2
         Me.Label2.Text = "Token"
+        '
+        'CheckBox2
+        '
+        Me.CheckBox2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.CheckBox2.AutoSize = True
+        Me.CheckBox2.Location = New System.Drawing.Point(419, 5)
+        Me.CheckBox2.Name = "CheckBox2"
+        Me.CheckBox2.Size = New System.Drawing.Size(160, 17)
+        Me.CheckBox2.TabIndex = 8
+        Me.CheckBox2.Text = "Flatten all stacks (items only)"
+        Me.CheckBox2.UseVisualStyleBackColor = True
+        '
+        'Button3
+        '
+        Me.Button3.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button3.Location = New System.Drawing.Point(488, 29)
+        Me.Button3.Name = "Button3"
+        Me.Button3.Size = New System.Drawing.Size(100, 20)
+        Me.Button3.TabIndex = 9
+        Me.Button3.Text = "Test Serialization"
+        Me.Button3.UseVisualStyleBackColor = True
         '
         'Form1
         '
@@ -244,4 +269,6 @@ Partial Class Form1
     Friend WithEvents PictureBox2 As PictureBox
     Friend WithEvents CheckBox1 As CheckBox
     Friend WithEvents Button2 As Button
+    Friend WithEvents Button3 As Button
+    Friend WithEvents CheckBox2 As CheckBox
 End Class
