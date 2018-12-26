@@ -69,7 +69,7 @@ type StashRoot() =
         }
         grab nodes None
 
-    member this.Apply (delta: DeltaResultEntry) =
+    member this.Apply (delta: IDeltaEntry) =
         match delta.Metadata with
         | Some metadata ->
             // Add or update

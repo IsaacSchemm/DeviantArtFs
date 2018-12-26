@@ -43,7 +43,7 @@ Public Class Form1
 
             StashCursor = delta.Cursor
             For Each entry In delta.Entries
-                StashRoot.Apply(entry)
+                StashRoot.Apply(New WrappedDeltaEntry(entry))
             Next
         End If
 
@@ -66,7 +66,7 @@ Public Class Form1
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
         Dim list = StashRoot.Nodes.Select(Function(c) c.Serialize()).ToList()
         For Each x In list
-            Console.WriteLine(x.Metadata.Value.JsonValue)
+            Console.WriteLine(x.Metadata.JsonValue)
         Next
 
         StashRoot.Clear()

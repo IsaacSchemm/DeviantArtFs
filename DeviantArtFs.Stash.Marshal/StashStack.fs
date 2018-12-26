@@ -15,10 +15,10 @@ type StashStack(root: IStashRoot, stackid: int64, metadata: StackResponse.Root) 
     override this.ParentStackId = this.Metadata.Parentid
 
     override this.Serialize() = {
-        Itemid = None
-        Stackid = Some this.Stackid
-        Metadata = Some this.Metadata
-        Position = Some this.Position
+        Itemid = System.Nullable()
+        Stackid = this.ParentStackId.Value
+        Metadata = this.Metadata
+        Position = this.Position
     }
 
     member __.Children = seq {

@@ -13,7 +13,7 @@ type StashNode(root: IStashRoot, metadata: StackResponse.Root) =
         | None -> failwithf "This node is not a member of its root (anymore)"
 
     abstract member ParentStackId: int64 option
-    abstract member Serialize: unit -> DeltaResultEntry
+    abstract member Serialize: unit -> SerializedDeltaEntry
 
     override this.ToString() = this.Title
 and IStashRoot =

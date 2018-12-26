@@ -24,10 +24,10 @@ type StashItem(root: IStashRoot, itemid: int64, metadata: StackResponse.Root) =
         | None -> failwithf "Item %d does not belong to a stack" itemid
 
     override this.Serialize() = {
-        Itemid = Some this.Itemid
-        Stackid = this.ParentStackId
-        Metadata = Some this.Metadata
-        Position = Some this.Position
+        Itemid = System.Nullable(this.Itemid)
+        Stackid = this.ParentStackId.Value
+        Metadata = this.Metadata
+        Position = this.Position
     }
 
     member this.OriginalImageUrl =

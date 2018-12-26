@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Compile Include="Utils.fs" />
+    <Compile Include="IDeltaEntry.fs" />
     <Compile Include="StashNode.fs" />
     <Compile Include="StashItem.fs" />
     <Compile Include="StashStack.fs" />
