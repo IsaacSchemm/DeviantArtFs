@@ -32,6 +32,13 @@ type ExtParams =
         val ExtStats: bool
     end
 
+type UserResult = {
+    Userid: Guid
+    Username: string
+    Usericon: string
+    Type: string
+}
+
 type DeviantArtPagedResult<'a> = {
     HasMore: bool
     NextOffset: int option

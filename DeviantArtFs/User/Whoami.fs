@@ -19,3 +19,13 @@ module Whoami =
 
     let GetUsernameAsync token = AsyncExecute token |> dafs.whenDone (fun u -> u.Username) |> Async.StartAsTask
     let GetUserIconAsync token = AsyncExecute token |> dafs.whenDone (fun u -> u.Usericon) |> Async.StartAsTask
+
+    let ExecuteAsync token =
+        AsyncExecute token
+        |> dafs.whenDone (fun u -> {
+            Userid = u.Userid
+            Username = u.Username
+            Usericon = u.Usericon
+            Type = u.Type
+        })
+        |> Async.StartAsTask

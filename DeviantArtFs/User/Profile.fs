@@ -159,3 +159,13 @@ module Profile =
         let! json = dafs.asyncRead req
         return ProfileResponse.Parse json
     }
+
+    let ExecuteAsync token req =
+        AsyncExecute token req
+        |> dafs.whenDone (fun p -> {
+            Userid = p.User.Userid
+            Username = p.User.Username
+            Usericon = p.User.Usericon
+            Type = p.User.Type
+        })
+        |> Async.StartAsTask
