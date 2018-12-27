@@ -8,11 +8,11 @@
     <ProjectGuid>7b4b5218-a33d-4453-b165-e8d1e40f07ed</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Sandbox</RootNamespace>
-    <AssemblyName>Sandbox</AssemblyName>
+    <AssemblyName>DeviantArtFs.Examples.GalleryInfo</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <UseStandardResourceNames>true</UseStandardResourceNames>
-    <Name>Sandbox</Name>
+    <Name>DeviantArtFs.Examples.GalleryInfo</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

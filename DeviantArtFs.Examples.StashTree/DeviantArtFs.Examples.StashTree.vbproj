@@ -6,9 +6,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{957EC5C5-6219-4F99-910D-7FBD08ADAE08}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>StashTree.My.MyApplication</StartupObject>
-    <RootNamespace>StashTree</RootNamespace>
-    <AssemblyName>StashTree</AssemblyName>
+    <StartupObject>DeviantArtFs.Examples.StashTree.My.MyApplication</StartupObject>
+    <RootNamespace>DeviantArtFs.Examples.StashTree</RootNamespace>
+    <AssemblyName>DeviantArtFs.Examples.StashTree</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -22,7 +22,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>StashTree.xml</DocumentationFile>
+    <DocumentationFile>DeviantArtFs.Examples.StashTree.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -32,7 +32,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>StashTree.xml</DocumentationFile>
+    <DocumentationFile>DeviantArtFs.Examples.StashTree.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -95,6 +95,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="SerializationExample.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form1.resx">

@@ -66,11 +66,7 @@ If you are writing a Windows desktop application, you can use the forms in the D
 
 The DeviantArtAuth class provides methods to support the Authorization Code grant type (getting tokens from an authorization code and refreshing tokens).
 
-## Delta
+## Examples
 
-The namespace DeltaMarshal can help you deal with Sta.sh delta requests and build a tree model of the current user's Sta.sh.
-It hasn't undergone a lot of testing, so let me know (via GitHub) if there are any issues.
-
-Known bugs:
-
-* The position of newly uploaded items is not reflected properly.
+* GalleryInfo: A sample F# console app that fetches data from DeviantArt.
+* StashTree: A VB.NET WinForms app that demonstrates the DeviantArtFs.Stash.Marshal library.

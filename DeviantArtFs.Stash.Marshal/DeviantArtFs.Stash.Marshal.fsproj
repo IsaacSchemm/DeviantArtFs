@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>0.2.0-alpha</Version>
+    <Authors>libertyernie</Authors>
+    <Description>An F# library (.NET Standard 2.0) to interact with the Sta.sh API and manage state</Description>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/libertyernie/DeviantArtFs/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/libertyernie/DeviantArtFs</PackageProjectUrl>
+    <PackageTags>deviantart fsharp</PackageTags>
+    <PackageReleaseNotes>An F# library (.NET Standard 2.0) to interact with the Sta.sh API and manage state.
+
+This library sits on top of DeviantArtFs and provides a StashRoot object that can be used to process reponses from the Sta.sh delta endpoint.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
