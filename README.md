@@ -65,8 +65,3 @@ Both Authorization Code (recommended) and Implicit grant types are supported.
 If you are writing a Windows desktop application, you can use the forms in the DeviantArtFs.WinForms package to get a code or token from the user.
 
 The DeviantArtAuth class provides methods to support the Authorization Code grant type (getting tokens from an authorization code and refreshing tokens).
-
-## Examples
-
-* GalleryInfo: A sample F# console app that fetches data from DeviantArt.
-* StashTree: A VB.NET WinForms app that demonstrates the DeviantArtFs.Stash.Marshal library.
