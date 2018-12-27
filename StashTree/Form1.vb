@@ -55,9 +55,13 @@ Public Class Form1
             Next
         End If
 
+        RebuildTree("Root")
+    End Sub
+
+    Private Sub RebuildTree(name As String)
         TreeView1.Nodes.Clear()
 
-        Dim rootNode = TreeView1.Nodes.Add("Root")
+        Dim rootNode = TreeView1.Nodes.Add(name)
         If CheckBox2.Checked Then
             AddNodes(rootNode, StashRoot.AllItems)
         Else
@@ -71,18 +75,67 @@ Public Class Form1
         TreeView1.Nodes.Clear()
     End Sub
 
+#Region "Example of serialization to an XML file"
+    Class MyDeltaEntry
+        Implements IDeltaEntry
+
+        ' XmlSerializer cannot serialize the type SavedDeltaEntry, so let's create our own
+        ' Note that the type names do not have to be the same when implementing the interface
+
+        Sub New()
+
+        End Sub
+
+        Sub New(copyFrom As IDeltaEntry)
+            I = copyFrom.Itemid
+            S = copyFrom.Stackid
+            M = copyFrom.Metadata
+            P = copyFrom.Position
+        End Sub
+
+        Public Property I As Long? Implements IDeltaEntry.Itemid
+
+        Public Property S As Long? Implements IDeltaEntry.Stackid
+
+        Public Property M As String Implements IDeltaEntry.Metadata
+
+        Public Property P As Integer? Implements IDeltaEntry.Position
+    End Class
+
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
-        Dim list = StashRoot.Nodes.Select(Function(c) c.Save()).ToList()
-
-        StashRoot.Clear()
-        For Each x In list
-            StashRoot.Apply(x)
-        Next
-
-        TreeView1.Nodes.Clear()
-        Dim rootNode = TreeView1.Nodes.Add("Deserialized")
-        AddNodes(rootNode, StashRoot.Children)
+        Using f As New SaveFileDialog
+            f.DefaultExt = "xml"
+            If f.ShowDialog() = DialogResult.OK Then
+                Using fs As New FileStream(f.FileName, FileMode.Create, FileAccess.Write)
+                    Dim list = StashRoot.Save().Select(Function(d) New MyDeltaEntry(d)).ToList()
+                    Dim x As New Xml.Serialization.XmlSerializer(list.GetType())
+                    x.Serialize(fs, list)
+                End Using
+            End If
+        End Using
     End Sub
+
+    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+        Using f As New OpenFileDialog
+            f.DefaultExt = "xml"
+            If f.ShowDialog() = DialogResult.OK Then
+                Using fs As New FileStream(f.FileName, FileMode.Open, FileAccess.Read)
+                    Dim x As New Xml.Serialization.XmlSerializer((New List(Of MyDeltaEntry)).GetType())
+                    Dim list As List(Of MyDeltaEntry) = x.Deserialize(fs)
+
+                    StashRoot.Clear()
+                    For Each entry In list
+                        StashRoot.Apply(entry)
+                    Next
+
+                    RebuildTree(Path.GetFileName(f.FileName))
+
+                    Button1.Enabled = False
+                End Using
+            End If
+        End Using
+    End Sub
+#End Region
 
     Private Sub AddNodes(node As TreeNode, nodes As IEnumerable(Of StashNode))
         For Each n In nodes

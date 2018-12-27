@@ -18,7 +18,7 @@ The delta response contains a list of entries that need to be applied in order. 
 (This interface is actually defined in Types.fs in the DeviantArtFs project.)
 
 IDeltaEntry is implemented both by DeviantArtFs.Stash.DeltaResultEntry, the type used for responses from the server,
-and by SerializedDeltaEntry, the type that StashRoot's nodes use for export.
+and by SerializedDeltaEntry, the type that StashRoot uses for export.
 You can also implement it yourself (e.g. on an object representing a database row.)
 
 Example usage (C#):
@@ -34,7 +34,7 @@ Example usage (C#):
 	}
 
 	List<SerializedDeltaEntry> Serialize() {
-		return stashRoot.Nodes.Select(c => c.Save()).ToList();
+		return stashRoot.Save();
 	}
 
 	void Deserialize(IEnumerable<IDeltaEntry> list) {
@@ -43,3 +43,5 @@ Example usage (C#):
             stashRoot.Apply(x);
         }
 	}
+
+See the StashTree project for a more concrete example.

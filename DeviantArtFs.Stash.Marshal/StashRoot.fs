@@ -113,3 +113,5 @@ type StashRoot() =
             | _ -> failwithf "Invalid combination of stackid/itemid without metadata"
 
     member __.Clear() = nodes.Clear()
+
+    member __.Save() = nodes |> Seq.map (fun n -> n.Save()) |> ResizeArray :> seq<SavedDeltaEntry>

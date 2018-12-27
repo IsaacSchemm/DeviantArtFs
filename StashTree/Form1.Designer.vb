@@ -38,6 +38,7 @@ Partial Class Form1
         Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
+        Me.Button4 = New System.Windows.Forms.Button()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
@@ -114,6 +115,7 @@ Partial Class Form1
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.Button4)
         Me.Panel1.Controls.Add(Me.Button3)
         Me.Panel1.Controls.Add(Me.CheckBox2)
         Me.Panel1.Controls.Add(Me.PictureBox2)
@@ -133,11 +135,11 @@ Partial Class Form1
         'Button3
         '
         Me.Button3.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button3.Location = New System.Drawing.Point(488, 29)
+        Me.Button3.Location = New System.Drawing.Point(423, 28)
         Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(100, 20)
+        Me.Button3.Size = New System.Drawing.Size(75, 20)
         Me.Button3.TabIndex = 9
-        Me.Button3.Text = "Test Serialization"
+        Me.Button3.Text = "Serialize"
         Me.Button3.UseVisualStyleBackColor = True
         '
         'CheckBox2
@@ -176,7 +178,7 @@ Partial Class Form1
         'Button2
         '
         Me.Button2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button2.Location = New System.Drawing.Point(407, 29)
+        Me.Button2.Location = New System.Drawing.Point(342, 28)
         Me.Button2.Name = "Button2"
         Me.Button2.Size = New System.Drawing.Size(75, 20)
         Me.Button2.TabIndex = 6
@@ -215,7 +217,7 @@ Partial Class Form1
         'Button1
         '
         Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button1.Location = New System.Drawing.Point(326, 30)
+        Me.Button1.Location = New System.Drawing.Point(261, 28)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(75, 20)
         Me.Button1.TabIndex = 5
@@ -230,6 +232,16 @@ Partial Class Form1
         Me.Label2.Size = New System.Drawing.Size(38, 13)
         Me.Label2.TabIndex = 2
         Me.Label2.Text = "Token"
+        '
+        'Button4
+        '
+        Me.Button4.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button4.Location = New System.Drawing.Point(504, 28)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(75, 20)
+        Me.Button4.TabIndex = 10
+        Me.Button4.Text = "Deserialize"
+        Me.Button4.UseVisualStyleBackColor = True
         '
         'Form1
         '
@@ -271,4 +283,5 @@ Partial Class Form1
     Friend WithEvents Button2 As Button
     Friend WithEvents Button3 As Button
     Friend WithEvents CheckBox2 As CheckBox
+    Friend WithEvents Button4 As Button
 End Class
