@@ -1,5 +1,6 @@
 ﻿namespace DeviantArtFs.Stash.Marshal
 
+open DeviantArtFs
 open DeviantArtFs.Stash
 
 type StashItem(root: IStashRoot, itemid: int64, metadata: StackResponse.Root) =
@@ -23,11 +24,11 @@ type StashItem(root: IStashRoot, itemid: int64, metadata: StackResponse.Root) =
         | Some s -> Some s
         | None -> failwithf "Item %d does not belong to a stack" itemid
 
-    override this.Serialize() = {
-        Itemid = Some this.Itemid
-        Stackid = this.ParentStackId
-        Metadata = Some this.Metadata
-        Position = Some this.Position
+    override this.Save() = {
+        Itemid = this.Itemid |> System.Nullable
+        Stackid = this.ParentStackId.Value
+        Metadata = this.Metadata.JsonValue.ToString()
+        Position = this.Position
     }
 
     member this.OriginalImageUrl =

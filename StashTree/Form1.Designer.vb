@@ -28,6 +28,8 @@ Partial Class Form1
         Me.PropertyGrid1 = New System.Windows.Forms.PropertyGrid()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Button3 = New System.Windows.Forms.Button()
+        Me.CheckBox2 = New System.Windows.Forms.CheckBox()
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.CheckBox1 = New System.Windows.Forms.CheckBox()
         Me.Button2 = New System.Windows.Forms.Button()
@@ -36,8 +38,6 @@ Partial Class Form1
         Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.CheckBox2 = New System.Windows.Forms.CheckBox()
-        Me.Button3 = New System.Windows.Forms.Button()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
@@ -130,6 +130,27 @@ Partial Class Form1
         Me.Panel1.Size = New System.Drawing.Size(591, 56)
         Me.Panel1.TabIndex = 0
         '
+        'Button3
+        '
+        Me.Button3.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button3.Location = New System.Drawing.Point(488, 29)
+        Me.Button3.Name = "Button3"
+        Me.Button3.Size = New System.Drawing.Size(100, 20)
+        Me.Button3.TabIndex = 9
+        Me.Button3.Text = "Test Serialization"
+        Me.Button3.UseVisualStyleBackColor = True
+        '
+        'CheckBox2
+        '
+        Me.CheckBox2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.CheckBox2.AutoSize = True
+        Me.CheckBox2.Location = New System.Drawing.Point(419, 5)
+        Me.CheckBox2.Name = "CheckBox2"
+        Me.CheckBox2.Size = New System.Drawing.Size(160, 17)
+        Me.CheckBox2.TabIndex = 8
+        Me.CheckBox2.Text = "Flatten all stacks (items only)"
+        Me.CheckBox2.UseVisualStyleBackColor = True
+        '
         'PictureBox2
         '
         Me.PictureBox2.Location = New System.Drawing.Point(3, 3)
@@ -209,27 +230,6 @@ Partial Class Form1
         Me.Label2.Size = New System.Drawing.Size(38, 13)
         Me.Label2.TabIndex = 2
         Me.Label2.Text = "Token"
-        '
-        'CheckBox2
-        '
-        Me.CheckBox2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.CheckBox2.AutoSize = True
-        Me.CheckBox2.Location = New System.Drawing.Point(419, 5)
-        Me.CheckBox2.Name = "CheckBox2"
-        Me.CheckBox2.Size = New System.Drawing.Size(160, 17)
-        Me.CheckBox2.TabIndex = 8
-        Me.CheckBox2.Text = "Flatten all stacks (items only)"
-        Me.CheckBox2.UseVisualStyleBackColor = True
-        '
-        'Button3
-        '
-        Me.Button3.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button3.Location = New System.Drawing.Point(488, 29)
-        Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(100, 20)
-        Me.Button3.TabIndex = 9
-        Me.Button3.Text = "Test Serialization"
-        Me.Button3.UseVisualStyleBackColor = True
         '
         'Form1
         '

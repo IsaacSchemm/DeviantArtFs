@@ -1,5 +1,6 @@
 ﻿namespace DeviantArtFs.Stash.Marshal
 
+open DeviantArtFs
 open DeviantArtFs.Stash
 
 type StashRoot() =
@@ -69,7 +70,14 @@ type StashRoot() =
         }
         grab nodes None
 
-    member this.Apply (delta: DeltaResultEntry) =
+    member this.Apply (entry: IDeltaEntry) =
+        let delta = {
+            Itemid = entry.Itemid |> Option.ofNullable
+            Stackid = entry.Stackid |> Option.ofNullable
+            Metadata = entry.Metadata |> Option.ofObj |> Option.map (StackResponse.Parse)
+            Position = entry.Position |> Option.ofNullable
+        }
+
         match delta.Metadata with
         | Some metadata ->
             // Add or update

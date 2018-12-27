@@ -34,12 +34,18 @@ type internal DeltaResponse = JsonProvider<"""[{
     "entries": []
 }]""", SampleIsList=true>
 
-type DeltaResultEntry = {
-    Itemid: int64 option
-    Stackid: int64 option
-    Metadata: StackResponse.Root option
-    Position: int option
-}
+type DeltaResultEntry =
+    {
+        Itemid: int64 option
+        Stackid: int64 option
+        Metadata: StackResponse.Root option
+        Position: int option
+    }
+    interface IDeltaEntry with
+        member this.Itemid = this.Itemid |> Option.toNullable
+        member this.Stackid = this.Stackid |> Option.toNullable
+        member this.Metadata = this.Metadata |> Option.map (fun j -> j.JsonValue.ToString()) |> Option.toObj
+        member this.Position = this.Position |> Option.toNullable
 
 type DeltaResult = {
     Cursor: string

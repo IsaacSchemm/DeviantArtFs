@@ -1,5 +1,6 @@
 ﻿namespace DeviantArtFs.Stash.Marshal
 
+open DeviantArtFs
 open DeviantArtFs.Stash
 
 type StashStack(root: IStashRoot, stackid: int64, metadata: StackResponse.Root) =
@@ -14,11 +15,11 @@ type StashStack(root: IStashRoot, stackid: int64, metadata: StackResponse.Root) 
     
     override this.ParentStackId = this.Metadata.Parentid
 
-    override this.Serialize() = {
-        Itemid = None
-        Stackid = Some this.Stackid
-        Metadata = Some this.Metadata
-        Position = Some this.Position
+    override this.Save() = {
+        Itemid = System.Nullable()
+        Stackid = this.Stackid
+        Metadata = this.Metadata.JsonValue.ToString()
+        Position = this.Position
     }
 
     member __.Children = seq {

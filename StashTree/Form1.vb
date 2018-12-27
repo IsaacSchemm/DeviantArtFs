@@ -1,13 +1,20 @@
-﻿Imports DeviantArtFs
+﻿Imports System.IO
+Imports DeviantArtFs
 Imports DeviantArtFs.Stash.Marshal
 
 Public Class Form1
-    Private Token As IDeviantArtAccessToken = New AccessToken("00000000000000000000000000000000000000000000000000")
+    Private Token As IDeviantArtAccessToken = Nothing
     Private User As UserResult = Nothing
     Private StashRoot As New StashRoot
     Private StashCursor As String = Nothing
 
     Private NodeToItem As New Dictionary(Of TreeNode, StashNode)
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        If File.Exists("token.txt") Then
+            Token = New AccessToken(File.ReadAllText("token.txt"))
+        End If
+    End Sub
 
     Private Async Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         If Token IsNot Nothing Then
@@ -24,6 +31,7 @@ Public Class Form1
 
             Using form = New WinForms.DeviantArtImplicitGrantForm(clientId, url, {"stash"})
                 If form.ShowDialog() = DialogResult.OK Then
+                    File.WriteAllText("token.txt", form.AccessToken)
                     Token = New AccessToken(form.AccessToken)
                     User = Nothing
                 End If
@@ -64,10 +72,7 @@ Public Class Form1
     End Sub
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
-        Dim list = StashRoot.Nodes.Select(Function(c) c.Serialize()).ToList()
-        For Each x In list
-            Console.WriteLine(x.Metadata.Value.JsonValue)
-        Next
+        Dim list = StashRoot.Nodes.Select(Function(c) c.Save()).ToList()
 
         StashRoot.Clear()
         For Each x In list
@@ -76,11 +81,7 @@ Public Class Form1
 
         TreeView1.Nodes.Clear()
         Dim rootNode = TreeView1.Nodes.Add("Deserialized")
-        If CheckBox2.Checked Then
-            AddNodes(rootNode, StashRoot.AllItems)
-        Else
-            AddNodes(rootNode, StashRoot.Children)
-        End If
+        AddNodes(rootNode, StashRoot.Children)
     End Sub
 
     Private Sub AddNodes(node As TreeNode, nodes As IEnumerable(Of StashNode))
