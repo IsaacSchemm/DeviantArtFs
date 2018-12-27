@@ -44,4 +44,4 @@ Example usage (C#):
         }
 	}
 
-See the StashTree project for a more concrete example.
+See the StashTree project in the DeviantArtFs source code repository for a more concrete example.
