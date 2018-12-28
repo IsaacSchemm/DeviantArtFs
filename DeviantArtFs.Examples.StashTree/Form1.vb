@@ -16,9 +16,7 @@ Public Class Form1
         End If
     End Sub
 
-    Private Async Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        Button1.Enabled = False
-
+    Private Async Function CheckToken() As Task
         If Token IsNot Nothing Then
             If Not Await Util.Placebo.IsValidAsync(Token) Then
                 Token = Nothing
@@ -39,6 +37,12 @@ Public Class Form1
                 End If
             End Using
         End If
+    End Function
+
+    Private Async Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Button1.Enabled = False
+
+        Await CheckToken()
 
         If Token IsNot Nothing Then
             TextBox2.Text = Token.AccessToken
@@ -56,20 +60,20 @@ Public Class Form1
                 StashRoot.Apply(entry)
             Next
 
-            RebuildTree("Root")
+            RebuildTree("Root", StashRoot)
         End If
 
         Button1.Enabled = True
     End Sub
 
-    Private Sub RebuildTree(name As String)
+    Private Sub RebuildTree(name As String, root As StashRoot)
         TreeView1.Nodes.Clear()
 
         Dim rootNode = TreeView1.Nodes.Add(name)
         If CheckBox2.Checked Then
-            AddNodes(rootNode, StashRoot.AllItems)
+            AddNodes(rootNode, root.AllItems)
         Else
-            AddNodes(rootNode, StashRoot.Children)
+            AddNodes(rootNode, root.Children)
         End If
     End Sub
 
@@ -77,25 +81,6 @@ Public Class Form1
         StashCursor = Nothing
         StashRoot.Clear()
         TreeView1.Nodes.Clear()
-    End Sub
-
-    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
-        SerializationExample.Save(StashRoot.Save())
-    End Sub
-
-    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
-        Dim list = SerializationExample.Load()
-
-        If list IsNot Nothing Then
-            StashRoot.Clear()
-            For Each entry In list
-                StashRoot.Apply(entry)
-            Next
-
-            RebuildTree("Deserialized from XML")
-
-            Button1.Enabled = False
-        End If
     End Sub
 
     Private Sub AddNodes(node As TreeNode, nodes As IEnumerable(Of StashNode))
@@ -124,6 +109,63 @@ Public Class Form1
             PictureBox1.ImageLocation = CType(item, StashItem).OriginalImageUrl
         Else
             PictureBox1.ImageLocation = Nothing
+        End If
+    End Sub
+
+    Private Async Sub LoadStackToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadStackToolStripMenuItem.Click
+        Await CheckToken()
+
+        Try
+            Dim str = InputBox("Please enter the stack ID")
+            If str = "" Then
+                Return
+            End If
+
+            Dim stackId = Long.Parse(str)
+            Dim stack = Await StashStack.GetStackAsync(Token, stackId)
+
+            TreeView1.Nodes.Clear()
+            Dim node = TreeView1.Nodes.Add(stack.Title)
+            NodeToItem.Add(node, stack)
+        Catch ex As DeviantArtException
+            MsgBox(ex.Message)
+        End Try
+    End Sub
+
+    Private Async Sub LoadItemToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadItemToolStripMenuItem.Click
+        Await CheckToken()
+
+        Try
+            Dim str = InputBox("Please enter the item ID")
+            If str = "" Then
+                Return
+            End If
+
+            Dim itemId = Long.Parse(str)
+            Dim item = Await StashItem.GetItemAsync(Token, New Stash.ItemRequest(itemId))
+
+            TreeView1.Nodes.Clear()
+            Dim node = TreeView1.Nodes.Add(item.Title)
+            NodeToItem.Add(node, item)
+        Catch ex As DeviantArtException
+            MsgBox(ex.Message)
+        End Try
+    End Sub
+
+    Private Sub SaveToXMLToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SaveToXMLToolStripMenuItem.Click
+        SerializationExample.Save(StashRoot.Save())
+    End Sub
+
+    Private Sub LoadFromXMLToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadFromXMLToolStripMenuItem.Click
+        Dim list = SerializationExample.Load()
+
+        If list IsNot Nothing Then
+            Dim root = New StashRoot()
+            For Each entry In list
+                root.Apply(entry)
+            Next
+
+            RebuildTree("Deserialized from XML", root)
         End If
     End Sub
 End Class

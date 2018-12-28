@@ -1,8 +1,8 @@
 ﻿namespace DeviantArtFs.Stash.Marshal
 
 open System
-open DeviantArtFs.Stash
 open DeviantArtFs
+open DeviantArtFs.Stash
 
 type SavedDeltaEntry =
     {
@@ -25,7 +25,7 @@ type StashNode(root: IStashRoot, metadata: StackOrItemResponse.Root) =
     member this.Position =
         match root.Nodes |> Seq.tryFindIndex (LanguagePrimitives.PhysicalEquality this) with
         | Some p -> p
-        | None -> failwithf "This node is not a member of its root (anymore)"
+        | None -> -1
 
     abstract member ParentStackId: int64 option
     abstract member Save: unit -> SavedDeltaEntry
@@ -33,3 +33,7 @@ type StashNode(root: IStashRoot, metadata: StackOrItemResponse.Root) =
     override this.ToString() = this.Title
 and IStashRoot =
     abstract member Nodes: seq<StashNode>
+
+type internal EmptyRoot() =
+    interface IStashRoot with
+        member __.Nodes = Seq.empty

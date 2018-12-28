@@ -6,6 +6,13 @@ open DeviantArtFs.Stash
 type StashItem(root: IStashRoot, itemid: int64, metadata: StackOrItemResponse.Root) =
     inherit StashNode(root, metadata)
 
+    static member AsyncGetItem token req = async {
+        let! resp = Item.AsyncExecute token req
+        return new StashItem(new EmptyRoot(), req.Itemid, resp)
+    }
+
+    static member GetItemAsync token itemid = StashItem.AsyncGetItem token itemid |> Async.StartAsTask
+
     member __.Itemid = itemid
 
     member this.ArtistComments = this.Metadata.ArtistComments |> Option.toObj
