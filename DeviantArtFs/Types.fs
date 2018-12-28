@@ -45,6 +45,14 @@ type DeviantArtPagedResult<'a> = {
     Results: seq<'a>
 }
 
+type DeviantArtBidirectionalPagedResult<'a> = {
+    HasMore: bool
+    NextOffset: int option
+    HasLess: bool
+    PrevOffset: int option
+    Results: seq<'a>
+}
+
 type IDeltaEntry =
     abstract member Itemid: Nullable<int64>
     abstract member Stackid: Nullable<int64>

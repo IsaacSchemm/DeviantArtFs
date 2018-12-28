@@ -81,3 +81,5 @@ module Item =
         let! json = dafs.asyncRead req
         return ItemResponse.Parse json
     }
+
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

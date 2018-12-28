@@ -84,3 +84,5 @@ module Stack =
         let! json = dafs.asyncRead req
         return StackResponse.Parse json
     }
+
+    let ExecuteAsync token stackid = AsyncExecute token stackid |> Async.StartAsTask

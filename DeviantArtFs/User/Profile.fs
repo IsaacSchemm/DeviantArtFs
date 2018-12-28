@@ -160,7 +160,7 @@ module Profile =
         return ProfileResponse.Parse json
     }
 
-    let ExecuteAsync token req =
+    let AsyncGetUser token req =
         AsyncExecute token req
         |> dafs.whenDone (fun p -> {
             Userid = p.User.Userid
@@ -168,4 +168,6 @@ module Profile =
             Usericon = p.User.Usericon
             Type = p.User.Type
         })
-        |> Async.StartAsTask
+        
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let GetUserAsync token req = AsyncGetUser token req |> Async.StartAsTask

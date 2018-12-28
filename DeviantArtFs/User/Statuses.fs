@@ -44,3 +44,5 @@ module Statuses =
             }
         }
     }
+
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

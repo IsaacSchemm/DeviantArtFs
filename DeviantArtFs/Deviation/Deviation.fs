@@ -82,3 +82,5 @@ module Deviation =
         let! json = dafs.asyncRead req
         return DeviationResponse.Parse json
     }
+
+    let ExecuteAsync token id = AsyncExecute token id |> Async.StartAsTask

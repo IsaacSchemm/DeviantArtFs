@@ -169,3 +169,5 @@ module Metadata =
         let! json = dafs.asyncRead req
         return MetadataResponse.Parse json
     }
+
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

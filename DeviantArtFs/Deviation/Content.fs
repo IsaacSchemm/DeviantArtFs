@@ -21,3 +21,5 @@ module Content =
         let! json = dafs.asyncRead req
         return ContentResponse.Parse json
     }
+
+    let ExecuteAsync token deviationid = AsyncExecute token deviationid |> Async.StartAsTask

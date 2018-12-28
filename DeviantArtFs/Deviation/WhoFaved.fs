@@ -6,8 +6,8 @@ open System
 
 type WhoFavedResponse = JsonProvider<"""[
 {
-    "has_more": false,
-    "next_offset": null,
+    "has_more": true,
+    "next_offset": 2,
     "results": [
         {
             "user": {
@@ -28,8 +28,18 @@ type WhoFavedResponse = JsonProvider<"""[
             "time": 1162422632
         }
     ]
+},
+{
+    "has_more": false,
+    "next_offset": null,
+    "results": []
 }
 ]""", SampleIsList=true>
+
+type WhoFavedUser = {
+    User: UserResult
+    Time: int
+}
 
 type WhoFavedRequest(deviationid: Guid) =
     member __.Deviationid = deviationid
@@ -49,5 +59,23 @@ module WhoFaved =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/whofaved?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return WhoFavedResponse.Parse json
+        let resp = WhoFavedResponse.Parse json
+        return {
+            HasMore = resp.HasMore
+            NextOffset = resp.NextOffset
+            Results = seq {
+                for r in resp.Results do
+                    yield {
+                        User = {
+                            Userid = r.User.Userid
+                            Username = r.User.Username
+                            Usericon = r.User.Usericon
+                            Type = r.User.Type
+                        }
+                        Time = r.Time
+                    }
+            }
+        }
     }
+
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

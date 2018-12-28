@@ -175,3 +175,5 @@ module StatusesId =
         let! json = dafs.asyncRead req
         return StatusesIdResponse.Parse json
     }
+
+    let ExecuteAsync token id = AsyncExecute token id |> Async.StartAsTask
