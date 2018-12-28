@@ -49,6 +49,7 @@ If you want more C# / VB.NET compatibility, you'll need to write new F# types (c
 * POST /stash/publish
 * GET /stash/publish/categorytree
 * POST /stash/submit
+* POST /stash/update/{stackid}
 
 > The DeviantArt.Stash.Marshal library wraps some of these endpoints and provides some additional functionality.
 

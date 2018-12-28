@@ -44,6 +44,7 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
     <Compile Include="Stash\Publish.fs" />
     <Compile Include="Stash\PublishCategoryTree.fs" />
     <Compile Include="Stash\Submit.fs" />
+    <Compile Include="Stash\Update.fs" />
     <Compile Include="User\Profile.fs" />
     <Compile Include="User\StatusesId.fs" />
     <Compile Include="User\Statuses.fs" />
