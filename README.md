@@ -43,9 +43,11 @@ If you want more C# / VB.NET compatibility, you'll need to write new F# types (c
 ### Stash
 
 * GET /stash/{stackid}†
+* GET /stash/{stackid}/contents†
 * POST /stash/delete
 * GET /stash/delta†
 * GET /stash/item/{itemid}†
+* POST /stash/move/{stackid}
 * POST /stash/position/{stackid}
 * POST /stash/publish
 * GET /stash/publish/categorytree

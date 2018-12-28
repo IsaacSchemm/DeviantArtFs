@@ -38,9 +38,11 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
     <Compile Include="Gallery\FoldersCreate.fs" />
     <Compile Include="Gallery\FoldersRemove.fs" />
     <Compile Include="Stash\Stack.fs" />
+    <Compile Include="Stash\Contents.fs" />
     <Compile Include="Stash\Delete.fs" />
     <Compile Include="Stash\Delta.fs" />
     <Compile Include="Stash\Item.fs" />
+    <Compile Include="Stash\Move.fs" />
     <Compile Include="Stash\Position.fs" />
     <Compile Include="Stash\Publish.fs" />
     <Compile Include="Stash\PublishCategoryTree.fs" />
