@@ -3,7 +3,7 @@
 open DeviantArtFs
 open DeviantArtFs.Stash
 
-type StashStack(root: IStashRoot, stackid: int64, metadata: StackOrItemResponse.Root) =
+type StashStack(root: IStashRoot, stackid: int64, metadata: StashMetadata.Root) =
     inherit StashNode(root, metadata)
 
     static member AsyncGetStack token stackid = async {

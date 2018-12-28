@@ -20,7 +20,7 @@ module Item =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/item/%d?%s" req.Itemid
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return StackOrItemResponse.Parse json
+        return StashMetadata.Parse json
     }
 
     let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

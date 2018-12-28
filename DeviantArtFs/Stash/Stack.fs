@@ -3,7 +3,7 @@
 open DeviantArtFs
 open FSharp.Data
 
-type StackOrItemResponse = JsonProvider<"""[
+type StashMetadata = JsonProvider<"""[
 {
     "title": "Title 1",
     "path": "Saved Submissions/Sta.sh Uploads 367",
@@ -138,7 +138,7 @@ module Stack =
             sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d" stackid
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return StackOrItemResponse.Parse json
+        return StashMetadata.Parse json
     }
 
     let ExecuteAsync token stackid = AsyncExecute token stackid |> Async.StartAsTask
