@@ -38,7 +38,7 @@ type DeltaResultEntry =
     {
         Itemid: int64 option
         Stackid: int64 option
-        Metadata: StackResponse.Root option
+        Metadata: StackOrItemResponse.Root option
         Position: int option
     }
     interface IDeltaEntry with
@@ -99,7 +99,7 @@ module Delta =
                     yield {
                         Itemid = e.Itemid
                         Stackid = e.Stackid
-                        Metadata = e.Metadata |> Option.map (fun j -> j.JsonValue.ToString() |> StackResponse.Parse)
+                        Metadata = e.Metadata |> Option.map (fun j -> j.JsonValue.ToString() |> StackOrItemResponse.Parse)
                         Position = e.Position
                     }
             }

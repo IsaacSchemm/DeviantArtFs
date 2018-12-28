@@ -10,7 +10,7 @@ type IStashFile =
     abstract member Transparency: bool
 
 module internal Utils =
-    let toStashFile (f: StackResponse.Thumb) =
+    let toStashFile (f: StackOrItemResponse.Thumb) =
         {
             new IStashFile with
                 member __.Src = f.Src

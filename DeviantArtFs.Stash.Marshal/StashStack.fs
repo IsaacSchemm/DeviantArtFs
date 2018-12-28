@@ -3,7 +3,7 @@
 open DeviantArtFs
 open DeviantArtFs.Stash
 
-type StashStack(root: IStashRoot, stackid: int64, metadata: StackResponse.Root) =
+type StashStack(root: IStashRoot, stackid: int64, metadata: StackOrItemResponse.Root) =
     inherit StashNode(root, metadata)
 
     member __.Stackid = stackid

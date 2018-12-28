@@ -18,7 +18,7 @@ type SavedDeltaEntry =
         member this.Position = this.Position |> Nullable
 
 [<AbstractClass>]
-type StashNode(root: IStashRoot, metadata: StackResponse.Root) =
+type StashNode(root: IStashRoot, metadata: StackOrItemResponse.Root) =
     member val Metadata = metadata with get, set
     member this.Title = this.Metadata.Title |> Option.toObj
 

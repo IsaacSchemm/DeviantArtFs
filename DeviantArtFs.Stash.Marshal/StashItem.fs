@@ -3,17 +3,17 @@
 open DeviantArtFs
 open DeviantArtFs.Stash
 
-type StashItem(root: IStashRoot, itemid: int64, metadata: StackResponse.Root) =
+type StashItem(root: IStashRoot, itemid: int64, metadata: StackOrItemResponse.Root) =
     inherit StashNode(root, metadata)
 
     member __.Itemid = itemid
 
     member this.ArtistComments = this.Metadata.ArtistComments |> Option.toObj
+    member this.Tags = this.Metadata.Tags
     member this.OriginalUrl = this.Metadata.OriginalUrl |> Option.toObj
     member this.Category = this.Metadata.Category |> Option.toObj
     member this.CreationTime = this.Metadata.CreationTime |> Option.toNullable
     member this.Files = this.Metadata.Files |> Seq.map Utils.toStashFile
-    member this.Tags = this.Metadata.Tags
 
     member this.OptSubmission = this.Metadata.Submission
     member this.OptStats = this.Metadata.Stats
