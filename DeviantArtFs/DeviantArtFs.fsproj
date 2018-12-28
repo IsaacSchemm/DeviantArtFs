@@ -33,6 +33,7 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
     <Compile Include="Deviation\Metadata.fs" />
     <Compile Include="Deviation\WhoFaved.fs" />
     <Compile Include="Gallery\All.fs" />
+    <Compile Include="Gallery\Gallery.fs" />
     <Compile Include="Gallery\Folders.fs" />
     <Compile Include="Stash\Stack.fs" />
     <Compile Include="Stash\Delete.fs" />

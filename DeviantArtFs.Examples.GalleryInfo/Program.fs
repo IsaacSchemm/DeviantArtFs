@@ -84,6 +84,21 @@ let sandbox token_string = async {
         printfn "Most recent status: %s (%O)" s.Body s.Ts
         printfn ""
     | None -> ()
+
+    printfn "Gallery folders:"
+    printfn ""
+
+    let! folders = new DeviantArtFs.Gallery.FoldersRequest(Username = username) |> DeviantArtFs.Gallery.Folders.AsyncExecute token
+    for f in folders.Results do
+        printfn "%A %s" f.Folderid f.Name
+
+        let! items = new DeviantArtFs.Gallery.GalleryRequest(f.Folderid, Username = username, Limit = 5) |> DeviantArtFs.Gallery.Gallery.AsyncExecute token
+        for i in items.Results do
+            match i.Title with
+            | Some s -> printfn "  * %s" s
+            | None -> printfn "  * %A (deleted: %b)" i.Deviationid i.IsDeleted
+
+        printfn ""
 }
 
 [<EntryPoint>]

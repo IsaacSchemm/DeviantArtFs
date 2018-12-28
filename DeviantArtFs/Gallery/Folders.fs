@@ -1,9 +1,10 @@
 ﻿namespace DeviantArtFs.Gallery
 
+open System
 open DeviantArtFs
 open FSharp.Data
 
-type GalleryFoldersResponse = JsonProvider<"""[{
+type FoldersResponse = JsonProvider<"""[{
     "results": [
         {
             "folderid": "47D47436-5683-8DF2-EEBF-2A6760BE1336",
@@ -25,14 +26,21 @@ type GalleryFoldersResponse = JsonProvider<"""[{
     "next_offset": null
 }]""", SampleIsList=true>
 
-type GalleryFoldersRequest() =
+type FoldersRequest() =
     member val Username = null with get, set
     member val CalculateSize = false with get, set
     member val Offset = 0 with get, set
     member val Limit = 10 with get, set
 
+type Folder = {
+    Folderid: Guid
+    Parent: Nullable<Guid>
+    Name: string
+    Size: Nullable<int>
+}
+
 module Folders =
-    let AsyncExecute token (ps: GalleryFoldersRequest) = async {
+    let AsyncExecute token (ps: FoldersRequest) = async {
         let query = seq {
             match Option.ofObj ps.Username with
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
@@ -47,10 +55,20 @@ module Folders =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/folders?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return GalleryFoldersResponse.Parse json
+        let o = FoldersResponse.Parse json
+        return {
+            HasMore = o.HasMore
+            NextOffset = o.NextOffset
+            Results = seq {
+                for f in o.Results do
+                    yield {
+                        Folderid = f.Folderid
+                        Parent = f.Parent |> Option.toNullable
+                        Name = f.Name
+                        Size = f.Size |> Option.toNullable
+                    }
+            }
+        }
     }
 
-    let ExecuteAsync token ps =
-        AsyncExecute token ps
-        |> dafs.whenDone (fun r -> r.Results |> Seq.map (fun f -> (f.Folderid, f.Name)) |> dict)
-        |> Async.StartAsTask
+    let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask
