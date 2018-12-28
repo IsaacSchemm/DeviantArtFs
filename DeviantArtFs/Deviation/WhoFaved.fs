@@ -16,7 +16,7 @@ type WhoFavedResponse = JsonProvider<"""[
                 "usericon": "https://a.deviantart.net/avatars/s/e/semperfiballa.gif",
                 "type": "regular"
             },
-            "time": 1078065012
+            "time": 2222222222
         },
         {
             "user": {
@@ -38,7 +38,7 @@ type WhoFavedResponse = JsonProvider<"""[
 
 type WhoFavedUser = {
     User: UserResult
-    Time: int
+    Time: int64
 }
 
 type WhoFavedRequest(deviationid: Guid) =

@@ -23,7 +23,7 @@ type DeviationResponse = JsonProvider<"""[{
         "comments": 0,
         "favourites": 0
     },
-    "published_time": 1397059526,
+    "published_time": 2222222222,
     "allows_comments": true,
     "excerpt": "I'm checking out stash writer",
     "thumbs": []
