@@ -2,12 +2,20 @@
 
 open System.Net
 open System.IO
+open FSharp.Data
+
+type internal StashUpdateResponse = JsonProvider<"""[{ "success": false, "error_description": "str" }, { "success": true }]""", SampleIsList=true>
 
 module internal dafs =
     let whenDone (f: 'a -> 'b) (workflow: Async<'a>) = async {
         let! result = workflow
         return f result
     }
+
+    let assertStashSuccess (resp: StashUpdateResponse.Root) =
+        match (resp.Success, resp.ErrorDescription) with
+        | (true, None) -> ()
+        | _ -> failwithf "%s" (resp.ErrorDescription |> Option.defaultValue "An unknown error occurred.")
 
     let urlEncode = WebUtility.UrlEncode
 
