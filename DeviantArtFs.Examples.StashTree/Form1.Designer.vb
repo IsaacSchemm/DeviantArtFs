@@ -44,6 +44,10 @@ Partial Class Form1
         Me.SerializationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveToXMLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LoadFromXMLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.UserInfoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.WhoamiToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.UserdataToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SpaceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
@@ -230,7 +234,7 @@ Partial Class Form1
         '
         'MenuStrip1
         '
-        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ByIDToolStripMenuItem, Me.SerializationToolStripMenuItem})
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ByIDToolStripMenuItem, Me.SerializationToolStripMenuItem, Me.UserInfoToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
         Me.MenuStrip1.Size = New System.Drawing.Size(591, 24)
@@ -241,26 +245,26 @@ Partial Class Form1
         '
         Me.ByIDToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LoadStackToolStripMenuItem, Me.LoadItemToolStripMenuItem})
         Me.ByIDToolStripMenuItem.Name = "ByIDToolStripMenuItem"
-        Me.ByIDToolStripMenuItem.Size = New System.Drawing.Size(45, 20)
+        Me.ByIDToolStripMenuItem.Size = New System.Drawing.Size(46, 20)
         Me.ByIDToolStripMenuItem.Text = "By &ID"
         '
         'LoadStackToolStripMenuItem
         '
         Me.LoadStackToolStripMenuItem.Name = "LoadStackToolStripMenuItem"
-        Me.LoadStackToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.LoadStackToolStripMenuItem.Size = New System.Drawing.Size(131, 22)
         Me.LoadStackToolStripMenuItem.Text = "Load &Stack"
         '
         'LoadItemToolStripMenuItem
         '
         Me.LoadItemToolStripMenuItem.Name = "LoadItemToolStripMenuItem"
-        Me.LoadItemToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.LoadItemToolStripMenuItem.Size = New System.Drawing.Size(131, 22)
         Me.LoadItemToolStripMenuItem.Text = "Load &Item"
         '
         'SerializationToolStripMenuItem
         '
         Me.SerializationToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SaveToXMLToolStripMenuItem, Me.LoadFromXMLToolStripMenuItem})
         Me.SerializationToolStripMenuItem.Name = "SerializationToolStripMenuItem"
-        Me.SerializationToolStripMenuItem.Size = New System.Drawing.Size(76, 20)
+        Me.SerializationToolStripMenuItem.Size = New System.Drawing.Size(82, 20)
         Me.SerializationToolStripMenuItem.Text = "&Serialization"
         '
         'SaveToXMLToolStripMenuItem
@@ -274,6 +278,31 @@ Partial Class Form1
         Me.LoadFromXMLToolStripMenuItem.Name = "LoadFromXMLToolStripMenuItem"
         Me.LoadFromXMLToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.LoadFromXMLToolStripMenuItem.Text = "&Load from XML"
+        '
+        'UserInfoToolStripMenuItem
+        '
+        Me.UserInfoToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.WhoamiToolStripMenuItem, Me.UserdataToolStripMenuItem, Me.SpaceToolStripMenuItem})
+        Me.UserInfoToolStripMenuItem.Name = "UserInfoToolStripMenuItem"
+        Me.UserInfoToolStripMenuItem.Size = New System.Drawing.Size(66, 20)
+        Me.UserInfoToolStripMenuItem.Text = "&User Info"
+        '
+        'WhoamiToolStripMenuItem
+        '
+        Me.WhoamiToolStripMenuItem.Name = "WhoamiToolStripMenuItem"
+        Me.WhoamiToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.WhoamiToolStripMenuItem.Text = "&Whoami"
+        '
+        'UserdataToolStripMenuItem
+        '
+        Me.UserdataToolStripMenuItem.Name = "UserdataToolStripMenuItem"
+        Me.UserdataToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.UserdataToolStripMenuItem.Text = "&Userdata"
+        '
+        'SpaceToolStripMenuItem
+        '
+        Me.SpaceToolStripMenuItem.Name = "SpaceToolStripMenuItem"
+        Me.SpaceToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.SpaceToolStripMenuItem.Text = "&Space"
         '
         'Form1
         '
@@ -324,4 +353,8 @@ Partial Class Form1
     Friend WithEvents SerializationToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SaveToXMLToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LoadFromXMLToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents UserInfoToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents WhoamiToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents UserdataToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents SpaceToolStripMenuItem As ToolStripMenuItem
 End Class

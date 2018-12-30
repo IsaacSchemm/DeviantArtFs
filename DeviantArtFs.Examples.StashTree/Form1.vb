@@ -168,6 +168,27 @@ Public Class Form1
             RebuildTree("Deserialized from XML", root)
         End If
     End Sub
+
+    Private Async Sub WhoamiToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles WhoamiToolStripMenuItem.Click
+        If Token IsNot Nothing Then
+            Dim user = Await DeviantArtFs.User.Whoami.ExecuteAsync(Token)
+            MsgBox($"{user.Username} ({user.Type})")
+        End If
+    End Sub
+
+    Private Async Sub UserdataToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UserdataToolStripMenuItem.Click
+        If Token IsNot Nothing Then
+            Dim userdata = Await Stash.PublishUserdata.ExecuteAsync(Token)
+            MsgBox($"Agreements: {String.Join(", ", userdata.Agreements)}{vbCrLf}Features: {String.Join(", ", userdata.Features)}")
+        End If
+    End Sub
+
+    Private Async Sub SpaceToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SpaceToolStripMenuItem.Click
+        If Token IsNot Nothing Then
+            Dim space = Await Stash.Space.ExecuteAsync(Token)
+            MsgBox($"Available (MiB): {space.AvailableSpace / 1048576.0}{vbCrLf}Total (MiB): {space.TotalSpace / 1048576.0}")
+        End If
+    End Sub
 End Class
 
 Public Class AccessToken
