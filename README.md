@@ -67,7 +67,9 @@ If you want more C# / VB.NET compatibility, you'll need to write new F# types (c
 * GET /user/statuses†
 * GET /user/statuses/{statusid}†
 * POST /user/statuses/post
+* GET /user/watchers/{username}†
 * GET /user/whoami
+* POST /user/whois
 
 ## Util
 

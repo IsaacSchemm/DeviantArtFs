@@ -56,7 +56,9 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
     <Compile Include="User\StatusesStatus.fs" />
     <Compile Include="User\StatusesList.fs" />
     <Compile Include="User\StatusesPost.fs" />
+    <Compile Include="User\Watchers.fs" />
     <Compile Include="User\Whoami.fs" />
+    <Compile Include="User\Whois.fs" />
     <Compile Include="Util\Placebo.fs" />
   </ItemGroup>
 
