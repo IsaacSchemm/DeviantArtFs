@@ -3,7 +3,7 @@
 open DeviantArtFs
 open FSharp.Data
 
-type internal StatusesResponse = JsonProvider<"""[
+type internal StatusesListResponse = JsonProvider<"""[
 {
     "has_more": true,
     "next_offset": 3,
@@ -15,13 +15,13 @@ type internal StatusesResponse = JsonProvider<"""[
 }
 ]""", SampleIsList=true>
 
-type StatusesRequest(username: string) =
+type StatusesListRequest(username: string) =
     member __.Username = username
     member val Offset = 0 with get, set
     member val Limit = 10 with get, set
 
-module Statuses =
-    let AsyncExecute token (req: StatusesRequest) = async {
+module StatusesList =
+    let AsyncExecute token (req: StatusesListRequest) = async {
         let query = seq {
             yield sprintf "username=%s" (dafs.urlEncode req.Username)
             yield sprintf "offset=%d" req.Offset
@@ -33,14 +33,14 @@ module Statuses =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/statuses?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        let o = StatusesResponse.Parse json
+        let o = StatusesListResponse.Parse json
         return {
             HasMore = o.HasMore
             NextOffset = o.NextOffset
             Results = seq {
                 for element in o.Results do
                     let json = element.JsonValue.ToString()
-                    yield StatusesIdResponse.Parse json
+                    yield StatusesStatusResponse.Parse json
             }
         }
     }

@@ -4,7 +4,7 @@ open DeviantArtFs
 open FSharp.Data
 open System
 
-type StatusesIdResponse = JsonProvider<"""[
+type StatusesStatusResponse = JsonProvider<"""[
     {
         "statusid": "9F680E12-C156-55F2-F026-53B8BC00E291",
         "body": "sharing journals",
@@ -167,13 +167,13 @@ type StatusesIdResponse = JsonProvider<"""[
     }
 ]""", SampleIsList=true>
 
-module StatusesId =
+module StatusesStatus =
     let AsyncExecute token (id: Guid) = async {
         let req =
             sprintf "https://www.deviantart.com/api/v1/oauth2/user/statuses?%O" id
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return StatusesIdResponse.Parse json
+        return StatusesStatusResponse.Parse json
     }
 
     let ExecuteAsync token id = AsyncExecute token id |> Async.StartAsTask

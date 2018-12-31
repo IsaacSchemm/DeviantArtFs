@@ -53,8 +53,8 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
     <Compile Include="User\dAmnToken.fs" />
     <Compile Include="User\Profile.fs" />
     <Compile Include="User\ProfileUpdate.fs" />
-    <Compile Include="User\StatusesId.fs" />
-    <Compile Include="User\Statuses.fs" />
+    <Compile Include="User\StatusesStatus.fs" />
+    <Compile Include="User\StatusesList.fs" />
     <Compile Include="User\StatusesPost.fs" />
     <Compile Include="User\Whoami.fs" />
     <Compile Include="Util\Placebo.fs" />
