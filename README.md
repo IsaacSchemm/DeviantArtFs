@@ -7,6 +7,14 @@ Much of the library is still untested - use at your own risk.
 
 ## Currently unsupported features
 
+* The following groups of endpoints are not currently implemented:
+  * Browse
+  * Collections
+  * Comments
+  * Curated
+  * Feed
+  * Messages
+  * Notes
 * The "expand" parameter (user.details, user.geo, etc) is not currently supported.
 * The "ext_preload" parameter (gallery/folders) is not currently supported.
 * The "mature_content" parameter is not currently supported.
@@ -61,7 +69,12 @@ If you want more C# / VB.NET compatibility, you'll need to write new F# types (c
 
 ### User
 
-* GET user/damntoken
+* GET /user/damntoken
+* GET /user/friends/{username}†
+* GET /user/friends/search
+* GET /user/friends/unwatch/{username}
+* POST /user/friends/watch/{username}
+* GET /user/friends/watching/{username}
 * GET /user/profile/{username}†
 * POST /user/profile/update
 * GET /user/statuses†

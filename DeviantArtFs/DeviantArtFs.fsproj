@@ -51,6 +51,11 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
     <Compile Include="Stash\Submit.fs" />
     <Compile Include="Stash\Update.fs" />
     <Compile Include="User\dAmnToken.fs" />
+    <Compile Include="User\Friends.fs" />
+    <Compile Include="User\FriendsSearch.fs" />
+    <Compile Include="User\FriendsUnwatch.fs" />
+    <Compile Include="User\FriendsWatch.fs" />
+    <Compile Include="User\FriendsWatching.fs" />
     <Compile Include="User\Profile.fs" />
     <Compile Include="User\ProfileUpdate.fs" />
     <Compile Include="User\StatusesStatus.fs" />
