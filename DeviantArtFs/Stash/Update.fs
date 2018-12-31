@@ -34,7 +34,7 @@ module Update =
         }
 
         let! json = dafs.asyncRead req
-        StashUpdateResponse.Parse json |> dafs.assertStashSuccess
+        SuccessOrErrorResponse.Parse json |> dafs.assertSuccess
     }
 
     let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

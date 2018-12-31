@@ -4,19 +4,6 @@ open DeviantArtFs
 open FSharp.Data
 open System.IO
 
-type internal ContentsResponse = JsonProvider<"""[
-{
-    "has_more": true,
-    "next_offset": 2,
-    "results": []
-},
-{
-    "has_more": false,
-    "next_offset": null,
-    "results": []
-}
-]""", SampleIsList=true>
-
 module Contents =
     let AsyncExecute token (stackid: int64) = async {
         let req =
@@ -24,7 +11,7 @@ module Contents =
             |> dafs.createRequest token
 
         let! json = dafs.asyncRead req
-        let resp = ContentsResponse.Parse json
+        let resp = GenericListResponse.Parse json
         return {
             HasMore = resp.HasMore
             NextOffset = resp.NextOffset

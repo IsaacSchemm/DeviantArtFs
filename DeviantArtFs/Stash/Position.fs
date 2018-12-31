@@ -21,7 +21,7 @@ module Position =
         }
 
         let! json = dafs.asyncRead req
-        StashUpdateResponse.Parse json |> dafs.assertStashSuccess
+        SuccessOrErrorResponse.Parse json |> dafs.assertSuccess
     }
 
     let ExecuteAsync token stackid position = AsyncExecute token stackid position |> Async.StartAsTask
