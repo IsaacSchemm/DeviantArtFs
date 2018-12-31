@@ -1,5 +1,4 @@
 ﻿Imports System.IO
-Imports DeviantArtFs
 Imports DeviantArtFs.Stash.Marshal
 
 Public Class Form1
@@ -53,10 +52,23 @@ Public Class Form1
                 PictureBox2.ImageLocation = User.Usericon
             End If
 
-            Dim delta = Await Stash.Delta.GetAllAsync(Token, New Stash.DeltaAllRequest With {.Cursor = StashCursor})
+            Dim list As New List(Of Stash.DeltaResultEntry)
 
-            StashCursor = delta.Cursor
-            For Each entry In delta.Entries
+            Dim req = New Stash.DeltaRequest With {.Cursor = StashCursor}
+            req.Limit = 120
+
+            While True
+                Dim resp = Await Stash.Delta.ExecuteAsync(Token, req)
+                list.AddRange(resp.Entries)
+                If resp.HasMore Then
+                    req.Offset = If(resp.NextOffset, 0)
+                Else
+                    StashCursor = resp.Cursor
+                    Exit While
+                End If
+            End While
+
+            For Each entry In list
                 StashRoot.Apply(entry)
             Next
 

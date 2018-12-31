@@ -61,15 +61,6 @@ type DeltaRequest() =
     member val Limit = 120 with get, set
     member val ExtParams = new ExtParams() with get, set
 
-type DeltaAllRequest() = 
-    member val Cursor = null with get, set
-    member val ExtParams = new ExtParams() with get, set
-
-type DeltaAllResponse = {
-    Cursor: string
-    Entries: seq<DeltaResultEntry>
-}
-
 module Delta =
     let AsyncExecute token (req: DeltaRequest) = async {
         let query = seq {
@@ -106,27 +97,4 @@ module Delta =
         }
     }
 
-    let AsyncGetAll token (allReq: DeltaAllRequest) = async {
-        let list = new ResizeArray<DeltaResultEntry>()
-        let mutable cursor = ""
-        let mutable has_more = true
-        
-        let req = new DeltaRequest(Cursor = allReq.Cursor, ExtParams = allReq.ExtParams)
-        req.Limit <- 120
-
-        while has_more do
-            let! resp = AsyncExecute token req
-            list.AddRange(resp.Entries)
-            if resp.HasMore then
-                req.Offset <- resp.NextOffset.GetValueOrDefault()
-            else
-                cursor <- resp.Cursor
-                has_more <- false
-        return {
-            Cursor = cursor
-            Entries = list
-        }
-    }
-
     let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
-    let GetAllAsync token req = AsyncGetAll token req |> Async.StartAsTask
