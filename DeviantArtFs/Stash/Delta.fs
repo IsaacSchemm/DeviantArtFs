@@ -41,11 +41,16 @@ type DeltaResultEntry =
         Metadata: StashMetadata.Root option
         Position: int option
     }
-    interface IDeltaEntry with
-        member this.Itemid = this.Itemid |> Option.toNullable
-        member this.Stackid = this.Stackid |> Option.toNullable
-        member this.Metadata = this.Metadata |> Option.map (fun j -> j.JsonValue.ToString()) |> Option.toObj
-        member this.Position = this.Position |> Option.toNullable
+    with
+        member this.GetItemid() = this.Itemid |> Option.toNullable
+        member this.GetStackid() = this.Stackid |> Option.toNullable
+        member this.GetMetadata() = this.Metadata |> Option.map (fun j -> j.JsonValue.ToString()) |> Option.toObj
+        member this.GetPosition() = this.Position |> Option.toNullable
+        interface IDeltaEntry with
+            member this.Itemid = this.GetItemid()
+            member this.Stackid = this.GetStackid()
+            member this.Metadata = this.GetMetadata()
+            member this.Position = this.GetPosition()
 
 type DeltaResult = {
     Cursor: string

@@ -31,7 +31,9 @@ type GalleryResult<'a> = {
     NextOffset: int option
     Name: string option
     Results: seq<'a>
-}
+} with
+    member this.GetNextOffset() = this.NextOffset |> Option.toNullable
+    member this.GetName() = this.Name |> Option.toObj
 
 module Gallery =
     let AsyncExecute token (req: GalleryRequest) = async {

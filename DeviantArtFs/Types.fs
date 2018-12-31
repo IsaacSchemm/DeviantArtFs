@@ -57,7 +57,8 @@ type DeviantArtPagedResult<'a> = {
     HasMore: bool
     NextOffset: int option
     Results: seq<'a>
-}
+} with
+    member this.GetNextOffset() = this.NextOffset |> Option.toNullable
 
 type DeviantArtBidirectionalPagedResult<'a> = {
     HasMore: bool
@@ -65,7 +66,9 @@ type DeviantArtBidirectionalPagedResult<'a> = {
     HasLess: bool
     PrevOffset: int option
     Results: seq<'a>
-}
+} with
+    member this.GetNextOffset() = this.NextOffset |> Option.toNullable
+    member this.GetPrevOffset() = this.PrevOffset |> Option.toNullable
 
 type IDeltaEntry =
     abstract member Itemid: Nullable<int64>
