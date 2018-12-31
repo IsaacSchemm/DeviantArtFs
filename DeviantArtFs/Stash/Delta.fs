@@ -112,7 +112,7 @@ module Delta =
         let mutable has_more = true
         
         let req = new DeltaRequest(Cursor = allReq.Cursor, ExtParams = allReq.ExtParams)
-        req.Limit <- 13
+        req.Limit <- 120
 
         while has_more do
             let! resp = AsyncExecute token req
