@@ -8,7 +8,8 @@ Much of the library is still untested - use at your own risk.
 ## Currently unsupported features
 
 * The "expand" parameter (user.details, user.geo, etc) is not currently supported.
-* The "ext_preload" parameter (gallery/folders) is not supported.
+* The "ext_preload" parameter (gallery/folders) is not currently supported.
+* The "mature_content" parameter is not currently supported.
 
 ## Supported endpoints
 
@@ -51,6 +52,8 @@ If you want more C# / VB.NET compatibility, you'll need to write new F# types (c
 * POST /stash/position/{stackid}
 * POST /stash/publish
 * GET /stash/publish/categorytree
+* GET /stash/publish/userdata
+* GET /stash/space
 * POST /stash/submit
 * POST /stash/update/{stackid}
 
@@ -58,7 +61,9 @@ If you want more C# / VB.NET compatibility, you'll need to write new F# types (c
 
 ### User
 
+* GET user/damntoken
 * GET /user/profile/{username}†
+* POST /user/profile/update
 * GET /user/statuses†
 * GET /user/statuses/{statusid}†
 * POST /user/statuses/post
