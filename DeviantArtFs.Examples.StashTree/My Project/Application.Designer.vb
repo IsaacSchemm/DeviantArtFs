@@ -32,7 +32,7 @@ Namespace My
         
         <Global.System.Diagnostics.DebuggerStepThroughAttribute()>  _
         Protected Overrides Sub OnCreateMainForm()
-            Me.MainForm = Global.DeviantArtFs.Examples.StashTree.Form1
+            Me.MainForm = Global.DeviantArtFs.Examples.StashTree.AuthForm
         End Sub
     End Class
 End Namespace

@@ -1,57 +1,17 @@
-﻿Imports System.IO
-Imports DeviantArtFs.Stash.Marshal
+﻿Imports DeviantArtFs.Stash.Marshal
 
 Public Class Form1
-    Private Token As IDeviantArtAccessToken = Nothing
-    Private User As UserResult = Nothing
+    Public Token As IDeviantArtAccessToken
+
     Private StashRoot As New StashRoot
     Private StashCursor As String = Nothing
 
     Private NodeToItem As New Dictionary(Of TreeNode, StashNode)
 
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If File.Exists("token.txt") Then
-            Token = New AccessToken(File.ReadAllText("token.txt"))
-        End If
-    End Sub
-
-    Private Async Function CheckToken() As Task
-        If Token IsNot Nothing Then
-            If Not Await Util.Placebo.IsValidAsync(Token) Then
-                Token = Nothing
-            End If
-        End If
-
-        If Token Is Nothing Then
-            Dim clientIdStr = InputBox("Please enter the client ID (e.g. 1234)")
-            Dim clientId = Integer.Parse(clientIdStr)
-            Dim urlStr = InputBox("Please enter the redirect URL", DefaultResponse:="https://www.example.com")
-            Dim url As New Uri(urlStr)
-
-            Using form = New WinForms.DeviantArtImplicitGrantForm(clientId, url, {"stash"})
-                If form.ShowDialog() = DialogResult.OK Then
-                    File.WriteAllText("token.txt", form.AccessToken)
-                    Token = New AccessToken(form.AccessToken)
-                    User = Nothing
-                End If
-            End Using
-        End If
-    End Function
-
     Private Async Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Button1.Enabled = False
 
-        Await CheckToken()
-
         If Token IsNot Nothing Then
-            TextBox2.Text = Token.AccessToken
-
-            If User Is Nothing Then
-                User = Await DeviantArtFs.User.Whoami.ExecuteAsync(Token)
-                TextBox1.Text = User.Username
-                PictureBox2.ImageLocation = User.Usericon
-            End If
-
             Dim list As New List(Of Stash.DeltaResultEntry)
 
             Dim req = New Stash.DeltaRequest With {.Cursor = StashCursor}
@@ -124,46 +84,6 @@ Public Class Form1
         End If
     End Sub
 
-    Private Async Sub LoadStackToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadStackToolStripMenuItem.Click
-        Await CheckToken()
-
-        Try
-            Dim str = InputBox("Please enter the stack ID")
-            If str = "" Then
-                Return
-            End If
-
-            Dim stackId = Long.Parse(str)
-            Dim stack = Await StashStack.GetStackAsync(Token, stackId)
-
-            TreeView1.Nodes.Clear()
-            Dim node = TreeView1.Nodes.Add(stack.Title)
-            NodeToItem.Add(node, stack)
-        Catch ex As DeviantArtException
-            MsgBox(ex.Message)
-        End Try
-    End Sub
-
-    Private Async Sub LoadItemToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadItemToolStripMenuItem.Click
-        Await CheckToken()
-
-        Try
-            Dim str = InputBox("Please enter the item ID")
-            If str = "" Then
-                Return
-            End If
-
-            Dim itemId = Long.Parse(str)
-            Dim item = Await StashItem.GetItemAsync(Token, New Stash.ItemRequest(itemId))
-
-            TreeView1.Nodes.Clear()
-            Dim node = TreeView1.Nodes.Add(item.Title)
-            NodeToItem.Add(node, item)
-        Catch ex As DeviantArtException
-            MsgBox(ex.Message)
-        End Try
-    End Sub
-
     Private Sub SaveToXMLToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SaveToXMLToolStripMenuItem.Click
         SerializationExample.Save(StashRoot.Save())
     End Sub
@@ -201,14 +121,4 @@ Public Class Form1
             MsgBox($"Available (MiB): {space.AvailableSpace / 1048576.0}{vbCrLf}Total (MiB): {space.TotalSpace / 1048576.0}")
         End If
     End Sub
-End Class
-
-Public Class AccessToken
-    Implements IDeviantArtAccessToken
-
-    Public Sub New(token As String)
-        AccessToken = token
-    End Sub
-
-    Public ReadOnly Property AccessToken As String Implements IDeviantArtAccessToken.AccessToken
 End Class

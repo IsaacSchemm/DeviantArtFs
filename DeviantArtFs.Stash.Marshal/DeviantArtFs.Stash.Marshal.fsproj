@@ -25,4 +25,8 @@ This library sits on top of DeviantArtFs and provides a StashRoot object that ca
     <ProjectReference Include="..\DeviantArtFs\DeviantArtFs.fsproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="4.5.4" />
+  </ItemGroup>
+
 </Project>

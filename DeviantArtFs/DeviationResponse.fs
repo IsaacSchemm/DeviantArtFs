@@ -226,32 +226,6 @@ type DeviationResponse = JsonProvider<"""[{
     "download_filesize": 260557
 },
 {
-    "deviationid": "4E3766C3-515E-CF16-1341-D42E46B01FC1",
-    "printid": null,
-    "url": "https://www.deviantart.com/lizard-socks/journal/CrosspostSharp-3-5-776866366",
-    "title": "CrosspostSharp 3.5",
-    "category": "Personal",
-    "category_path": "journals/personal",
-    "is_favourited": false,
-    "is_deleted": false,
-    "author": {
-        "userid": "7EE6490E-FCA7-3129-410A-AA684C3BC7DB",
-        "username": "lizard-socks",
-        "usericon": "https://a.deviantart.net/avatars/l/i/lizard-socks.png",
-        "type": "regular"
-    },
-    "stats": {
-        "comments": 0,
-        "favourites": 0
-    },
-    "published_time": "1544925280",
-    "allows_comments": true,
-    "thumbs": [],
-    "excerpt": "I posted a new release of CrosspostSharp again! It's a Windows app for cross-posting your own art posts from one site to another (allowing you to adjust the description text and other settings on a per-site basis.)<br /><br />This version adds Mastodon support and makes a couple things nicer.<br /><br />https://github.com/libertyernie/CrosspostSharp/releases/tag/v3.5<br /><br />In case you're curious, it's a WinForms app written in a mix of C# and F#, and it has some libraries you could reuse if you want to write your own .NET stuff.",
-    "is_mature": false,
-    "is_downloadable": false
-},
-{
     "deviationid": "CC79FBC8-735B-CF92-88AF-D1FCAE147939",
     "printid": null,
     "url": "https://www.deviantart.com/arkeis-pokemon/art/BFOI-Round-4-440614315",
