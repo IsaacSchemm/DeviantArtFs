@@ -22,6 +22,8 @@ type internal GenericListResponse = JsonProvider<"""[
 }
 ]""", SampleIsList=true>
 
+type internal ListOnlyResponse = JsonProvider<"""{ "results": [] }""">
+
 type IDeviantArtAccessToken =
     abstract member AccessToken: string with get
 

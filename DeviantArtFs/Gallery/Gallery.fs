@@ -59,7 +59,7 @@ module Gallery =
             Results = seq {
                 for element in o.Results do
                     let json = element.JsonValue.ToString()
-                    yield DeviantArtFs.Deviation.DeviationResponse.Parse json
+                    yield DeviationResponse.Parse json
             }
         }
     }
