@@ -49,7 +49,7 @@ type Deviation(original: DeviationResponse.Root) =
             member __.Filesize = Nullable(o.Filesize)
     }
 
-    let epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+    let epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)
 
     let map = Option.map
     let orNull = Option.toObj

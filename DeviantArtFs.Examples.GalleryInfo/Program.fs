@@ -53,7 +53,10 @@ let sandbox token_string = async {
     let! gallery =
         new DeviantArtFs.Requests.Gallery.AllRequest(Username = username, Offset = 0, Limit = 5)
         |> DeviantArtFs.Requests.Gallery.All.AsyncExecute token
-    for d in gallery.Results do
+
+    for o in gallery.Results do
+        let d = o.Original
+
         printfn "  %s" (d.Title |> Option.defaultValue "(no title)")
         match d.CategoryPath with
         | Some s -> printfn "    Category: %s" s
@@ -93,7 +96,8 @@ let sandbox token_string = async {
         printfn "%A %s" f.Folderid f.Name
 
         let! items = new DeviantArtFs.Requests.Gallery.GalleryRequest(f.Folderid, Username = username, Limit = 5) |> DeviantArtFs.Requests.Gallery.Gallery.AsyncExecute token
-        for i in items.Results do
+        for o in items.Results do
+            let i = o.Original
             match i.Title with
             | Some s -> printfn "  * %s" s
             | None -> printfn "  * %A (deleted: %b)" i.Deviationid i.IsDeleted

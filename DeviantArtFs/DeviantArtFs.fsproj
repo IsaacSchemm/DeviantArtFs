@@ -23,6 +23,8 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
     <Compile Include="dafs.fs" />
     <Compile Include="Types\DeviationResponse.fs" />
     <Compile Include="Types\Deviation.fs" />
+    <Compile Include="Types\MetadataResponse.fs" />
+    <Compile Include="Types\Metadata.fs" />
     <Compile Include="DeviantArtAuth.fs" />
     <Compile Include="Requests\Browse\CategoryTree.fs" />
     <Compile Include="Requests\Browse\DailyDeviations.fs" />
@@ -39,11 +41,11 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
     <Compile Include="Requests\Data\Privacy.fs" />
     <Compile Include="Requests\Data\Submission.fs" />
     <Compile Include="Requests\Data\Tos.fs" />
-    <Compile Include="Requests\Deviation\Deviation.fs" />
+    <Compile Include="Requests\Deviation\DeviationById.fs" />
     <Compile Include="Requests\Deviation\Content.fs" />
     <Compile Include="Requests\Deviation\Download.fs" />
     <Compile Include="Requests\Deviation\EmbeddedContent.fs" />
-    <Compile Include="Requests\Deviation\Metadata.fs" />
+    <Compile Include="Requests\Deviation\MetadataById.fs" />
     <Compile Include="Requests\Deviation\WhoFaved.fs" />
     <Compile Include="Requests\Gallery\All.fs" />
     <Compile Include="Requests\Gallery\Gallery.fs" />

@@ -1,8 +1,6 @@
-﻿namespace DeviantArtFs.Requests.Deviation
+﻿namespace DeviantArtFs
 
-open DeviantArtFs
 open FSharp.Data
-open System
 
 type MetadataResponse = JsonProvider<"""{
     "metadata": [
@@ -82,8 +80,8 @@ type MetadataResponse = JsonProvider<"""{
                 "file_size": "166 KB",
                 "resolution": "1024x768",
                 "submitted_with": {
-                    "app": "Unknown App",
-                    "url": ""
+                    "app": "DeviantArt",
+                    "url": "https://www.deviantart.com"
                 }
             },
             "stats": {
@@ -94,14 +92,7 @@ type MetadataResponse = JsonProvider<"""{
                 "downloads": 2125,
                 "downloads_today": 0
             },
-            "camera": {
-                "make": "Canon",
-                "model": "Canon PowerShot G5",
-                "shutter_speed": "1/60 second",
-                "aperture": "F/2.0",
-                "focal_length": "7 mm",
-                "date_taken": "Feb 18, 2004, 12:45:46 AM"
-            },
+            "camera": {},
             "collections": []
         },
         {
@@ -127,8 +118,8 @@ type MetadataResponse = JsonProvider<"""{
                 "file_size": "194 KB",
                 "resolution": "768x1024",
                 "submitted_with": {
-                    "app": "Unknown App",
-                    "url": ""
+                    "app": "DeviantArt",
+                    "url": "https://www.deviantart.com"
                 }
             },
             "stats": {
@@ -140,34 +131,46 @@ type MetadataResponse = JsonProvider<"""{
                 "downloads_today": 0
             },
             "collections": []
+        },
+        {
+            "deviationid": "B116E203-3558-53F8-1FE8-A3E3BF4D9468",
+            "printid": null,
+            "author": {
+                "userid": "EB38C4B7-AC2B-D972-F33B-E75F49227804",
+                "username": "Flareon-The-Flareon",
+                "usericon": "https://a.deviantart.net/avatars/f/l/flareon-the-flareon.png?6",
+                "type": "regular"
+            },
+            "is_watching": true,
+            "title": "Roxie-pede",
+            "description": "This was inspired by an artpiece by <span class=\"username-with-symbol u\"><a class=\"u premium username\" href=\"https://www.deviantart.com/fezmangaka\">FezMangaka</a><span class=\"user-symbol premium\" data-quicktip-text=\"Core Member\" data-show-tooltip=\"1\" data-gruser-type=\"premium\"></span></span> drew recently. Roxie sure makes a good horse buggy.",
+            "license": "No License",
+            "allows_comments": true,
+            "tags": [
+                {
+                    "tag_name": "scolipede",
+                    "sponsored": false,
+                    "sponsor": ""
+                },
+                {
+                    "tag_name": "pokemon",
+                    "sponsored": false,
+                    "sponsor": ""
+                },
+                {
+                    "tag_name": "roxiepokemon",
+                    "sponsored": false,
+                    "sponsor": ""
+                }
+            ],
+            "is_favourited": true,
+            "is_mature": false,
+            "collections": [
+                {
+                    "folderid": "E119A881-D0F8-5A8E-1A28-39CB29C4CF64",
+                    "name": "transformations"
+                }
+            ]
         }
     ]
 }""">
-
-type MetadataRequest(deviationids: seq<Guid>) =
-    member __.Deviationids = deviationids
-    member val ExtParams = new ExtParams() with get, set
-    member val ExtCollection = false with get, set
-
-module Metadata =
-    let AsyncExecute token (req: MetadataRequest) = async {
-        let query = seq {
-            yield sprintf "ext_submission=%b" req.ExtParams.ExtSubmission
-            yield sprintf "ext_camera=%b" req.ExtParams.ExtCamera
-            yield sprintf "ext_stats=%b" req.ExtParams.ExtStats
-            yield sprintf "ext_collection=%b" req.ExtCollection
-            yield req.Deviationids
-                |> Seq.map (fun o -> o.ToString())
-                |> String.concat ","
-                |> sprintf "deviationids[]=%s"
-        }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/metadata?%s"
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
-        return MetadataResponse.Parse json
-    }
-
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
