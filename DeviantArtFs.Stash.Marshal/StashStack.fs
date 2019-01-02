@@ -3,7 +3,7 @@
 open DeviantArtFs
 open DeviantArtFs.Requests.Stash
 
-type StashStack(root: IStashRoot, stackid: int64, metadata: StashMetadata.Root) =
+type StashStack internal (root: IStashRoot, stackid: int64, metadata: StashMetadata.Root) =
     inherit StashNode(root, metadata)
 
     static member AsyncGetStack token stackid = async {
@@ -11,7 +11,34 @@ type StashStack(root: IStashRoot, stackid: int64, metadata: StashMetadata.Root) 
         return new StashStack(new EmptyRoot(), stackid, resp)
     }
 
-    static member GetStackAsync token stackid = StashStack.AsyncGetStack token stackid |> Async.StartAsTask
+    static member AsyncGetContents token stackid = async {
+        let root = new EmptyRoot()
+        let! resp =
+            match stackid with
+            | Some s -> Contents.AsyncExecute token s
+            | None -> Contents.AsyncGetRoot token
+        return {
+            HasMore = resp.HasMore
+            NextOffset = resp.NextOffset
+            Results = seq {
+                for r in resp.Results do
+                    match (r.Itemid, r.Stackid) with
+                    | (Some itemid, _) -> yield new StashItem(root, itemid, r) :> StashNode
+                    | (None, Some stackid) -> yield new StashStack(root, stackid, r) :> StashNode
+                    | _ -> ()
+            }
+        }
+    }
+
+    static member GetStackAsync token stackid =
+        stackid
+        |> StashStack.AsyncGetStack token
+        |> Async.StartAsTask
+    static member GetContentsAsync token stackid =
+        stackid
+        |> Option.ofNullable
+        |> StashStack.AsyncGetContents token
+        |> Async.StartAsTask
 
     member __.Stackid = stackid
 
@@ -19,7 +46,7 @@ type StashStack(root: IStashRoot, stackid: int64, metadata: StashMetadata.Root) 
     member this.Size = this.Metadata.Size |> Option.defaultValue 0
     member this.Description = this.Metadata.Description |> Option.toObj
     member this.Thumbnail = this.Metadata.Thumb |> Option.map Utils.toStashFile |> Option.defaultValue null
-    
+
     override this.ParentStackId = this.Metadata.Parentid
 
     override this.Save() = {
