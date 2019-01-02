@@ -21,6 +21,16 @@ type EmbeddedContentResponse = JsonProvider<"""[
 }
 ]""", SampleIsList=true>
 
+type EmbeddedContentResult = {
+    HasMore: bool
+    NextOffset: int option
+    HasLess: bool
+    PrevOffset: int option
+    Results: seq<DeviationResponse.Root>
+} with
+    member this.GetNextOffset() = this.NextOffset |> Option.toNullable
+    member this.GetPrevOffset() = this.PrevOffset |> Option.toNullable
+
 type EmbeddedContentRequest(deviationid: Guid) =
     member __.Deviationid = deviationid
     member val OffsetDeviationid = Nullable<Guid>() with get, set
