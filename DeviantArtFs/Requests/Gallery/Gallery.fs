@@ -26,11 +26,11 @@ type GalleryRequest(folderid: Guid) =
     member val Offset = 0 with get, set
     member val Limit = 10 with get, set
 
-type GalleryResult<'a> = {
+type GalleryResult = {
     HasMore: bool
     NextOffset: int option
     Name: string option
-    Results: seq<'a>
+    Results: seq<Deviation>
 } with
     member this.GetNextOffset() = this.NextOffset |> Option.toNullable
     member this.GetName() = this.Name |> Option.toObj
@@ -59,7 +59,7 @@ module Gallery =
             Results = seq {
                 for element in o.Results do
                     let json = element.JsonValue.ToString()
-                    yield DeviationResponse.Parse json
+                    yield json |> DeviationResponse.Parse |> Deviation
             }
         }
     }

@@ -21,12 +21,12 @@ type EmbeddedContentResponse = JsonProvider<"""[
 }
 ]""", SampleIsList=true>
 
-type EmbeddedContentResult<'a> = {
+type EmbeddedContentResult = {
     HasMore: bool
     NextOffset: int option
     HasLess: bool
     PrevOffset: int option
-    Results: seq<'a>
+    Results: seq<Deviation>
 } with
     member this.GetNextOffset() = this.NextOffset |> Option.toNullable
     member this.GetPrevOffset() = this.PrevOffset |> Option.toNullable
@@ -59,7 +59,7 @@ module EmbeddedContent =
             NextOffset = resp.NextOffset
             HasLess = resp.HasLess
             PrevOffset = resp.PrevOffset
-            Results = resp.Results |> Seq.map (fun j -> j.JsonValue.ToString()) |> Seq.map DeviationResponse.Parse
+            Results = resp.Results |> Seq.map (fun j -> j.JsonValue.ToString()) |> Seq.map DeviationResponse.Parse |> Seq.map Deviation
         }
     }
 

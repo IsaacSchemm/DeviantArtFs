@@ -23,7 +23,7 @@ module DailyDeviations =
         return seq {
             for element in o.Results do
                 let json = element.JsonValue.ToString()
-                yield DeviationResponse.Parse json
+                yield json |> DeviationResponse.Parse |> Deviation
         }
     }
 

@@ -19,8 +19,8 @@ type internal MoreLikeThisResponse = JsonProvider<"""{
 type MoreLikeThisResult = {
     Seed: Guid
     Author: UserResult
-    MoreFromArtist: seq<DeviationResponse.Root>
-    MoreFromDa: seq<DeviationResponse.Root>
+    MoreFromArtist: seq<Deviation>
+    MoreFromDa: seq<Deviation>
 }
 
 module MoreLikeThisPreview =
@@ -46,12 +46,12 @@ module MoreLikeThisPreview =
             MoreFromArtist = seq {
                 for element in o.MoreFromArtist do
                     let json = element.JsonValue.ToString()
-                    yield DeviationResponse.Parse json
+                    yield json |> DeviationResponse.Parse |> Deviation
             }
             MoreFromDa = seq {
                 for element in o.MoreFromDa do
                     let json = element.JsonValue.ToString()
-                    yield DeviationResponse.Parse json
+                    yield json |> DeviationResponse.Parse |> Deviation
             }
         }
     }

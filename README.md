@@ -26,16 +26,16 @@ If you want more C# / VB.NET compatibility, you'll need to write new F# types (c
 ### Browse
 
 * GET /browse/categorytree
-* GET browse/dailydeviations†
-* GET browse/hot†
-* GET browse/morelikethis†
-* GET browse/morelikethis/preview†
-* GET browse/newest†
-* GET browse/popular†
-* GET browse/tags†
+* GET browse/dailydeviations
+* GET browse/hot
+* GET browse/morelikethis
+* GET browse/morelikethis/preview
+* GET browse/newest
+* GET browse/popular
+* GET browse/tags
 * GET browse/tags/search
-* GET browse/undiscovered†
-* GET browse/user/journals†
+* GET browse/undiscovered
+* GET browse/user/journals
 
 ### Data
 
@@ -46,17 +46,17 @@ If you want more C# / VB.NET compatibility, you'll need to write new F# types (c
 
 ### Deviation
 
-* GET /deviation/{deviationid}†
+* GET /deviation/{deviationid}
 * GET /deviation/content
 * GET /deviation/download/{deviationid}
-* GET /deviation/embeddedcontent†
+* GET /deviation/embeddedcontent
 * GET /deviation/metadata†
 * GET /deviation/whofaved
 
 ### Gallery
 
-* GET /gallery/gallery/{folderid}†
-* GET /gallery/all†
+* GET /gallery/gallery/{folderid}
+* GET /gallery/all
 * GET /gallery/folders
 * POST /gallery/folders/create
 * GET /gallery/folders/remove/{folderid}
@@ -77,7 +77,9 @@ If you want more C# / VB.NET compatibility, you'll need to write new F# types (c
 * POST /stash/submit
 * POST /stash/update/{stackid}
 
-> The DeviantArt.Stash.Marshal library wraps some of these endpoints and provides some additional functionality.
+> † The DeviantArt.Stash.Marshal library provides static methods on StashItem and StashStack which wrap the
+>   result data in a format that can be used in other .NET languages, such as C#. It also provides the
+>   StashRoot object, which can process the results of calls to /stash/delta.
 
 ### User
 

@@ -10,7 +10,7 @@ module Deviation =
             sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/%O" id
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return DeviationResponse.Parse json
+        return json |> DeviationResponse.Parse |> Deviation
     }
 
     let ExecuteAsync token id = AsyncExecute token id |> Async.StartAsTask
