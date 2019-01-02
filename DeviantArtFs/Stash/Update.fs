@@ -14,12 +14,12 @@ module Update =
     let AsyncExecute token (req: UpdateParameters) = async {
         let query = seq {
             match req.Title with
-            | Some s -> yield sprintf "title=%s" s
+            | Some s -> yield sprintf "title=%s" (dafs.urlEncode s)
             | None -> ()
             match req.Description with
             | Some "null" -> failwithf "The string \"null\" is not allowed"
             | Some null -> yield "description=null"
-            | Some s -> yield sprintf "description=%s" s
+            | Some s -> yield sprintf "description=%s" (dafs.urlEncode s)
             | None -> ()
         }
 

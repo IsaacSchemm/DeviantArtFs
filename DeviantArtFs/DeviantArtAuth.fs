@@ -23,8 +23,8 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
             for p in dict do
                 if isNull p.Value then
                     failwithf "Null values in form not allowed"
-                let key = WebUtility.UrlEncode p.Key
-                let value = WebUtility.UrlEncode (p.Value.ToString())
+                let key = dafs.urlEncode p.Key
+                let value = dafs.urlEncode (p.Value.ToString())
                 yield sprintf "%s=%s" key value
         }
         String.concat "&" parameters

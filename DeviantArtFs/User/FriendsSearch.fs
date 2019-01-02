@@ -40,9 +40,9 @@ type FriendsSearchRequest(query: string) =
 module FriendsSearch =
     let AsyncExecute token (req: FriendsSearchRequest) = async {
         let query = seq {
-            yield req.Query |> WebUtility.UrlEncode |> sprintf "query=%s"
+            yield req.Query |> dafs.urlEncode |> sprintf "query=%s"
             if req.Username |> isNull |> not then
-                yield req.Username |> WebUtility.UrlEncode |> sprintf "username=%s"
+                yield req.Username |> dafs.urlEncode |> sprintf "username=%s"
         }
         let req =
             query

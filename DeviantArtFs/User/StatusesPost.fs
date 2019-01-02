@@ -20,7 +20,7 @@ module StatusPost =
     let AsyncExecute token (ps: StatusPostRequest) = async {
         let query = seq {
             match Option.ofObj ps.Body with
-            | Some s -> yield sprintf "body=%s" s
+            | Some s -> yield sprintf "body=%s" (dafs.urlEncode s)
             | None -> ()
             match Option.ofNullable ps.Parentid with
             | Some s -> yield sprintf "parentid=%O" s

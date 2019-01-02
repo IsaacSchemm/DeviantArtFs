@@ -44,19 +44,19 @@ module ProfileUpdate =
             | Some s -> yield sprintf "artist_specialty=%O" (s.ToString("d"))
             | None -> ()
             match Option.ofObj ps.RealName with
-            | Some s -> yield WebUtility.UrlEncode s |> sprintf "real_name=%s"
+            | Some s -> yield dafs.urlEncode s |> sprintf "real_name=%s"
             | None -> ()
             match Option.ofObj ps.Tagline with
-            | Some s -> yield  WebUtility.UrlEncode s |> sprintf "tagline=%s"
+            | Some s -> yield  dafs.urlEncode s |> sprintf "tagline=%s"
             | None -> ()
             match Option.ofNullable ps.Countryid with
             | Some s -> yield sprintf "countryid=%d" s
             | None -> ()
             match Option.ofObj ps.Website with
-            | Some s -> yield  WebUtility.UrlEncode s |> sprintf "website=%s"
+            | Some s -> yield  dafs.urlEncode s |> sprintf "website=%s"
             | None -> ()
             match Option.ofObj ps.Bio with
-            | Some s -> yield  WebUtility.UrlEncode s |> sprintf "real_name=%s"
+            | Some s -> yield  dafs.urlEncode s |> sprintf "real_name=%s"
             | None -> ()
         }
         let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/profile/update"

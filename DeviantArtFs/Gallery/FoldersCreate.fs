@@ -13,7 +13,7 @@ type internal FoldersCreateResponse = JsonProvider<"""{
 module FoldersCreate =
     let AsyncExecute token (folder: string) = async {
         let query = seq {
-            yield sprintf "folder=%s" folder
+            yield sprintf "folder=%s" (dafs.urlEncode folder)
         }
 
         let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/gallery/folders/create"
