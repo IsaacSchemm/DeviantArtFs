@@ -14,7 +14,7 @@ let get_token =
         then File.ReadAllText token_file
         else ""
 
-    let valid = create_token_obj token_string |> DeviantArtFs.Util.Placebo.AsyncIsValid |> Async.RunSynchronously
+    let valid = create_token_obj token_string |> DeviantArtFs.Requests.Util.Placebo.AsyncIsValid |> Async.RunSynchronously
     if valid then
         token_string
     else
@@ -40,7 +40,7 @@ let sandbox token_string = async {
     let read = Console.ReadLine()
 
     let token = create_token_obj token_string
-    let! me = DeviantArtFs.User.Whoami.AsyncExecute token
+    let! me = DeviantArtFs.Requests.User.Whoami.AsyncExecute token
 
     let username =
         match read with
@@ -51,8 +51,8 @@ let sandbox token_string = async {
     printfn ""
 
     let! gallery =
-        new DeviantArtFs.Gallery.AllRequest(Username = username, Offset = 0, Limit = 5)
-        |> DeviantArtFs.Gallery.All.AsyncExecute token
+        new DeviantArtFs.Requests.Gallery.AllRequest(Username = username, Offset = 0, Limit = 5)
+        |> DeviantArtFs.Requests.Gallery.All.AsyncExecute token
     for d in gallery.Results do
         printfn "  %s" (d.Title |> Option.defaultValue "(no title)")
         match d.CategoryPath with
@@ -64,7 +64,7 @@ let sandbox token_string = async {
             printfn "    Published at: %O" time
         | None -> ()
 
-        let! faves = new DeviantArtFs.Deviation.WhoFavedRequest(d.Deviationid) |> DeviantArtFs.Deviation.WhoFaved.AsyncExecute token
+        let! faves = new DeviantArtFs.Requests.Deviation.WhoFavedRequest(d.Deviationid) |> DeviantArtFs.Requests.Deviation.WhoFaved.AsyncExecute token
         if (Seq.isEmpty faves.Results |> not) then
             printfn "    Favorited by:"
             for f in faves.Results do
@@ -76,8 +76,8 @@ let sandbox token_string = async {
         printfn ""
 
     let! statuses =
-        new DeviantArtFs.User.StatusesListRequest(username, Offset = 0, Limit = 1)
-        |> DeviantArtFs.User.StatusesList.AsyncExecute token
+        new DeviantArtFs.Requests.User.StatusesListRequest(username, Offset = 0, Limit = 1)
+        |> DeviantArtFs.Requests.User.StatusesList.AsyncExecute token
     let status = Seq.tryHead statuses.Results
     match status with
     | Some s -> 
@@ -88,11 +88,11 @@ let sandbox token_string = async {
     printfn "Gallery folders:"
     printfn ""
 
-    let! folders = new DeviantArtFs.Gallery.FoldersRequest(Username = username) |> DeviantArtFs.Gallery.Folders.AsyncExecute token
+    let! folders = new DeviantArtFs.Requests.Gallery.FoldersRequest(Username = username) |> DeviantArtFs.Requests.Gallery.Folders.AsyncExecute token
     for f in folders.Results do
         printfn "%A %s" f.Folderid f.Name
 
-        let! items = new DeviantArtFs.Gallery.GalleryRequest(f.Folderid, Username = username, Limit = 5) |> DeviantArtFs.Gallery.Gallery.AsyncExecute token
+        let! items = new DeviantArtFs.Requests.Gallery.GalleryRequest(f.Folderid, Username = username, Limit = 5) |> DeviantArtFs.Requests.Gallery.Gallery.AsyncExecute token
         for i in items.Results do
             match i.Title with
             | Some s -> printfn "  * %s" s

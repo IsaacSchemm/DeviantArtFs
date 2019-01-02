@@ -12,7 +12,7 @@ Public Class AuthForm
 
     Private Async Function CheckToken() As Task
         If Token IsNot Nothing Then
-            If Not Await Util.Placebo.IsValidAsync(Token) Then
+            If Not Await Requests.Util.Placebo.IsValidAsync(Token) Then
                 Token = Nothing
             End If
         End If
@@ -32,7 +32,7 @@ Public Class AuthForm
         End If
 
         If Token IsNot Nothing And TextBox1.Text = "" Then
-            Dim user = Await DeviantArtFs.User.Whoami.ExecuteAsync(Token)
+            Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
             TextBox1.Text = user.Username
             TextBox2.Text = Token.AccessToken
             PictureBox2.ImageLocation = user.Usericon

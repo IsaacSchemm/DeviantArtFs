@@ -2,7 +2,7 @@
 
 open System
 open DeviantArtFs
-open DeviantArtFs.Stash
+open DeviantArtFs.Requests.Stash
 
 type SavedDeltaEntry =
     {

@@ -1,7 +1,7 @@
 ﻿namespace DeviantArtFs.Stash.Marshal
 
 open DeviantArtFs
-open DeviantArtFs.Stash
+open DeviantArtFs.Requests.Stash
 
 type StashRoot() =
     let nodes = new ResizeArray<StashNode>()

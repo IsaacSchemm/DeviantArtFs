@@ -4,16 +4,16 @@ Public Class Form2
     Public Token As IDeviantArtAccessToken
     Private NextOffset As Integer? = Nothing
 
-    Private NodeToItem As New Dictionary(Of TreeNode, Marshal.Deviation)
+    Private NodeToItem As New Dictionary(Of TreeNode, Deviation)
 
     Private Async Sub UpdateDeviations(offset As Integer)
         Button1.Enabled = False
         Button2.Enabled = False
 
         If Token IsNot Nothing Then
-            Dim page = Await Gallery.All.ExecuteAsync(Token, New Gallery.AllRequest With {.Offset = offset})
+            Dim page = Await Requests.Gallery.All.ExecuteAsync(Token, New Requests.Gallery.AllRequest With {.Offset = offset})
             For Each d In page.Results
-                Dim deviation = New Marshal.Deviation(d)
+                Dim deviation = New Deviation(d)
                 Dim node = New TreeNode(If(deviation.Title, deviation.Deviationid.ToString()))
                 NodeToItem.Add(node, deviation)
                 TreeView1.Nodes.Add(node)
@@ -44,7 +44,7 @@ Public Class Form2
 
     Private Async Sub WhoamiToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles WhoamiToolStripMenuItem.Click
         If Token IsNot Nothing Then
-            Dim user = Await DeviantArtFs.User.Whoami.ExecuteAsync(Token)
+            Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
             MsgBox($"{user.Username} ({user.Type})")
         End If
     End Sub
@@ -54,11 +54,11 @@ Public Class Form2
             TreeView1.Nodes.Clear()
             NodeToItem.Clear()
 
-            Dim user = Await DeviantArtFs.User.Whoami.ExecuteAsync(Token)
-            Dim journals = Await Browse.UserJournals.ExecuteAsync(Token, New Browse.UserJournalsRequest(user.Username))
+            Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
+            Dim journals = Await Requests.Browse.UserJournals.ExecuteAsync(Token, New Requests.Browse.UserJournalsRequest(user.Username))
 
             For Each d In journals.Results
-                Dim deviation = New Marshal.Deviation(d)
+                Dim deviation = New Deviation(d)
                 Dim node = New TreeNode(If(deviation.Title, deviation.Deviationid.ToString()))
                 NodeToItem.Add(node, deviation)
                 TreeView1.Nodes.Add(node)

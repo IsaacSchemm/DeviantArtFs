@@ -1,7 +1,7 @@
 ﻿namespace DeviantArtFs.Stash.Marshal
 
 open DeviantArtFs
-open DeviantArtFs.Stash
+open DeviantArtFs.Requests.Stash
 
 type StashStack(root: IStashRoot, stackid: int64, metadata: StashMetadata.Root) =
     inherit StashNode(root, metadata)

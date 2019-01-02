@@ -12,13 +12,13 @@ Public Class Form1
         Button1.Enabled = False
 
         If Token IsNot Nothing Then
-            Dim list As New List(Of Stash.DeltaResultEntry)
+            Dim list As New List(Of Requests.Stash.DeltaResultEntry)
 
-            Dim req = New Stash.DeltaRequest With {.Cursor = StashCursor}
+            Dim req = New Requests.Stash.DeltaRequest With {.Cursor = StashCursor}
             req.Limit = 120
 
             While True
-                Dim resp = Await Stash.Delta.ExecuteAsync(Token, req)
+                Dim resp = Await Requests.Stash.Delta.ExecuteAsync(Token, req)
                 list.AddRange(resp.Entries)
                 If resp.HasMore Then
                     req.Offset = If(resp.NextOffset, 0)
@@ -103,21 +103,21 @@ Public Class Form1
 
     Private Async Sub WhoamiToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles WhoamiToolStripMenuItem.Click
         If Token IsNot Nothing Then
-            Dim user = Await DeviantArtFs.User.Whoami.ExecuteAsync(Token)
+            Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
             MsgBox($"{user.Username} ({user.Type})")
         End If
     End Sub
 
     Private Async Sub UserdataToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UserdataToolStripMenuItem.Click
         If Token IsNot Nothing Then
-            Dim userdata = Await Stash.PublishUserdata.ExecuteAsync(Token)
+            Dim userdata = Await Requests.Stash.PublishUserdata.ExecuteAsync(Token)
             MsgBox($"Agreements: {String.Join(", ", userdata.Agreements)}{vbCrLf}Features: {String.Join(", ", userdata.Features)}")
         End If
     End Sub
 
     Private Async Sub SpaceToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SpaceToolStripMenuItem.Click
         If Token IsNot Nothing Then
-            Dim space = Await Stash.Space.ExecuteAsync(Token)
+            Dim space = Await Requests.Stash.Space.ExecuteAsync(Token)
             MsgBox($"Available (MiB): {space.AvailableSpace / 1048576.0}{vbCrLf}Total (MiB): {space.TotalSpace / 1048576.0}")
         End If
     End Sub
