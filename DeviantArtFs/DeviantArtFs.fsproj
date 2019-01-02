@@ -20,11 +20,13 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
 
   <ItemGroup>
     <Compile Include="Types.fs" />
+    <Compile Include="dafs.fs" />
     <Compile Include="DeviationResponse.fs" />
     <Compile Include="DeviantArtAuth.fs" />
-    <Compile Include="dafs.fs" />
     <Compile Include="Browse\CategoryTree.fs" />
     <Compile Include="Browse\DailyDeviations.fs" />
+    <Compile Include="Browse\Hot.fs" />
+    <Compile Include="Browse\MoreLikeThis.fs" />
     <Compile Include="Data\Countries.fs" />
     <Compile Include="Data\Privacy.fs" />
     <Compile Include="Data\Submission.fs" />

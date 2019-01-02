@@ -18,10 +18,10 @@ let get_token =
     if valid then
         token_string
     else
-        printf "Please enter the client ID (e.g. 1234)"
+        printf "Please enter the client ID (e.g. 1234): "
         let client_id = System.Console.ReadLine() |> Int32.Parse
 
-        printf "Please enter the redirect URL (default: https://www.example.com)"
+        printf "Please enter the redirect URL (default: https://www.example.com): "
         let url1 = System.Console.ReadLine()
         let url2 =
             match url1 with
