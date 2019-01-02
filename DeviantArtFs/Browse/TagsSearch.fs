@@ -3,7 +3,7 @@
 open DeviantArtFs
 open FSharp.Data
 
-type TagsResponse = JsonProvider<"""{
+type internal TagsResponse = JsonProvider<"""{
     "results": [
         {
             "tag_name": "animal"

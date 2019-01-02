@@ -47,7 +47,7 @@ If you want more C# / VB.NET compatibility, you'll need to write new F# types (c
 ### Deviation
 
 * GET /deviation/{deviationid}†
-* GET /deviation/content†
+* GET /deviation/content
 * GET /deviation/download/{deviationid}
 * GET /deviation/embeddedcontent†
 * GET /deviation/metadata†
@@ -55,7 +55,7 @@ If you want more C# / VB.NET compatibility, you'll need to write new F# types (c
 
 ### Gallery
 
-* GET /gallery/gallery/{folderid}
+* GET /gallery/gallery/{folderid}†
 * GET /gallery/all†
 * GET /gallery/folders
 * POST /gallery/folders/create

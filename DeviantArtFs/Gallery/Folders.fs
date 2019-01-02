@@ -4,7 +4,7 @@ open System
 open DeviantArtFs
 open FSharp.Data
 
-type FoldersResponse = JsonProvider<"""[{
+type internal FoldersResponse = JsonProvider<"""[{
     "results": [
         {
             "folderid": "47D47436-5683-8DF2-EEBF-2A6760BE1336",
