@@ -30,8 +30,10 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
     <Compile Include="Browse\MoreLikeThisPreview.fs" />
     <Compile Include="Browse\Newest.fs" />
     <Compile Include="Browse\Popular.fs" />
-    <Compile Include="Browse\TagsSearch.fs" />
     <Compile Include="Browse\Tags.fs" />
+    <Compile Include="Browse\TagsSearch.fs" />
+    <Compile Include="Browse\Undiscovered.fs" />
+    <Compile Include="Browse\UserJournals.fs" />
     <Compile Include="Data\Countries.fs" />
     <Compile Include="Data\Privacy.fs" />
     <Compile Include="Data\Submission.fs" />

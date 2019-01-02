@@ -8,10 +8,8 @@ Much of the library is still untested - use at your own risk.
 ## Currently unsupported features
 
 * The following groups of endpoints are not currently implemented:
-  * Browse
   * Collections
   * Comments
-  * Curated
   * Feed
   * Messages
   * Notes
@@ -24,6 +22,20 @@ Much of the library is still untested - use at your own risk.
 Some functions wrap response data in a type defined in the F# source code, but others use types that come from FSharp.Data's JSON type provider. These functions are marked with a dagger (†) below and may not be usuable from other .NET languages.
 
 If you want more C# / VB.NET compatibility, you'll need to write new F# types (classes, interfaces, or records) to expose the response data; either make additions to this project (feel free to send pull requests) or write a wrapper library.
+
+### Browse
+
+* GET /browse/categorytree
+* GET browse/dailydeviations†
+* GET browse/hot†
+* GET browse/morelikethis†
+* GET browse/morelikethis/preview†
+* GET browse/newest†
+* GET browse/popular†
+* GET browse/tags†
+* GET browse/tags/search
+* GET browse/undiscovered†
+* GET browse/user/journals†
 
 ### Data
 
