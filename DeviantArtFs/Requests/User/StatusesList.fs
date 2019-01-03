@@ -28,7 +28,7 @@ module StatusesList =
             Results = seq {
                 for element in o.Results do
                     let json = element.JsonValue.ToString()
-                    yield StatusesStatusResponse.Parse json
+                    yield StatusResponse.Parse json |> Status
             }
         }
     }

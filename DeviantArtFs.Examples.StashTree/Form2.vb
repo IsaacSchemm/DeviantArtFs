@@ -46,6 +46,8 @@ Public Class Form2
             PictureBox1.ImageLocation = CType(item, Requests.User.FriendRecord).User.Usericon
         ElseIf TypeOf item Is Requests.User.WatcherRecord Then
             PictureBox1.ImageLocation = CType(item, Requests.User.WatcherRecord).User.Usericon
+        ElseIf TypeOf item Is Status Then
+            PictureBox1.ImageLocation = CType(item, Status).EmbeddedDeviations.Select(Function(d) d.Content?.Src).FirstOrDefault()
         Else
             PictureBox1.ImageLocation = Nothing
         End If
@@ -125,6 +127,34 @@ Public Class Form2
 
             For Each w In list
                 Dim node = New TreeNode(w.User.Username)
+                NodeToItem.Add(node, w)
+                TreeView1.Nodes.Add(node)
+            Next
+
+            Button2.Enabled = False
+        End If
+    End Sub
+
+    Private Async Sub GetToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles GetToolStripMenuItem1.Click
+        If Token IsNot Nothing Then
+            TreeView1.Nodes.Clear()
+            NodeToItem.Clear()
+
+            Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
+            Dim statuses = Await Requests.User.StatusesList.ExecuteAsync(Token, New Requests.User.StatusesListRequest(user.Username))
+            Dim list As New List(Of Status)
+
+            While True
+                list.AddRange(statuses.Results)
+                If Not statuses.HasMore Then
+                    Exit While
+                End If
+
+                statuses = Await Requests.User.StatusesList.ExecuteAsync(Token, New Requests.User.StatusesListRequest(user.Username) With {.Offset = statuses.GetNextOffset()})
+            End While
+
+            For Each w In list
+                Dim node = New TreeNode(w.Body)
                 NodeToItem.Add(node, w)
                 TreeView1.Nodes.Add(node)
             Next

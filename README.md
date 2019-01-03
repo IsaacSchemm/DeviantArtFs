@@ -87,8 +87,8 @@ Much of the library is still untested - use at your own risk.
 * GET /user/friends/watching/{username}
 * GET /user/profile/{username}†
 * POST /user/profile/update
-* GET /user/statuses†
-* GET /user/statuses/{statusid}†
+* GET /user/statuses
+* GET /user/statuses/{statusid}
 * POST /user/statuses/post
 * GET /user/watchers/{username}
 * GET /user/whoami
