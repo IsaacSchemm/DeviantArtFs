@@ -19,7 +19,10 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Types\CommonResponses.fs" />
     <Compile Include="Types\Types.fs" />
+    <Compile Include="Types\Records.fs" />
+    <Compile Include="Types\DeviantArtPagedResult.fs" />
     <Compile Include="dafs.fs" />
     <Compile Include="Types\DeviationResponse.fs" />
     <Compile Include="Types\Deviation.fs" />

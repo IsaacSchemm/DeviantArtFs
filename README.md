@@ -80,7 +80,7 @@ Much of the library is still untested - use at your own risk.
 ### User
 
 * GET /user/damntoken
-* GET /user/friends/{username}†
+* GET /user/friends/{username}
 * GET /user/friends/search
 * GET /user/friends/unwatch/{username}
 * POST /user/friends/watch/{username}
@@ -90,7 +90,7 @@ Much of the library is still untested - use at your own risk.
 * GET /user/statuses†
 * GET /user/statuses/{statusid}†
 * POST /user/statuses/post
-* GET /user/watchers/{username}†
+* GET /user/watchers/{username}
 * GET /user/whoami
 * POST /user/whois
 

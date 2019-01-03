@@ -2,9 +2,8 @@
 
 open DeviantArtFs
 open FSharp.Data
-open System.Net
 
-type FriendsRepsonse = JsonProvider<"""[
+type internal FriendsRepsonse = JsonProvider<"""[
 {
     "has_more": true,
     "next_offset": 1,
@@ -37,6 +36,13 @@ type FriendsRepsonse = JsonProvider<"""[
 }
 ]""", SampleIsList=true>
 
+type FriendRecord = {
+    User: UserResult
+    IsWatching: bool
+    WatchesYou: bool
+    Watch: WatchInfo
+}
+
 type FriendsRequest(username: string) =
     member __.Username = username
     member val Offset = 0 with get, set
@@ -51,14 +57,36 @@ module Friends =
         let req =
             query
             |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/%s?%s" (WebUtility.UrlEncode req.Username)
+            |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/%s?%s" (dafs.urlEncode req.Username)
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
         let o = FriendsRepsonse.Parse json
         return {
             HasMore = o.HasMore
             NextOffset = o.NextOffset
-            Results = o.Results
+            Results = seq {
+                for r in o.Results do
+                    yield {
+                        User = {
+                            Userid = r.User.Userid
+                            Username = r.User.Username
+                            Usericon = r.User.Usericon
+                            Type = r.User.Type
+                        }
+                        IsWatching = r.IsWatching
+                        WatchesYou = r.WatchesYou
+                        Watch = {
+                            Friend = r.Watch.Friend
+                            Deviations = r.Watch.Deviations
+                            Journals = r.Watch.Journals
+                            ForumThreads = r.Watch.ForumThreads
+                            Critiques = r.Watch.Critiques
+                            Scraps = r.Watch.Scraps
+                            Activity = r.Watch.Activity
+                            Collections = r.Watch.Collections
+                        }
+                    }
+            }
         }
     }
 

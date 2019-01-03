@@ -35,6 +35,8 @@ Partial Class Form2
         Me.SplitContainer3 = New System.Windows.Forms.SplitContainer()
         Me.TreeView1 = New System.Windows.Forms.TreeView()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
+        Me.FriendsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.WatchersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Panel1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -51,12 +53,12 @@ Partial Class Form2
         'WhoamiToolStripMenuItem
         '
         Me.WhoamiToolStripMenuItem.Name = "WhoamiToolStripMenuItem"
-        Me.WhoamiToolStripMenuItem.Size = New System.Drawing.Size(112, 22)
+        Me.WhoamiToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.WhoamiToolStripMenuItem.Text = "&Whoami"
         '
         'UserInfoToolStripMenuItem
         '
-        Me.UserInfoToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.WhoamiToolStripMenuItem})
+        Me.UserInfoToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.WhoamiToolStripMenuItem, Me.FriendsToolStripMenuItem, Me.WatchersToolStripMenuItem})
         Me.UserInfoToolStripMenuItem.Name = "UserInfoToolStripMenuItem"
         Me.UserInfoToolStripMenuItem.Size = New System.Drawing.Size(64, 20)
         Me.UserInfoToolStripMenuItem.Text = "&User Info"
@@ -111,7 +113,7 @@ Partial Class Form2
         'GetToolStripMenuItem
         '
         Me.GetToolStripMenuItem.Name = "GetToolStripMenuItem"
-        Me.GetToolStripMenuItem.Size = New System.Drawing.Size(91, 22)
+        Me.GetToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.GetToolStripMenuItem.Text = "&Get"
         '
         'PictureBox1
@@ -175,6 +177,18 @@ Partial Class Form2
         Me.SplitContainer1.SplitterDistance = 189
         Me.SplitContainer1.TabIndex = 1
         '
+        'FriendsToolStripMenuItem
+        '
+        Me.FriendsToolStripMenuItem.Name = "FriendsToolStripMenuItem"
+        Me.FriendsToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.FriendsToolStripMenuItem.Text = "&Friends"
+        '
+        'WatchersToolStripMenuItem
+        '
+        Me.WatchersToolStripMenuItem.Name = "WatchersToolStripMenuItem"
+        Me.WatchersToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.WatchersToolStripMenuItem.Text = "&Watchers"
+        '
         'Form2
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -212,4 +226,6 @@ Partial Class Form2
     Friend WithEvents Button1 As Button
     Friend WithEvents JournalsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents GetToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents FriendsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents WatchersToolStripMenuItem As ToolStripMenuItem
 End Class

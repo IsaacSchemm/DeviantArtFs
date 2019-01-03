@@ -4,7 +4,7 @@ Public Class Form2
     Public Token As IDeviantArtAccessToken
     Private NextOffset As Integer? = Nothing
 
-    Private NodeToItem As New Dictionary(Of TreeNode, Deviation)
+    Private NodeToItem As New Dictionary(Of TreeNode, Object)
 
     Private Async Sub UpdateDeviations(offset As Integer)
         Button1.Enabled = False
@@ -39,7 +39,16 @@ Public Class Form2
     Private Sub TreeView1_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles TreeView1.AfterSelect
         Dim item = If(NodeToItem.ContainsKey(TreeView1.SelectedNode), NodeToItem(TreeView1.SelectedNode), Nothing)
         PropertyGrid1.SelectedObject = item
-        PictureBox1.ImageLocation = item.Content?.Src
+
+        If TypeOf item Is Deviation Then
+            PictureBox1.ImageLocation = CType(item, Deviation).Content?.Src
+        ElseIf TypeOf item Is Requests.User.FriendRecord Then
+            PictureBox1.ImageLocation = CType(item, Requests.User.FriendRecord).User.Usericon
+        ElseIf TypeOf item Is Requests.User.WatcherRecord Then
+            PictureBox1.ImageLocation = CType(item, Requests.User.WatcherRecord).User.Usericon
+        Else
+            PictureBox1.ImageLocation = Nothing
+        End If
     End Sub
 
     Private Async Sub WhoamiToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles WhoamiToolStripMenuItem.Click
@@ -63,6 +72,64 @@ Public Class Form2
                 NodeToItem.Add(node, deviation)
                 TreeView1.Nodes.Add(node)
             Next
+
+            Button2.Enabled = False
+        End If
+    End Sub
+
+    Private Async Sub FriendsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FriendsToolStripMenuItem.Click
+        If Token IsNot Nothing Then
+            TreeView1.Nodes.Clear()
+            NodeToItem.Clear()
+
+            Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
+            Dim friends = Await Requests.User.Friends.ExecuteAsync(Token, New Requests.User.FriendsRequest(user.Username))
+            Dim list As New List(Of Requests.User.FriendRecord)
+
+            While True
+                list.AddRange(friends.Results)
+                If Not friends.HasMore Then
+                    Exit While
+                End If
+
+                friends = Await Requests.User.Friends.ExecuteAsync(Token, New Requests.User.FriendsRequest(user.Username) With {.Offset = friends.GetNextOffset()})
+            End While
+
+            For Each f In list
+                Dim node = New TreeNode(f.User.Username)
+                NodeToItem.Add(node, f)
+                TreeView1.Nodes.Add(node)
+            Next
+
+            Button2.Enabled = False
+        End If
+    End Sub
+
+    Private Async Sub WatchersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles WatchersToolStripMenuItem.Click
+        If Token IsNot Nothing Then
+            TreeView1.Nodes.Clear()
+            NodeToItem.Clear()
+
+            Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
+            Dim watchers = Await Requests.User.Watchers.ExecuteAsync(Token, New Requests.User.WatchersRequest(user.Username))
+            Dim list As New List(Of Requests.User.WatcherRecord)
+
+            While True
+                list.AddRange(watchers.Results)
+                If Not watchers.HasMore Then
+                    Exit While
+                End If
+
+                watchers = Await Requests.User.Watchers.ExecuteAsync(Token, New Requests.User.WatchersRequest(user.Username) With {.Offset = watchers.GetNextOffset()})
+            End While
+
+            For Each w In list
+                Dim node = New TreeNode(w.User.Username)
+                NodeToItem.Add(node, w)
+                TreeView1.Nodes.Add(node)
+            Next
+
+            Button2.Enabled = False
         End If
     End Sub
 End Class
