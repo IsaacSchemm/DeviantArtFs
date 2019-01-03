@@ -31,11 +31,6 @@ type IMetadataStats =
     abstract member Downloads: int
     abstract member DownloadsToday: int
 
-[<AllowNullLiteral>]
-type IMetadataCollection =
-    abstract member Folderid: Guid
-    abstract member Name: string
-
 type Metadata(original: MetadataResponse.Metadata) =
     let convertUser (u: MetadataResponse.Author) = {
         new IDeviantArtUser with
@@ -76,7 +71,7 @@ type Metadata(original: MetadataResponse.Metadata) =
     }
 
     let convertCollection (f: MetadataResponse.Collection) = {
-        new IMetadataCollection with
+        new IDeviantArtCollection with
             member __.Folderid = f.Folderid
             member __.Name = f.Name
     }

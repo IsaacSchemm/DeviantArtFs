@@ -10,6 +10,11 @@ type internal FoldersCreateResponse = JsonProvider<"""{
     "name": "My New Gallery"
 }""">
 
+type FoldersCreateResult = {
+    Folderid: Guid
+    Name: string
+}
+
 module FoldersCreate =
     let AsyncExecute token (folder: string) = async {
         let query = seq {
@@ -29,12 +34,9 @@ module FoldersCreate =
         let! json = dafs.asyncRead req
         let resp = FoldersCreateResponse.Parse json
 
-        // Reuse result type from Folders.fs
         return {
             Folderid = resp.Folderid
-            Parent = Nullable()
             Name = resp.Name
-            Size = Nullable()
         }
     }
 

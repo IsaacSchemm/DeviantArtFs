@@ -68,8 +68,7 @@ Public Class Form2
             Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
             Dim journals = Await Requests.Browse.UserJournals.ExecuteAsync(Token, New Requests.Browse.UserJournalsRequest(user.Username))
 
-            For Each d In journals.Results
-                Dim deviation = New Deviation(d)
+            For Each deviation In journals.Results
                 Dim node = New TreeNode(If(deviation.Title, deviation.Deviationid.ToString()))
                 NodeToItem.Add(node, deviation)
                 TreeView1.Nodes.Add(node)

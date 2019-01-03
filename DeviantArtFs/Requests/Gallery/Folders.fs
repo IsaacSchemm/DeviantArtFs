@@ -34,10 +34,16 @@ type FoldersRequest() =
 
 type Folder = {
     Folderid: Guid
-    Parent: Nullable<Guid>
+    Parent: Guid option
     Name: string
-    Size: Nullable<int>
-}
+    Size: int option
+} with
+    member this.GetParent() = this.Parent |> Option.toNullable
+    member this.GetSize() = this.Size |> Option.toNullable
+    interface IDeviantArtFolder with
+        member this.Folderid = this.Folderid
+        member this.Parent = this.GetParent()
+        member this.Name = this.Name
 
 module Folders =
     let AsyncExecute token (ps: FoldersRequest) = async {
@@ -63,9 +69,9 @@ module Folders =
                 for f in o.Results do
                     yield {
                         Folderid = f.Folderid
-                        Parent = f.Parent |> Option.toNullable
+                        Parent = f.Parent
                         Name = f.Name
-                        Size = f.Size |> Option.toNullable
+                        Size = f.Size
                     }
             }
         }

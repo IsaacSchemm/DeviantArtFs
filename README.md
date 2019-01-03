@@ -73,9 +73,8 @@ Much of the library is still untested - use at your own risk.
 * POST /stash/submit
 * POST /stash/update/{stackid}
 
-> † The DeviantArt.Stash.Marshal library provides static methods on StashItem and StashStack which wrap the
->   result data in a format that can be used in other .NET languages, such as C#. It also provides the
->   StashRoot object, which can process the results of calls to /stash/delta.
+> † The DeviantArt.Stash.Marshal library provides the .NET-friendly StashItem and StackStack wrappers
+>   and a StashRoot object that can process delta entries.
 
 ### User
 
@@ -85,7 +84,7 @@ Much of the library is still untested - use at your own risk.
 * GET /user/friends/unwatch/{username}
 * POST /user/friends/watch/{username}
 * GET /user/friends/watching/{username}
-* GET /user/profile/{username}†
+* GET /user/profile/{username}
 * POST /user/profile/update
 * GET /user/statuses
 * GET /user/statuses/{statusid}
@@ -94,11 +93,28 @@ Much of the library is still untested - use at your own risk.
 * GET /user/whoami
 * POST /user/whois
 
-> † These endpoints cannot currently be used well from languages other than F#.
-
 ## Util
 
 * GET /placebo
+
+## Result objects
+
+For requests that return relatively simple data, the resuult object will either be a standard .NET object (like IEnumerable<T>)
+or an F# record type. Some F# records defined in this library use option types (FSharpOption<T>); to make interop easier,
+these records also have functions that return the same result as a potentially null value.
+
+For example:
+
+	DeviantArtPagedResult<DeviantArtFs.Requests.Gallery.Folder> result =
+		await DeviantArtFs.Requests.Gallery.ExecuteAsync(token, new DeviantArtFs.Requests.GalleryRequest());
+	// either:
+	Microsoft.FSharp.Core.FSharpOption<int> i = result.NextOffset; // F#: int option
+	// or:
+	int? i = result.GetNextOffset(); // F#: System.Nullable<int>
+
+More complex types (Deviation, Metadata, Status, Profile) have classes defined for them that provide a .NET-friendly wrapper
+around the original JsonProvider<...> object, including the use of null and Nullable<T>. The original JsonProvider<...>
+object is available via the "Original" property on these objects.
 
 ## Authentication
 

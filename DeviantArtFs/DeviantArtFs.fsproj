@@ -30,6 +30,8 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
     <Compile Include="Types\Metadata.fs" />
     <Compile Include="Types\StatusResponse.fs" />
     <Compile Include="Types\Status.fs" />
+    <Compile Include="Types\ProfileResponse.fs" />
+    <Compile Include="Types\Profile.fs" />
     <Compile Include="DeviantArtAuth.fs" />
     <Compile Include="Requests\Browse\CategoryTree.fs" />
     <Compile Include="Requests\Browse\DailyDeviations.fs" />
@@ -76,7 +78,7 @@ Much of the library is still untested - use at your own risk.</PackageReleaseNot
     <Compile Include="Requests\User\FriendsUnwatch.fs" />
     <Compile Include="Requests\User\FriendsWatch.fs" />
     <Compile Include="Requests\User\FriendsWatching.fs" />
-    <Compile Include="Requests\User\Profile.fs" />
+    <Compile Include="Requests\User\ProfileByName.fs" />
     <Compile Include="Requests\User\ProfileUpdate.fs" />
     <Compile Include="Requests\User\StatusesStatus.fs" />
     <Compile Include="Requests\User\StatusesList.fs" />

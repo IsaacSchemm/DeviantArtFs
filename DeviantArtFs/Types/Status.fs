@@ -1,5 +1,6 @@
 ﻿namespace DeviantArtFs
 
+[<AllowNullLiteral>]
 type Status(original: StatusResponse.Root) =
     member __.Original = original
 

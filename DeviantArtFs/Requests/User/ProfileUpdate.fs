@@ -30,7 +30,6 @@ type ProfileUpdateRequest() =
 
 module ProfileUpdate =
     open System.IO
-    open System.Net
 
     let AsyncExecute token (ps: ProfileUpdateRequest) = async {
         let query = seq {

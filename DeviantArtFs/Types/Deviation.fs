@@ -16,6 +16,7 @@ type IDeviationFile =
     abstract member Transparency: bool
     abstract member Filesize: Nullable<int>
 
+[<AllowNullLiteral>]
 type Deviation(original: DeviationResponse.Root) =
     let convertUser (u: DeviationResponse.Author) = {
         new IDeviantArtUser with
