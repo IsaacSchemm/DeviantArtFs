@@ -69,8 +69,9 @@ type Deviation(original: DeviationResponse.Root) =
     member __.Author = original.Author |> map convertUser |> orNull
     member __.Stats = original.Stats |> map convertStats |> orNull
     member __.PublishedTime = original.PublishedTime |> map float |> map epoch.AddSeconds |> orNullable
+    member __.IsMature = original.IsMature |> orFalse
     member __.AllowsComments = original.AllowsComments |> orFalse
-    
+
     member __.Excerpt = original.Excerpt |> orNull
     member __.Preview = original.Preview |> map convertThumb |> orNull
     member __.Content = original.Content |> map convertContent |> orNull

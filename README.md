@@ -114,8 +114,8 @@ Example (F#):
 	let b: System.Nullable<int> = result.GetNextOffset()
 
 More complex types (Deviation, Metadata, Status, Profile) have classes defined for them that provide a .NET-friendly wrapper
-around the original JsonProvider<...> object, including the use of null and Nullable<T>. The original JsonProvider<...>
-object is available via the "Original" property on these objects.
+around the original JsonProvider<...> object, including the use of null and Nullable<T>. F# users might want to access the
+original JsonProvider<...> object directly via the "Original" property on these objects.
 
 ## Authentication
 
