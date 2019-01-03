@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.3.0</Version>
+    <Version>0.4.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>libertyernie</Authors>
     <Company></Company>
@@ -10,11 +10,7 @@
     <PackageProjectUrl>https://github.com/libertyernie/DeviantArtFs</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Description>An F# library (.NET Standard 2.0) to interact with the DeviantArt / Sta.sh API</Description>
-    <PackageReleaseNotes>An F# library (.NET Standard 2.0) to interact with the DeviantArt / Sta.sh API. Uses FSharp.Data to parse JSON.
-
-Not all features/objects can be used from languages other than F#. If you want more C# / VB.NET compatibility, you'll need to make additions to this project (feel free to send pull requests) or write a wrapper library.
-
-Much of the library is still untested - use at your own risk.</PackageReleaseNotes>
+    <PackageReleaseNotes>0.4.0: Added .NET-friendly wrapper objects and Browse endpoints. (Collections, Comments, Feeds, Messages, and Notes are still unimplemented.)</PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
   </PropertyGroup>
 

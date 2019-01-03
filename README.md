@@ -1,9 +1,7 @@
 # DeviantArtFs
 
-An F# library (.NET Standard 2.0) to interact with the [DeviantArt / Sta.sh API.](https://www.deviantart.com/developers/http/v1/20160316)
+A .NET / F# library to interact with the [DeviantArt / Sta.sh API.](https://www.deviantart.com/developers/http/v1/20160316)
 Uses [FSharp.Data](http://fsharp.github.io/FSharp.Data/) to parse JSON.
-
-Much of the library is still untested - use at your own risk.
 
 ## Currently unsupported features
 
@@ -103,14 +101,17 @@ For requests that return relatively simple data, the resuult object will either 
 or an F# record type. Some F# records defined in this library use option types (FSharpOption<T>); to make interop easier,
 these records also have functions that return the same result as a potentially null value.
 
-For example:
+Example (C#):
 
-	DeviantArtPagedResult<DeviantArtFs.Requests.Gallery.Folder> result =
-		await DeviantArtFs.Requests.Gallery.ExecuteAsync(token, new DeviantArtFs.Requests.GalleryRequest());
-	// either:
-	Microsoft.FSharp.Core.FSharpOption<int> i = result.NextOffset; // F#: int option
-	// or:
-	int? i = result.GetNextOffset(); // F#: System.Nullable<int>
+	var result = await DeviantArtFs.Requests.Gallery.All.ExecuteAsync(token, new DeviantArtFs.Requests.Gallery.AllRequest());
+	Microsoft.FSharp.Core.FSharpOption<int> a = result.NextOffset;
+	int? b = result.GetNextOffset();
+
+Example (F#):
+
+	let! result = new DeviantArtFs.Requests.Gallery.AllRequest() |> DeviantArtFs.Requests.Gallery.All.AsyncExecute token
+	let a: int option = result.NextOffset
+	let b: System.Nullable<int> = result.GetNextOffset()
 
 More complex types (Deviation, Metadata, Status, Profile) have classes defined for them that provide a .NET-friendly wrapper
 around the original JsonProvider<...> object, including the use of null and Nullable<T>. The original JsonProvider<...>
