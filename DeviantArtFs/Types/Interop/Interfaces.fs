@@ -1,5 +1,12 @@
 ﻿namespace DeviantArtFs.Interop
 
+open System
+    
+type IContentResult =
+    abstract member Html: string
+    abstract member Css: string
+    abstract member CssFonts: seq<string>
+
 type IDeviantArtCollection =
     abstract member Folderid: Guid
     abstract member Name: string

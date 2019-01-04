@@ -59,7 +59,7 @@ type WatchersRepsonse = JsonProvider<"""[
 ]""", SampleIsList=true>
 
 type WatcherRecord = {
-    User: UserResult
+    User: DeviantArtUser
     IsWatching: bool
     Lastvisit: DateTimeOffset option
     Watch: WatchInfo

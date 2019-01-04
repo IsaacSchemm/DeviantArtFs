@@ -38,7 +38,7 @@ type internal FriendsRepsonse = JsonProvider<"""[
 ]""", SampleIsList=true>
 
 type FriendRecord = {
-    User: UserResult
+    User: DeviantArtUser
     IsWatching: bool
     WatchesYou: bool
     Watch: WatchInfo

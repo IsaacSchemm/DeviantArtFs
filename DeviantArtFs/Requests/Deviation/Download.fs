@@ -4,7 +4,7 @@ open DeviantArtFs
 open FSharp.Data
 open System
 
-type DownloadResponse = JsonProvider<"""{
+type internal DownloadResponse = JsonProvider<"""{
     "src": "https://www.example.com",
     "width": 640,
     "height": 480,

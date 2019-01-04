@@ -1,10 +1,11 @@
 ﻿namespace DeviantArtFs.Requests.Deviation
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 open System
 
-type WhoFavedResponse = JsonProvider<"""[
+type internal WhoFavedResponse = JsonProvider<"""[
 {
     "has_more": true,
     "next_offset": 2,
@@ -37,7 +38,7 @@ type WhoFavedResponse = JsonProvider<"""[
 ]""", SampleIsList=true>
 
 type WhoFavedUser = {
-    User: UserResult
+    User: DeviantArtUser
     Time: int64
 }
 
@@ -78,4 +79,4 @@ module WhoFaved =
         }
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenCastResult |> Async.StartAsTask

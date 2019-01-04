@@ -19,7 +19,7 @@ type internal MoreLikeThisResponse = JsonProvider<"""{
 
 type MoreLikeThisResult<'a> = {
     Seed: Guid
-    Author: UserResult
+    Author: DeviantArtUser
     MoreFromArtist: seq<'a>
     MoreFromDa: seq<'a>
 }

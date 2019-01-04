@@ -16,11 +16,6 @@ type internal ContentResponse = JsonProvider<"""[
 {}
 ]""", SampleIsList=true>
 
-type IContentResult =
-    abstract member Html: string
-    abstract member Css: string
-    abstract member CssFonts: seq<string>
-
 type ContentResult = {
     Html: string option
     Css: string option

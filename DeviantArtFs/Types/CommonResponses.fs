@@ -14,7 +14,7 @@ type internal SuccessOrErrorResponse = JsonProvider<"""[
 ]""", SampleIsList=true>
 
 type internal GenericListResponse = JsonProvider<"""[
-{ "has_more": true, "next_offset": 2, "estimated_total": 7, "results": [] },
+{ "has_more": true, "next_offset": 2, "estimated_total": 7, "name": "str", "results": [] },
 { "has_more": false, "next_offset": null, "results": [] }
 ]""", SampleIsList=true>
 

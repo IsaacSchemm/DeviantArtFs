@@ -5,7 +5,7 @@ open DeviantArtFs.Interop
 open FSharp.Data
 open System
 
-type EmbeddedContentResponse = JsonProvider<"""[
+type internal EmbeddedContentResponse = JsonProvider<"""[
 {
     "has_more": true,
     "next_offset": 1,
