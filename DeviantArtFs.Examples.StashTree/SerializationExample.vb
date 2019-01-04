@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports DeviantArtFs.Interop
 
 Public Class SerializationExample
     Class MyDeltaEntry

@@ -5,23 +5,6 @@ open DeviantArtFs.Interop
 open FSharp.Data
 open System
 
-type internal EmbeddedContentResponse = JsonProvider<"""[
-{
-    "has_more": true,
-    "next_offset": 1,
-    "has_less": false,
-    "prev_offset": null,
-    "results": []
-},
-{
-    "has_more": false,
-    "next_offset": null,
-    "has_less": true,
-    "prev_offset": 1,
-    "results": []
-}
-]""", SampleIsList=true>
-
 type EmbeddedContentRequest(deviationid: Guid) =
     member __.Deviationid = deviationid
     member val OffsetDeviationid = Nullable<Guid>() with get, set
@@ -44,7 +27,7 @@ module EmbeddedContent =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/embeddedcontent?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        let resp = EmbeddedContentResponse.Parse json
+        let resp = BidirectionalListResponse.Parse json
         return {
             HasMore = resp.HasMore
             NextOffset = resp.NextOffset

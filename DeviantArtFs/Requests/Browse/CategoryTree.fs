@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.Browse
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 
 type internal CategoryTreeResponse = JsonProvider<"""{
@@ -13,13 +14,6 @@ type internal CategoryTreeResponse = JsonProvider<"""{
         }
     ]
 }""">
-
-type CategoryTreeResult = {
-    Catpath: string
-    Title: string
-    HasSubcategory: bool
-    ParentCatpath: string
-}
 
 type CategoryTreeRequest() = 
     member val Catpath = "/" with get, set
@@ -35,14 +29,17 @@ module CategoryTree =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/categorytree?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        let resp = CategoryTreeResponse.Parse json
-        return resp.Categories
-            |> Seq.map (fun c -> {
-                Catpath = c.Catpath
-                Title = c.Title
-                HasSubcategory = c.HasSubcategory
-                ParentCatpath = c.ParentCatpath
-            })
+        return CategoryTreeResponse.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req = Async.StartAsTask (async {
+        let! resp = AsyncExecute token req
+        return resp.Categories
+            |> Seq.map (fun c -> {
+                new ICategory with
+                    member __.Catpath = c.Catpath
+                    member __.Title = c.Title
+                    member __.HasSubcategory = c.HasSubcategory
+                    member __.ParentCatpath = c.ParentCatpath
+            })
+    })

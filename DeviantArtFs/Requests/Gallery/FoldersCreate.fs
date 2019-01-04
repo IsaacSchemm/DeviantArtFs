@@ -3,17 +3,13 @@
 open System
 open System.IO
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 
-type internal FoldersCreateResponse = JsonProvider<"""{
+type FoldersCreateResponse = JsonProvider<"""{
     "folderid": "E431BAFB-7A00-7EA1-EED7-2EF9FA0F04CE",
     "name": "My New Gallery"
 }""">
-
-type FoldersCreateResult = {
-    Folderid: Guid
-    Name: string
-}
 
 module FoldersCreate =
     let AsyncExecute token (folder: string) = async {
@@ -32,12 +28,16 @@ module FoldersCreate =
         }
 
         let! json = dafs.asyncRead req
-        let resp = FoldersCreateResponse.Parse json
-
-        return {
-            Folderid = resp.Folderid
-            Name = resp.Name
-        }
+        return FoldersCreateResponse.Parse json
     }
 
-    let ExecuteAsync token folder = AsyncExecute token folder |> Async.StartAsTask
+    let ExecuteAsync token folder = Async.StartAsTask (async {
+        let! f = AsyncExecute token folder
+        return {
+            new IDeviantArtFolder with
+                member __.Folderid = f.Folderid
+                member __.Parent = Nullable()
+                member __.Name = f.Name
+                member __.Size = Nullable()
+        }
+    })

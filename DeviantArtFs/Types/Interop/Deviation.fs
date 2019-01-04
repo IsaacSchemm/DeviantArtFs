@@ -10,11 +10,8 @@ type IDeviationStats =
 
 [<AllowNullLiteral>]
 type IDeviationFile =
-    abstract member Src: string
-    abstract member Height: int
-    abstract member Width: int
+    inherit IDeviantArtFile
     abstract member Transparency: bool
-    abstract member Filesize: Nullable<int>
 
 [<AllowNullLiteral>]
 type Deviation(original: DeviationResponse.Root) =

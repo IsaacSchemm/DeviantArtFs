@@ -33,18 +33,6 @@ type FoldersRequest() =
     member val Offset = 0 with get, set
     member val Limit = 10 with get, set
 
-type Folder = {
-    Folderid: Guid
-    Parent: Guid option
-    Name: string
-    Size: int option
-} with
-    interface IDeviantArtFolder with
-        member this.Folderid = this.Folderid
-        member this.Parent = this.Parent |> Option.toNullable
-        member this.Name = this.Name
-        member this.Size = this.Size |> Option.toNullable
-
 module Folders =
     let AsyncExecute token (ps: FoldersRequest) = async {
         let query = seq {
@@ -61,20 +49,23 @@ module Folders =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/folders?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        let o = FoldersResponse.Parse json
+        return FoldersResponse.Parse json
+    }
+
+    let ExecuteAsync token ps = Async.StartAsTask (async {
+        let! o = AsyncExecute token ps
         return {
             HasMore = o.HasMore
             NextOffset = o.NextOffset
             Results = seq {
                 for f in o.Results do
                     yield {
-                        Folderid = f.Folderid
-                        Parent = f.Parent
-                        Name = f.Name
-                        Size = f.Size
+                        new IDeviantArtFolder with
+                            member __.Folderid = f.Folderid
+                            member __.Parent = f.Parent |> Option.toNullable
+                            member __.Name = f.Name
+                            member __.Size = f.Size |> Option.toNullable
                     }
             }
         }
-    }
-
-    let ExecuteAsync token ps = AsyncExecute token ps |> iop.thenMapResult (fun x -> x :> IDeviantArtFolder) |> Async.StartAsTask
+    })

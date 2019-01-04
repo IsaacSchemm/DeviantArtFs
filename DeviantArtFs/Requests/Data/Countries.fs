@@ -20,10 +20,12 @@ module Countries =
     let AsyncExecute token = async {
         let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/data/countries"
         let! json = dafs.asyncRead req
-        let obj = CountriesResponse.Parse json
+        return CountriesResponse.Parse json
+    }
+
+    let ExecuteAsync token = Async.StartAsTask (async {
+        let! obj = AsyncExecute token
         return obj.Results
             |> Seq.map (fun r -> (r.Countryid, r.Name))
             |> dict
-    }
-
-    let ExecuteAsync token = AsyncExecute token |> Async.StartAsTask
+    })

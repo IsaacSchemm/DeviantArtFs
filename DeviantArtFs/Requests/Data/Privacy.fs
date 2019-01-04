@@ -1,18 +1,14 @@
 ﻿namespace DeviantArtFs.Requests.Data
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
-
-type PrivacyResponse = JsonProvider<"""{
-    "text": "html_content"
-}""">
 
 module Privacy =
     let AsyncExecute token = async {
         let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/data/privacy"
         let! json = dafs.asyncRead req
-        let obj = PrivacyResponse.Parse json
-        return obj.Text
+        return TextOnlyResponse.Parse json
     }
 
-    let ExecuteAsync token = AsyncExecute token |> Async.StartAsTask
+    let ExecuteAsync token = AsyncExecute token |> iop.thenTo (fun obj -> obj.Text) |> Async.StartAsTask

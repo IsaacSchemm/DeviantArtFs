@@ -27,7 +27,7 @@ module Newest =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/newest?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        let o = GenericListResponse.Parse json
+        let o = SearchListResponse.Parse json
         return {
             HasMore = o.HasMore
             NextOffset = o.NextOffset

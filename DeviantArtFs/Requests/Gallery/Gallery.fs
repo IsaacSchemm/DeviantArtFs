@@ -3,6 +3,12 @@
 open System
 open DeviantArtFs
 open DeviantArtFs.Interop
+open FSharp.Data
+
+type internal GalleryListResponse = JsonProvider<"""[
+{ "has_more": true, "next_offset": 2, "name": "str", "results": [] },
+{ "has_more": false, "next_offset": null, "results": [] }
+]""", SampleIsList=true>
 
 type GalleryRequestMode = Popular=1 | Newest=2
 
@@ -29,7 +35,7 @@ module Gallery =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/%A?%s" req.Folderid
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        let o = GenericListResponse.Parse json
+        let o = GalleryListResponse.Parse json
         return {
             HasMore = o.HasMore
             NextOffset = o.NextOffset

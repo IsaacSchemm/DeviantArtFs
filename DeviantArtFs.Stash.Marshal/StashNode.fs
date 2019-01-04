@@ -1,8 +1,8 @@
 ﻿namespace DeviantArtFs.Stash.Marshal
 
 open System
-open DeviantArtFs
 open DeviantArtFs.Requests.Stash
+open DeviantArtFs.Interop
 
 type SavedDeltaEntry =
     {

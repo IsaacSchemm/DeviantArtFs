@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.Stash
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 
 type internal DeltaResponse = JsonProvider<"""[{
@@ -34,31 +35,33 @@ type internal DeltaResponse = JsonProvider<"""[{
     "entries": []
 }]""", SampleIsList=true>
 
-type DeltaResultEntry =
-    {
-        Itemid: int64 option
-        Stackid: int64 option
-        Metadata: StashMetadata.Root option
-        Position: int option
-    }
-    with
-        member this.GetItemid() = this.Itemid |> Option.toNullable
-        member this.GetStackid() = this.Stackid |> Option.toNullable
-        member this.GetMetadata() = this.Metadata |> Option.map (fun j -> j.JsonValue.ToString()) |> Option.toObj
-        member this.GetPosition() = this.Position |> Option.toNullable
-        interface IDeltaEntry with
-            member this.Itemid = this.GetItemid()
-            member this.Stackid = this.GetStackid()
-            member this.Metadata = this.GetMetadata()
-            member this.Position = this.GetPosition()
+type DeltaResultEntry = {
+    Itemid: int64 option
+    Stackid: int64 option
+    Metadata: StashMetadata.Root option
+    Position: int option
+}
+with
+    interface IDeltaEntry with
+        member this.Itemid = this.Itemid |> Option.toNullable
+        member this.Stackid = this.Stackid |> Option.toNullable
+        member this.Metadata = this.Metadata |> Option.map (fun j -> j.JsonValue.ToString()) |> Option.toObj
+        member this.Position = this.Position |> Option.toNullable
 
 type DeltaResult = {
     Cursor: string
     HasMore: bool
-    NextOffset: System.Nullable<int>
+    NextOffset: int option
     Reset: bool
     Entries: seq<DeltaResultEntry>
 }
+with
+    interface IDeltaResult with
+        member this.Cursor = this.Cursor
+        member this.HasMore = this.HasMore
+        member this.NextOffset = this.NextOffset |> Option.toNullable
+        member this.Reset = this.Reset
+        member this.Entries = this.Entries |> Seq.map (fun e -> e :> IDeltaEntry)
 
 type DeltaRequest() = 
     member val Cursor = null with get, set
@@ -88,7 +91,7 @@ module Delta =
         return {
             Cursor = resp.Cursor
             HasMore = resp.HasMore
-            NextOffset = resp.NextOffset |> Option.toNullable
+            NextOffset = resp.NextOffset
             Reset = resp.Reset
             Entries = seq {
                 for e in resp.Entries do
@@ -102,4 +105,4 @@ module Delta =
         }
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun x -> x :> IDeltaResult) |> Async.StartAsTask
