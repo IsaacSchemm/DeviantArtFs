@@ -2,7 +2,6 @@
 
 open System
 open System.Net
-open FSharp.Data
 
 type IDeviantArtAccessToken =
     abstract member AccessToken: string with get
@@ -43,25 +42,13 @@ type ArtistSpecialty =
     | Other = 8
     | Varied = 9
 
-[<AllowNullLiteral>]
-type IDeviantArtUser =
-    abstract member Userid: Guid
-    abstract member Username: string
-    abstract member Usericon: string
-    abstract member Type: string
-
-type IDeviantArtCollection =
-    abstract member Folderid: Guid
-    abstract member Name: string
-
-type IDeviantArtFolder =
-    abstract member Folderid: Guid
-    abstract member Parent: Nullable<Guid>
-    abstract member Name: string
-    abstract member Size: Nullable<int>
-
-type IDeltaEntry =
-    abstract member Itemid: Nullable<int64>
-    abstract member Stackid: Nullable<int64>
-    abstract member Metadata: string
-    abstract member Position: Nullable<int>
+type WatchInfo = {
+    Friend: bool
+    Deviations: bool
+    Journals: bool
+    ForumThreads: bool
+    Critiques: bool
+    Scraps: bool
+    Activity: bool
+    Collections: bool
+}

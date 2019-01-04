@@ -2,7 +2,14 @@
 
 open System
 
-type UserResult = {
+[<AllowNullLiteral>]
+type IDeviantArtUser =
+    abstract member Userid: Guid
+    abstract member Username: string
+    abstract member Usericon: string
+    abstract member Type: string
+
+type DeviantArtUser = {
     Userid: Guid
     Username: string
     Usericon: string
@@ -13,14 +20,3 @@ type UserResult = {
         member this.Username = this.Username
         member this.Usericon = this.Usericon
         member this.Type = this.Type
-
-type WatchInfo = {
-    Friend: bool
-    Deviations: bool
-    Journals: bool
-    ForumThreads: bool
-    Critiques: bool
-    Scraps: bool
-    Activity: bool
-    Collections: bool
-}
