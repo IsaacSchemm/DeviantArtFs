@@ -43,3 +43,7 @@ type IDeltaResult =
     abstract member NextOffset: System.Nullable<int>
     abstract member Reset: bool
     abstract member Entries: seq<IDeltaEntry>
+
+type IMoveResult =
+    abstract member Target: string
+    abstract member Changes: seq<string>

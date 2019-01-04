@@ -24,6 +24,7 @@
     <Compile Include="Types\MetadataResponse.fs" />
     <Compile Include="Types\StatusResponse.fs" />
     <Compile Include="Types\ProfileResponse.fs" />
+    <Compile Include="Types\StashMetadataResponse.fs" />
     <Compile Include="Types\Interop\Interfaces.fs" />
     <Compile Include="Types\Interop\Deviation.fs" />
     <Compile Include="Types\Interop\Metadata.fs" />

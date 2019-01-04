@@ -1,8 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.Stash
 
 open DeviantArtFs
-open FSharp.Data
-open System.IO
+open DeviantArtFs.Interop
 
 module Contents =
     let AsyncExecute token (stackid: int64) = async {
@@ -21,5 +20,11 @@ module Contents =
 
     let AsyncGetRoot token = AsyncExecute token 0L
 
-    let ExecuteAsync token stackid = AsyncExecute token stackid |> Async.StartAsTask
-    let GetRootAsync token = AsyncGetRoot token |> Async.StartAsTask
+    let ExecuteAsync token stackid =
+        AsyncExecute token stackid
+        |> iop.thenMapResult (fun m -> m.JsonValue.ToString())
+        |> Async.StartAsTask
+    let GetRootAsync token =
+        AsyncGetRoot token
+        |> iop.thenMapResult (fun m -> m.JsonValue.ToString())
+        |> Async.StartAsTask

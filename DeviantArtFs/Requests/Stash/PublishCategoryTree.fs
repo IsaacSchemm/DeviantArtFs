@@ -1,9 +1,10 @@
 ﻿namespace DeviantArtFs.Requests.Stash
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 
-type internal PublishCategoryTreeResponse = JsonProvider<"""{
+type PublishCategoryTreeResponse = JsonProvider<"""{
     "categories": [
         {
             "catpath": "anthro",
@@ -39,14 +40,17 @@ module PublishCategoryTree =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/publish/categorytree?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        let resp = PublishCategoryTreeResponse.Parse json
-        return resp.Categories
-            |> Seq.map (fun c -> {
-                Catpath = c.Catpath
-                Title = c.Title
-                HasSubcategory = c.HasSubcategory
-                ParentCatpath = c.ParentCatpath
-            })
+        return PublishCategoryTreeResponse.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req = Async.StartAsTask (async {
+        let! resp = AsyncExecute token req
+        return resp.Categories
+            |> Seq.map (fun c -> {
+                new ICategory with
+                    member __.Catpath = c.Catpath
+                    member __.Title = c.Title
+                    member __.HasSubcategory = c.HasSubcategory
+                    member __.ParentCatpath = c.ParentCatpath
+            })
+    })

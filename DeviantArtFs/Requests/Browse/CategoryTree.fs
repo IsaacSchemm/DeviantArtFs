@@ -4,7 +4,7 @@ open DeviantArtFs
 open DeviantArtFs.Interop
 open FSharp.Data
 
-type internal CategoryTreeResponse = JsonProvider<"""{
+type CategoryTreeResponse = JsonProvider<"""{
     "categories": [
         {
             "catpath": "anthro",
