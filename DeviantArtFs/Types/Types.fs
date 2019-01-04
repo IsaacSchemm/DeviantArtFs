@@ -58,6 +58,7 @@ type IDeviantArtFolder =
     abstract member Folderid: Guid
     abstract member Parent: Nullable<Guid>
     abstract member Name: string
+    abstract member Size: Nullable<int>
 
 type IDeltaEntry =
     abstract member Itemid: Nullable<int64>

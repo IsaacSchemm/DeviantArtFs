@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 
 type ProfileRequest(username: string) =
     member __.Username = username
@@ -18,10 +19,8 @@ module ProfileByName =
             sprintf "https://www.deviantart.com/api/v1/oauth2/user/profile/%s?%s" (dafs.urlEncode req.Username) qs
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return ProfileResponse.Parse json |> Profile
+        return ProfileResponse.Parse json
     }
 
-    let AsyncGetUser token req = AsyncExecute token req |> dafs.whenDone (fun p -> p.User)
-        
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
-    let GetUserAsync token req = AsyncGetUser token req |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo Profile |> Async.StartAsTask
+    let GetUserAsync token req = AsyncExecute token req |> iop.thenTo Profile |> iop.thenTo (fun p -> p.User) |> Async.StartAsTask

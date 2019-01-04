@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports DeviantArtFs.Interop
 
 Public Class Form2
     Public Token As IDeviantArtAccessToken
@@ -12,14 +13,13 @@ Public Class Form2
 
         If Token IsNot Nothing Then
             Dim page = Await Requests.Gallery.All.ExecuteAsync(Token, New Requests.Gallery.AllRequest With {.Offset = offset})
-            For Each d In page.Results
-                Dim deviation = New Deviation(d)
+            For Each deviation In page.Results
                 Dim node = New TreeNode(If(deviation.Title, deviation.Deviationid.ToString()))
                 NodeToItem.Add(node, deviation)
                 TreeView1.Nodes.Add(node)
             Next
 
-            NextOffset = page.GetNextOffset()
+            NextOffset = page.NextOffset
             Button2.Enabled = page.HasMore
         End If
 
@@ -93,7 +93,7 @@ Public Class Form2
                     Exit While
                 End If
 
-                friends = Await Requests.User.Friends.ExecuteAsync(Token, New Requests.User.FriendsRequest(user.Username) With {.Offset = friends.GetNextOffset()})
+                friends = Await Requests.User.Friends.ExecuteAsync(Token, New Requests.User.FriendsRequest(user.Username) With {.Offset = friends.NextOffset})
             End While
 
             For Each f In list
@@ -121,7 +121,7 @@ Public Class Form2
                     Exit While
                 End If
 
-                watchers = Await Requests.User.Watchers.ExecuteAsync(Token, New Requests.User.WatchersRequest(user.Username) With {.Offset = watchers.GetNextOffset()})
+                watchers = Await Requests.User.Watchers.ExecuteAsync(Token, New Requests.User.WatchersRequest(user.Username) With {.Offset = watchers.NextOffset})
             End While
 
             For Each w In list
@@ -149,7 +149,7 @@ Public Class Form2
                     Exit While
                 End If
 
-                statuses = Await Requests.User.StatusesList.ExecuteAsync(Token, New Requests.User.StatusesListRequest(user.Username) With {.Offset = statuses.GetNextOffset()})
+                statuses = Await Requests.User.StatusesList.ExecuteAsync(Token, New Requests.User.StatusesListRequest(user.Username) With {.Offset = statuses.NextOffset})
             End While
 
             For Each w In list

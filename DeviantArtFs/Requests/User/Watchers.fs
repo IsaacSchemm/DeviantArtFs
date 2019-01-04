@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 open System
 
@@ -112,4 +113,4 @@ module Watchers =
         }
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenCastResult |> Async.StartAsTask

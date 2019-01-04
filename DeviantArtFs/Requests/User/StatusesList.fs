@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 
 type StatusesListRequest(username: string) =
@@ -28,9 +29,9 @@ module StatusesList =
             Results = seq {
                 for element in o.Results do
                     let json = element.JsonValue.ToString()
-                    yield StatusResponse.Parse json |> Status
+                    yield StatusResponse.Parse json
             }
         }
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMapResult Status |> Async.StartAsTask

@@ -2,12 +2,28 @@
 
 open System
 
+type IDeviantArtPagedResult<'a> =
+    abstract member HasMore: bool
+    abstract member NextOffset: Nullable<int>
+    abstract member HasLess: bool
+    abstract member PrevOffset: Nullable<int>
+    abstract member EstimatedTotal: Nullable<int>
+    abstract member Name: string
+    abstract member Results: seq<'a>
+
 type DeviantArtPagedResult<'a> = {
     HasMore: bool
     NextOffset: int option
     Results: seq<'a>
 } with
-    member this.GetNextOffset() = this.NextOffset |> Option.toNullable
+    interface IDeviantArtPagedResult<'a> with
+        member this.HasMore = this.HasMore
+        member this.NextOffset = this.NextOffset |> Option.toNullable
+        member this.HasLess = false
+        member this.PrevOffset = Nullable()
+        member this.EstimatedTotal = Nullable()
+        member this.Name = null
+        member this.Results = this.Results
 
 type DeviantArtPagedSearchResult<'a> = {
     HasMore: bool
@@ -15,5 +31,42 @@ type DeviantArtPagedSearchResult<'a> = {
     EstimatedTotal: int option
     Results: seq<'a>
 } with
-    member this.GetNextOffset() = this.NextOffset |> Option.toNullable
-    member this.GetEstimatedTotal() = this.EstimatedTotal |> Option.toNullable
+    interface IDeviantArtPagedResult<'a> with
+        member this.HasMore = this.HasMore
+        member this.NextOffset = this.NextOffset |> Option.toNullable
+        member this.HasLess = false
+        member this.PrevOffset = Nullable()
+        member this.EstimatedTotal = this.EstimatedTotal |> Option.toNullable
+        member this.Name = null
+        member this.Results = this.Results
+
+type DeviantArtBidirectionalSearchResult<'a> = {
+    HasMore: bool
+    NextOffset: int option
+    HasLess: bool
+    PrevOffset: int option
+    Results: seq<'a>
+} with
+    interface IDeviantArtPagedResult<'a> with
+        member this.HasMore = this.HasMore
+        member this.NextOffset = this.NextOffset |> Option.toNullable
+        member this.HasLess = this.HasLess
+        member this.PrevOffset = this.PrevOffset |> Option.toNullable
+        member this.EstimatedTotal = Nullable()
+        member this.Name = null
+        member this.Results = this.Results
+
+type DeviantArtGalleryResult<'a> = {
+    HasMore: bool
+    NextOffset: int option
+    Name: string option
+    Results: seq<'a>
+} with
+    interface IDeviantArtPagedResult<'a> with
+        member this.HasMore = this.HasMore
+        member this.NextOffset = this.NextOffset |> Option.toNullable
+        member this.HasLess = false
+        member this.PrevOffset = Nullable()
+        member this.Name = this.Name |> Option.toObj
+        member this.EstimatedTotal = Nullable()
+        member this.Results = this.Results

@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.Deviation
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 open System
 
 type MetadataRequest(deviationids: seq<Guid>) =
@@ -27,7 +28,7 @@ module MetadataById =
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
         let o = json |> MetadataResponse.Parse
-        return o.Metadata |> Seq.map Metadata
+        return o.Metadata
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMap Metadata |> Async.StartAsTask

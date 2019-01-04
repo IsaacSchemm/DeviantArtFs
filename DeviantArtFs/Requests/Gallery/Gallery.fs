@@ -2,6 +2,7 @@
 
 open System
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 
 type internal GalleryResponse = JsonProvider<"""[
@@ -25,15 +26,6 @@ type GalleryRequest(folderid: Guid) =
     member val Mode = GalleryRequestMode.Popular with get, set
     member val Offset = 0 with get, set
     member val Limit = 10 with get, set
-
-type GalleryResult = {
-    HasMore: bool
-    NextOffset: int option
-    Name: string option
-    Results: seq<Deviation>
-} with
-    member this.GetNextOffset() = this.NextOffset |> Option.toNullable
-    member this.GetName() = this.Name |> Option.toObj
 
 module Gallery =
     let AsyncExecute token (req: GalleryRequest) = async {
@@ -59,9 +51,9 @@ module Gallery =
             Results = seq {
                 for element in o.Results do
                     let json = element.JsonValue.ToString()
-                    yield json |> DeviationResponse.Parse |> Deviation
+                    yield json |> DeviationResponse.Parse
             }
         }
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMapResult Deviation |> Async.StartAsTask

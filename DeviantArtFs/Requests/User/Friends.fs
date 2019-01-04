@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 
 type internal FriendsRepsonse = JsonProvider<"""[
@@ -90,4 +91,4 @@ module Friends =
         }
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenCastResult |> Async.StartAsTask

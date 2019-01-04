@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.Deviation
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 open System
 
@@ -20,16 +21,6 @@ type EmbeddedContentResponse = JsonProvider<"""[
     "results": []
 }
 ]""", SampleIsList=true>
-
-type EmbeddedContentResult = {
-    HasMore: bool
-    NextOffset: int option
-    HasLess: bool
-    PrevOffset: int option
-    Results: seq<Deviation>
-} with
-    member this.GetNextOffset() = this.NextOffset |> Option.toNullable
-    member this.GetPrevOffset() = this.PrevOffset |> Option.toNullable
 
 type EmbeddedContentRequest(deviationid: Guid) =
     member __.Deviationid = deviationid
@@ -59,8 +50,8 @@ module EmbeddedContent =
             NextOffset = resp.NextOffset
             HasLess = resp.HasLess
             PrevOffset = resp.PrevOffset
-            Results = resp.Results |> Seq.map (fun j -> j.JsonValue.ToString()) |> Seq.map DeviationResponse.Parse |> Seq.map Deviation
+            Results = resp.Results |> Seq.map (fun j -> j.JsonValue.ToString()) |> Seq.map DeviationResponse.Parse
         }
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMapResult Deviation |> Async.StartAsTask

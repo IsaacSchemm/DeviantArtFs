@@ -1,4 +1,4 @@
-﻿namespace DeviantArtFs
+﻿namespace DeviantArtFs.Interop
 
 open System
 open DeviantArtFs

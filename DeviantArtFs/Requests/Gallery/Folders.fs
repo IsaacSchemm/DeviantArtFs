@@ -2,6 +2,7 @@
 
 open System
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 
 type internal FoldersResponse = JsonProvider<"""[{
@@ -38,12 +39,11 @@ type Folder = {
     Name: string
     Size: int option
 } with
-    member this.GetParent() = this.Parent |> Option.toNullable
-    member this.GetSize() = this.Size |> Option.toNullable
     interface IDeviantArtFolder with
         member this.Folderid = this.Folderid
-        member this.Parent = this.GetParent()
+        member this.Parent = this.Parent |> Option.toNullable
         member this.Name = this.Name
+        member this.Size = this.Size |> Option.toNullable
 
 module Folders =
     let AsyncExecute token (ps: FoldersRequest) = async {
@@ -77,4 +77,4 @@ module Folders =
         }
     }
 
-    let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask
+    let ExecuteAsync token ps = AsyncExecute token ps |> iop.thenMapResult (fun x -> x :> IDeviantArtFolder) |> Async.StartAsTask

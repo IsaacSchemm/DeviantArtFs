@@ -1,4 +1,6 @@
-﻿namespace DeviantArtFs
+﻿namespace DeviantArtFs.Interop
+
+open DeviantArtFs
 
 [<AllowNullLiteral>]
 type Status(original: StatusResponse.Root) =

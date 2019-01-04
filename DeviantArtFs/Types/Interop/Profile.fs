@@ -1,4 +1,7 @@
-﻿namespace DeviantArtFs
+﻿namespace DeviantArtFs.Interop
+
+open DeviantArtFs
+open System
 
 type IProfileStats =
     abstract member UserDeviations: int
@@ -68,4 +71,5 @@ type Profile(original: ProfileResponse.Root) =
                 member __.Folderid = g.Folderid
                 member __.Parent = g.Parent |> Option.toNullable
                 member __.Name = g.Name
+                member __.Size = Nullable()
         })

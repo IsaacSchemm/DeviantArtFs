@@ -2,6 +2,7 @@
 
 open System
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 
 type internal MoreLikeThisResponse = JsonProvider<"""{
@@ -16,11 +17,11 @@ type internal MoreLikeThisResponse = JsonProvider<"""{
     "more_from_da": []
 }""">
 
-type MoreLikeThisResult = {
+type MoreLikeThisResult<'a> = {
     Seed: Guid
     Author: UserResult
-    MoreFromArtist: seq<Deviation>
-    MoreFromDa: seq<Deviation>
+    MoreFromArtist: seq<'a>
+    MoreFromDa: seq<'a>
 }
 
 module MoreLikeThisPreview =
@@ -46,14 +47,22 @@ module MoreLikeThisPreview =
             MoreFromArtist = seq {
                 for element in o.MoreFromArtist do
                     let json = element.JsonValue.ToString()
-                    yield json |> DeviationResponse.Parse |> Deviation
+                    yield json |> DeviationResponse.Parse
             }
             MoreFromDa = seq {
                 for element in o.MoreFromDa do
                     let json = element.JsonValue.ToString()
-                    yield json |> DeviationResponse.Parse |> Deviation
+                    yield json |> DeviationResponse.Parse
             }
         }
     }
 
-    let ExecuteAsync token seed = AsyncExecute token seed |> Async.StartAsTask
+    let ExecuteAsync token seed = Async.StartAsTask (async {
+        let! o = AsyncExecute token seed
+        return {
+            Seed = o.Seed
+            Author = o.Author
+            MoreFromArtist = o.MoreFromArtist |> Seq.map Deviation
+            MoreFromDa = o.MoreFromDa |> Seq.map Deviation
+        }
+    })

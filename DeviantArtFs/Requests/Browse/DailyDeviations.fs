@@ -2,6 +2,7 @@
 
 open System
 open DeviantArtFs
+open DeviantArtFs.Interop
 
 type DailyDeviationsRequest() = 
     member val Date = Nullable<DateTime>() with get, set
@@ -23,8 +24,8 @@ module DailyDeviations =
         return seq {
             for element in o.Results do
                 let json = element.JsonValue.ToString()
-                yield json |> DeviationResponse.Parse |> Deviation
+                yield json |> DeviationResponse.Parse
         }
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> dafs.whenDone (Seq.map Deviation) |> Async.StartAsTask

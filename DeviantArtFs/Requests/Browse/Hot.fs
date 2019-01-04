@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.Browse
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 
 type HotRequest() = 
     member val CategoryPath = null with get, set
@@ -29,9 +30,9 @@ module Hot =
             Results = seq {
                 for element in o.Results do
                     let json = element.JsonValue.ToString()
-                    yield json |> DeviationResponse.Parse |> Deviation
+                    yield json |> DeviationResponse.Parse
             }
         }
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMapResult Deviation |> Async.StartAsTask

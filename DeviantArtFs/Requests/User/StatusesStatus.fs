@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 open System
 
 module StatusesStatus =
@@ -9,7 +10,7 @@ module StatusesStatus =
             sprintf "https://www.deviantart.com/api/v1/oauth2/user/statuses?%O" id
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return StatusResponse.Parse json |> Status
+        return StatusResponse.Parse json
     }
 
-    let ExecuteAsync token id = AsyncExecute token id |> Async.StartAsTask
+    let ExecuteAsync token id = AsyncExecute token id |> iop.thenTo Status |> Async.StartAsTask

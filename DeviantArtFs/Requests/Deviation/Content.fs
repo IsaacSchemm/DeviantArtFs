@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.Deviation
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 open System
 
@@ -15,13 +16,20 @@ type internal ContentResponse = JsonProvider<"""[
 {}
 ]""", SampleIsList=true>
 
+type IContentResult =
+    abstract member Html: string
+    abstract member Css: string
+    abstract member CssFonts: seq<string>
+
 type ContentResult = {
     Html: string option
     Css: string option
     CssFonts: seq<string>
 } with
-     member this.GetHtml() = this.Html |> Option.toObj
-     member this.GetCss() = this.Css |> Option.toObj
+     interface IContentResult with
+         member this.Html = this.Html |> Option.toObj
+         member this.Css = this.Css |> Option.toObj
+         member this.CssFonts = this.CssFonts
 
 module Content =
     let AsyncExecute token (deviationid: Guid) = async {
@@ -35,4 +43,4 @@ module Content =
         }
     }
 
-    let ExecuteAsync token deviationid = AsyncExecute token deviationid |> Async.StartAsTask
+    let ExecuteAsync token deviationid = AsyncExecute token deviationid |> iop.thenTo (fun x -> x :> IContentResult) |> Async.StartAsTask
