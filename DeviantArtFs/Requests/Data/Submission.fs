@@ -1,14 +1,13 @@
 ﻿namespace DeviantArtFs.Requests.Data
 
 open DeviantArtFs
-open DeviantArtFs.Interop
-open FSharp.Data
 
 module Submission =
     let AsyncExecute token = async {
         let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/data/submission"
         let! json = dafs.asyncRead req
-        return TextOnlyResponse.Parse json
+        let o = TextOnlyResponse.Parse json
+        return o.Text
     }
 
-    let ExecuteAsync token = AsyncExecute token |> iop.thenTo (fun obj -> obj.Text) |> Async.StartAsTask
+    let ExecuteAsync token = AsyncExecute token |> Async.StartAsTask

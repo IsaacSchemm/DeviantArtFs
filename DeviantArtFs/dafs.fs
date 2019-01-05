@@ -71,3 +71,12 @@ module internal dafs =
                 let json = element.JsonValue.ToString()
                 yield f json
         }
+
+    let parseUser (json: string) =
+        let u = UserResponse.Parse json
+        {
+            Userid = u.Userid
+            Username = u.Username
+            Usericon = u.Usericon
+            Type = u.Type
+        }

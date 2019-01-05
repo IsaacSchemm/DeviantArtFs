@@ -42,6 +42,9 @@ let sandbox token_string = async {
     let token = create_token_obj token_string
     let! me = DeviantArtFs.Requests.User.Whoami.AsyncExecute token
 
+    let! tos = DeviantArtFs.Requests.Data.Tos.AsyncExecute token
+    printfn "%s" tos
+
     let username =
         match read with
         | "" -> me.Username

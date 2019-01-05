@@ -35,4 +35,4 @@ type internal BidirectionalListResponse = JsonProvider<"""[
 
 type internal ListOnlyResponse = JsonProvider<"""{ "results": [] }""">
 
-type TextOnlyResponse = JsonProvider<"""{ "text": "html_content" }""">
+type internal TextOnlyResponse = JsonProvider<"""{ "text": "html_content" }""">
