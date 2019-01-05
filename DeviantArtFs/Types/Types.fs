@@ -28,13 +28,6 @@ type ExtParams =
         val ExtStats: bool
     end
 
-//type ListOnly<'a> = {
-//    Results: seq<'a>
-//} with
-//    interface IEnumerable<'a> with
-//        member this.GetEnumerator() = this.Results.GetEnumerator() :> System.Collections.IEnumerator
-//        member this.GetEnumerator() = this.Results.GetEnumerator()
-
 type WatchInfo = {
     Friend: bool
     Deviations: bool

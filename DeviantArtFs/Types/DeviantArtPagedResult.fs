@@ -3,6 +3,7 @@
 open System
 
 type IDeviantArtPagedResult<'a> =
+    inherit System.Collections.Generic.IEnumerable<'a>
     abstract member HasMore: bool
     abstract member NextOffset: Nullable<int>
     abstract member HasLess: bool
@@ -24,6 +25,8 @@ type DeviantArtPagedResult<'a> = {
         member this.EstimatedTotal = Nullable()
         member this.Name = null
         member this.Results = this.Results
+        member this.GetEnumerator() = this.Results.GetEnumerator()
+        member this.GetEnumerator() = this.Results.GetEnumerator() :> System.Collections.IEnumerator
 
 type DeviantArtPagedSearchResult<'a> = {
     HasMore: bool
@@ -39,6 +42,8 @@ type DeviantArtPagedSearchResult<'a> = {
         member this.EstimatedTotal = this.EstimatedTotal |> Option.toNullable
         member this.Name = null
         member this.Results = this.Results
+        member this.GetEnumerator() = this.Results.GetEnumerator()
+        member this.GetEnumerator() = this.Results.GetEnumerator() :> System.Collections.IEnumerator
 
 type DeviantArtBidirectionalSearchResult<'a> = {
     HasMore: bool
@@ -55,6 +60,8 @@ type DeviantArtBidirectionalSearchResult<'a> = {
         member this.EstimatedTotal = Nullable()
         member this.Name = null
         member this.Results = this.Results
+        member this.GetEnumerator() = this.Results.GetEnumerator()
+        member this.GetEnumerator() = this.Results.GetEnumerator() :> System.Collections.IEnumerator
 
 type DeviantArtGalleryResult<'a> = {
     HasMore: bool
@@ -70,3 +77,5 @@ type DeviantArtGalleryResult<'a> = {
         member this.Name = this.Name |> Option.toObj
         member this.EstimatedTotal = Nullable()
         member this.Results = this.Results
+        member this.GetEnumerator() = this.Results.GetEnumerator()
+        member this.GetEnumerator() = this.Results.GetEnumerator() :> System.Collections.IEnumerator
