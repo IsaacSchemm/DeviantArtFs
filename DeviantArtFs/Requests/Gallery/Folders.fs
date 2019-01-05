@@ -5,27 +5,19 @@ open DeviantArtFs
 open DeviantArtFs.Interop
 open FSharp.Data
 
-type internal FoldersResponse = JsonProvider<"""[{
-    "results": [
-        {
-            "folderid": "47D47436-5683-8DF2-EEBF-2A6760BE1336",
-            "parent": null,
-            "name": "Featured",
-            "size": 2
-        },
-        {
-            "folderid": "E431BAFB-7A00-7EA1-EED7-2EF9FA0F04CE",
-            "parent": "47D47436-5683-8DF2-EEBF-2A6760BE1336",
-            "name": "My New Gallery"
-        }
-    ],
-    "has_more": true,
-    "next_offset": 2
-}, {
-    "results": [],
-    "has_more": false,
-    "next_offset": null
-}]""", SampleIsList=true>
+type internal FoldersElement = JsonProvider<"""[
+    {
+        "folderid": "47D47436-5683-8DF2-EEBF-2A6760BE1336",
+        "parent": null,
+        "name": "Featured",
+        "size": 2
+    },
+    {
+        "folderid": "E431BAFB-7A00-7EA1-EED7-2EF9FA0F04CE",
+        "parent": "47D47436-5683-8DF2-EEBF-2A6760BE1336",
+        "name": "My New Gallery"
+    }
+]""", SampleIsList=true>
 
 type FoldersRequest() =
     member val Username = null with get, set
@@ -49,7 +41,7 @@ module Folders =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/folders?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return FoldersResponse.Parse json
+        return dafs.parseGenericList FoldersElement.Parse json
     }
 
     let ExecuteAsync token ps = Async.StartAsTask (async {

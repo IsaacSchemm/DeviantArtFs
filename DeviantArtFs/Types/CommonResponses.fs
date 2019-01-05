@@ -33,6 +33,11 @@ type internal BidirectionalListResponse = JsonProvider<"""[
 { "has_more": false, "next_offset": null, "has_less": true, "prev_offset": 1, "results": [] }
 ]""", SampleIsList=true>
 
+type internal GalleryListResponse = JsonProvider<"""[
+{ "has_more": true, "next_offset": 2, "name": "str", "results": [] },
+{ "has_more": false, "next_offset": null, "results": [] }
+]""", SampleIsList=true>
+
 type internal ListOnlyResponse = JsonProvider<"""{ "results": [] }""">
 
 type internal TextOnlyResponse = JsonProvider<"""{ "text": "html_content" }""">

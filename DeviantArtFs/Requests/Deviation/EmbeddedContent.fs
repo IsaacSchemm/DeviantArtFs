@@ -27,14 +27,7 @@ module EmbeddedContent =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/embeddedcontent?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        let resp = BidirectionalListResponse.Parse json
-        return {
-            HasMore = resp.HasMore
-            NextOffset = resp.NextOffset
-            HasLess = resp.HasLess
-            PrevOffset = resp.PrevOffset
-            Results = resp.Results |> Seq.map (fun j -> j.JsonValue.ToString()) |> Seq.map DeviationResponse.Parse
-        }
+        return dafs.parseBidirectionalList DeviationResponse.Parse json
     }
 
     let ExecuteAsync token req = AsyncExecute token req |> iop.thenMapResult Deviation |> Async.StartAsTask

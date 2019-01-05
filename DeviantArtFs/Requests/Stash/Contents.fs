@@ -10,12 +10,7 @@ module Contents =
             |> dafs.createRequest token
 
         let! json = dafs.asyncRead req
-        let resp = GenericListResponse.Parse json
-        return {
-            HasMore = resp.HasMore
-            NextOffset = resp.NextOffset
-            Results = resp.Results |> Seq.map (fun j -> j.JsonValue.ToString()) |> Seq.map StashMetadata.Parse
-        }
+        return dafs.parseGenericList StashMetadata.Parse json
     }
 
     let AsyncGetRoot token = AsyncExecute token 0L

@@ -64,6 +64,33 @@ module internal dafs =
             }
         }
 
+    let parseBidirectionalList (f: string -> 'a) (json: string) =
+        let o = BidirectionalListResponse.Parse json
+        {
+            HasMore = o.HasMore
+            NextOffset = o.NextOffset
+            HasLess = o.HasLess
+            PrevOffset = o.PrevOffset
+            Results = seq {
+                for element in o.Results do
+                    let json = element.JsonValue.ToString()
+                    yield f json
+            }
+        }
+
+    let parseGalleryList (f: string -> 'a) (json: string) =
+        let o = GalleryListResponse.Parse json
+        {
+            HasMore = o.HasMore
+            NextOffset = o.NextOffset
+            Name = o.Name
+            Results = seq {
+                for element in o.Results do
+                    let json = element.JsonValue.ToString()
+                    yield f json
+            }
+        }
+
     let parseListOnly (f: string -> 'a) (json: string) =
         let o = ListOnlyResponse.Parse json
         seq {

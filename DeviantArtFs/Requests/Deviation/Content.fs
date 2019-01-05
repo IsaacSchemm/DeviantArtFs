@@ -16,16 +16,6 @@ type internal ContentResponse = JsonProvider<"""[
 {}
 ]""", SampleIsList=true>
 
-type ContentResult = {
-    Html: string option
-    Css: string option
-    CssFonts: seq<string>
-} with
-     interface IContentResult with
-         member this.Html = this.Html |> Option.toObj
-         member this.Css = this.Css |> Option.toObj
-         member this.CssFonts = this.CssFonts
-
 module Content =
     let AsyncExecute token (deviationid: Guid) = async {
         let req = sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/content?deviationid=%O" deviationid |> dafs.createRequest token

@@ -35,21 +35,6 @@ type ExtParams =
 //        member this.GetEnumerator() = this.Results.GetEnumerator() :> System.Collections.IEnumerator
 //        member this.GetEnumerator() = this.Results.GetEnumerator()
 
-type ArtistLevel =
-    | Student=1
-    | Hobbyist=2
-    | Professional=3
-type ArtistSpecialty =
-    | ArtisanCrafts = 1
-    | DesignAndInterfaces = 2
-    | DigitalArt = 3
-    | FilmAndAnimation = 4
-    | Literature = 5
-    | Photography = 6
-    | TraditionalArt = 7
-    | Other = 8
-    | Varied = 9
-
 type WatchInfo = {
     Friend: bool
     Deviations: bool
