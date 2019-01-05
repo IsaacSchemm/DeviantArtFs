@@ -22,7 +22,7 @@ module StatusesList =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/statuses?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return dafs.parseGenericList StatusResponse.Parse json
+        return dafs.parsePage StatusResponse.Parse json
     }
 
     let ExecuteAsync token req = AsyncExecute token req |> iop.thenMapResult Status |> Async.StartAsTask

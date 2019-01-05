@@ -20,6 +20,10 @@ type StashStack internal (root: IStashRoot, stackid: int64, metadata: StashMetad
         return {
             HasMore = resp.HasMore
             NextOffset = resp.NextOffset
+            HasLess = resp.HasLess
+            PrevOffset = resp.PrevOffset
+            EstimatedTotal = resp.EstimatedTotal
+            Name = resp.Name
             Results = seq {
                 for r in resp.Results do
                     match (r.Itemid, r.Stackid) with

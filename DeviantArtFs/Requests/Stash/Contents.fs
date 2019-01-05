@@ -10,7 +10,7 @@ module Contents =
             |> dafs.createRequest token
 
         let! json = dafs.asyncRead req
-        return dafs.parseGenericList StashMetadata.Parse json
+        return dafs.parsePage StashMetadata.Parse json
     }
 
     let AsyncGetRoot token = AsyncExecute token 0L

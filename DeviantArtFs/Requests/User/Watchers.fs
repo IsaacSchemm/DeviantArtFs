@@ -73,7 +73,7 @@ module Watchers =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/watchers/%s?%s" (dafs.urlEncode req.Username)
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return json |> dafs.parseGenericList (fun j ->
+        return json |> dafs.parsePage (fun j ->
             let r = WatchersElement.Parse j
             {
                 User = {

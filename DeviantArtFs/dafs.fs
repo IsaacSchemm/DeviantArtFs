@@ -39,7 +39,7 @@ module internal dafs =
                 return raise (new DeviantArtException(resp, error_obj))
     }
 
-    let parseGenericList (f: string -> 'a) (json: string) =
+    let parsePage (f: string -> 'a) (json: string) =
         let o = GenericListResponse.Parse json
         {
             HasMore = o.HasMore
@@ -54,12 +54,6 @@ module internal dafs =
                     yield f json
             }
         }
-
-    let parseSearchList = parseGenericList
-
-    let parseBidirectionalList = parseGenericList
-
-    let parseGalleryList = parseGenericList
 
     let parseListOnly (f: string -> 'a) (json: string) =
         let o = ListOnlyResponse.Parse json

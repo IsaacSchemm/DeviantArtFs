@@ -33,7 +33,7 @@ module WhoFaved =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/whofaved?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return json |> dafs.parseGenericList (fun j ->
+        return json |> dafs.parsePage (fun j ->
             let w = WhoFavedElement.Parse j
             {
                 User = w.User.JsonValue.ToString() |> dafs.parseUser

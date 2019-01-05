@@ -40,7 +40,7 @@ module Folders =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/folders?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return dafs.parseGenericList FoldersElement.Parse json
+        return dafs.parsePage FoldersElement.Parse json
     }
 
     let ExecuteAsync token ps =

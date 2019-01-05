@@ -23,7 +23,7 @@ module UserJournals =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/user/journals?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return json |> dafs.parseGenericList DeviationResponse.Parse
+        return json |> dafs.parsePage DeviationResponse.Parse
     }
 
     let ExecuteAsync token req = AsyncExecute token req |> iop.thenMapResult Deviation |> Async.StartAsTask
