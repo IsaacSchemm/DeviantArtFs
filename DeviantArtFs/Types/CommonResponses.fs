@@ -19,23 +19,20 @@ type internal UserResponse = JsonProvider<"""{
 }""">
 
 type internal GenericListResponse = JsonProvider<"""[
-{ "has_more": true, "next_offset": 2, "results": [] },
-{ "has_more": false, "next_offset": null, "results": [] }
-]""", SampleIsList=true>
-
-type internal SearchListResponse = JsonProvider<"""[
-{ "has_more": true, "next_offset": 2, "estimated_total": 4, "results": [] },
-{ "has_more": false, "next_offset": null, "results": [] }
-]""", SampleIsList=true>
-
-type internal BidirectionalListResponse = JsonProvider<"""[
-{ "has_more": true, "next_offset": 1, "has_less": false, "prev_offset": null, "results": [] },
-{ "has_more": false, "next_offset": null, "has_less": true, "prev_offset": 1, "results": [] }
-]""", SampleIsList=true>
-
-type internal GalleryListResponse = JsonProvider<"""[
-{ "has_more": true, "next_offset": 2, "name": "str", "results": [] },
-{ "has_more": false, "next_offset": null, "results": [] }
+{
+    "has_more": true,
+    "next_offset": 2,
+    "estimated_total": 4,
+    "has_less": true,
+    "prev_offset": 1,
+    "name": "str",
+    "results": []
+},
+{
+    "has_more": false,
+    "next_offset": null,
+    "results": []
+}
 ]""", SampleIsList=true>
 
 type internal ListOnlyResponse = JsonProvider<"""{ "results": [] }""">

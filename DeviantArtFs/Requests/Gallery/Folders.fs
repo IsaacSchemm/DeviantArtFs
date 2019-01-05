@@ -1,6 +1,5 @@
 ﻿namespace DeviantArtFs.Requests.Gallery
 
-open System
 open DeviantArtFs
 open DeviantArtFs.Interop
 open FSharp.Data
@@ -44,20 +43,13 @@ module Folders =
         return dafs.parseGenericList FoldersElement.Parse json
     }
 
-    let ExecuteAsync token ps = Async.StartAsTask (async {
-        let! o = AsyncExecute token ps
-        return {
-            HasMore = o.HasMore
-            NextOffset = o.NextOffset
-            Results = seq {
-                for f in o.Results do
-                    yield {
-                        new IDeviantArtFolder with
-                            member __.Folderid = f.Folderid
-                            member __.Parent = f.Parent |> Option.toNullable
-                            member __.Name = f.Name
-                            member __.Size = f.Size |> Option.toNullable
-                    }
-            }
-        }
-    })
+    let ExecuteAsync token ps =
+        AsyncExecute token ps
+        |> iop.thenMapResult (fun f -> {
+            new IDeviantArtFolder with
+                member __.Folderid = f.Folderid
+                member __.Parent = f.Parent |> Option.toNullable
+                member __.Name = f.Name
+                member __.Size = f.Size |> Option.toNullable
+        })
+        |> Async.StartAsTask
