@@ -2,6 +2,7 @@
 
 open System
 open System.Net
+open System.Collections.Generic
 
 type IDeviantArtAccessToken =
     abstract member AccessToken: string with get
@@ -26,6 +27,13 @@ type ExtParams =
         val ExtCamera: bool
         val ExtStats: bool
     end
+
+//type ListOnly<'a> = {
+//    Results: seq<'a>
+//} with
+//    interface IEnumerable<'a> with
+//        member this.GetEnumerator() = this.Results.GetEnumerator() :> System.Collections.IEnumerator
+//        member this.GetEnumerator() = this.Results.GetEnumerator()
 
 type ArtistLevel =
     | Student=1

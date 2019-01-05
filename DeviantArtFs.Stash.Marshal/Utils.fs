@@ -1,6 +1,6 @@
 namespace DeviantArtFs.Stash.Marshal
 
-open DeviantArtFs.Requests.Stash
+open DeviantArtFs
 
 [<AllowNullLiteral>]
 type IStashFile =

@@ -1,6 +1,6 @@
 ﻿namespace DeviantArtFs.Stash.Marshal
 
-open DeviantArtFs.Requests.Stash
+open DeviantArtFs
 open DeviantArtFs.Interop
 
 type StashRoot() =
@@ -71,35 +71,33 @@ type StashRoot() =
         grab nodes None
 
     member this.Apply (entry: IDeltaEntry) =
-        let delta = {
-            Itemid = entry.Itemid |> Option.ofNullable
-            Stackid = entry.Stackid |> Option.ofNullable
-            Metadata = entry.Metadata |> Option.ofObj |> Option.map (StashMetadata.Parse)
-            Position = entry.Position |> Option.ofNullable
-        }
+        let itemid = entry.Itemid |> Option.ofNullable
+        let stackid = entry.Stackid |> Option.ofNullable
+        let metadata = entry.Metadata |> Option.ofObj |> Option.map (StashMetadata.Parse)
+        let position = entry.Position |> Option.ofNullable
 
-        match delta.Metadata with
+        match metadata with
         | Some metadata ->
             // Add or update
-            match (delta.Itemid, delta.Stackid) with
+            match (itemid, stackid) with
             | (Some itemid, _) ->
                 // Add or update item
                 match this.FindItemById itemid with
                 | Some existing ->
-                    update delta.Position existing metadata
+                    update position existing metadata
                 | None ->
-                    new StashItem(this, itemid, metadata) |> insert (delta.Position |> Option.defaultValue 0)
+                    new StashItem(this, itemid, metadata) |> insert (position |> Option.defaultValue 0)
             | (None, Some stackid) ->
                 // Add or update stack
                 match this.FindStackById stackid with
                 | Some existing ->
-                    update delta.Position existing metadata
+                    update position existing metadata
                 | None ->
-                    new StashStack(this, stackid, metadata) |> insert (delta.Position |> Option.defaultValue 0)
+                    new StashStack(this, stackid, metadata) |> insert (position |> Option.defaultValue 0)
             | _ -> failwithf "Invalid combination of stackid/itemid with metadata"
         | None ->
             // Deletion
-            match (delta.Itemid, delta.Stackid) with
+            match (itemid, stackid) with
             | (Some itemid, None) ->
                 // Delete item
                 match this.FindItemById itemid with

@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.Stash
 
 open DeviantArtFs
+open DeviantArtFs.Interop
 open FSharp.Data
 
 type ItemRequest(itemid: int64) = 

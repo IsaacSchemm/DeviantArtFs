@@ -21,17 +21,7 @@ module Tags =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/tags?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        let o = SearchListResponse.Parse json
-        return {
-            HasMore = o.HasMore
-            NextOffset = o.NextOffset
-            EstimatedTotal = o.EstimatedTotal
-            Results = seq {
-                for element in o.Results do
-                    let json = element.JsonValue.ToString()
-                    yield json |> DeviationResponse.Parse
-            }
-        }
+        return dafs.parseSearchList DeviationResponse.Parse json
     }
 
     let ExecuteAsync token req = AsyncExecute token req |> iop.thenMapResult Deviation |> Async.StartAsTask

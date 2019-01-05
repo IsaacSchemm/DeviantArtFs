@@ -20,12 +20,7 @@ module DailyDeviations =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/dailydeviations?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        let o = ListOnlyResponse.Parse json
-        return seq {
-            for element in o.Results do
-                let json = element.JsonValue.ToString()
-                yield json |> DeviationResponse.Parse
-        }
+        return dafs.parseListOnly DeviationResponse.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> dafs.whenDone (Seq.map Deviation) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMap Deviation |> Async.StartAsTask

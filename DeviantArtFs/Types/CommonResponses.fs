@@ -1,7 +1,5 @@
 ﻿namespace DeviantArtFs
 
-open System
-open System.Net
 open FSharp.Data
 
 type internal DeviantArtBaseResponse = JsonProvider<"""{"status":"error"}""">
@@ -12,6 +10,13 @@ type internal SuccessOrErrorResponse = JsonProvider<"""[
 { "success": false, "error_description": "str" },
 { "success": true }
 ]""", SampleIsList=true>
+
+type internal UserResponse = JsonProvider<"""{
+    "userid": "CAFD9087-C6EF-2F2C-183B-A658AE61FB95",
+    "username": "verycoolusername",
+    "usericon": "https://a.deviantart.net/avatars/default.gif",
+    "type": "regular"
+}""">
 
 type internal GenericListResponse = JsonProvider<"""[
 { "has_more": true, "next_offset": 2, "results": [] },
