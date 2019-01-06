@@ -57,11 +57,11 @@ Uses [FSharp.Data](http://fsharp.github.io/FSharp.Data/) to parse JSON.
 
 ### Stash
 
-* GET /stash/{stackid}†
-* GET /stash/{stackid}/contents†
+* GET /stash/{stackid}
+* GET /stash/{stackid}/contents
 * POST /stash/delete
-* GET /stash/delta†
-* GET /stash/item/{itemid}†
+* GET /stash/delta
+* GET /stash/item/{itemid}
 * POST /stash/move/{stackid}
 * POST /stash/position/{stackid}
 * POST /stash/publish
@@ -71,8 +71,7 @@ Uses [FSharp.Data](http://fsharp.github.io/FSharp.Data/) to parse JSON.
 * POST /stash/submit
 * POST /stash/update/{stackid}
 
-> † The DeviantArt.Stash.Marshal library provides the .NET-friendly StashItem and StackStack wrappers
->   and a StashRoot object that can process delta entries.
+> The DeviantArt.Stash.Marshal library provides a StashRoot object that can process delta entries.
 
 ### User
 
@@ -113,7 +112,7 @@ Example (C#):
 			Offset = offset,
 			Limit = 24
 		};
-		var resp = await DeviantArtFs.Requests.Gallery.All.ExecuteAsync(token, req);
+		IDeviantArtPagedResult<Deviation> resp = await DeviantArtFs.Requests.Gallery.All.ExecuteAsync(token, req);
 		list.AddRange(resp.Results);
 		offset = resp.NextOffset ?? 0;
 		if (!resp.HasMore) break;
@@ -125,10 +124,13 @@ Example (F#):
     let mutable more = true
     while more do
         let req = new DeviantArtFs.Requests.Gallery.AllRequest(Offset = offset, Limit = 24)
-        let! resp = DeviantArtFs.Requests.Gallery.All.AsyncExecute token req
+        let! (resp: DeviantArtPagedResult<DeviationResponse.Root>) = DeviantArtFs.Requests.Gallery.All.AsyncExecute token req
         list.AddRange(resp.Results)
         offset <- resp.NextOffset |> Option.defaultValue 0
         more <- resp.HasMore
+
+Note how the result from AsyncExecute is `DeviantArtPagedResult`, which has a NextOffset field of `int option`,
+while the result from ExecuteAsync is `IDeviantArtPagedResult`, which has a NextOffset fieldd of `int?`.
 
 ## Authentication
 
