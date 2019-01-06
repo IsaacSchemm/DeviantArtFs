@@ -1,16 +1,10 @@
 namespace DeviantArtFs.Stash.Marshal
 
 open DeviantArtFs
-
-[<AllowNullLiteral>]
-type IStashFile =
-    abstract member Src: string
-    abstract member Width: int
-    abstract member Height: int
-    abstract member Transparency: bool
+open DeviantArtFs.Interop
 
 module internal Utils =
-    let toStashFile (f: StashMetadata.Thumb) =
+    let toStashFile (f: StashMetadataResponse.Thumb) =
         {
             new IStashFile with
                 member __.Src = f.Src

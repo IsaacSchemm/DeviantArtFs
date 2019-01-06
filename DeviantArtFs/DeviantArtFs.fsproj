@@ -30,6 +30,8 @@
     <Compile Include="Types\Interop\Metadata.fs" />
     <Compile Include="Types\Interop\Status.fs" />
     <Compile Include="Types\Interop\Profile.fs" />
+    <Compile Include="Types\Interop\StashMetadata.fs" />
+    <Compile Include="Types\Interop\DeltaEntry.fs" />
     <Compile Include="Types\Interop\iop.fs" />
     <Compile Include="DeviantArtAuth.fs" />
     <Compile Include="Requests\Browse\CategoryTree.fs" />

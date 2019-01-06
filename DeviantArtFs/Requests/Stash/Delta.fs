@@ -38,14 +38,14 @@ type internal DeltaResponse = JsonProvider<"""[{
 type DeltaResultEntry = {
     Itemid: int64 option
     Stackid: int64 option
-    Metadata: StashMetadata.Root option
+    Metadata: StashMetadataResponse.Root option
     Position: int option
 }
 with
     interface IDeltaEntry with
         member this.Itemid = this.Itemid |> Option.toNullable
         member this.Stackid = this.Stackid |> Option.toNullable
-        member this.Metadata = this.Metadata |> Option.map (fun j -> j.JsonValue.ToString()) |> Option.toObj
+        member this.MetadataJson = this.Metadata |> Option.map (fun j -> j.JsonValue.ToString()) |> Option.toObj
         member this.Position = this.Position |> Option.toNullable
 
 type DeltaResult = {
@@ -61,7 +61,7 @@ with
         member this.HasMore = this.HasMore
         member this.NextOffset = this.NextOffset |> Option.toNullable
         member this.Reset = this.Reset
-        member this.Entries = this.Entries |> Seq.map (fun e -> e :> IDeltaEntry)
+        member this.Entries = this.Entries |> Seq.map DeltaEntry
 
 type DeltaRequest() = 
     member val Cursor = null with get, set
@@ -98,7 +98,7 @@ module Delta =
                     yield {
                         Itemid = e.Itemid
                         Stackid = e.Stackid
-                        Metadata = e.Metadata |> Option.map (fun j -> j.JsonValue.ToString() |> StashMetadata.Parse)
+                        Metadata = e.Metadata |> Option.map (fun j -> j.JsonValue.ToString() |> StashMetadataResponse.Parse)
                         Position = e.Position
                     }
             }

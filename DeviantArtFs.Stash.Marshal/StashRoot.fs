@@ -22,7 +22,7 @@ type StashRoot() =
         let new_master_pos = nodes.IndexOf(insert_before)
         insert new_master_pos node
 
-    let update pos (node: StashNode) (metadata: StashMetadata.Root) =
+    let update pos (node: StashNode) (metadata: StashMetadataResponse.Root) =
         let original_stackid = node.ParentStackId
         node.Metadata <- metadata
 
@@ -73,7 +73,7 @@ type StashRoot() =
     member this.Apply (entry: IDeltaEntry) =
         let itemid = entry.Itemid |> Option.ofNullable
         let stackid = entry.Stackid |> Option.ofNullable
-        let metadata = entry.Metadata |> Option.ofObj |> Option.map (StashMetadata.Parse)
+        let metadata = entry.MetadataJson |> Option.ofObj |> Option.map StashMetadataResponse.Parse
         let position = entry.Position |> Option.ofNullable
 
         match metadata with

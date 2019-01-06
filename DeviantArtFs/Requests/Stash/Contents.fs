@@ -10,16 +10,16 @@ module Contents =
             |> dafs.createRequest token
 
         let! json = dafs.asyncRead req
-        return dafs.parsePage StashMetadata.Parse json
+        return dafs.parsePage StashMetadataResponse.Parse json
     }
 
     let AsyncGetRoot token = AsyncExecute token 0L
 
     let ExecuteAsync token stackid =
         AsyncExecute token stackid
-        |> iop.thenMapResult (fun m -> m.JsonValue.ToString())
+        |> iop.thenMapResult StashMetadata
         |> Async.StartAsTask
     let GetRootAsync token =
         AsyncGetRoot token
-        |> iop.thenMapResult (fun m -> m.JsonValue.ToString())
+        |> iop.thenMapResult StashMetadata
         |> Async.StartAsTask

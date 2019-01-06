@@ -3,7 +3,7 @@
 open DeviantArtFs
 open DeviantArtFs.Requests.Stash
 
-type StashItem(root: IStashRoot, itemid: int64, metadata: StashMetadata.Root) =
+type StashItem(root: IStashRoot, itemid: int64, metadata: StashMetadataResponse.Root) =
     inherit StashNode(root, metadata)
 
     static member AsyncGetItem token req = async {
@@ -34,7 +34,7 @@ type StashItem(root: IStashRoot, itemid: int64, metadata: StashMetadata.Root) =
     override this.Save() = {
         Itemid = this.Itemid |> System.Nullable
         Stackid = this.ParentStackId.Value
-        Metadata = this.Metadata.JsonValue.ToString()
+        MetadataJson = this.Metadata.JsonValue.ToString()
         Position = this.Position
     }
 

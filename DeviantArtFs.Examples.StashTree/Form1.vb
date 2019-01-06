@@ -12,7 +12,7 @@ Public Class Form1
         Button1.Enabled = False
 
         If Token IsNot Nothing Then
-            Dim list As New List(Of Requests.Stash.DeltaResultEntry)
+            Dim list As New List(Of IDeltaEntry)
 
             Dim req = New Requests.Stash.DeltaRequest With {.Cursor = StashCursor}
             req.Limit = 120

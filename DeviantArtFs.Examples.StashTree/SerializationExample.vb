@@ -15,7 +15,7 @@ Public Class SerializationExample
         Sub New(copyFrom As IDeltaEntry)
             I = copyFrom.Itemid
             S = copyFrom.Stackid
-            M = copyFrom.Metadata
+            M = copyFrom.MetadataJson
             P = copyFrom.Position
         End Sub
 
@@ -23,7 +23,7 @@ Public Class SerializationExample
 
         Public Property S As Long? Implements IDeltaEntry.Stackid
 
-        Public Property M As String Implements IDeltaEntry.Metadata
+        Public Property M As String Implements IDeltaEntry.MetadataJson
 
         Public Property P As Integer? Implements IDeltaEntry.Position
     End Class

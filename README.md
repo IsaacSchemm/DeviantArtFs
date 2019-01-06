@@ -91,31 +91,44 @@ Uses [FSharp.Data](http://fsharp.github.io/FSharp.Data/) to parse JSON.
 * GET /user/whoami
 * POST /user/whois
 
-## Util
+### Util
 
 * GET /placebo
 
-## Result objects
+## Usage
 
-For requests that return relatively simple data, the resuult object will either be a standard .NET object (like IEnumerable<T>)
-or an F# record type. Some F# records defined in this library use option types (FSharpOption<T>); to make interop easier,
-these records also have functions that return the same result as a potentially null value.
+Each request you can make has a module (static class) in one of the DeviantArtFs.Requests namespaces, with AsyncExecute and
+ExecuteAsync methods. AsyncExecute returns an F# asynchronous workflow, while ExecuteAsync returns a Task<T>.
+
+The methods sometimes vary in their response objects as well; AsyncExecute will typically return a record or JsonProvider type
+that uses option types to represent fields that may or may not exist, while ExecuteAsync will return a class or interface that
+uses nullable reference types (or Nullable<T>) for such fields.
 
 Example (C#):
 
-	var result = await DeviantArtFs.Requests.Gallery.All.ExecuteAsync(token, new DeviantArtFs.Requests.Gallery.AllRequest());
-	Microsoft.FSharp.Core.FSharpOption<int> a = result.NextOffset;
-	int? b = result.GetNextOffset();
+	var list = new List<DeviantArtFs.Interop.Deviation>();
+	int offset = 0;
+	while (true) {
+		var req = new DeviantArtFs.Requests.Gallery.AllRequest {
+			Offset = offset,
+			Limit = 24
+		};
+		var resp = await DeviantArtFs.Requests.Gallery.All.ExecuteAsync(token, req);
+		list.AddRange(resp.Results);
+		offset = resp.NextOffset ?? 0;
+		if (!resp.HasMore) break;
 
 Example (F#):
 
-	let! result = new DeviantArtFs.Requests.Gallery.AllRequest() |> DeviantArtFs.Requests.Gallery.All.AsyncExecute token
-	let a: int option = result.NextOffset
-	let b: System.Nullable<int> = result.GetNextOffset()
-
-More complex types (Deviation, Metadata, Status, Profile) have classes defined for them that provide a .NET-friendly wrapper
-around the original JsonProvider<...> object, including the use of null and Nullable<T>. F# users might want to access the
-original JsonProvider<...> object directly via the "Original" property on these objects.
+    let list = new ResizeArray<DeviantArtFs.DeviationResponse.Root>()
+    let mutable offset = 0
+    let mutable more = true
+    while more do
+        let req = new DeviantArtFs.Requests.Gallery.AllRequest(Offset = offset, Limit = 24)
+        let! resp = DeviantArtFs.Requests.Gallery.All.AsyncExecute token req
+        list.AddRange(resp.Results)
+        offset <- resp.NextOffset |> Option.defaultValue 0
+        more <- resp.HasMore
 
 ## Authentication
 

@@ -11,12 +11,12 @@ type internal MoveResponse = JsonProvider<"""{
 }""">
 
 type MoveResult = {
-    Target: StashMetadata.Root
-    Changes: seq<StashMetadata.Root>
+    Target: StashMetadataResponse.Root
+    Changes: seq<StashMetadataResponse.Root>
 } with
     interface IMoveResult with
-        member this.Target = this.Target.JsonValue.ToString()
-        member this.Changes = this.Changes |> Seq.map (fun m -> m.JsonValue.ToString())
+        member this.Target = this.Target |> StashMetadata
+        member this.Changes = this.Changes |> Seq.map StashMetadata
 
 module Move =
     let AsyncExecute token (stackid: int64) (targetid: int64) = async {
@@ -37,8 +37,8 @@ module Move =
         let! json = dafs.asyncRead req
         let resp = MoveResponse.Parse json
         return {
-            Target = resp.Target.JsonValue.ToString() |> StashMetadata.Parse
-            Changes = resp.Changes |> Seq.map (fun j -> j.JsonValue.ToString()) |> Seq.map StashMetadata.Parse
+            Target = resp.Target.JsonValue.ToString() |> StashMetadataResponse.Parse
+            Changes = resp.Changes |> Seq.map (fun j -> j.JsonValue.ToString()) |> Seq.map StashMetadataResponse.Parse
         }
     }
 

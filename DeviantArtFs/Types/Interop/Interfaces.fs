@@ -31,19 +31,9 @@ type IDeviantArtFile =
     abstract member Width: int
     abstract member Filesize: Nullable<int>
 
-type IDeltaEntry =
-    abstract member Itemid: Nullable<int64>
-    abstract member Stackid: Nullable<int64>
-    abstract member Metadata: string
-    abstract member Position: Nullable<int>
-
-type IDeltaResult =
-    abstract member Cursor: string
-    abstract member HasMore: bool
-    abstract member NextOffset: System.Nullable<int>
-    abstract member Reset: bool
-    abstract member Entries: seq<IDeltaEntry>
-
-type IMoveResult =
-    abstract member Target: string
-    abstract member Changes: seq<string>
+[<AllowNullLiteral>]
+type IStashFile =
+    abstract member Src: string
+    abstract member Height: int
+    abstract member Width: int
+    abstract member Transparency: bool

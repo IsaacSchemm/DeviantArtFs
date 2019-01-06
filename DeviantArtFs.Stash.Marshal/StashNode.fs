@@ -8,17 +8,17 @@ type SavedDeltaEntry =
     {
         Itemid: Nullable<int64>
         Stackid: int64
-        Metadata: string
+        MetadataJson: string
         Position: int
     }
     interface IDeltaEntry with
         member this.Itemid = this.Itemid
         member this.Stackid = this.Stackid |> Nullable
-        member this.Metadata = this.Metadata
+        member this.MetadataJson = this.MetadataJson
         member this.Position = this.Position |> Nullable
 
 [<AbstractClass>]
-type StashNode(root: IStashRoot, metadata: StashMetadata.Root) =
+type StashNode(root: IStashRoot, metadata: StashMetadataResponse.Root) =
     member val Metadata = metadata with get, set
     member this.Title = this.Metadata.Title |> Option.toObj
 

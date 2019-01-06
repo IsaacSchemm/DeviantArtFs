@@ -38,3 +38,9 @@ type WatchInfo = {
     Activity: bool
     Collections: bool
 }
+
+type IDeltaEntry =
+    abstract member Itemid: Nullable<int64>
+    abstract member Stackid: Nullable<int64>
+    abstract member MetadataJson: string
+    abstract member Position: Nullable<int>

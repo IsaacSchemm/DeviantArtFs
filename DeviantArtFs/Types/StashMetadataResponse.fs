@@ -2,7 +2,7 @@
 
 open FSharp.Data
 
-type StashMetadata = JsonProvider<"""[
+type StashMetadataResponse = JsonProvider<"""[
 {
     "title": "Title 1",
     "path": "Saved Submissions/Sta.sh Uploads 367",
