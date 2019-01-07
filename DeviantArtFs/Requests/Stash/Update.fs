@@ -5,27 +5,25 @@ open System.IO
 
 [<RequireQualifiedAccess>]
 type FieldChange =
-    | UpdateTo of string
-    | ResetToNull
+    | Update of string
     | NoChange
 
-type UpdateParameters = {
-    Stackid: int64
-    Title: FieldChange
-    Description: FieldChange
-}
+type UpdateRequest(stackid: int64) =
+    member __.Stackid = stackid
+    member val Title = FieldChange.NoChange with get, set
+    member val Description: FieldChange = FieldChange.NoChange with get, set
 
 module Update =
-    let AsyncExecute token (req: UpdateParameters) = async {
+    let AsyncExecute token (req: UpdateRequest) = async {
         let query = seq {
             match req.Title with
-            | FieldChange.UpdateTo s -> yield sprintf "title=%s" (dafs.urlEncode s)
-            | FieldChange.ResetToNull -> failwithf "The title cannot be null"
+            | FieldChange.Update null -> failwithf "A null title is not allowed"
+            | FieldChange.Update s -> yield sprintf "title=%s" (dafs.urlEncode s)
             | FieldChange.NoChange -> ()
             match req.Description with
-            | FieldChange.UpdateTo "null" -> failwithf "The string \"null\" is not allowed"
-            | FieldChange.UpdateTo s -> yield sprintf "description=%s" (dafs.urlEncode s)
-            | FieldChange.ResetToNull -> yield "description=null"
+            | FieldChange.Update "null" -> failwithf "The string \"null\" is not allowed"
+            | FieldChange.Update null -> yield "description=null"
+            | FieldChange.Update s -> yield sprintf "description=%s" (dafs.urlEncode s)
             | FieldChange.NoChange -> ()
         }
 
@@ -43,28 +41,7 @@ module Update =
         SuccessOrErrorResponse.Parse json |> dafs.assertSuccess
     }
 
-    let UpdateTitleAsync token stackid title =
-        {
-            Stackid = stackid
-            Title = 
-                match title with
-                | null -> FieldChange.ResetToNull
-                | _ -> FieldChange.UpdateTo title
-            Description = FieldChange.NoChange
-        }
-        |> AsyncExecute token
-        |> Async.StartAsTask
-        |> dafs.toPlainTask
-
-    let UpdateDescriptionAsync token stackid description =
-        {
-            Stackid = stackid
-            Title = FieldChange.NoChange
-            Description =
-                match description with
-                | null -> FieldChange.ResetToNull
-                | _ -> FieldChange.UpdateTo description
-        }
-        |> AsyncExecute token
+    let ExecuteAsync token req =
+        AsyncExecute token req
         |> Async.StartAsTask
         |> dafs.toPlainTask
