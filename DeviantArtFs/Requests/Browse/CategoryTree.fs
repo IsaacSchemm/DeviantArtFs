@@ -30,7 +30,7 @@ module CategoryTree =
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
         let o = CategoryTreeResponse.Parse json
-        return o.Categories
+        return o.Categories :> seq<CategoryTreeResponse.Category>
     }
 
     let ExecuteAsync token req = Async.StartAsTask (async {
