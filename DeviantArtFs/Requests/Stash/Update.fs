@@ -1,26 +1,32 @@
 ﻿namespace DeviantArtFs.Requests.Stash
 
 open DeviantArtFs
-open FSharp.Data
 open System.IO
+
+[<RequireQualifiedAccess>]
+type FieldChange =
+    | UpdateTo of string
+    | ResetToNull
+    | NoChange
 
 type UpdateParameters = {
     Stackid: int64
-    Title: string option
-    Description: string option
+    Title: FieldChange
+    Description: FieldChange
 }
 
 module Update =
     let AsyncExecute token (req: UpdateParameters) = async {
         let query = seq {
             match req.Title with
-            | Some s -> yield sprintf "title=%s" (dafs.urlEncode s)
-            | None -> ()
+            | FieldChange.UpdateTo s -> yield sprintf "title=%s" (dafs.urlEncode s)
+            | FieldChange.ResetToNull -> failwithf "The title cannot be null"
+            | FieldChange.NoChange -> ()
             match req.Description with
-            | Some "null" -> failwithf "The string \"null\" is not allowed"
-            | Some null -> yield "description=null"
-            | Some s -> yield sprintf "description=%s" (dafs.urlEncode s)
-            | None -> ()
+            | FieldChange.UpdateTo "null" -> failwithf "The string \"null\" is not allowed"
+            | FieldChange.UpdateTo s -> yield sprintf "description=%s" (dafs.urlEncode s)
+            | FieldChange.ResetToNull -> yield "description=null"
+            | FieldChange.NoChange -> ()
         }
 
         let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/update/%d" req.Stackid |> dafs.createRequest token
@@ -37,22 +43,28 @@ module Update =
         SuccessOrErrorResponse.Parse json |> dafs.assertSuccess
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
-
     let UpdateTitleAsync token stackid title =
         {
             Stackid = stackid
-            Title = Some title
-            Description = None
+            Title = 
+                match title with
+                | null -> FieldChange.ResetToNull
+                | _ -> FieldChange.UpdateTo title
+            Description = FieldChange.NoChange
         }
         |> AsyncExecute token
         |> Async.StartAsTask
+        :> System.Threading.Tasks.Task
 
     let UpdateDescriptionAsync token stackid description =
         {
             Stackid = stackid
-            Title = None
-            Description = Some description
+            Title = FieldChange.NoChange
+            Description =
+                match description with
+                | null -> FieldChange.ResetToNull
+                | _ -> FieldChange.UpdateTo description
         }
         |> AsyncExecute token
         |> Async.StartAsTask
+        :> System.Threading.Tasks.Task
