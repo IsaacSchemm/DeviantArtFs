@@ -13,4 +13,4 @@ module FoldersRemove =
         dafs.assertSuccess resp
     }
 
-    let ExecuteAsync token folderid = AsyncExecute token folderid |> Async.StartAsTask
+    let ExecuteAsync token folderid = AsyncExecute token folderid |> Async.StartAsTask |> dafs.toPlainTask

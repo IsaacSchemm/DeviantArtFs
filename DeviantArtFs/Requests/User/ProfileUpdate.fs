@@ -70,4 +70,4 @@ module ProfileUpdate =
         SuccessOrErrorResponse.Parse json |> dafs.assertSuccess
     }
 
-    let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask
+    let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask |> dafs.toPlainTask

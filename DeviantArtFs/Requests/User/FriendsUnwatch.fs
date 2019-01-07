@@ -14,4 +14,4 @@ module FriendsUnwatch =
         SuccessOrErrorResponse.Parse json |> dafs.assertSuccess
     }
 
-    let ExecuteAsync token username = AsyncExecute token username |> Async.StartAsTask
+    let ExecuteAsync token username = AsyncExecute token username |> Async.StartAsTask |> dafs.toPlainTask

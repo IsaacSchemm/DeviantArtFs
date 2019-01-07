@@ -4,7 +4,6 @@ open DeviantArtFs
 
 module Delete =
     open System.IO
-    open System.Threading.Tasks
 
     let AsyncExecute token (itemid: int64) = async {
         let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/delete"
@@ -21,4 +20,4 @@ module Delete =
         return ignore json
     }
 
-    let ExecuteAsync token itemid = AsyncExecute token itemid |> Async.StartAsTask :> Task
+    let ExecuteAsync token itemid = AsyncExecute token itemid |> Async.StartAsTask |> dafs.toPlainTask

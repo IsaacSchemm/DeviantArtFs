@@ -54,7 +54,7 @@ module Update =
         }
         |> AsyncExecute token
         |> Async.StartAsTask
-        :> System.Threading.Tasks.Task
+        |> dafs.toPlainTask
 
     let UpdateDescriptionAsync token stackid description =
         {
@@ -67,4 +67,4 @@ module Update =
         }
         |> AsyncExecute token
         |> Async.StartAsTask
-        :> System.Threading.Tasks.Task
+        |> dafs.toPlainTask

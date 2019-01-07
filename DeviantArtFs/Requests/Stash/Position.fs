@@ -24,4 +24,4 @@ module Position =
         SuccessOrErrorResponse.Parse json |> dafs.assertSuccess
     }
 
-    let ExecuteAsync token stackid position = AsyncExecute token stackid position |> Async.StartAsTask
+    let ExecuteAsync token stackid position = AsyncExecute token stackid position |> Async.StartAsTask |> dafs.toPlainTask

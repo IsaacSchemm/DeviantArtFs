@@ -2,7 +2,7 @@
 
 open System.Net
 open System.IO
-open FSharp.Data
+open System.Threading.Tasks
 
 module internal dafs =
     let assertSuccess (resp: SuccessOrErrorResponse.Root) =
@@ -11,7 +11,7 @@ module internal dafs =
         | _ -> failwithf "%s" (resp.ErrorDescription |> Option.defaultValue "An unknown error occurred.")
 
     let urlEncode = WebUtility.UrlEncode
-    let userAgent = "DeviantArtFs/0.1 (https://github.com/libertyernie/CrosspostSharp)"
+    let userAgent = "DeviantArtFs/0.5 (https://github.com/libertyernie/CrosspostSharp)"
 
     let createRequest (token: IDeviantArtAccessToken) (url: string) =
         let req = WebRequest.CreateHttp url
@@ -71,3 +71,5 @@ module internal dafs =
             Usericon = u.Usericon
             Type = u.Type
         }
+
+    let toPlainTask (t: Task<unit>) = t :> Task
