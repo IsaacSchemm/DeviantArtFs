@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -11,35 +13,89 @@ namespace DocGenerator
             string n = t.Name.Replace("`1", "").Replace("`2", "").Replace("IJsonDocument", "???");
             if (n == "FSharpAsync") n = "Async";
             if (n == "Boolean") n = "bool";
+            if (n == "Byte") n = "byte";
+            if (n == "Int16") n = "short";
             if (n == "Int32") n = "int";
             if (n == "Int64") n = "long";
+            if (n == "Byte[]") n = "byte[]";
             if (n == "String") n = "string";
-            return $"{n}{(t.GenericTypeArguments.Any() ? $"<{string.Join(", ", t.GenericTypeArguments.Select(x => PrintTypeName(x)))}>" : "")}";
+            if (n == "Unit") n = "unit";
+            if (t.Namespace == "DeviantArtFs.Interop") n = $"Interop.{n}";
+            var generics = string.Join(", ", t.GenericTypeArguments.Select(x => PrintTypeName(x)));
+            return n == "Nullable"
+                ? $"{generics}?"
+                : $"{n}{(t.GenericTypeArguments.Any() ? $"<{generics}>" : "")}";
         }
 
         static void Main(string[] args)
         {
-            var a = Assembly.GetAssembly(typeof(DeviantArtFs.Requests.Browse.CategoryTree));
-            foreach (var t in a.GetTypes().OrderBy(x => x.FullName))
+            using (var fs = new FileStream(Path.Combine(Environment.CurrentDirectory, "../../../..", "endpoints.txt"), FileMode.Create, FileAccess.Write))
+            using (var sw = new StreamWriter(fs))
             {
-                if (t.Name.Contains("@")) continue;
-                var ae = t.GetMembers()
-                    .Select(x => x as MethodInfo)
-                    .Where(x => x != null)
-                    .Where(x => x.ReturnType.Name.StartsWith("Task") || x.ReturnType.Name.StartsWith("FSharpAsync"));
-                if (ae.Any())
+                sw.WriteLine(@"This is a list of functions in the DeviantArtFs library that call DeviantArt / Sta.sh API endpoints.
+
+Methods that return an Async<T> are intended for use from F#, and methods that return a Task<T> can be used from async methods in C# and VB.NET.
+
+""???"" indicates a type generated from a JSON sample by FSharp.Data's JsonProvider.
+
+""long"" indicates a 64-bit integer, and a question mark (?) following a type name indicates a Nullable<T>, as in C#.
+");
+
+                var a = Assembly.GetAssembly(typeof(DeviantArtFs.Requests.Browse.CategoryTree));
+                foreach (var t in a.GetTypes().OrderBy(x => x.FullName))
                 {
-                    Console.WriteLine(t.FullName);
-                    foreach (var x in ae)
+                    if (t.Name.Contains("@")) continue;
+                    var ae = t.GetMembers()
+                        .Select(x => x as MethodInfo)
+                        .Where(x => x != null)
+                        .Where(x => x.ReturnType.Name.StartsWith("Task") || x.ReturnType.Name.StartsWith("FSharpAsync"));
+                    if (ae.Any())
                     {
-                        Console.Write($"* {x.Name}");
-                        foreach (var p in x.GetParameters())
+                        sw.WriteLine($"### {t.FullName}");
+
+                        ISet<Type> typesToDescribe = new HashSet<Type>();
+                        foreach (var x in ae)
                         {
-                            Console.Write($" ({PrintTypeName(p.ParameterType)})");
+                            sw.Write($"* {x.Name}");
+                            foreach (var p in x.GetParameters())
+                            {
+                                sw.Write($" ({PrintTypeName(p.ParameterType)})");
+                                if (p.ParameterType.FullName.StartsWith("DeviantArtFs.") && p.ParameterType.Name != "IDeviantArtAccessToken")
+                                {
+                                    typesToDescribe.Add(p.ParameterType);
+                                }
+                            }
+                            sw.WriteLine($" -> `{PrintTypeName(x.ReturnType)}`");
                         }
-                        Console.WriteLine($" -> {PrintTypeName(x.ReturnType)}");
+                        sw.WriteLine();
+
+                        foreach (var d in typesToDescribe)
+                        {
+                            sw.WriteLine($"**{PrintTypeName(d)}:**");
+                            sw.WriteLine();
+                            foreach (var p in d.GetProperties())
+                            {
+                                sw.Write($"* {p.Name}: `{PrintTypeName(p.PropertyType)}`");
+                                if (p.PropertyType.IsEnum)
+                                {
+                                    sw.Write($" ({string.Join(", ", p.PropertyType.GetEnumNames())})");
+                                }
+                                sw.WriteLine();
+                            }
+                            sw.WriteLine();
+                        }
+
+                        if (t.FullName == "DeviantArtFs.Requests.Stash.Update")
+                        {
+                            sw.WriteLine("Example:");
+                            sw.WriteLine();
+                            sw.WriteLine("new DeviantArtFs.Requests.Stash.UpdateRequest(100000L) {");
+                            sw.WriteLine("    Title = DeviantArtFs.Requests.Stash.FieldChange.NoChange,");
+                            sw.WriteLine("    Description = DeviantArtFs.Requests.Stash.FieldChange.NewUpdate(\"new description\"),");
+                            sw.WriteLine("}");
+                            sw.WriteLine();
+                        }
                     }
-                    Console.WriteLine();
                 }
             }
         }
