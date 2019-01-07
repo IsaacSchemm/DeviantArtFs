@@ -324,10 +324,10 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
 
 Example:
 
-new DeviantArtFs.Requests.Stash.UpdateRequest(100000L) {
-    Title = DeviantArtFs.Requests.Stash.FieldChange.NoChange,
-    Description = DeviantArtFs.Requests.Stash.FieldChange.NewUpdate("new description"),
-}
+    new DeviantArtFs.Requests.Stash.UpdateRequest(100000L) {
+        Title = DeviantArtFs.Requests.Stash.FieldChange.NoChange,
+        Description = DeviantArtFs.Requests.Stash.FieldChange.NewUpdate("new description"),
+    }
 
 ### DeviantArtFs.Requests.User.dAmnToken
 * AsyncExecute (IDeviantArtAccessToken) -> `Async<string>`

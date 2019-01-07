@@ -29,7 +29,7 @@ namespace DocGenerator
 
         static void Main(string[] args)
         {
-            using (var fs = new FileStream(Path.Combine(Environment.CurrentDirectory, "../../../..", "endpoints.txt"), FileMode.Create, FileAccess.Write))
+            using (var fs = new FileStream(Path.Combine(Environment.CurrentDirectory, "../../../..", "ENDPOINTS.md"), FileMode.Create, FileAccess.Write))
             using (var sw = new StreamWriter(fs))
             {
                 sw.WriteLine(@"This is a list of functions in the DeviantArtFs library that call DeviantArt / Sta.sh API endpoints.
@@ -89,10 +89,10 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
                         {
                             sw.WriteLine("Example:");
                             sw.WriteLine();
-                            sw.WriteLine("new DeviantArtFs.Requests.Stash.UpdateRequest(100000L) {");
-                            sw.WriteLine("    Title = DeviantArtFs.Requests.Stash.FieldChange.NoChange,");
-                            sw.WriteLine("    Description = DeviantArtFs.Requests.Stash.FieldChange.NewUpdate(\"new description\"),");
-                            sw.WriteLine("}");
+                            sw.WriteLine("    new DeviantArtFs.Requests.Stash.UpdateRequest(100000L) {");
+                            sw.WriteLine("        Title = DeviantArtFs.Requests.Stash.FieldChange.NoChange,");
+                            sw.WriteLine("        Description = DeviantArtFs.Requests.Stash.FieldChange.NewUpdate(\"new description\"),");
+                            sw.WriteLine("    }");
                             sw.WriteLine();
                         }
                     }
