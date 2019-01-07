@@ -23,4 +23,3 @@ module ProfileByName =
     }
 
     let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo Profile |> Async.StartAsTask
-    let GetUserAsync token req = AsyncExecute token req |> iop.thenTo Profile |> iop.thenTo (fun p -> p.User) |> Async.StartAsTask
