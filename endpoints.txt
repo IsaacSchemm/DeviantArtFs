@@ -89,7 +89,7 @@ DeviantArtFs.Requests.Deviation.EmbeddedContent
 * ExecuteAsync (IDeviantArtAccessToken) (EmbeddedContentRequest) -> Task<IDeviantArtPagedResult<Deviation>>
 
 DeviantArtFs.Requests.Deviation.MetadataById
-* AsyncExecute (IDeviantArtAccessToken) (MetadataRequest) -> Async<???>
+* AsyncExecute (IDeviantArtAccessToken) (MetadataRequest) -> Async<IEnumerable<???>>
 * ExecuteAsync (IDeviantArtAccessToken) (MetadataRequest) -> Task<IEnumerable<Metadata>>
 
 DeviantArtFs.Requests.Deviation.WhoFaved
@@ -147,7 +147,7 @@ DeviantArtFs.Requests.Stash.Publish
 * ExecuteAsync (IDeviantArtAccessToken) (PublishRequest) -> Task<PublishResult>
 
 DeviantArtFs.Requests.Stash.PublishCategoryTree
-* AsyncExecute (IDeviantArtAccessToken) (PublishCategoryTreeRequest) -> Async<???>
+* AsyncExecute (IDeviantArtAccessToken) (PublishCategoryTreeRequest) -> Async<IEnumerable<???>>
 * ExecuteAsync (IDeviantArtAccessToken) (PublishCategoryTreeRequest) -> Task<IEnumerable<ICategory>>
 
 DeviantArtFs.Requests.Stash.PublishUserdata
