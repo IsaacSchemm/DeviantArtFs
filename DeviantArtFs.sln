@@ -9,6 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviantArtFs.WinForms", "De
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C6199353-1198-47B7-ABF7-625A5B939F45}"
 	ProjectSection(SolutionItems) = preProject
+		endpoints.txt = endpoints.txt
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 	EndProjectSection
