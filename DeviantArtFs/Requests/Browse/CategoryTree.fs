@@ -15,13 +15,11 @@ type CategoryTreeResponse = JsonProvider<"""{
     ]
 }""">
 
-type CategoryTreeRequest() = 
-    member val Catpath = "/" with get, set
-
 module CategoryTree =
-    let AsyncExecute token (req: CategoryTreeRequest) = async {
+    let AsyncExecute token (catpath: string) = async {
         let query = seq {
-            yield sprintf "catpath=%s" (dafs.urlEncode req.Catpath)
+            if not (isNull catpath) then
+                yield sprintf "catpath=%s" (dafs.urlEncode catpath)
         }
         let req =
             query
@@ -33,8 +31,8 @@ module CategoryTree =
         return o.Categories :> seq<CategoryTreeResponse.Category>
     }
 
-    let ExecuteAsync token req = Async.StartAsTask (async {
-        let! resp = AsyncExecute token req
+    let ExecuteAsync token catpath = Async.StartAsTask (async {
+        let! resp = AsyncExecute token catpath
         return resp
             |> Seq.map (fun c -> {
                 new ICategory with

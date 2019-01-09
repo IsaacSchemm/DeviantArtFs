@@ -25,12 +25,8 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
 * RefreshAsync (string) -> `Task<IDeviantArtRefreshToken>`
 
 ### DeviantArtFs.Requests.Browse.CategoryTree
-* AsyncExecute (IDeviantArtAccessToken) (CategoryTreeRequest) -> `Async<IEnumerable<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (CategoryTreeRequest) -> `Task<IEnumerable<Interop.ICategory>>`
-
-**CategoryTreeRequest:**
-
-* Catpath: `string`
+* AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<IEnumerable<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IEnumerable<Interop.ICategory>>`
 
 ### DeviantArtFs.Requests.Browse.DailyDeviations
 * AsyncExecute (IDeviantArtAccessToken) (DailyDeviationsRequest) -> `Async<IEnumerable<???>>`
@@ -123,6 +119,44 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
 * Offset: `int`
 * Limit: `int`
 
+### DeviantArtFs.Requests.Collections.CollectionById
+* AsyncExecute (IDeviantArtAccessToken) (CollectionByIdRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (CollectionByIdRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+
+**CollectionByIdRequest:**
+
+* Folderid: `Guid`
+* Username: `string`
+* Offset: `int`
+* Limit: `int`
+
+### DeviantArtFs.Requests.Collections.CollectionFolders
+* AsyncExecute (IDeviantArtAccessToken) (CollectionFoldersRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (CollectionFoldersRequest) -> `Task<IDeviantArtPagedResult<Interop.IDeviantArtFolder>>`
+
+**CollectionFoldersRequest:**
+
+* Username: `string`
+* CalculateSize: `bool`
+* Offset: `int`
+* Limit: `int`
+
+### DeviantArtFs.Requests.Collections.CreateCollectionFolder
+* AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<???>`
+* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<Interop.IDeviantArtFolder>`
+
+### DeviantArtFs.Requests.Collections.Fave
+* AsyncExecute (IDeviantArtAccessToken) (Guid) (IEnumerable<Guid>) -> `Async<int>`
+* ExecuteAsync (IDeviantArtAccessToken) (Guid) (IEnumerable<Guid>) -> `Task<int>`
+
+### DeviantArtFs.Requests.Collections.RemoveCollectionFolder
+* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<unit>`
+* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task`
+
+### DeviantArtFs.Requests.Collections.Unfave
+* AsyncExecute (IDeviantArtAccessToken) (Guid) (IEnumerable<Guid>) -> `Async<int>`
+* ExecuteAsync (IDeviantArtAccessToken) (Guid) (IEnumerable<Guid>) -> `Task<int>`
+
 ### DeviantArtFs.Requests.Data.Countries
 * AsyncExecute (IDeviantArtAccessToken) -> `Async<IEnumerable<???>>`
 * ExecuteAsync (IDeviantArtAccessToken) -> `Task<IDictionary<int, string>>`
@@ -182,46 +216,46 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
 * Offset: `int`
 * Limit: `int`
 
-### DeviantArtFs.Requests.Gallery.All
-* AsyncExecute (IDeviantArtAccessToken) (AllRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (AllRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
-
-**AllRequest:**
-
-* Username: `string`
-* Offset: `int`
-* Limit: `int`
-
-### DeviantArtFs.Requests.Gallery.Folders
-* AsyncExecute (IDeviantArtAccessToken) (FoldersRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (FoldersRequest) -> `Task<IDeviantArtPagedResult<Interop.IDeviantArtFolder>>`
-
-**FoldersRequest:**
-
-* Username: `string`
-* CalculateSize: `bool`
-* Offset: `int`
-* Limit: `int`
-
-### DeviantArtFs.Requests.Gallery.FoldersCreate
+### DeviantArtFs.Requests.Gallery.CreateGalleryFolder
 * AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<???>`
 * ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<Interop.IDeviantArtFolder>`
 
-### DeviantArtFs.Requests.Gallery.FoldersRemove
-* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<unit>`
-* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task`
+### DeviantArtFs.Requests.Gallery.GalleryAllView
+* AsyncExecute (IDeviantArtAccessToken) (GalleryAllViewRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (GalleryAllViewRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
 
-### DeviantArtFs.Requests.Gallery.Gallery
-* AsyncExecute (IDeviantArtAccessToken) (GalleryRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (GalleryRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+**GalleryAllViewRequest:**
 
-**GalleryRequest:**
+* Username: `string`
+* Offset: `int`
+* Limit: `int`
+
+### DeviantArtFs.Requests.Gallery.GalleryById
+* AsyncExecute (IDeviantArtAccessToken) (GalleryByIdRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (GalleryByIdRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+
+**GalleryByIdRequest:**
 
 * Folderid: `Guid`
 * Username: `string`
 * Mode: `GalleryRequestMode` (Popular, Newest)
 * Offset: `int`
 * Limit: `int`
+
+### DeviantArtFs.Requests.Gallery.GalleryFolders
+* AsyncExecute (IDeviantArtAccessToken) (GalleryFoldersRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (GalleryFoldersRequest) -> `Task<IDeviantArtPagedResult<Interop.IDeviantArtFolder>>`
+
+**GalleryFoldersRequest:**
+
+* Username: `string`
+* CalculateSize: `bool`
+* Offset: `int`
+* Limit: `int`
+
+### DeviantArtFs.Requests.Gallery.RemoveGalleryFolder
+* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<unit>`
+* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task`
 
 ### DeviantArtFs.Requests.Stash.Contents
 * AsyncExecute (IDeviantArtAccessToken) (long) -> `Async<DeviantArtPagedResult<???>>`
@@ -382,10 +416,10 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
 * ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<bool>`
 
 ### DeviantArtFs.Requests.User.ProfileByName
-* AsyncExecute (IDeviantArtAccessToken) (ProfileRequest) -> `Async<???>`
-* ExecuteAsync (IDeviantArtAccessToken) (ProfileRequest) -> `Task<Interop.Profile>`
+* AsyncExecute (IDeviantArtAccessToken) (ProfileByNameRequest) -> `Async<???>`
+* ExecuteAsync (IDeviantArtAccessToken) (ProfileByNameRequest) -> `Task<Interop.Profile>`
 
-**ProfileRequest:**
+**ProfileByNameRequest:**
 
 * Username: `string`
 * ExtCollections: `bool`

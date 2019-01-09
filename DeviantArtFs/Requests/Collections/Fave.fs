@@ -10,16 +10,12 @@ type internal FaveResponse = JsonProvider<"""{
     "favourites": 2
 }""">
 
-type FaveRequest(deviationid: Guid) =
-    member __.Deviationid = deviationid
-    member val Folderids = Seq.empty<Guid> with get, set
-
 module Fave =
-    let AsyncExecute token (req: FaveRequest) = async {
+    let AsyncExecute token (deviationid: Guid) (folderids: seq<Guid>) = async {
         let query = seq {
-            yield sprintf "deviationid=%O" req.Deviationid
+            yield sprintf "deviationid=%O" deviationid
             let mutable index = 0
-            for f in req.Folderids do
+            for f in folderids do
                 yield sprintf "folderid[%d]=%O" index f
                 index <- index + 1
         }
@@ -42,4 +38,4 @@ module Fave =
         return o.Favourites
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token deviationid folderids = AsyncExecute token deviationid folderids |> Async.StartAsTask

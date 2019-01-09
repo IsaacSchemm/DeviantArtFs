@@ -10,16 +10,12 @@ type internal UnfaveResponse = JsonProvider<"""{
     "favourites": 2
 }""">
 
-type UnfaveRequest(deviationid: Guid) =
-    member __.Deviationid = deviationid
-    member val Folderids = Seq.empty<Guid> with get, set
-
 module Unfave =
-    let AsyncExecute token (req: UnfaveRequest) = async {
+    let AsyncExecute token  (deviationid: Guid) (folderids: seq<Guid>) = async {
         let query = seq {
-            yield sprintf "deviationid=%O" req.Deviationid
+            yield sprintf "deviationid=%O" deviationid
             let mutable index = 0
-            for f in req.Folderids do
+            for f in folderids do
                 yield sprintf "folderid[%d]=%O" index f
                 index <- index + 1
         }
@@ -42,4 +38,4 @@ module Unfave =
         return o.Favourites
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token deviationid folderids = AsyncExecute token deviationid folderids |> Async.StartAsTask

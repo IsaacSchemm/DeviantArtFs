@@ -22,8 +22,8 @@ namespace DocGenerator
             if (n == "Unit") n = "unit";
             if (t.Namespace == "DeviantArtFs.Interop") n = $"Interop.{n}";
             var generics = string.Join(", ", t.GenericTypeArguments.Select(x => PrintTypeName(x)));
-            return n == "Nullable"
-                ? $"{generics}?"
+            return n == "Nullable" ? $"{generics}?"
+                : n == "FSharpOption" ? $"{generics} option"
                 : $"{n}{(t.GenericTypeArguments.Any() ? $"<{generics}>" : "")}";
         }
 
