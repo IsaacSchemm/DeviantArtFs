@@ -39,6 +39,18 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
 ""???"" indicates a type generated from a JSON sample by FSharp.Data's JsonProvider.
 
 ""long"" indicates a 64-bit integer, and a question mark (?) following a type name indicates a Nullable<T>, as in C#.
+
+**FieldChange:**
+
+""FieldChange"" is a discriminated union used in update operations. FieldChange.NoChange means the parameter will not be included; for parameters you want to include, wrap it in FieldChange.UpdateToValue, like so:
+
+    // C#
+    new DeviantArtFs.Requests.Stash.UpdateRequest(4567890123456789L) {
+        Title = FieldChange<string>.NewUpdateToValue(""new title""),
+        Description = FieldChange<string>.NoChange
+    }
+
+> Note: Some fields can be null, and some cannot. For example, DeviantArt allows a null description for a Sta.sh stack, but not a null title.
 ");
 
                 var a = Assembly.GetAssembly(typeof(DeviantArtFs.Requests.Browse.CategoryTree));
@@ -82,27 +94,6 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
                                 }
                                 sw.WriteLine();
                             }
-                            sw.WriteLine();
-                        }
-
-                        if (t.FullName == "DeviantArtFs.Requests.Stash.Update")
-                        {
-                            sw.WriteLine("Example:");
-                            sw.WriteLine();
-                            sw.WriteLine("    new DeviantArtFs.Requests.Stash.UpdateRequest(9999999999L) {");
-                            sw.WriteLine("        Title = FieldChange.NewUpdateToValue(\"new title\"),");
-                            sw.WriteLine("        Description = NullableStringFieldChange.NewUpdateToValue(null)");
-                            sw.WriteLine("    }");
-                            sw.WriteLine();
-                        } else if (t.FullName == "DeviantArtFs.Requests.User.ProfileUpdate")
-                        {
-                            sw.WriteLine("Example:");
-                            sw.WriteLine();
-                            sw.WriteLine("    new DeviantArtFs.Requests.User.ProfileUpdateRequest(9999999999L) {");
-                            sw.WriteLine("        Countryid = FieldChange.NewUpdateToValue(1),");
-                            sw.WriteLine("        Website = FieldChange.NewUpdateToValue(\"https://www.example.com\"),");
-                            sw.WriteLine("        Bio = FieldChange.NewUpdateToValue(\"\")");
-                            sw.WriteLine("    }");
                             sw.WriteLine();
                         }
                     }

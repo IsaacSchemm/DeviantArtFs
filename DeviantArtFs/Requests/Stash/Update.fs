@@ -6,13 +6,13 @@ open System.IO
 type UpdateRequest(stackid: int64) =
     member __.Stackid = stackid
     member val Title = FieldChange<string>.NoChange with get, set
-    member val Description = NullableStringFieldChange.NoChange with get, set
+    member val Description = FieldChange<string>.NoChange with get, set
 
 module Update =
     let AsyncExecute token (req: UpdateRequest) = async {
         let query = seq {
-            yield! fch.toQuery "title" req.Title
-            yield! nsfch.toQuery "description" req.Description
+            yield! req.Title |> fch.toQuery "title"
+            yield! req.Description |> fch.allowNull |> fch.toQuery "description"
         }
 
         let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/update/%d" req.Stackid |> dafs.createRequest token

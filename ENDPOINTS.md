@@ -6,6 +6,18 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
 
 "long" indicates a 64-bit integer, and a question mark (?) following a type name indicates a Nullable<T>, as in C#.
 
+**FieldChange:**
+
+"FieldChange" is a discriminated union used in update operations. FieldChange.NoChange means the parameter will not be included; for parameters you want to include, wrap it in FieldChange.UpdateToValue, like so:
+
+    // C#
+    new DeviantArtFs.Requests.Stash.UpdateRequest(4567890123456789L) {
+        Title = FieldChange<string>.NewUpdateToValue("new title"),
+        Description = FieldChange<string>.NoChange
+    }
+
+> Note: Some fields can be null, and some cannot. For example, DeviantArt allows a null description for a Sta.sh stack, but not a null title.
+
 ### DeviantArtFs.DeviantArtAuth
 * AsyncGetToken (string) (Uri) -> `Async<IDeviantArtRefreshToken>`
 * AsyncRefresh (string) -> `Async<IDeviantArtRefreshToken>`
@@ -320,14 +332,7 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
 
 * Stackid: `long`
 * Title: `FieldChange<string>`
-* Description: `NullableStringFieldChange`
-
-Example:
-
-    new DeviantArtFs.Requests.Stash.UpdateRequest(9999999999L) {
-        Title = FieldChange.NewUpdateToValue("new title"),
-        Description = NullableStringFieldChange.NewUpdateToValue(null)
-    }
+* Description: `FieldChange<string>`
 
 ### DeviantArtFs.Requests.User.dAmnToken
 * AsyncExecute (IDeviantArtAccessToken) -> `Async<string>`
@@ -400,14 +405,6 @@ Example:
 * Countryid: `FieldChange<int>`
 * Website: `FieldChange<string>`
 * Bio: `FieldChange<string>`
-
-Example:
-
-    new DeviantArtFs.Requests.User.ProfileUpdateRequest(9999999999L) {
-        Countryid = FieldChange.NewUpdateToValue(1),
-        Website = FieldChange.NewUpdateToValue("https://www.example.com"),
-        Bio = FieldChange.NewUpdateToValue("")
-    }
 
 ### DeviantArtFs.Requests.User.StatusesList
 * AsyncExecute (IDeviantArtAccessToken) (StatusesListRequest) -> `Async<DeviantArtPagedResult<???>>`

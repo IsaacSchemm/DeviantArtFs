@@ -36,73 +36,13 @@ let get_token =
             form.AccessToken
 
 let sandbox token_string = async {
-    printf "Enter a username (leave blank to see your own submissions):"
-    let read = Console.ReadLine()
-
     let token = create_token_obj token_string
-    let! me = DeviantArtFs.Requests.User.Whoami.AsyncExecute token
 
-    let! tos = DeviantArtFs.Requests.Data.Tos.AsyncExecute token
-    printfn "%s" tos
-
-    let username =
-        match read with
-        | "" -> me.Username
-        | s -> s
-
-    printfn "Most recent submissions:"
-    printfn ""
-
-    let! gallery =
-        new DeviantArtFs.Requests.Gallery.AllRequest(Username = username, Offset = 0, Limit = 5)
-        |> DeviantArtFs.Requests.Gallery.All.AsyncExecute token
-
-    for d in gallery.Results do
-        printfn "  %s" (d.Title |> Option.defaultValue "(no title)")
-        match d.CategoryPath with
-        | Some s -> printfn "    Category: %s" s
-        | None -> ()
-        match d.PublishedTime with
-        | Some s ->
-            let time = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(float s)
-            printfn "    Published at: %O" time
-        | None -> ()
-
-        let! faves = new DeviantArtFs.Requests.Deviation.WhoFavedRequest(d.Deviationid) |> DeviantArtFs.Requests.Deviation.WhoFaved.AsyncExecute token
-        if (Seq.isEmpty faves.Results |> not) then
-            printfn "    Favorited by:"
-            for f in faves.Results do
-                let time = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(float f.Time)
-                printfn "      %s at %O" f.User.Username time
-            if faves.HasMore then
-                printfn "      etc."
-
-        printfn ""
-
-    let! statuses =
-        new DeviantArtFs.Requests.User.StatusesListRequest(username, Offset = 0, Limit = 1)
-        |> DeviantArtFs.Requests.User.StatusesList.AsyncExecute token
-    let status = Seq.tryHead statuses.Results
-    match status with
-    | Some s -> 
-        printfn "Most recent status: %s (%O)" s.Body s.Ts
-        printfn ""
-    | None -> ()
-
-    printfn "Gallery folders:"
-    printfn ""
-
-    let! folders = new DeviantArtFs.Requests.Gallery.FoldersRequest(Username = username) |> DeviantArtFs.Requests.Gallery.Folders.AsyncExecute token
-    for f in folders.Results do
-        printfn "%A %s" f.Folderid f.Name
-
-        let! items = new DeviantArtFs.Requests.Gallery.GalleryRequest(f.Folderid, Username = username, Limit = 5) |> DeviantArtFs.Requests.Gallery.Gallery.AsyncExecute token
-        for i in items.Results do
-            match i.Title with
-            | Some s -> printfn "  * %s" s
-            | None -> printfn "  * %A (deleted: %b)" i.Deviationid i.IsDeleted
-
-        printfn ""
+    let! f1 = 4739235628840514L |> DeviantArtFs.Requests.Stash.Stack.AsyncExecute token
+    printfn "%A %A" f1.Title f1.Description
+    do! new DeviantArtFs.Requests.Stash.UpdateRequest(4739235628840514L, Title = FieldChange.NoChange, Description = FieldChange.UpdateToValue "null") |> DeviantArtFs.Requests.Stash.Update.AsyncExecute token
+    let! f2 = 4739235628840514L |> DeviantArtFs.Requests.Stash.Stack.AsyncExecute token
+    printfn "%A %A" f2.Title f2.Description
 }
 
 [<EntryPoint>]
