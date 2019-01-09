@@ -6,13 +6,13 @@ Uses [FSharp.Data](http://fsharp.github.io/FSharp.Data/) to parse JSON.
 ## Currently unsupported features
 
 * The following groups of endpoints are not currently implemented:
-  * Collections
+  * Collections (fave, unfave, create folder, remove folder)
   * Comments
   * Feed
   * Messages
   * Notes
 * The "expand" parameter (user.details, user.geo, etc) is not currently supported.
-* The "ext_preload" parameter (gallery/folders) is not currently supported.
+* The "ext_preload" parameter (gallery/folders, collections/folders) is not currently supported.
 * The "mature_content" parameter is not currently supported.
 
 ## Supported endpoints
@@ -30,6 +30,11 @@ Uses [FSharp.Data](http://fsharp.github.io/FSharp.Data/) to parse JSON.
 * GET browse/tags/search
 * GET browse/undiscovered
 * GET browse/user/journals
+
+### Collections
+
+* GET /collections/{folderid}
+* GET /collections/folders
 
 ### Data
 

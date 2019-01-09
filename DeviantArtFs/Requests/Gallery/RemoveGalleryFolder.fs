@@ -5,7 +5,7 @@ open System.IO
 open DeviantArtFs
 open FSharp.Data
 
-module FoldersRemove =
+module RemoveGalleryFolder =
     let AsyncExecute token (folderid: Guid) = async {
         let req = sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/folders/remove/%A" folderid |> dafs.createRequest token
         let! json = dafs.asyncRead req

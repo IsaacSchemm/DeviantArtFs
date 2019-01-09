@@ -46,6 +46,8 @@
     <Compile Include="Requests\Browse\TagsSearch.fs" />
     <Compile Include="Requests\Browse\Undiscovered.fs" />
     <Compile Include="Requests\Browse\UserJournals.fs" />
+    <Compile Include="Requests\Collections\CollectionById.fs" />
+    <Compile Include="Requests\Collections\CollectionFolders.fs" />
     <Compile Include="Requests\Data\Countries.fs" />
     <Compile Include="Requests\Data\Privacy.fs" />
     <Compile Include="Requests\Data\Submission.fs" />
@@ -56,11 +58,11 @@
     <Compile Include="Requests\Deviation\EmbeddedContent.fs" />
     <Compile Include="Requests\Deviation\MetadataById.fs" />
     <Compile Include="Requests\Deviation\WhoFaved.fs" />
-    <Compile Include="Requests\Gallery\All.fs" />
-    <Compile Include="Requests\Gallery\Gallery.fs" />
-    <Compile Include="Requests\Gallery\Folders.fs" />
-    <Compile Include="Requests\Gallery\FoldersCreate.fs" />
-    <Compile Include="Requests\Gallery\FoldersRemove.fs" />
+    <Compile Include="Requests\Gallery\GalleryAllView.fs" />
+    <Compile Include="Requests\Gallery\GalleryById.fs" />
+    <Compile Include="Requests\Gallery\GalleryFolders.fs" />
+    <Compile Include="Requests\Gallery\CreateGalleryFolder.fs" />
+    <Compile Include="Requests\Gallery\RemoveGalleryFolder.fs" />
     <Compile Include="Requests\Stash\Stack.fs" />
     <Compile Include="Requests\Stash\Contents.fs" />
     <Compile Include="Requests\Stash\Delete.fs" />

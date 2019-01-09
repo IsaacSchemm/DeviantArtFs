@@ -1,31 +1,17 @@
-﻿namespace DeviantArtFs.Requests.Gallery
+﻿namespace DeviantArtFs.Requests.Collections
 
 open DeviantArtFs
 open DeviantArtFs.Interop
 open FSharp.Data
 
-type internal FoldersElement = JsonProvider<"""[
-    {
-        "folderid": "47D47436-5683-8DF2-EEBF-2A6760BE1336",
-        "parent": null,
-        "name": "Featured",
-        "size": 2
-    },
-    {
-        "folderid": "E431BAFB-7A00-7EA1-EED7-2EF9FA0F04CE",
-        "parent": "47D47436-5683-8DF2-EEBF-2A6760BE1336",
-        "name": "My New Gallery"
-    }
-]""", SampleIsList=true>
-
-type FoldersRequest() =
+type CollectionFoldersRequest() =
     member val Username = null with get, set
     member val CalculateSize = false with get, set
     member val Offset = 0 with get, set
     member val Limit = 10 with get, set
 
-module Folders =
-    let AsyncExecute token (ps: FoldersRequest) = async {
+module CollectionFolders =
+    let AsyncExecute token (ps: CollectionFoldersRequest) = async {
         let query = seq {
             match Option.ofObj ps.Username with
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
@@ -37,7 +23,7 @@ module Folders =
         let req =
             query
             |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/folders?%s"
+            |> sprintf "https://www.deviantart.com/api/v1/oauth2/collections/folders?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
         return dafs.parsePage FoldersElement.Parse json

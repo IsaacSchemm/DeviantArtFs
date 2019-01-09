@@ -1,32 +1,27 @@
 ﻿namespace DeviantArtFs.Requests.Gallery
 
-open System
 open DeviantArtFs
 open DeviantArtFs.Interop
+open FSharp.Data
 
-type GalleryRequestMode = Popular=1 | Newest=2
-
-type GalleryRequest(folderid: Guid) =
-    member __.Folderid = folderid
+type GalleryAllViewRequest() =
     member val Username = null with get, set
-    member val Mode = GalleryRequestMode.Popular with get, set
     member val Offset = 0 with get, set
     member val Limit = 10 with get, set
 
-module Gallery =
-    let AsyncExecute token (req: GalleryRequest) = async {
+module GalleryAllView =
+    let AsyncExecute token (req: GalleryAllViewRequest) = async {
         let query = seq {
             match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
             | None -> ()
-            yield sprintf "mode=%s" (if req.Mode = GalleryRequestMode.Newest then "newest" else "popular")
             yield sprintf "offset=%d" req.Offset
             yield sprintf "limit=%d" req.Limit
         }
         let req =
             query
             |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/%A?%s" req.Folderid
+            |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/all?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
         return dafs.parsePage DeviationResponse.Parse json

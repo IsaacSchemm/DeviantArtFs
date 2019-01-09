@@ -3,13 +3,13 @@
 open DeviantArtFs
 open DeviantArtFs.Interop
 
-type ProfileRequest(username: string) =
+type ProfileByNameRequest(username: string) =
     member __.Username = username
     member val ExtCollections = false with get, set
     member val ExtGalleries = false with get, set
 
 module ProfileByName =
-    let AsyncExecute token (req: ProfileRequest) = async {
+    let AsyncExecute token (req: ProfileByNameRequest) = async {
         let query = seq {
             yield sprintf "ext_collections=%b" req.ExtCollections
             yield sprintf "ext_galleries=%b" req.ExtGalleries

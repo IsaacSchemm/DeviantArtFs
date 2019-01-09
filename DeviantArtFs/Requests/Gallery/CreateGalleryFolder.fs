@@ -6,12 +6,7 @@ open DeviantArtFs
 open DeviantArtFs.Interop
 open FSharp.Data
 
-type FoldersCreateResponse = JsonProvider<"""{
-    "folderid": "E431BAFB-7A00-7EA1-EED7-2EF9FA0F04CE",
-    "name": "My New Gallery"
-}""">
-
-module FoldersCreate =
+module CreateGalleryFolder =
     let AsyncExecute token (folder: string) = async {
         let query = seq {
             yield sprintf "folder=%s" (dafs.urlEncode folder)

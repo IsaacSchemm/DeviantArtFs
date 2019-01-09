@@ -1,16 +1,17 @@
-﻿namespace DeviantArtFs.Requests.Gallery
+﻿namespace DeviantArtFs.Requests.Collections
 
 open DeviantArtFs
 open DeviantArtFs.Interop
-open FSharp.Data
+open System
 
-type AllRequest() =
+type CollectionByIdRequest(folderid: Guid) =
+    member __.Folderid = folderid
     member val Username = null with get, set
     member val Offset = 0 with get, set
     member val Limit = 10 with get, set
 
-module All =
-    let AsyncExecute token (req: AllRequest) = async {
+module CollectionById =
+    let AsyncExecute token (req: CollectionByIdRequest) = async {
         let query = seq {
             match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
@@ -21,10 +22,10 @@ module All =
         let req =
             query
             |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/all?%s"
+            |> sprintf "https://www.deviantart.com/api/v1/oauth2/collections/%A?%s" req.Folderid
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return dafs.parsePage DeviationResponse.Parse json
+        return json |> dafs.parsePage DeviationResponse.Parse
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMapResult Deviation |> Async.StartAsTask
+    let ExecuteAsync token id = AsyncExecute token id |> iop.thenMapResult Deviation |> Async.StartAsTask

@@ -12,7 +12,7 @@ Public Class Form2
         Button2.Enabled = False
 
         If Token IsNot Nothing Then
-            Dim page = Await Requests.Gallery.All.ExecuteAsync(Token, New Requests.Gallery.AllRequest With {.Offset = offset})
+            Dim page = Await Requests.Gallery.GalleryAllView.ExecuteAsync(Token, New Requests.Gallery.GalleryAllViewRequest With {.Offset = offset})
             For Each deviation In page.Results
                 Dim node = New TreeNode(If(deviation.Title, deviation.Deviationid.ToString()))
                 NodeToItem.Add(node, deviation)
