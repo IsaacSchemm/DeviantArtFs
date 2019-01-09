@@ -15,17 +15,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Types\CommonResponses.fs" />
+    <Compile Include="Types\Responses\CommonResponses.fs" />
+    <Compile Include="Types\Responses\DeviationResponse.fs" />
+    <Compile Include="Types\Responses\MetadataResponse.fs" />
+    <Compile Include="Types\Responses\StatusResponse.fs" />
+    <Compile Include="Types\Responses\ProfileResponse.fs" />
+    <Compile Include="Types\Responses\StashMetadataResponse.fs" />
     <Compile Include="Types\Types.fs" />
     <Compile Include="Types\DeviantArtUser.fs" />
     <Compile Include="Types\DeviantArtPagedResult.fs" />
     <Compile Include="dafs.fs" />
-    <Compile Include="FieldChange.fs" />
-    <Compile Include="Types\DeviationResponse.fs" />
-    <Compile Include="Types\MetadataResponse.fs" />
-    <Compile Include="Types\StatusResponse.fs" />
-    <Compile Include="Types\ProfileResponse.fs" />
-    <Compile Include="Types\StashMetadataResponse.fs" />
+    <Compile Include="fch.fs" />
     <Compile Include="Types\Interop\Interfaces.fs" />
     <Compile Include="Types\Interop\Deviation.fs" />
     <Compile Include="Types\Interop\Metadata.fs" />

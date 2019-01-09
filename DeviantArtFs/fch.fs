@@ -1,10 +1,5 @@
 ﻿namespace DeviantArtFs
 
-[<RequireQualifiedAccess>]
-type FieldChange<'a> =
-    | UpdateToValue of 'a
-    | NoChange
-
 module internal fch =
     let map f o =
         match o with

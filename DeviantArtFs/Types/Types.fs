@@ -28,6 +28,11 @@ type ExtParams =
         val ExtStats: bool
     end
 
+[<RequireQualifiedAccess>]
+type FieldChange<'a> =
+    | UpdateToValue of 'a
+    | NoChange
+
 type WatchInfo = {
     Friend: bool
     Deviations: bool
