@@ -3,28 +3,16 @@
 open DeviantArtFs
 open System.IO
 
-[<RequireQualifiedAccess>]
-type FieldChange =
-    | Update of string
-    | NoChange
-
 type UpdateRequest(stackid: int64) =
     member __.Stackid = stackid
-    member val Title = FieldChange.NoChange with get, set
-    member val Description: FieldChange = FieldChange.NoChange with get, set
+    member val Title = FieldChange<string>.NoChange with get, set
+    member val Description = NullableStringFieldChange.NoChange with get, set
 
 module Update =
     let AsyncExecute token (req: UpdateRequest) = async {
         let query = seq {
-            match req.Title with
-            | FieldChange.Update null -> failwithf "A null title is not allowed"
-            | FieldChange.Update s -> yield sprintf "title=%s" (dafs.urlEncode s)
-            | FieldChange.NoChange -> ()
-            match req.Description with
-            | FieldChange.Update "null" -> failwithf "The string \"null\" is not allowed"
-            | FieldChange.Update null -> yield "description=null"
-            | FieldChange.Update s -> yield sprintf "description=%s" (dafs.urlEncode s)
-            | FieldChange.NoChange -> ()
+            yield! fch.toQuery "title" req.Title
+            yield! nsfch.toQuery "description" req.Description
         }
 
         let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/update/%d" req.Stackid |> dafs.createRequest token

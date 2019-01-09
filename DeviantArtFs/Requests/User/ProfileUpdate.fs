@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
-open System
 
 type ArtistLevel =
     | Student=1
@@ -19,45 +18,28 @@ type ArtistSpecialty =
     | Varied = 9
 
 type ProfileUpdateRequest() =
-    member val UserIsArtist = Nullable<bool>() with get, set
-    member val ArtistLevel = Nullable<ArtistLevel>() with get, set
-    member val ArtistSpecialty = Nullable<ArtistSpecialty>() with get, set
-    member val RealName = null with get, set
-    member val Tagline = null with get, set
-    member val Countryid = Nullable<int>() with get, set
-    member val Website = null with get, set
-    member val Bio = null with get, set
+    member val UserIsArtist = FieldChange<bool>.NoChange with get, set
+    member val ArtistLevel = FieldChange<ArtistLevel>.NoChange with get, set
+    member val ArtistSpecialty = FieldChange<ArtistSpecialty>.NoChange with get, set
+    member val RealName = FieldChange<string>.NoChange with get, set
+    member val Tagline = FieldChange<string>.NoChange with get, set
+    member val Countryid = FieldChange<int>.NoChange with get, set
+    member val Website = FieldChange<string>.NoChange with get, set
+    member val Bio = FieldChange<string>.NoChange with get, set
 
 module ProfileUpdate =
     open System.IO
 
     let AsyncExecute token (ps: ProfileUpdateRequest) = async {
         let query = seq {
-            match Option.ofNullable ps.UserIsArtist with
-            | Some s -> yield sprintf "user_is_artist=%b" s
-            | None -> ()
-            match Option.ofNullable ps.ArtistLevel with
-            | Some s -> yield sprintf "artist_level=%O" (s.ToString("d"))
-            | None -> ()
-            match Option.ofNullable ps.ArtistSpecialty with
-            | Some s -> yield sprintf "artist_specialty=%O" (s.ToString("d"))
-            | None -> ()
-            match Option.ofObj ps.RealName with
-            | Some s -> yield dafs.urlEncode s |> sprintf "real_name=%s"
-            | None -> ()
-            match Option.ofObj ps.Tagline with
-            | Some s -> yield dafs.urlEncode s |> sprintf "tagline=%s"
-            | None -> ()
-            match Option.ofNullable ps.Countryid with
-            | Some s -> yield sprintf "countryid=%d" s
-            | None -> ()
-            match Option.ofObj ps.Website with
-            | Some s -> yield dafs.urlEncode s |> sprintf "website=%s"
-            | None -> ()
-            match Option.ofObj ps.Bio with
-            | Some "null" -> yield failwithf "The string \"null\" is not allowed"
-            | Some s -> yield dafs.urlEncode s |> sprintf "real_name=%s"
-            | None -> ()
+            yield! ps.UserIsArtist |> fch.toQuery "user_is_artist"
+            yield! ps.ArtistLevel |> fch.map (fun s -> s.ToString("d")) |> fch.toQuery "artist_level"
+            yield! ps.ArtistSpecialty |> fch.map (fun s -> s.ToString("d")) |> fch.toQuery "artist_specialty"
+            yield! ps.RealName |> fch.toQuery "real_name"
+            yield! ps.Tagline |> fch.toQuery "tagline"
+            yield! ps.Countryid |> fch.toQuery "countryid"
+            yield! ps.Website |> fch.toQuery "website"
+            yield! ps.Bio |> fch.toQuery "bio"
         }
         let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/profile/update"
         req.Method <- "POST"
@@ -65,6 +47,7 @@ module ProfileUpdate =
         do! async {
             use! stream = req.GetRequestStreamAsync() |> Async.AwaitTask
             use sw = new StreamWriter(stream)
+            String.concat "&" query |> printf "%s"
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
         let! json = dafs.asyncRead req

@@ -20,6 +20,7 @@
     <Compile Include="Types\DeviantArtUser.fs" />
     <Compile Include="Types\DeviantArtPagedResult.fs" />
     <Compile Include="dafs.fs" />
+    <Compile Include="FieldChange.fs" />
     <Compile Include="Types\DeviationResponse.fs" />
     <Compile Include="Types\MetadataResponse.fs" />
     <Compile Include="Types\StatusResponse.fs" />

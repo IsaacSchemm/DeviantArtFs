@@ -319,14 +319,14 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
 **UpdateRequest:**
 
 * Stackid: `long`
-* Title: `FieldChange`
-* Description: `FieldChange`
+* Title: `FieldChange<string>`
+* Description: `NullableStringFieldChange`
 
 Example:
 
-    new DeviantArtFs.Requests.Stash.UpdateRequest(100000L) {
-        Title = DeviantArtFs.Requests.Stash.FieldChange.NoChange,
-        Description = DeviantArtFs.Requests.Stash.FieldChange.NewUpdate("new description"),
+    new DeviantArtFs.Requests.Stash.UpdateRequest(9999999999L) {
+        Title = FieldChange.NewUpdateToValue("new title"),
+        Description = NullableStringFieldChange.NewUpdateToValue(null)
     }
 
 ### DeviantArtFs.Requests.User.dAmnToken
@@ -392,14 +392,22 @@ Example:
 
 **ProfileUpdateRequest:**
 
-* UserIsArtist: `bool?`
-* ArtistLevel: `ArtistLevel?`
-* ArtistSpecialty: `ArtistSpecialty?`
-* RealName: `string`
-* Tagline: `string`
-* Countryid: `int?`
-* Website: `string`
-* Bio: `string`
+* UserIsArtist: `FieldChange<bool>`
+* ArtistLevel: `FieldChange<ArtistLevel>`
+* ArtistSpecialty: `FieldChange<ArtistSpecialty>`
+* RealName: `FieldChange<string>`
+* Tagline: `FieldChange<string>`
+* Countryid: `FieldChange<int>`
+* Website: `FieldChange<string>`
+* Bio: `FieldChange<string>`
+
+Example:
+
+    new DeviantArtFs.Requests.User.ProfileUpdateRequest(9999999999L) {
+        Countryid = FieldChange.NewUpdateToValue(1),
+        Website = FieldChange.NewUpdateToValue("https://www.example.com"),
+        Bio = FieldChange.NewUpdateToValue("")
+    }
 
 ### DeviantArtFs.Requests.User.StatusesList
 * AsyncExecute (IDeviantArtAccessToken) (StatusesListRequest) -> `Async<DeviantArtPagedResult<???>>`

@@ -89,9 +89,19 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
                         {
                             sw.WriteLine("Example:");
                             sw.WriteLine();
-                            sw.WriteLine("    new DeviantArtFs.Requests.Stash.UpdateRequest(100000L) {");
-                            sw.WriteLine("        Title = DeviantArtFs.Requests.Stash.FieldChange.NoChange,");
-                            sw.WriteLine("        Description = DeviantArtFs.Requests.Stash.FieldChange.NewUpdate(\"new description\"),");
+                            sw.WriteLine("    new DeviantArtFs.Requests.Stash.UpdateRequest(9999999999L) {");
+                            sw.WriteLine("        Title = FieldChange.NewUpdateToValue(\"new title\"),");
+                            sw.WriteLine("        Description = NullableStringFieldChange.NewUpdateToValue(null)");
+                            sw.WriteLine("    }");
+                            sw.WriteLine();
+                        } else if (t.FullName == "DeviantArtFs.Requests.User.ProfileUpdate")
+                        {
+                            sw.WriteLine("Example:");
+                            sw.WriteLine();
+                            sw.WriteLine("    new DeviantArtFs.Requests.User.ProfileUpdateRequest(9999999999L) {");
+                            sw.WriteLine("        Countryid = FieldChange.NewUpdateToValue(1),");
+                            sw.WriteLine("        Website = FieldChange.NewUpdateToValue(\"https://www.example.com\"),");
+                            sw.WriteLine("        Bio = FieldChange.NewUpdateToValue(\"\")");
                             sw.WriteLine("    }");
                             sw.WriteLine();
                         }
