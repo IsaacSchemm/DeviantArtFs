@@ -6,7 +6,6 @@ Uses [FSharp.Data](http://fsharp.github.io/FSharp.Data/) to parse JSON.
 ## Currently unsupported features
 
 * The following groups of endpoints are not currently implemented:
-  * Collections (fave, unfave, create folder, remove folder)
   * Comments
   * Feed
   * Messages
@@ -35,6 +34,10 @@ Uses [FSharp.Data](http://fsharp.github.io/FSharp.Data/) to parse JSON.
 
 * GET /collections/{folderid}
 * GET /collections/folders
+* POST /collections/fave
+* POST /collections/unfave
+* POST /collections/folders/create
+* GET /collections/folders/remove/{folderid} 	
 
 ### Data
 

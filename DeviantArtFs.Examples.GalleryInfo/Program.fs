@@ -38,11 +38,89 @@ let get_token =
 let sandbox token_string = async {
     let token = create_token_obj token_string
 
-    let! f1 = 4739235628840514L |> DeviantArtFs.Requests.Stash.Stack.AsyncExecute token
-    printfn "%A %A" f1.Title f1.Description
-    do! new DeviantArtFs.Requests.Stash.UpdateRequest(4739235628840514L, Title = FieldChange.NoChange, Description = FieldChange.UpdateToValue "null") |> DeviantArtFs.Requests.Stash.Update.AsyncExecute token
-    let! f2 = 4739235628840514L |> DeviantArtFs.Requests.Stash.Stack.AsyncExecute token
-    printfn "%A %A" f2.Title f2.Description
+    printf "Enter a username (leave blank to see your own submissions): "
+    let read = Console.ReadLine()
+
+    let! me = DeviantArtFs.Requests.User.Whoami.AsyncExecute token
+
+    let username =
+        match read with
+        | "" -> me.Username
+        | s -> s
+
+    let! statuses =
+        new DeviantArtFs.Requests.User.StatusesListRequest(username, Offset = 0, Limit = 1)
+        |> DeviantArtFs.Requests.User.StatusesList.AsyncExecute token
+    let status = Seq.tryHead statuses.Results
+    match status with
+    | Some s -> 
+        printfn "Most recent status: %s (%O)" s.Body s.Ts
+        printfn ""
+    | None -> ()
+
+    printfn "Gallery folders include:"
+    printfn ""
+
+    let! folders = new DeviantArtFs.Requests.Gallery.GalleryFoldersRequest(Username = username, Limit = 50) |> DeviantArtFs.Requests.Gallery.GalleryFolders.AsyncExecute token
+    for f in folders.Results do
+        printfn "%A %s" f.Folderid f.Name
+
+        let! items = new DeviantArtFs.Requests.Gallery.GalleryByIdRequest(f.Folderid, Username = username, Limit = 3) |> DeviantArtFs.Requests.Gallery.GalleryById.AsyncExecute token
+        for d in items.Results do
+            printfn "  %s" (d.Title |> Option.defaultValue "(no title)")
+            match d.CategoryPath with
+            | Some s -> printfn "    Category: %s" s
+            | None -> ()
+            match d.PublishedTime with
+            | Some s ->
+                let time = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(float s)
+                printfn "    Published at: %O" time
+            | None -> ()
+
+            let! faves = new DeviantArtFs.Requests.Deviation.WhoFavedRequest(d.Deviationid) |> DeviantArtFs.Requests.Deviation.WhoFaved.AsyncExecute token
+            if (Seq.isEmpty faves.Results |> not) then
+                printfn "    Favorited by:"
+                for f in faves.Results do
+                    let time = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(float f.Time)
+                    printfn "      %s at %O" f.User.Username time
+                if faves.HasMore then
+                    printfn "      etc."
+
+            printfn ""
+
+        printfn ""
+
+    printfn "Favorites folders include:"
+    printfn ""
+
+    let! collection_folders = new DeviantArtFs.Requests.Collections.CollectionFoldersRequest(Username = username, Limit = 50) |> DeviantArtFs.Requests.Collections.CollectionFolders.AsyncExecute token
+    for f in collection_folders.Results do
+        printfn "%A %s" f.Folderid f.Name
+
+        let! items = new DeviantArtFs.Requests.Collections.CollectionByIdRequest(f.Folderid, Username = username, Limit = 3) |> DeviantArtFs.Requests.Collections.CollectionById.AsyncExecute token
+        for d in items.Results do
+            printfn "  %s" (d.Title |> Option.defaultValue "(no title)")
+            match d.CategoryPath with
+            | Some s -> printfn "    Category: %s" s
+            | None -> ()
+            match d.PublishedTime with
+            | Some s ->
+                let time = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(float s)
+                printfn "    Published at: %O" time
+            | None -> ()
+
+            let! faves = new DeviantArtFs.Requests.Deviation.WhoFavedRequest(d.Deviationid) |> DeviantArtFs.Requests.Deviation.WhoFaved.AsyncExecute token
+            if (Seq.isEmpty faves.Results |> not) then
+                printfn "    Favorited by:"
+                for f in faves.Results do
+                    let time = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(float f.Time)
+                    printfn "      %s at %O" f.User.Username time
+                if faves.HasMore then
+                    printfn "      etc."
+
+            printfn ""
+
+        printfn ""
 }
 
 [<EntryPoint>]

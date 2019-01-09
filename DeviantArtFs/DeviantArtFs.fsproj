@@ -48,6 +48,10 @@
     <Compile Include="Requests\Browse\UserJournals.fs" />
     <Compile Include="Requests\Collections\CollectionById.fs" />
     <Compile Include="Requests\Collections\CollectionFolders.fs" />
+    <Compile Include="Requests\Collections\Fave.fs" />
+    <Compile Include="Requests\Collections\Unfave.fs" />
+    <Compile Include="Requests\Collections\CreateCollectionFolder.fs" />
+    <Compile Include="Requests\Collections\RemoveCollectionFolder.fs" />
     <Compile Include="Requests\Data\Countries.fs" />
     <Compile Include="Requests\Data\Privacy.fs" />
     <Compile Include="Requests\Data\Submission.fs" />
