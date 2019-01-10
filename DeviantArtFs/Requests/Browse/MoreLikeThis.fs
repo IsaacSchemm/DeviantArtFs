@@ -3,22 +3,20 @@
 open System
 open DeviantArtFs
 open DeviantArtFs.Interop
+    open FSharp.Control
 
 type MoreLikeThisRequest(seed: Guid) = 
     member __.Seed = seed
     member val Category = null with get, set
-    member val Offset = 0 with get, set
-    member val Limit = 10 with get, set
 
 module MoreLikeThis =
-    let AsyncExecute token (req: MoreLikeThisRequest) = async {
+    let AsyncExecute token (req: MoreLikeThisRequest) (paging: PagingParams) = async {
         let query = seq {
             yield sprintf "seed=%O" req.Seed
             match Option.ofObj req.Category with
             | Some s -> yield sprintf "category=%s" (dafs.urlEncode s)
             | None -> ()
-            yield sprintf "offset=%d" req.Offset
-            yield sprintf "limit=%d" req.Limit
+            yield! paging.GetQuery()
         }
         let req =
             query
@@ -29,4 +27,6 @@ module MoreLikeThis =
         return json |> dafs.parsePage DeviationResponse.Parse
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMapResult Deviation |> Async.StartAsTask
+    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset
+
+    let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenMapResult Deviation |> Async.StartAsTask

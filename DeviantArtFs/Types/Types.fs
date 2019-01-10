@@ -21,12 +21,19 @@ type DeviantArtException(resp: WebResponse, body: DeviantArtErrorResponse.Root) 
         | :? HttpWebResponse as h -> Nullable h.StatusCode
         | _ -> Nullable()
 
-type ExtParams =
-    struct
-        val ExtSubmission: bool
-        val ExtCamera: bool
-        val ExtStats: bool
-    end
+type PagingParams() =
+    member val Offset = 0 with get, set
+    member val Limit = Nullable<int>() with get, set
+    member this.GetQuery() = seq {
+        yield sprintf "offset=%d" this.Offset
+        if this.Limit.HasValue then
+            yield sprintf "limit=%d" this.Limit.Value
+    }
+
+type ExtParams() =
+    member val ExtSubmission = false
+    member val ExtCamera = false
+    member val ExtStats = false
 
 [<RequireQualifiedAccess>]
 type FieldChange<'a> =

@@ -5,17 +5,14 @@ open DeviantArtFs.Interop
 
 type UndiscoveredRequest() =
     member val CategoryPath = null with get, set
-    member val Offset = 0 with get, set
-    member val Limit = 10 with get, set
 
 module Undiscovered =
-    let AsyncExecute token (req: UndiscoveredRequest) = async {
+    let AsyncExecute token (req: UndiscoveredRequest) (paging: PagingParams) = async {
         let query = seq {
             match Option.ofObj req.CategoryPath with
             | Some s -> yield sprintf "category_path=%s" (dafs.urlEncode s)
             | None -> ()
-            yield sprintf "offset=%d" req.Offset
-            yield sprintf "limit=%d" req.Limit
+            yield! paging.GetQuery()
         }
         let req =
             query
@@ -26,4 +23,6 @@ module Undiscovered =
         return json |> dafs.parsePage DeviationResponse.Parse
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMapResult Deviation |> Async.StartAsTask
+    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset
+
+    let ExecuteAsync token req paging = AsyncExecute token req paging|> iop.thenMapResult Deviation |> Async.StartAsTask

@@ -1,8 +1,10 @@
 ﻿namespace DeviantArtFs
 
+open System
 open System.Net
 open System.IO
 open System.Threading.Tasks
+open FSharp.Control
 
 module internal dafs =
     let assertSuccess (resp: SuccessOrErrorResponse.Root) =
@@ -73,3 +75,14 @@ module internal dafs =
         }
 
     let toPlainTask (t: Task<unit>) = t :> Task
+
+    let toAsyncSeq (offset: int) (f: PagingParams -> Async<'a> when 'a :> IDeviantArtPagedResult<'b>) = asyncSeq {
+        let mutable cursor = offset
+        let mutable has_more = true
+        while has_more do
+            let! resp = new PagingParams(Offset = cursor, Limit = Nullable 24) |> f
+            for r in resp.Results do
+                yield r
+            cursor <- resp.NextOffset.GetValueOrDefault()
+            has_more <- resp.HasMore
+    }
