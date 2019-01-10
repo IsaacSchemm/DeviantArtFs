@@ -1,5 +1,4 @@
-﻿Imports System.IO
-Imports DeviantArtFs.Interop
+﻿Imports DeviantArtFs.Interop
 
 Public Class Form2
     Public Token As IDeviantArtAccessToken
@@ -12,7 +11,9 @@ Public Class Form2
         Button2.Enabled = False
 
         If Token IsNot Nothing Then
-            Dim page = Await Requests.Gallery.GalleryAllView.ExecuteAsync(Token, New Requests.Gallery.GalleryAllViewRequest With {.Offset = offset})
+            Dim page = Await Requests.Gallery.GalleryAllView.ExecuteAsync(Token,
+                                                                          New Requests.Gallery.GalleryAllViewRequest(),
+                                                                          New PagingParams With {.Offset = offset})
             For Each deviation In page.Results
                 Dim node = New TreeNode(If(deviation.Title, deviation.Deviationid.ToString()))
                 NodeToItem.Add(node, deviation)

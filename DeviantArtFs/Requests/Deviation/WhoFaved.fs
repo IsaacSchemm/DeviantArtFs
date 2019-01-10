@@ -15,17 +15,14 @@ type WhoFavedUser = {
     Time: int64
 }
 
-type WhoFavedRequest(deviationid: Guid) =
-    member __.Deviationid = deviationid
-    member val Offset = 0 with get, set
-    member val Limit = 10 with get, set
-
 module WhoFaved =
-    let AsyncExecute token (req: WhoFavedRequest) = async {
+    open System.Runtime.InteropServices
+    open FSharp.Control
+
+    let AsyncExecute token (deviationid: Guid) (paging: PagingParams) = async {
         let query = seq {
-            yield sprintf "deviationid=%O" req.Deviationid
-            yield sprintf "offset=%d" req.Offset
-            yield sprintf "limit=%d" req.Limit
+            yield sprintf "deviationid=%O" deviationid
+            yield! paging.GetQuery()
         }
         let req =
             query
@@ -41,4 +38,12 @@ module WhoFaved =
             })
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenCastResult |> Async.StartAsTask
+    let ToAsyncSeq token deviationid offset = AsyncExecute token deviationid |> dafs.toAsyncSeq offset
+
+    let ToListAsync token deviationid ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
+        ToAsyncSeq token deviationid offset
+        |> AsyncSeq.take limit
+        |> AsyncSeq.toListAsync
+        |> Async.StartAsTask
+
+    let ExecuteAsync token deviationid paging = AsyncExecute token deviationid paging |> iop.thenCastResult |> Async.StartAsTask

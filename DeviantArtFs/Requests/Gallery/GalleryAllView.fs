@@ -2,21 +2,20 @@
 
 open DeviantArtFs
 open DeviantArtFs.Interop
-open FSharp.Data
 
 type GalleryAllViewRequest() =
     member val Username = null with get, set
-    member val Offset = 0 with get, set
-    member val Limit = 10 with get, set
 
 module GalleryAllView =
-    let AsyncExecute token (req: GalleryAllViewRequest) = async {
+    open System.Runtime.InteropServices
+    open FSharp.Control
+
+    let AsyncExecute token (req: GalleryAllViewRequest) (paging: PagingParams) = async {
         let query = seq {
             match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
             | None -> ()
-            yield sprintf "offset=%d" req.Offset
-            yield sprintf "limit=%d" req.Limit
+            yield! paging.GetQuery()
         }
         let req =
             query
@@ -27,4 +26,13 @@ module GalleryAllView =
         return dafs.parsePage DeviationResponse.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMapResult Deviation |> Async.StartAsTask
+    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset
+
+    let ToListAsync token req ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
+        ToAsyncSeq token req offset
+        |> AsyncSeq.take limit
+        |> AsyncSeq.toListAsync
+        |> iop.thenMap Deviation
+        |> Async.StartAsTask
+
+    let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenMapResult Deviation |> Async.StartAsTask
