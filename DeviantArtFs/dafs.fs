@@ -21,7 +21,9 @@ module internal dafs =
         req.Headers.["Authorization"] <- sprintf "Bearer %s" token.AccessToken
         req
 
-    let asyncRead (req: WebRequest) = async {
+    let mutable retry429 = 500
+
+    let rec asyncRead (req: WebRequest) = async {
         try
             use! resp = req.AsyncGetResponse()
             use sr = new StreamReader(resp.GetResponseStream())
@@ -31,14 +33,22 @@ module internal dafs =
                 let error_obj = DeviantArtErrorResponse.Parse json
                 return raise (new DeviantArtException(resp, error_obj))
             else
+                retry429 <- 500
                 return json
         with
             | :? WebException as ex ->
-                use resp = ex.Response
-                use sr = new StreamReader(resp.GetResponseStream())
-                let! json = sr.ReadToEndAsync() |> Async.AwaitTask
-                let error_obj = DeviantArtErrorResponse.Parse json
-                return raise (new DeviantArtException(resp, error_obj))
+                use resp = ex.Response :?> HttpWebResponse
+                if int resp.StatusCode = 429 then
+                    retry429 <- Math.Max(retry429 * 2, 60000)
+                    if retry429 >= 60000 then
+                        return failwithf "Client is rate-limited (too many 429 responses)"
+                    do! Async.Sleep retry429
+                    return! asyncRead req
+                else
+                    use sr = new StreamReader(resp.GetResponseStream())
+                    let! json = sr.ReadToEndAsync() |> Async.AwaitTask
+                    let error_obj = DeviantArtErrorResponse.Parse json
+                    return raise (new DeviantArtException(resp, error_obj))
     }
 
     let parsePage (f: string -> 'a) (json: string) =

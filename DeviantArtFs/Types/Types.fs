@@ -21,6 +21,9 @@ type DeviantArtException(resp: WebResponse, body: DeviantArtErrorResponse.Root) 
         | :? HttpWebResponse as h -> Nullable h.StatusCode
         | _ -> Nullable()
 
+type DeviantArtRateLimitException() =
+    inherit Exception()
+
 type PagingParams() =
     member val Offset = 0 with get, set
     member val Limit = Nullable<int>() with get, set

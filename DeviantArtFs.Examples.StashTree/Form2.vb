@@ -66,7 +66,7 @@ Public Class Form2
             NodeToItem.Clear()
 
             Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
-            Dim journals = Await Requests.Browse.UserJournals.GetAllAsync(Token, New Requests.Browse.UserJournalsRequest(user.Username))
+            Dim journals = Await Requests.Browse.UserJournals.ToListAsync(Token, New Requests.Browse.UserJournalsRequest(user.Username))
 
             For Each deviation In journals
                 Dim node = New TreeNode(If(deviation.Title, deviation.Deviationid.ToString()))
