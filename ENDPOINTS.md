@@ -1,6 +1,6 @@
 This is a list of functions in the DeviantArtFs library that call DeviantArt / Sta.sh API endpoints.
 
-Methods that return an Async<T> are intended for use from F#, and methods that return a Task<T> can be used from async methods in C# and VB.NET.
+Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from F#, and methods that return a Task<T> can be used from async methods in C# and VB.NET.
 
 "???" indicates a type generated from a JSON sample by FSharp.Data's JsonProvider.
 
@@ -17,6 +17,17 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
     }
 
 > Note: Some fields can be null, and some cannot. For example, DeviantArt allows a null description for a Sta.sh stack, but not a null title.
+
+**PagingParams:**
+
+"PagingParams" is used when the common "offset" and "limit" parameters are included in a request.
+
+    // C#
+    new DeviantArtFs.PagingParams
+    {
+        Offset = 15,
+        Limit = 5
+    }
 
 ### DeviantArtFs.DeviantArtAuth
 * AsyncGetToken (string) (Uri) -> `Async<IDeviantArtRefreshToken>`
@@ -37,109 +48,99 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
 * Date: `DateTime?`
 
 ### DeviantArtFs.Requests.Browse.Hot
-* AsyncExecute (IDeviantArtAccessToken) (HotRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (HotRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* AsyncExecute (IDeviantArtAccessToken) (HotRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (HotRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (HotRequest) (int) -> `IAsyncEnumerable<???>`
 
 **HotRequest:**
 
 * CategoryPath: `string`
-* Offset: `int`
-* Limit: `int`
 
 ### DeviantArtFs.Requests.Browse.MoreLikeThis
-* AsyncExecute (IDeviantArtAccessToken) (MoreLikeThisRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (MoreLikeThisRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* AsyncExecute (IDeviantArtAccessToken) (MoreLikeThisRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (MoreLikeThisRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (MoreLikeThisRequest) (int) -> `IAsyncEnumerable<???>`
 
 **MoreLikeThisRequest:**
 
 * Seed: `Guid`
 * Category: `string`
-* Offset: `int`
-* Limit: `int`
 
 ### DeviantArtFs.Requests.Browse.MoreLikeThisPreview
 * AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<MoreLikeThisResult<???>>`
 * ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<MoreLikeThisResult<Interop.Deviation>>`
 
 ### DeviantArtFs.Requests.Browse.Newest
-* AsyncExecute (IDeviantArtAccessToken) (NewestRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (NewestRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* AsyncExecute (IDeviantArtAccessToken) (NewestRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (NewestRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (NewestRequest) (int) -> `IAsyncEnumerable<???>`
 
 **NewestRequest:**
 
 * CategoryPath: `string`
 * Q: `string`
-* Offset: `int`
-* Limit: `int`
 
 ### DeviantArtFs.Requests.Browse.Popular
-* AsyncExecute (IDeviantArtAccessToken) (PopularRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (PopularRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* AsyncExecute (IDeviantArtAccessToken) (PopularRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PopularRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (PopularRequest) (int) -> `IAsyncEnumerable<???>`
 
 **PopularRequest:**
 
 * CategoryPath: `string`
 * Q: `string`
 * Timerange: `PopularTimeRange` (EightHours, TwentyFourHours, ThreeDays, OneWeek, OneMonth, AllTime)
-* Offset: `int`
-* Limit: `int`
 
 ### DeviantArtFs.Requests.Browse.Tags
-* AsyncExecute (IDeviantArtAccessToken) (TagsRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (TagsRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
-
-**TagsRequest:**
-
-* Tag: `string`
-* Offset: `int`
-* Limit: `int`
+* AsyncExecute (IDeviantArtAccessToken) (string) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (string) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (string) (int) -> `IAsyncEnumerable<???>`
 
 ### DeviantArtFs.Requests.Browse.TagsSearch
 * AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<IEnumerable<string>>`
 * ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IEnumerable<string>>`
 
 ### DeviantArtFs.Requests.Browse.Undiscovered
-* AsyncExecute (IDeviantArtAccessToken) (UndiscoveredRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (UndiscoveredRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* AsyncExecute (IDeviantArtAccessToken) (UndiscoveredRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (UndiscoveredRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (UndiscoveredRequest) (int) -> `IAsyncEnumerable<???>`
 
 **UndiscoveredRequest:**
 
 * CategoryPath: `string`
-* Offset: `int`
-* Limit: `int`
 
 ### DeviantArtFs.Requests.Browse.UserJournals
-* AsyncExecute (IDeviantArtAccessToken) (UserJournalsRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (UserJournalsRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* AsyncExecute (IDeviantArtAccessToken) (UserJournalsRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (UserJournalsRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (UserJournalsRequest) (int) -> `IAsyncEnumerable<???>`
+* ToListAsync (IDeviantArtAccessToken) (UserJournalsRequest) (int) (int) -> `Task<IEnumerable<Interop.Deviation>>`
 
 **UserJournalsRequest:**
 
 * Username: `string`
 * Featured: `bool`
-* Offset: `int`
-* Limit: `int`
 
 ### DeviantArtFs.Requests.Collections.CollectionById
-* AsyncExecute (IDeviantArtAccessToken) (CollectionByIdRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (CollectionByIdRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* AsyncExecute (IDeviantArtAccessToken) (CollectionByIdRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (CollectionByIdRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (CollectionByIdRequest) (int) -> `IAsyncEnumerable<???>`
+* ToListAsync (IDeviantArtAccessToken) (CollectionByIdRequest) (int) (int) -> `Task<IEnumerable<Interop.Deviation>>`
 
 **CollectionByIdRequest:**
 
 * Folderid: `Guid`
 * Username: `string`
-* Offset: `int`
-* Limit: `int`
 
 ### DeviantArtFs.Requests.Collections.CollectionFolders
-* AsyncExecute (IDeviantArtAccessToken) (CollectionFoldersRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (CollectionFoldersRequest) -> `Task<IDeviantArtPagedResult<Interop.IDeviantArtFolder>>`
+* AsyncExecute (IDeviantArtAccessToken) (CollectionFoldersRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (CollectionFoldersRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.IDeviantArtFolder>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (CollectionFoldersRequest) (int) -> `IAsyncEnumerable<???>`
+* ToListAsync (IDeviantArtAccessToken) (CollectionFoldersRequest) (int) (int) -> `Task<IEnumerable<Interop.IDeviantArtFolder>>`
 
 **CollectionFoldersRequest:**
 
 * Username: `string`
 * CalculateSize: `bool`
-* Offset: `int`
-* Limit: `int`
 
 ### DeviantArtFs.Requests.Collections.CreateCollectionFolder
 * AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<???>`

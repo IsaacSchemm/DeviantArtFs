@@ -34,7 +34,7 @@ namespace DocGenerator
             {
                 sw.WriteLine(@"This is a list of functions in the DeviantArtFs library that call DeviantArt / Sta.sh API endpoints.
 
-Methods that return an Async<T> are intended for use from F#, and methods that return a Task<T> can be used from async methods in C# and VB.NET.
+Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from F#, and methods that return a Task<T> can be used from async methods in C# and VB.NET.
 
 ""???"" indicates a type generated from a JSON sample by FSharp.Data's JsonProvider.
 
@@ -51,6 +51,17 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
     }
 
 > Note: Some fields can be null, and some cannot. For example, DeviantArt allows a null description for a Sta.sh stack, but not a null title.
+
+**PagingParams:**
+
+""PagingParams"" is used when the common ""offset"" and ""limit"" parameters are included in a request.
+
+    // C#
+    new DeviantArtFs.PagingParams
+    {
+        Offset = 15,
+        Limit = 5
+    }
 ");
 
                 var a = Assembly.GetAssembly(typeof(DeviantArtFs.Requests.Browse.CategoryTree));
@@ -60,7 +71,9 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
                     var ae = t.GetMembers()
                         .Select(x => x as MethodInfo)
                         .Where(x => x != null)
-                        .Where(x => x.ReturnType.Name.StartsWith("Task") || x.ReturnType.Name.StartsWith("FSharpAsync"));
+                        .Where(x => x.ReturnType.Name.StartsWith("Task") || x.ReturnType.Name.StartsWith("FSharpAsync") || x.ReturnType.Name.StartsWith("IAsyncEnumerable"))
+                        .OrderBy(x => x.Name == "ToListAsync")
+                        .ThenBy(x => x.Name == "ToAsyncSeq");
                     if (ae.Any())
                     {
                         sw.WriteLine($"### {t.FullName}");
@@ -72,7 +85,7 @@ Methods that return an Async<T> are intended for use from F#, and methods that r
                             foreach (var p in x.GetParameters())
                             {
                                 sw.Write($" ({PrintTypeName(p.ParameterType)})");
-                                if (p.ParameterType.FullName.StartsWith("DeviantArtFs.") && p.ParameterType.Name != "IDeviantArtAccessToken")
+                                if (p.ParameterType.FullName.StartsWith("DeviantArtFs.") && p.ParameterType.Name != "IDeviantArtAccessToken" && p.ParameterType.Name != "PagingParams")
                                 {
                                     typesToDescribe.Add(p.ParameterType);
                                 }

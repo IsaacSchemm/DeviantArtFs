@@ -29,6 +29,10 @@ module UserJournals =
     let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset
 
     let ToListAsync token req ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
-        ToAsyncSeq token req offset |> AsyncSeq.take limit |> AsyncSeq.toListAsync |> iop.thenMap Deviation |> Async.StartAsTask
+        ToAsyncSeq token req offset
+        |> AsyncSeq.take limit
+        |> AsyncSeq.toListAsync
+        |> iop.thenMap Deviation
+        |> Async.StartAsTask
 
     let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenMapResult Deviation |> Async.StartAsTask
