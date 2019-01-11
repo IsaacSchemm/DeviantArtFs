@@ -85,19 +85,9 @@ Public Class Form2
             NodeToItem.Clear()
 
             Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
-            Dim friends = Await Requests.User.Friends.ExecuteAsync(Token, New Requests.User.FriendsRequest(user.Username))
-            Dim list As New List(Of Requests.User.FriendRecord)
+            Dim friends = Await Requests.User.Friends.ToListAsync(Token, New Requests.User.FriendsRequest With {.Username = user.Username})
 
-            While True
-                list.AddRange(friends.Results)
-                If Not friends.HasMore Then
-                    Exit While
-                End If
-
-                friends = Await Requests.User.Friends.ExecuteAsync(Token, New Requests.User.FriendsRequest(user.Username) With {.Offset = friends.NextOffset})
-            End While
-
-            For Each f In list
+            For Each f In friends
                 Dim node = New TreeNode(f.User.Username)
                 NodeToItem.Add(node, f)
                 TreeView1.Nodes.Add(node)
@@ -113,19 +103,9 @@ Public Class Form2
             NodeToItem.Clear()
 
             Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
-            Dim watchers = Await Requests.User.Watchers.ExecuteAsync(Token, New Requests.User.WatchersRequest(user.Username))
-            Dim list As New List(Of Requests.User.WatcherRecord)
+            Dim watchers = Await Requests.User.Watchers.ToListAsync(Token, New Requests.User.WatchersRequest With {.Username = user.Username})
 
-            While True
-                list.AddRange(watchers.Results)
-                If Not watchers.HasMore Then
-                    Exit While
-                End If
-
-                watchers = Await Requests.User.Watchers.ExecuteAsync(Token, New Requests.User.WatchersRequest(user.Username) With {.Offset = watchers.NextOffset})
-            End While
-
-            For Each w In list
+            For Each w In watchers
                 Dim node = New TreeNode(w.User.Username)
                 NodeToItem.Add(node, w)
                 TreeView1.Nodes.Add(node)
@@ -141,19 +121,9 @@ Public Class Form2
             NodeToItem.Clear()
 
             Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
-            Dim statuses = Await Requests.User.StatusesList.ExecuteAsync(Token, New Requests.User.StatusesListRequest(user.Username))
-            Dim list As New List(Of Status)
+            Dim statuses = Await Requests.User.StatusesList.ToListAsync(Token, user.Username)
 
-            While True
-                list.AddRange(statuses.Results)
-                If Not statuses.HasMore Then
-                    Exit While
-                End If
-
-                statuses = Await Requests.User.StatusesList.ExecuteAsync(Token, New Requests.User.StatusesListRequest(user.Username) With {.Offset = statuses.NextOffset})
-            End While
-
-            For Each w In list
+            For Each w In statuses
                 Dim node = New TreeNode(w.Body)
                 NodeToItem.Add(node, w)
                 TreeView1.Nodes.Add(node)

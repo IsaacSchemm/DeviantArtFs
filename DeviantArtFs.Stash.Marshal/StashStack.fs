@@ -6,44 +6,6 @@ open DeviantArtFs.Requests.Stash
 type StashStack internal (root: IStashRoot, stackid: int64, metadata: StashMetadataResponse.Root) =
     inherit StashNode(root, metadata)
 
-    static member AsyncGetStack token stackid = async {
-        let! resp = Stack.AsyncExecute token stackid
-        return new StashStack(new EmptyRoot(), stackid, resp)
-    }
-
-    static member AsyncGetContents token stackid = async {
-        let root = new EmptyRoot()
-        let! resp =
-            match stackid with
-            | Some s -> Contents.AsyncExecute token s
-            | None -> Contents.AsyncGetRoot token
-        return {
-            HasMore = resp.HasMore
-            NextOffset = resp.NextOffset
-            HasLess = resp.HasLess
-            PrevOffset = resp.PrevOffset
-            EstimatedTotal = resp.EstimatedTotal
-            Name = resp.Name
-            Results = seq {
-                for r in resp.Results do
-                    match (r.Itemid, r.Stackid) with
-                    | (Some itemid, _) -> yield new StashItem(root, itemid, r) :> StashNode
-                    | (None, Some stackid) -> yield new StashStack(root, stackid, r) :> StashNode
-                    | _ -> ()
-            }
-        }
-    }
-
-    static member GetStackAsync token stackid =
-        stackid
-        |> StashStack.AsyncGetStack token
-        |> Async.StartAsTask
-    static member GetContentsAsync token stackid =
-        stackid
-        |> Option.ofNullable
-        |> StashStack.AsyncGetContents token
-        |> Async.StartAsTask
-
     member __.Stackid = stackid
 
     member this.Path = this.Metadata.Path |> Option.toObj

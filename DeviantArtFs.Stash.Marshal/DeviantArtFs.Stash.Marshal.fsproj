@@ -22,6 +22,10 @@ This library sits on top of DeviantArtFs and provides a StashRoot object that ca
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FSharp.Control.AsyncSeq" Version="2.0.21" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DeviantArtFs\DeviantArtFs.fsproj" />
   </ItemGroup>
 

@@ -2,19 +2,15 @@
 
 open DeviantArtFs
 open DeviantArtFs.Interop
-open FSharp.Data
-
-type StatusesListRequest(username: string) =
-    member __.Username = username
-    member val Offset = 0 with get, set
-    member val Limit = 10 with get, set
 
 module StatusesList =
-    let AsyncExecute token (req: StatusesListRequest) = async {
+    open System.Runtime.InteropServices
+    open FSharp.Control
+
+    let AsyncExecute token (paging: PagingParams) (username: string) = async {
         let query = seq {
-            yield sprintf "username=%s" (dafs.urlEncode req.Username)
-            yield sprintf "offset=%d" req.Offset
-            yield sprintf "limit=%d" req.Limit
+            yield sprintf "username=%s" (dafs.urlEncode username)
+            yield! paging.GetQuery()
         }
         let req =
             query
@@ -25,4 +21,13 @@ module StatusesList =
         return dafs.parsePage StatusResponse.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMapResult Status |> Async.StartAsTask
+    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
+
+    let ToListAsync token req ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
+        ToAsyncSeq token req offset
+        |> AsyncSeq.take limit
+        |> AsyncSeq.toListAsync
+        |> iop.thenMap Status
+        |> Async.StartAsTask
+
+    let ExecuteAsync token paging username = AsyncExecute token paging username |> iop.thenMapResult Status |> Async.StartAsTask

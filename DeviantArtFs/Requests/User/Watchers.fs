@@ -56,16 +56,16 @@ type WatcherRecord = {
 } with
     member this.GetLastVisit() = this.Lastvisit |> Option.toNullable
 
-type WatchersRequest(username: string) =
-    member __.Username = username
-    member val Offset = 0 with get, set
-    member val Limit = 10 with get, set
+type WatchersRequest() =
+    member val Username: string = null with get, set
 
 module Watchers =
-    let AsyncExecute token (req: WatchersRequest) = async {
+    open System.Runtime.InteropServices
+    open FSharp.Control
+
+    let AsyncExecute token (paging: PagingParams) (req: WatchersRequest) = async {
         let query = seq {
-            yield sprintf "offset=%d" req.Offset
-            yield sprintf "limit=%d" req.Limit
+            yield! paging.GetQuery()
         }
         let req =
             query
@@ -97,4 +97,12 @@ module Watchers =
             })
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenCastResult |> Async.StartAsTask
+    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
+
+    let ToListAsync token req ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
+        ToAsyncSeq token req offset
+        |> AsyncSeq.take limit
+        |> AsyncSeq.toListAsync
+        |> Async.StartAsTask
+
+    let ExecuteAsync token paging req = AsyncExecute token paging req |> iop.thenCastResult |> Async.StartAsTask

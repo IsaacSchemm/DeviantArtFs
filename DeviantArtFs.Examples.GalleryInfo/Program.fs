@@ -50,9 +50,7 @@ let sandbox token_string = async {
         | "" -> me.Username
         | s -> s
 
-    let! statuses =
-        new DeviantArtFs.Requests.User.StatusesListRequest(username, Offset = 0, Limit = 1)
-        |> DeviantArtFs.Requests.User.StatusesList.AsyncExecute token
+    let! statuses = DeviantArtFs.Requests.User.StatusesList.AsyncExecute token (page 0 1) username
     let status = Seq.tryHead statuses.Results
     match status with
     | Some s -> 
