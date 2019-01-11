@@ -7,7 +7,7 @@ module Tags =
     let AsyncExecute token (paging: PagingParams) (tag: string) = async {
         let query = seq {
             yield sprintf "tag=%s" (dafs.urlEncode tag)
-            yield! paging.ToQuery()
+            yield! paging.GetQuery()
         }
         let req =
             query

@@ -22,7 +22,7 @@ module WhoFaved =
     let AsyncExecute token (paging: PagingParams) (deviationid: Guid) = async {
         let query = seq {
             yield sprintf "deviationid=%O" deviationid
-            yield! paging.ToQuery()
+            yield! paging.GetQuery()
         }
         let req =
             query

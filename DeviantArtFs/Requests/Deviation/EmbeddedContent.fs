@@ -18,7 +18,7 @@ module EmbeddedContent =
             match Option.ofNullable req.OffsetDeviationid with
             | Some s -> yield sprintf "offset_deviationid=%O" s
             | None -> ()
-            yield! paging.ToQuery()
+            yield! paging.GetQuery()
         }
         let req =
             query

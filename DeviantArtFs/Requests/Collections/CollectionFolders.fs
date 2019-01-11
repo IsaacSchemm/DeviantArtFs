@@ -17,7 +17,7 @@ module CollectionFolders =
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
             | None -> ()
             yield sprintf "calculate_size=%b" ps.CalculateSize
-            yield! paging.ToQuery()
+            yield! paging.GetQuery()
         }
         let req =
             query

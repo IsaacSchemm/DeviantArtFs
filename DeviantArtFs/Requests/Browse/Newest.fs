@@ -16,7 +16,7 @@ module Newest =
             match Option.ofObj req.Q with
             | Some s -> yield sprintf "q=%s" (dafs.urlEncode s)
             | None -> ()
-            yield! paging.ToQuery()
+            yield! paging.GetQuery()
         }
         let req =
             query

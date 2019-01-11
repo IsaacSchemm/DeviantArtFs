@@ -15,7 +15,7 @@ module UserJournals =
         let query = seq {
             yield sprintf "username=%s" (dafs.urlEncode req.Username)
             yield sprintf "featured=%b" req.Featured
-            yield! paging.ToQuery()
+            yield! paging.GetQuery()
         }
         let req =
             query

@@ -33,7 +33,7 @@ module Popular =
             | PopularTimeRange.OneMonth -> yield "timerange=1month"
             | PopularTimeRange.AllTime -> yield "timerange=alltime"
             | _ -> ()
-            yield! paging.ToQuery()
+            yield! paging.GetQuery()
         }
         let req =
             query

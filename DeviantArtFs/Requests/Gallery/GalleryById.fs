@@ -21,7 +21,7 @@ module GalleryById =
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
             | None -> ()
             yield sprintf "mode=%s" (if req.Mode = GalleryRequestMode.Newest then "newest" else "popular")
-            yield! paging.ToQuery()
+            yield! paging.GetQuery()
         }
         let req =
             query

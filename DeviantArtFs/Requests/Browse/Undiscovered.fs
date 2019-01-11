@@ -12,7 +12,7 @@ module Undiscovered =
             match Option.ofObj req.CategoryPath with
             | Some s -> yield sprintf "category_path=%s" (dafs.urlEncode s)
             | None -> ()
-            yield! paging.ToQuery()
+            yield! paging.GetQuery()
         }
         let req =
             query

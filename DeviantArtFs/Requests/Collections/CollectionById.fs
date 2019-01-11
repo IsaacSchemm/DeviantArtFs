@@ -17,7 +17,7 @@ module CollectionById =
             match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
             | None -> ()
-            yield! paging.ToQuery()
+            yield! paging.GetQuery()
         }
         let req =
             query

@@ -17,7 +17,7 @@ module GalleryFolders =
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
             | None -> ()
             yield sprintf "calculate_size=%b" req.CalculateSize
-            yield! paging.ToQuery()
+            yield! paging.GetQuery()
         }
         let req =
             query

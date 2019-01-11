@@ -16,7 +16,7 @@ module MoreLikeThis =
             match Option.ofObj req.Category with
             | Some s -> yield sprintf "category=%s" (dafs.urlEncode s)
             | None -> ()
-            yield! paging.ToQuery()
+            yield! paging.GetQuery()
         }
         let req =
             query
