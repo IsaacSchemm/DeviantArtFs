@@ -116,14 +116,16 @@ Example (C#):
 	var list = new List<DeviantArtFs.Interop.Deviation>();
 	int offset = 0;
 	while (true) {
-		var req = new DeviantArtFs.Requests.Gallery.AllRequest {
+		var req = new DeviantArtFs.PagingParams {
 			Offset = offset,
 			Limit = 24
 		};
-		IDeviantArtPagedResult<Deviation> resp = await DeviantArtFs.Requests.Gallery.All.ExecuteAsync(token, req);
+        DeviantArtFs.IDeviantArtPagedResult<DeviantArtFs.Interop.Deviation> resp =
+            await DeviantArtFs.Requests.Gallery.GalleryAllView.ExecuteAsync(token, req, new DeviantArtFs.Requests.Gallery.GalleryAllViewRequest());
 		list.AddRange(resp.Results);
 		offset = resp.NextOffset ?? 0;
 		if (!resp.HasMore) break;
+    }
 
 Example (F#):
 
@@ -131,14 +133,17 @@ Example (F#):
     let mutable offset = 0
     let mutable more = true
     while more do
-        let req = new DeviantArtFs.Requests.Gallery.AllRequest(Offset = offset, Limit = 24)
-        let! (resp: DeviantArtPagedResult<DeviationResponse.Root>) = DeviantArtFs.Requests.Gallery.All.AsyncExecute token req
+        let req = new DeviantArtFs.Requests.Gallery.GalleryAllViewRequest()
+        let paging = new PagingParams(Offset = 0, Limit = Nullable 24)
+        let! (resp: DeviantArtPagedResult<DeviationResponse.Root>) = DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token paging req
         list.AddRange(resp.Results)
         offset <- resp.NextOffset |> Option.defaultValue 0
         more <- resp.HasMore
 
 Note how the result from AsyncExecute is `DeviantArtPagedResult`, which has a NextOffset field of `int option`,
-while the result from ExecuteAsync is `IDeviantArtPagedResult`, which has a NextOffset fieldd of `int?`.
+while the result from ExecuteAsync is `IDeviantArtPagedResult`, which has a NextOffset field of `int?`.
+
+See ENDPOINTS.md for more information.
 
 ## Authentication
 

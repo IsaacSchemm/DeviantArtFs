@@ -6,6 +6,10 @@ Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and
 
 "long" indicates a 64-bit integer, and a question mark (?) following a type name indicates a Nullable<T>, as in C#.
 
+**IDeviantArtAccessToken**:
+
+An interface that provides an "AccessToken" string property. You can get one from DeviantArtFs.DeviantArtAuth or implement the interface yourself.
+
 **FieldChange:**
 
 "FieldChange" is a discriminated union used in update operations. FieldChange.NoChange means the parameter will not be included; for parameters you want to include, wrap it in FieldChange.UpdateToValue, like so:
@@ -247,10 +251,10 @@ Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and
 * ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task`
 
 ### DeviantArtFs.Requests.Stash.Contents
-* AsyncExecute (IDeviantArtAccessToken) (long) -> `Async<DeviantArtPagedResult<???>>`
-* AsyncGetRoot (IDeviantArtAccessToken) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (long) -> `Task<IDeviantArtPagedResult<Interop.StashMetadata>>`
-* GetRootAsync (IDeviantArtAccessToken) -> `Task<IDeviantArtPagedResult<Interop.StashMetadata>>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (long) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (long) -> `Task<IDeviantArtPagedResult<Interop.StashMetadata>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (long) (int) -> `AsyncSeq<???>`
+* ToListAsync (IDeviantArtAccessToken) (long) (int) (int) -> `Task<IEnumerable<Interop.StashMetadata>>`
 
 ### DeviantArtFs.Requests.Stash.Delete
 * AsyncExecute (IDeviantArtAccessToken) (long) -> `Async<unit>`
@@ -362,14 +366,14 @@ Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and
 * ExecuteAsync (IDeviantArtAccessToken) -> `Task<string>`
 
 ### DeviantArtFs.Requests.User.Friends
-* AsyncExecute (IDeviantArtAccessToken) (FriendsRequest) -> `Async<DeviantArtPagedResult<FriendRecord>>`
-* ExecuteAsync (IDeviantArtAccessToken) (FriendsRequest) -> `Task<IDeviantArtPagedResult<FriendRecord>>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (FriendsRequest) -> `Async<DeviantArtPagedResult<FriendRecord>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (FriendsRequest) -> `Task<IDeviantArtPagedResult<FriendRecord>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (FriendsRequest) (int) -> `AsyncSeq<FriendRecord>`
+* ToListAsync (IDeviantArtAccessToken) (FriendsRequest) (int) (int) -> `Task<FSharpList<FriendRecord>>`
 
 **FriendsRequest:**
 
 * Username: `string`
-* Offset: `int`
-* Limit: `int`
 
 ### DeviantArtFs.Requests.User.FriendsSearch
 * AsyncExecute (IDeviantArtAccessToken) (FriendsSearchRequest) -> `Async<IEnumerable<DeviantArtUser>>`
@@ -430,14 +434,10 @@ Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and
 * Bio: `FieldChange<string>`
 
 ### DeviantArtFs.Requests.User.StatusesList
-* AsyncExecute (IDeviantArtAccessToken) (StatusesListRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (StatusesListRequest) -> `Task<IDeviantArtPagedResult<Interop.Status>>`
-
-**StatusesListRequest:**
-
-* Username: `string`
-* Offset: `int`
-* Limit: `int`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (string) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (string) -> `Task<IDeviantArtPagedResult<Interop.Status>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (string) (int) -> `AsyncSeq<???>`
+* ToListAsync (IDeviantArtAccessToken) (string) (int) (int) -> `Task<IEnumerable<Interop.Status>>`
 
 ### DeviantArtFs.Requests.User.StatusesStatus
 * AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<???>`
@@ -455,14 +455,14 @@ Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and
 * Stashid: `long?`
 
 ### DeviantArtFs.Requests.User.Watchers
-* AsyncExecute (IDeviantArtAccessToken) (WatchersRequest) -> `Async<DeviantArtPagedResult<WatcherRecord>>`
-* ExecuteAsync (IDeviantArtAccessToken) (WatchersRequest) -> `Task<IDeviantArtPagedResult<WatcherRecord>>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (WatchersRequest) -> `Async<DeviantArtPagedResult<WatcherRecord>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (WatchersRequest) -> `Task<IDeviantArtPagedResult<WatcherRecord>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (WatchersRequest) (int) -> `AsyncSeq<WatcherRecord>`
+* ToListAsync (IDeviantArtAccessToken) (WatchersRequest) (int) (int) -> `Task<FSharpList<WatcherRecord>>`
 
 **WatchersRequest:**
 
 * Username: `string`
-* Offset: `int`
-* Limit: `int`
 
 ### DeviantArtFs.Requests.User.Whoami
 * AsyncExecute (IDeviantArtAccessToken) -> `Async<DeviantArtUser>`

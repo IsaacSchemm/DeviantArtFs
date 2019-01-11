@@ -41,6 +41,10 @@ Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and
 
 ""long"" indicates a 64-bit integer, and a question mark (?) following a type name indicates a Nullable<T>, as in C#.
 
+**IDeviantArtAccessToken**:
+
+An interface that provides an ""AccessToken"" string property. You can get one from DeviantArtFs.DeviantArtAuth or implement the interface yourself.
+
 **FieldChange:**
 
 ""FieldChange"" is a discriminated union used in update operations. FieldChange.NoChange means the parameter will not be included; for parameters you want to include, wrap it in FieldChange.UpdateToValue, like so:
