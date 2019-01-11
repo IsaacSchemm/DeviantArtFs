@@ -17,7 +17,7 @@ type PopularRequest() =
     member val Timerange = PopularTimeRange.TwentyFourHours with get, set
 
 module Popular =
-    let AsyncExecute token (req: PopularRequest) (paging: PagingParams) = async {
+    let AsyncExecute token (paging: PagingParams) (req: PopularRequest) = async {
         let query = seq {
             match Option.ofObj req.CategoryPath with
             | Some s -> yield sprintf "category_path=%s" (dafs.urlEncode s)
@@ -33,7 +33,7 @@ module Popular =
             | PopularTimeRange.OneMonth -> yield "timerange=1month"
             | PopularTimeRange.AllTime -> yield "timerange=alltime"
             | _ -> ()
-            yield! paging.GetQuery()
+            yield! paging.ToQuery()
         }
         let req =
             query
@@ -44,6 +44,6 @@ module Popular =
         return dafs.parsePage DeviationResponse.Parse json
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset
+    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset 120
 
     let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenMapResult Deviation |> Async.StartAsTask

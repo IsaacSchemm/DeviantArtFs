@@ -1,6 +1,5 @@
 ﻿namespace DeviantArtFs.Requests.Browse
 
-open System
 open DeviantArtFs
 open DeviantArtFs.Interop
 open FSharp.Control
@@ -9,12 +8,12 @@ type HotRequest() =
     member val CategoryPath = null with get, set
 
 module Hot =
-    let AsyncExecute token (req: HotRequest) (paging: PagingParams) = async {
+    let AsyncExecute token (paging: PagingParams) (req: HotRequest) = async {
         let query = seq {
             match Option.ofObj req.CategoryPath with
             | Some s -> yield sprintf "category_path=%s" (dafs.urlEncode s)
             | None -> ()
-            yield! paging.GetQuery()
+            yield! paging.ToQuery()
         }
         let req =
             query
@@ -25,6 +24,6 @@ module Hot =
         return json |> dafs.parsePage DeviationResponse.Parse
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset
+    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 120 req
 
-    let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenMapResult Deviation |> Async.StartAsTask
+    let ExecuteAsync token paging req = AsyncExecute token paging req |> iop.thenMapResult Deviation |> Async.StartAsTask

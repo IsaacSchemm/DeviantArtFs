@@ -19,10 +19,10 @@ module WhoFaved =
     open System.Runtime.InteropServices
     open FSharp.Control
 
-    let AsyncExecute token (deviationid: Guid) (paging: PagingParams) = async {
+    let AsyncExecute token (paging: PagingParams) (deviationid: Guid) = async {
         let query = seq {
             yield sprintf "deviationid=%O" deviationid
-            yield! paging.GetQuery()
+            yield! paging.ToQuery()
         }
         let req =
             query
@@ -38,7 +38,7 @@ module WhoFaved =
             })
     }
 
-    let ToAsyncSeq token deviationid offset = AsyncExecute token deviationid |> dafs.toAsyncSeq offset
+    let ToAsyncSeq token deviationid offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 deviationid
 
     let ToListAsync token deviationid ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
         ToAsyncSeq token deviationid offset

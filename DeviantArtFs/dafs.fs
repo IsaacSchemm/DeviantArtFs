@@ -86,11 +86,12 @@ module internal dafs =
 
     let toPlainTask (t: Task<unit>) = t :> Task
 
-    let toAsyncSeq (offset: int) (f: PagingParams -> Async<'a> when 'a :> IDeviantArtPagedResult<'b>) = asyncSeq {
+    let toAsyncSeq (offset: int) (limit: int) (req: 'a) (f: PagingParams -> 'a -> Async<'b> when 'b :> IDeviantArtPagedResult<'c>) = asyncSeq {
         let mutable cursor = offset
         let mutable has_more = true
         while has_more do
-            let! resp = new PagingParams(Offset = cursor, Limit = Nullable 24) |> f
+            let paging = new PagingParams(Offset = cursor, Limit = Nullable limit)
+            let! resp = f paging req
             for r in resp.Results do
                 yield r
             cursor <- resp.NextOffset.GetValueOrDefault()

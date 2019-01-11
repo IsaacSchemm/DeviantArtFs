@@ -10,13 +10,13 @@ type MoreLikeThisRequest(seed: Guid) =
     member val Category = null with get, set
 
 module MoreLikeThis =
-    let AsyncExecute token (req: MoreLikeThisRequest) (paging: PagingParams) = async {
+    let AsyncExecute token (paging: PagingParams) (req: MoreLikeThisRequest) = async {
         let query = seq {
             yield sprintf "seed=%O" req.Seed
             match Option.ofObj req.Category with
             | Some s -> yield sprintf "category=%s" (dafs.urlEncode s)
             | None -> ()
-            yield! paging.GetQuery()
+            yield! paging.ToQuery()
         }
         let req =
             query
@@ -27,6 +27,6 @@ module MoreLikeThis =
         return json |> dafs.parsePage DeviationResponse.Parse
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset
+    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
 
     let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenMapResult Deviation |> Async.StartAsTask

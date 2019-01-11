@@ -12,13 +12,13 @@ module EmbeddedContent =
     open System.Runtime.InteropServices
     open FSharp.Control
 
-    let AsyncExecute token (req: EmbeddedContentRequest) (paging: PagingParams) = async {
+    let AsyncExecute token (paging: PagingParams) (req: EmbeddedContentRequest) = async {
         let query = seq {
             yield sprintf "deviationid=%O" req.Deviationid
             match Option.ofNullable req.OffsetDeviationid with
             | Some s -> yield sprintf "offset_deviationid=%O" s
             | None -> ()
-            yield! paging.GetQuery()
+            yield! paging.ToQuery()
         }
         let req =
             query
@@ -29,7 +29,7 @@ module EmbeddedContent =
         return dafs.parsePage DeviationResponse.Parse json
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset
+    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
 
     let ToListAsync token req ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
         ToAsyncSeq token req offset

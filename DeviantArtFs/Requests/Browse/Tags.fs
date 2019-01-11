@@ -4,10 +4,10 @@ open DeviantArtFs
 open DeviantArtFs.Interop
 
 module Tags =
-    let AsyncExecute token (tag: string) (paging: PagingParams) = async {
+    let AsyncExecute token (paging: PagingParams) (tag: string) = async {
         let query = seq {
             yield sprintf "tag=%s" (dafs.urlEncode tag)
-            yield! paging.GetQuery()
+            yield! paging.ToQuery()
         }
         let req =
             query
@@ -18,6 +18,6 @@ module Tags =
         return dafs.parsePage DeviationResponse.Parse json
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset
+    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset 50
 
     let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenMapResult Deviation |> Async.StartAsTask

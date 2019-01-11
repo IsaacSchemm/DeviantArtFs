@@ -1,6 +1,6 @@
 This is a list of functions in the DeviantArtFs library that call DeviantArt / Sta.sh API endpoints.
 
-Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from F#, and methods that return a Task<T> can be used from async methods in C# and VB.NET.
+Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and methods that return a Task<T> can be used from async methods in C# and VB.NET.
 
 "???" indicates a type generated from a JSON sample by FSharp.Data's JsonProvider.
 
@@ -23,11 +23,7 @@ Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from
 "PagingParams" is used when the common "offset" and "limit" parameters are included in a request.
 
     // C#
-    new DeviantArtFs.PagingParams
-    {
-        Offset = 15,
-        Limit = 5
-    }
+    PagingParams x1 = new PagingParams { Offset = 0, Limit = 24 };
 
 ### DeviantArtFs.DeviantArtAuth
 * AsyncGetToken (string) (Uri) -> `Async<IDeviantArtRefreshToken>`
@@ -48,18 +44,18 @@ Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from
 * Date: `DateTime?`
 
 ### DeviantArtFs.Requests.Browse.Hot
-* AsyncExecute (IDeviantArtAccessToken) (HotRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (HotRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (HotRequest) (int) -> `IAsyncEnumerable<???>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (HotRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (HotRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (HotRequest) (int) -> `AsyncSeq<???>`
 
 **HotRequest:**
 
 * CategoryPath: `string`
 
 ### DeviantArtFs.Requests.Browse.MoreLikeThis
-* AsyncExecute (IDeviantArtAccessToken) (MoreLikeThisRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (MoreLikeThisRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (MoreLikeThisRequest) (int) -> `IAsyncEnumerable<???>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (MoreLikeThisRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (MoreLikeThisRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (MoreLikeThisRequest) (int) -> `AsyncSeq<???>`
 
 **MoreLikeThisRequest:**
 
@@ -71,9 +67,8 @@ Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from
 * ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<MoreLikeThisResult<Interop.Deviation>>`
 
 ### DeviantArtFs.Requests.Browse.Newest
-* AsyncExecute (IDeviantArtAccessToken) (NewestRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (NewestRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (NewestRequest) (int) -> `IAsyncEnumerable<???>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (NewestRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (NewestRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
 
 **NewestRequest:**
 
@@ -81,9 +76,8 @@ Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from
 * Q: `string`
 
 ### DeviantArtFs.Requests.Browse.Popular
-* AsyncExecute (IDeviantArtAccessToken) (PopularRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (PopularRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (PopularRequest) (int) -> `IAsyncEnumerable<???>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (PopularRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (PopularRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
 
 **PopularRequest:**
 
@@ -92,27 +86,25 @@ Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from
 * Timerange: `PopularTimeRange` (EightHours, TwentyFourHours, ThreeDays, OneWeek, OneMonth, AllTime)
 
 ### DeviantArtFs.Requests.Browse.Tags
-* AsyncExecute (IDeviantArtAccessToken) (string) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (string) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (string) (int) -> `IAsyncEnumerable<???>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (string) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (string) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
 
 ### DeviantArtFs.Requests.Browse.TagsSearch
 * AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<IEnumerable<string>>`
 * ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IEnumerable<string>>`
 
 ### DeviantArtFs.Requests.Browse.Undiscovered
-* AsyncExecute (IDeviantArtAccessToken) (UndiscoveredRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (UndiscoveredRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (UndiscoveredRequest) (int) -> `IAsyncEnumerable<???>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (UndiscoveredRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (UndiscoveredRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
 
 **UndiscoveredRequest:**
 
 * CategoryPath: `string`
 
 ### DeviantArtFs.Requests.Browse.UserJournals
-* AsyncExecute (IDeviantArtAccessToken) (UserJournalsRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (UserJournalsRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (UserJournalsRequest) (int) -> `IAsyncEnumerable<???>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (UserJournalsRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (UserJournalsRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (UserJournalsRequest) (int) -> `AsyncSeq<???>`
 * ToListAsync (IDeviantArtAccessToken) (UserJournalsRequest) (int) (int) -> `Task<IEnumerable<Interop.Deviation>>`
 
 **UserJournalsRequest:**
@@ -121,9 +113,9 @@ Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from
 * Featured: `bool`
 
 ### DeviantArtFs.Requests.Collections.CollectionById
-* AsyncExecute (IDeviantArtAccessToken) (CollectionByIdRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (CollectionByIdRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (CollectionByIdRequest) (int) -> `IAsyncEnumerable<???>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (CollectionByIdRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (CollectionByIdRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (CollectionByIdRequest) (int) -> `AsyncSeq<???>`
 * ToListAsync (IDeviantArtAccessToken) (CollectionByIdRequest) (int) (int) -> `Task<IEnumerable<Interop.Deviation>>`
 
 **CollectionByIdRequest:**
@@ -132,9 +124,9 @@ Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from
 * Username: `string`
 
 ### DeviantArtFs.Requests.Collections.CollectionFolders
-* AsyncExecute (IDeviantArtAccessToken) (CollectionFoldersRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (CollectionFoldersRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.IDeviantArtFolder>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (CollectionFoldersRequest) (int) -> `IAsyncEnumerable<???>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (CollectionFoldersRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (CollectionFoldersRequest) -> `Task<IDeviantArtPagedResult<Interop.IDeviantArtFolder>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (CollectionFoldersRequest) (int) -> `AsyncSeq<???>`
 * ToListAsync (IDeviantArtAccessToken) (CollectionFoldersRequest) (int) (int) -> `Task<IEnumerable<Interop.IDeviantArtFolder>>`
 
 **CollectionFoldersRequest:**
@@ -187,9 +179,9 @@ Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from
 * ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<Interop.IDeviantArtFile>`
 
 ### DeviantArtFs.Requests.Deviation.EmbeddedContent
-* AsyncExecute (IDeviantArtAccessToken) (EmbeddedContentRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (EmbeddedContentRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (EmbeddedContentRequest) (int) -> `IAsyncEnumerable<???>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (EmbeddedContentRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (EmbeddedContentRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (EmbeddedContentRequest) (int) -> `AsyncSeq<???>`
 * ToListAsync (IDeviantArtAccessToken) (EmbeddedContentRequest) (int) (int) -> `Task<IEnumerable<Interop.Deviation>>`
 
 **EmbeddedContentRequest:**
@@ -208,9 +200,9 @@ Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from
 * ExtCollection: `bool`
 
 ### DeviantArtFs.Requests.Deviation.WhoFaved
-* AsyncExecute (IDeviantArtAccessToken) (Guid) (PagingParams) -> `Async<DeviantArtPagedResult<WhoFavedUser>>`
-* ExecuteAsync (IDeviantArtAccessToken) (Guid) (PagingParams) -> `Task<IDeviantArtPagedResult<WhoFavedUser>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (Guid) (int) -> `IAsyncEnumerable<WhoFavedUser>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (Guid) -> `Async<DeviantArtPagedResult<WhoFavedUser>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (Guid) -> `Task<IDeviantArtPagedResult<WhoFavedUser>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (Guid) (int) -> `AsyncSeq<WhoFavedUser>`
 * ToListAsync (IDeviantArtAccessToken) (Guid) (int) (int) -> `Task<FSharpList<WhoFavedUser>>`
 
 ### DeviantArtFs.Requests.Gallery.CreateGalleryFolder
@@ -218,9 +210,9 @@ Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from
 * ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<Interop.IDeviantArtFolder>`
 
 ### DeviantArtFs.Requests.Gallery.GalleryAllView
-* AsyncExecute (IDeviantArtAccessToken) (GalleryAllViewRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (GalleryAllViewRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (GalleryAllViewRequest) (int) -> `IAsyncEnumerable<???>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (GalleryAllViewRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (GalleryAllViewRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (GalleryAllViewRequest) (int) -> `AsyncSeq<???>`
 * ToListAsync (IDeviantArtAccessToken) (GalleryAllViewRequest) (int) (int) -> `Task<IEnumerable<Interop.Deviation>>`
 
 **GalleryAllViewRequest:**
@@ -228,9 +220,9 @@ Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from
 * Username: `string`
 
 ### DeviantArtFs.Requests.Gallery.GalleryById
-* AsyncExecute (IDeviantArtAccessToken) (GalleryByIdRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (GalleryByIdRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (GalleryByIdRequest) (int) -> `IAsyncEnumerable<???>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (GalleryByIdRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (GalleryByIdRequest) -> `Task<IDeviantArtPagedResult<Interop.Deviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (GalleryByIdRequest) (int) -> `AsyncSeq<???>`
 * ToListAsync (IDeviantArtAccessToken) (GalleryByIdRequest) (int) (int) -> `Task<IEnumerable<Interop.Deviation>>`
 
 **GalleryByIdRequest:**
@@ -240,9 +232,9 @@ Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from
 * Mode: `GalleryRequestMode` (Popular, Newest)
 
 ### DeviantArtFs.Requests.Gallery.GalleryFolders
-* AsyncExecute (IDeviantArtAccessToken) (GalleryFoldersRequest) (PagingParams) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (GalleryFoldersRequest) (PagingParams) -> `Task<IDeviantArtPagedResult<Interop.IDeviantArtFolder>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (GalleryFoldersRequest) (int) -> `IAsyncEnumerable<???>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (GalleryFoldersRequest) -> `Async<DeviantArtPagedResult<???>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (GalleryFoldersRequest) -> `Task<IDeviantArtPagedResult<Interop.IDeviantArtFolder>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (GalleryFoldersRequest) (int) -> `AsyncSeq<???>`
 * ToListAsync (IDeviantArtAccessToken) (GalleryFoldersRequest) (int) (int) -> `Task<IEnumerable<Interop.IDeviantArtFolder>>`
 
 **GalleryFoldersRequest:**

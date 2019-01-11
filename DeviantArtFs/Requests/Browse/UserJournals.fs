@@ -11,11 +11,11 @@ module UserJournals =
     open System.Runtime.InteropServices
     open FSharp.Control
 
-    let AsyncExecute token (req: UserJournalsRequest) (paging: PagingParams) = async {
+    let AsyncExecute token (paging: PagingParams) (req: UserJournalsRequest) = async {
         let query = seq {
             yield sprintf "username=%s" (dafs.urlEncode req.Username)
             yield sprintf "featured=%b" req.Featured
-            yield! paging.GetQuery()
+            yield! paging.ToQuery()
         }
         let req =
             query
@@ -26,7 +26,7 @@ module UserJournals =
         return json |> dafs.parsePage DeviationResponse.Parse
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset
+    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
 
     let ToListAsync token req ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
         ToAsyncSeq token req offset

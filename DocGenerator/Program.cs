@@ -12,6 +12,7 @@ namespace DocGenerator
         {
             string n = t.Name.Replace("`1", "").Replace("`2", "").Replace("IJsonDocument", "???");
             if (n == "FSharpAsync") n = "Async";
+            if (n == "IAsyncEnumerable") n = "AsyncSeq";
             if (n == "Boolean") n = "bool";
             if (n == "Byte") n = "byte";
             if (n == "Int16") n = "short";
@@ -34,7 +35,7 @@ namespace DocGenerator
             {
                 sw.WriteLine(@"This is a list of functions in the DeviantArtFs library that call DeviantArt / Sta.sh API endpoints.
 
-Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from F#, and methods that return a Task<T> can be used from async methods in C# and VB.NET.
+Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and methods that return a Task<T> can be used from async methods in C# and VB.NET.
 
 ""???"" indicates a type generated from a JSON sample by FSharp.Data's JsonProvider.
 
@@ -57,11 +58,7 @@ Methods that return an Async<T> or IAsyncEnumerable<T> are intended for use from
 ""PagingParams"" is used when the common ""offset"" and ""limit"" parameters are included in a request.
 
     // C#
-    new DeviantArtFs.PagingParams
-    {
-        Offset = 15,
-        Limit = 5
-    }
+    PagingParams x1 = new PagingParams { Offset = 0, Limit = 24 };
 ");
 
                 var a = Assembly.GetAssembly(typeof(DeviantArtFs.Requests.Browse.CategoryTree));

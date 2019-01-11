@@ -15,13 +15,13 @@ module GalleryById =
     open System.Runtime.InteropServices
     open FSharp.Control
 
-    let AsyncExecute token (req: GalleryByIdRequest) (paging: PagingParams) = async {
+    let AsyncExecute token (paging: PagingParams) (req: GalleryByIdRequest) = async {
         let query = seq {
             match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
             | None -> ()
             yield sprintf "mode=%s" (if req.Mode = GalleryRequestMode.Newest then "newest" else "popular")
-            yield! paging.GetQuery()
+            yield! paging.ToQuery()
         }
         let req =
             query
@@ -32,7 +32,7 @@ module GalleryById =
         return dafs.parsePage DeviationResponse.Parse json
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset
+    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 24 req
 
     let ToListAsync token req ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
         ToAsyncSeq token req offset

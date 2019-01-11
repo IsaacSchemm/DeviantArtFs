@@ -12,8 +12,8 @@ Public Class Form2
 
         If Token IsNot Nothing Then
             Dim page = Await Requests.Gallery.GalleryAllView.ExecuteAsync(Token,
-                                                                          New Requests.Gallery.GalleryAllViewRequest(),
-                                                                          New PagingParams With {.Offset = offset})
+                                                                          New PagingParams With {.Limit = 24},
+                                                                          New Requests.Gallery.GalleryAllViewRequest())
             For Each deviation In page.Results
                 Dim node = New TreeNode(If(deviation.Title, deviation.Deviationid.ToString()))
                 NodeToItem.Add(node, deviation)
