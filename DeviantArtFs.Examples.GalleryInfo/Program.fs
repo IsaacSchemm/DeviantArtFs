@@ -58,69 +58,11 @@ let sandbox token_string = async {
         printfn ""
     | None -> ()
 
-    printfn "Gallery folders include:"
-    printfn ""
+    let! stash = DeviantArtFs.Requests.Stash.Delta.GetAllAsListAsync token (new ExtParams()) |> Async.AwaitTask
+    for s in stash do
+        printfn "%s" s.Metadata.Title
 
-    let! folders = new DeviantArtFs.Requests.Gallery.GalleryFoldersRequest(Username = username) |> DeviantArtFs.Requests.Gallery.GalleryFolders.AsyncExecute token (page 0 50)
-    for f in folders.Results do
-        printfn "%A %s" f.Folderid f.Name
-
-        let! items = new DeviantArtFs.Requests.Gallery.GalleryByIdRequest(f.Folderid, Username = username) |> DeviantArtFs.Requests.Gallery.GalleryById.AsyncExecute token (page 0 3)
-        for d in items.Results do
-            printfn "  %s" (d.Title |> Option.defaultValue "(no title)")
-            match d.CategoryPath with
-            | Some s -> printfn "    Category: %s" s
-            | None -> ()
-            match d.PublishedTime with
-            | Some s ->
-                let time = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(float s)
-                printfn "    Published at: %O" time
-            | None -> ()
-
-            let! faves = DeviantArtFs.Requests.Deviation.WhoFaved.AsyncExecute token (page 0 5) d.Deviationid
-            if (Seq.isEmpty faves.Results |> not) then
-                printfn "    Favorited by:"
-                for f in faves.Results do
-                    let time = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(float f.Time)
-                    printfn "      %s at %O" f.User.Username time
-                if faves.HasMore then
-                    printfn "      etc."
-
-            printfn ""
-
-        printfn ""
-
-    printfn "Favorites folders include:"
-    printfn ""
-
-    let! collection_folders = new DeviantArtFs.Requests.Collections.CollectionFoldersRequest(Username = username) |> DeviantArtFs.Requests.Collections.CollectionFolders.AsyncExecute token (page 0 50)
-    for f in collection_folders.Results do
-        printfn "%A %s" f.Folderid f.Name
-
-        let! items = new DeviantArtFs.Requests.Collections.CollectionByIdRequest(f.Folderid, Username = username) |> DeviantArtFs.Requests.Collections.CollectionById.AsyncExecute token (page 0 3)
-        for d in items.Results do
-            printfn "  %s" (d.Title |> Option.defaultValue "(no title)")
-            match d.CategoryPath with
-            | Some s -> printfn "    Category: %s" s
-            | None -> ()
-            match d.PublishedTime with
-            | Some s ->
-                let time = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(float s)
-                printfn "    Published at: %O" time
-            | None -> ()
-
-            let! faves = DeviantArtFs.Requests.Deviation.WhoFaved.AsyncExecute token (page 0 5) d.Deviationid
-            if (Seq.isEmpty faves.Results |> not) then
-                printfn "    Favorited by:"
-                for f in faves.Results do
-                    let time = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(float f.Time)
-                    printfn "      %s at %O" f.User.Username time
-                if faves.HasMore then
-                    printfn "      etc."
-
-            printfn ""
-
-        printfn ""
+    return 0
 }
 
 [<EntryPoint>]

@@ -10,6 +10,13 @@ Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and
 
 An interface that provides an "AccessToken" string property. You can get one from DeviantArtFs.DeviantArtAuth or implement the interface yourself.
 
+**ExtParams:**
+
+The value of "ExtParams" determines what extra data (if any) is included with deviations and Sta.sh metadata.
+
+    // C#
+    ExtParams e1 = new ExtParams { ExtSubmission = true, ExtCamera = false, ExtStats = false };
+
 **FieldChange:**
 
 "FieldChange" is a discriminated union used in update operations. FieldChange.NoChange means the parameter will not be included; for parameters you want to include, wrap it in FieldChange.UpdateToValue, like so:
@@ -263,6 +270,8 @@ An interface that provides an "AccessToken" string property. You can get one fro
 ### DeviantArtFs.Requests.Stash.Delta
 * AsyncExecute (IDeviantArtAccessToken) (DeltaRequest) -> `Async<DeltaResult>`
 * ExecuteAsync (IDeviantArtAccessToken) (DeltaRequest) -> `Task<Interop.IDeltaResult>`
+* GetAll (IDeviantArtAccessToken) (ExtParams) -> `AsyncSeq<DeltaResultEntry>`
+* GetAllAsListAsync (IDeviantArtAccessToken) (ExtParams) -> `Task<IEnumerable<Interop.DeltaEntry>>`
 
 **DeltaRequest:**
 

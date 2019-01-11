@@ -70,6 +70,8 @@ type DeltaRequest() =
     member val ExtParams = new ExtParams() with get, set
 
 module Delta =
+    open FSharp.Control
+
     let AsyncExecute token (req: DeltaRequest) = async {
         let query = seq {
             match Option.ofObj req.Cursor with
@@ -104,5 +106,22 @@ module Delta =
             }
         }
     }
+
+    let GetAll token (extParams: ExtParams) = asyncSeq {
+        let mutable offset = 0
+        let mutable has_more = true
+        while has_more do
+            let! resp = new DeltaRequest(ExtParams = extParams, Offset = offset, Limit = 120) |> AsyncExecute token
+            for e in resp.Entries do
+                yield e
+            offset <- resp.NextOffset |> Option.defaultValue 0
+            has_more <- resp.HasMore
+    }
+
+    let GetAllAsListAsync token extParams =
+        GetAll token extParams
+        |> AsyncSeq.toListAsync
+        |> iop.thenMap DeltaEntry
+        |> Async.StartAsTask
 
     let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun x -> x :> IDeltaResult) |> Async.StartAsTask

@@ -45,6 +45,13 @@ Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and
 
 An interface that provides an ""AccessToken"" string property. You can get one from DeviantArtFs.DeviantArtAuth or implement the interface yourself.
 
+**ExtParams:**
+
+The value of ""ExtParams"" determines what extra data (if any) is included with deviations and Sta.sh metadata.
+
+    // C#
+    ExtParams e1 = new ExtParams { ExtSubmission = true, ExtCamera = false, ExtStats = false };
+
 **FieldChange:**
 
 ""FieldChange"" is a discriminated union used in update operations. FieldChange.NoChange means the parameter will not be included; for parameters you want to include, wrap it in FieldChange.UpdateToValue, like so:
@@ -73,8 +80,8 @@ An interface that provides an ""AccessToken"" string property. You can get one f
                         .Select(x => x as MethodInfo)
                         .Where(x => x != null)
                         .Where(x => x.ReturnType.Name.StartsWith("Task") || x.ReturnType.Name.StartsWith("FSharpAsync") || x.ReturnType.Name.StartsWith("IAsyncEnumerable"))
-                        .OrderBy(x => x.Name == "ToListAsync")
-                        .ThenBy(x => x.Name == "ToAsyncSeq");
+                        .OrderByDescending(x => x.Name.Contains("Execute"))
+                        .ThenBy(x => x.Name.EndsWith("ListAsync"));
                     if (ae.Any())
                     {
                         sw.WriteLine($"### {t.FullName}");
@@ -86,7 +93,7 @@ An interface that provides an ""AccessToken"" string property. You can get one f
                             foreach (var p in x.GetParameters())
                             {
                                 sw.Write($" ({PrintTypeName(p.ParameterType)})");
-                                if (p.ParameterType.FullName.StartsWith("DeviantArtFs.") && p.ParameterType.Name != "IDeviantArtAccessToken" && p.ParameterType.Name != "PagingParams")
+                                if (p.ParameterType.FullName.StartsWith("DeviantArtFs.") && !new[] { "IDeviantArtAccessToken", "ExtParams", "PagingParams" }.Contains(p.ParameterType.Name))
                                 {
                                     typesToDescribe.Add(p.ParameterType);
                                 }

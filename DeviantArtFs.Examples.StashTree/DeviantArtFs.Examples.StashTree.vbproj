@@ -154,6 +154,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="FSharp.Control.AsyncSeq">
+      <Version>2.0.21</Version>
+    </PackageReference>
     <PackageReference Include="FSharp.Core">
       <Version>4.5.4</Version>
     </PackageReference>
