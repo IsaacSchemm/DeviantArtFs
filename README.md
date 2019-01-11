@@ -1,7 +1,8 @@
 # DeviantArtFs
 
 A .NET / F# library to interact with the [DeviantArt / Sta.sh API.](https://www.deviantart.com/developers/http/v1/20160316)
-Uses [FSharp.Data](http://fsharp.github.io/FSharp.Data/) to parse JSON.
+
+If you're using this library in a .NET Framework project and it doesn't run, make sure that the dependicies (FSharp.Core, FSharp.Data, FSharp.Control.AsyncSeq) are installed.
 
 ## Currently unsupported features
 
