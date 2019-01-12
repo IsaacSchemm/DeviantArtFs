@@ -201,8 +201,8 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * OffsetDeviationid: `Guid?`
 
 ### DeviantArtFs.Requests.Deviation.MetadataById
-* AsyncExecute (IDeviantArtAccessToken) (MetadataRequest) -> `Async<IEnumerable<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (MetadataRequest) -> `Task<IEnumerable<Interop.Metadata>>`
+* AsyncExecute (IDeviantArtAccessToken) (MetadataRequest) -> `Async<IEnumerable<Metadata>>`
+* ExecuteAsync (IDeviantArtAccessToken) (MetadataRequest) -> `Task<IEnumerable<IBclMetadata>>`
 
 **MetadataRequest:**
 

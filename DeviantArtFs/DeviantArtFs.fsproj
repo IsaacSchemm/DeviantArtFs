@@ -25,9 +25,10 @@
     <Compile Include="Types\DeviantArtUser.fs" />
     <Compile Include="Types\DeviantArtPagedResult.fs" />
     <Compile Include="Types\Files.fs" />
+    <Compile Include="Types\Folders.fs" />
     <Compile Include="Types\Deviation.fs" />
+    <Compile Include="Types\Metadata.fs" />
     <Compile Include="Types\Interop\Interfaces.fs" />
-    <Compile Include="Types\Interop\Metadata.fs" />
     <Compile Include="Types\Interop\Status.fs" />
     <Compile Include="Types\Interop\Profile.fs" />
     <Compile Include="Types\Interop\StashMetadata.fs" />
