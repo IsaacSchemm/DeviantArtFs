@@ -16,6 +16,7 @@ type Profile(original: ProfileResponse.Root) =
         |> Option.map (fun x -> x.JsonValue.ToString())
         |> Option.map DeviationResponse.Parse
         |> Option.map Deviation
+        |> Option.map (fun d -> d :> IBclDeviation)
     let lastStatus =
         original.LastStatus
         |> Option.map (fun x -> x.JsonValue.ToString())

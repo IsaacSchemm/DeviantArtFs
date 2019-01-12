@@ -62,7 +62,7 @@ let sandbox token_string = async {
     for s in stash do
         printfn "%s" s.Metadata.Title
 
-    return 0
+    return ()
 }
 
 [<EntryPoint>]

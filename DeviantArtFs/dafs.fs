@@ -97,3 +97,5 @@ module internal dafs =
             cursor <- resp.NextOffset.GetValueOrDefault()
             has_more <- resp.HasMore
     }
+
+    let asBclDeviation d = d :> IBclDeviation

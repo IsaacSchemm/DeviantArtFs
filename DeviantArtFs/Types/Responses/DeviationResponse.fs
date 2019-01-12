@@ -2,7 +2,7 @@
 
 open FSharp.Data
 
-type DeviationResponse = JsonProvider<"""[{
+type internal DeviationResponse = JsonProvider<"""[{
     "deviationid": "F9921FC4-3A0F-90A9-3625-AA8E105747AD",
     "printid": null,
     "url": "https://justgalym.deviantart.com/journal/Another-post-written-in-stash-446384730",

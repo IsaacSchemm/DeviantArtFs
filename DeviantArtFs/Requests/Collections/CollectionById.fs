@@ -25,7 +25,7 @@ module CollectionById =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/collections/%A?%s" req.Folderid
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return json |> dafs.parsePage DeviationResponse.Parse
+        return dafs.parsePage (DeviationResponse.Parse >> Deviation) json
     }
 
     let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 24 req
@@ -34,7 +34,7 @@ module CollectionById =
         ToAsyncSeq token req offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toListAsync
-        |> iop.thenMap Deviation
+        |> iop.thenMap dafs.asBclDeviation
         |> Async.StartAsTask
 
-    let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenMapResult Deviation |> Async.StartAsTask
+    let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenMapResult dafs.asBclDeviation |> Async.StartAsTask

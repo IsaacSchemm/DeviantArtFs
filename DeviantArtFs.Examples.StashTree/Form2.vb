@@ -2,7 +2,7 @@
 
 Public Class Form2
     Public Token As IDeviantArtAccessToken
-    Private NextOffset As Integer? = Nothing
+    Private NextOffset As Integer = 0
 
     Private NodeToItem As New Dictionary(Of TreeNode, Object)
 
@@ -12,7 +12,7 @@ Public Class Form2
 
         If Token IsNot Nothing Then
             Dim page = Await Requests.Gallery.GalleryAllView.ExecuteAsync(Token,
-                                                                          New PagingParams With {.Limit = 24},
+                                                                          New PagingParams With {.Offset = NextOffset},
                                                                           New Requests.Gallery.GalleryAllViewRequest())
             For Each deviation In page.Results
                 Dim node = New TreeNode(If(deviation.Title, deviation.Deviationid.ToString()))
@@ -41,8 +41,8 @@ Public Class Form2
         Dim item = If(NodeToItem.ContainsKey(TreeView1.SelectedNode), NodeToItem(TreeView1.SelectedNode), Nothing)
         PropertyGrid1.SelectedObject = item
 
-        If TypeOf item Is Deviation Then
-            PictureBox1.ImageLocation = CType(item, Deviation).Content?.Src
+        If TypeOf item Is IBclDeviation Then
+            PictureBox1.ImageLocation = CType(item, IBclDeviation).Content?.Src
         ElseIf TypeOf item Is Requests.User.FriendRecord Then
             PictureBox1.ImageLocation = CType(item, Requests.User.FriendRecord).User.Usericon
         ElseIf TypeOf item Is Requests.User.WatcherRecord Then

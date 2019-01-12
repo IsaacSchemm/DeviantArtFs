@@ -47,12 +47,12 @@ module MoreLikeThisPreview =
             MoreFromArtist = seq {
                 for element in o.MoreFromArtist do
                     let json = element.JsonValue.ToString()
-                    yield json |> DeviationResponse.Parse
+                    yield json |> DeviationResponse.Parse |> Deviation
             }
             MoreFromDa = seq {
                 for element in o.MoreFromDa do
                     let json = element.JsonValue.ToString()
-                    yield json |> DeviationResponse.Parse
+                    yield json |> DeviationResponse.Parse |> Deviation
             }
         }
     }
@@ -62,7 +62,7 @@ module MoreLikeThisPreview =
         return {
             Seed = o.Seed
             Author = o.Author
-            MoreFromArtist = o.MoreFromArtist |> Seq.map Deviation
-            MoreFromDa = o.MoreFromDa |> Seq.map Deviation
+            MoreFromArtist = o.MoreFromArtist |> Seq.map dafs.asBclDeviation
+            MoreFromDa = o.MoreFromDa |> Seq.map dafs.asBclDeviation
         }
     })
