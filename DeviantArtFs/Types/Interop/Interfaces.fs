@@ -3,11 +3,6 @@
 open System
 open DeviantArtFs
 
-type IContentResult =
-    abstract member Html: string
-    abstract member Css: string
-    abstract member CssFonts: seq<string>
-
 [<AllowNullLiteral>]
 type IDeviantArtFile =
     abstract member Src: string
