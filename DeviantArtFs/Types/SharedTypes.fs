@@ -54,3 +54,9 @@ type IProfileStats =
     abstract member UserComments: int
     abstract member ProfilePageviews: int
     abstract member ProfileComments: int
+
+type ICategory =
+    abstract member Catpath: string
+    abstract member Title: string
+    abstract member HasSubcategory: bool
+    abstract member ParentCatpath: string

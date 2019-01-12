@@ -3,12 +3,6 @@
 open System
 open DeviantArtFs
 
-type ICategory =
-    abstract member Catpath: string
-    abstract member Title: string
-    abstract member HasSubcategory: bool
-    abstract member ParentCatpath: string
-
 type IContentResult =
     abstract member Html: string
     abstract member Css: string
