@@ -5,12 +5,7 @@ open DeviantArtFs.Interop
 open FSharp.Data
 
 type internal FriendsElement = JsonProvider<"""{
-    "user": {
-        "userid": "D34F0633-FEFC-5E3B-8983-0B7CD5F7DC9E",
-        "username": "Spyed",
-        "usericon": "https://a.deviantart.net/avatars/s/p/spyed.gif",
-        "type": "regular"
-    },
+    "user": {},
     "is_watching": true,
     "watches_you": false,
     "watch": {
@@ -26,7 +21,7 @@ type internal FriendsElement = JsonProvider<"""{
 }""">
 
 type FriendRecord = {
-    User: DeviantArtUser
+    User: IDeviantArtUser
     IsWatching: bool
     WatchesYou: bool
     Watch: WatchInfo
@@ -52,12 +47,7 @@ module Friends =
         return json |> dafs.parsePage (fun j ->
             let r = FriendsElement.Parse j
             {
-                User = {
-                    Userid = r.User.Userid
-                    Username = r.User.Username
-                    Usericon = r.User.Usericon
-                    Type = r.User.Type
-                }
+                User = r.User.JsonValue.ToString() |> dafs.parseUser
                 IsWatching = r.IsWatching
                 WatchesYou = r.WatchesYou
                 Watch = {

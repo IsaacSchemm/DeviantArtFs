@@ -27,12 +27,7 @@ type WatchersElement = JsonProvider<"""[
     }
 },
 {
-    "user": {
-        "userid": "EDCB4A55-BAE8-C146-B390-5118088A0CF5",
-        "username": "muteor",
-        "usericon": "https://a.deviantart.net/avatars/m/u/muteor.png?2",
-        "type": "regular"
-    },
+    "user": {},
     "is_watching": true,
     "lastvisit": null,
     "watch": {
@@ -49,7 +44,7 @@ type WatchersElement = JsonProvider<"""[
 ]""", SampleIsList=true>
 
 type WatcherRecord = {
-    User: DeviantArtUser
+    User: IDeviantArtUser
     IsWatching: bool
     Lastvisit: DateTimeOffset option
     Watch: WatchInfo
@@ -76,12 +71,7 @@ module Watchers =
         return json |> dafs.parsePage (fun j ->
             let r = WatchersElement.Parse j
             {
-                User = {
-                    Userid = r.User.Userid
-                    Username = r.User.Username
-                    Usericon = r.User.Usericon
-                    Type = r.User.Type
-                }
+                User = r.User.JsonValue.ToString() |> dafs.parseUser
                 IsWatching = r.IsWatching
                 Lastvisit = r.Lastvisit
                 Watch = {

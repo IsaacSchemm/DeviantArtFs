@@ -14,10 +14,11 @@ type Status(original: StatusResponse.Root) =
     member __.IsShare = original.IsShare
     member __.IsDeleted = original.IsDeleted
     member __.Author = {
-        Userid = original.Author.Userid
-        Username = original.Author.Username
-        Usericon = original.Author.Usericon
-        Type = original.Author.Type
+        new IDeviantArtUser with
+            member __.Userid = original.Author.Userid
+            member __.Username = original.Author.Username
+            member __.Usericon = original.Author.Usericon
+            member __.Type = original.Author.Type
     }
 
     member __.EmbeddedDeviations = seq {

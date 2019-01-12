@@ -7,19 +7,14 @@ open FSharp.Data
 
 type internal MoreLikeThisResponse = JsonProvider<"""{
     "seed": "C0801604-7894-532E-BC8F-C4EE47273E6D",
-    "author": {
-        "userid": "899C73B5-347B-72C1-2F63-289173EEC881",
-        "username": "chris",
-        "usericon": "https://a.deviantart.net/avatars/c/h/chris.jpg?3",
-        "type": "regular"
-    },
+    "author": {},
     "more_from_artist": [],
     "more_from_da": []
 }""">
 
 type MoreLikeThisResult<'a> = {
     Seed: Guid
-    Author: DeviantArtUser
+    Author: IDeviantArtUser
     MoreFromArtist: seq<'a>
     MoreFromDa: seq<'a>
 }
@@ -38,12 +33,7 @@ module MoreLikeThisPreview =
         let o = MoreLikeThisResponse.Parse json
         return {
             Seed = o.Seed
-            Author = {
-                Userid = o.Author.Userid
-                Username = o.Author.Username
-                Usericon = o.Author.Usericon
-                Type = o.Author.Type
-            }
+            Author = o.Author.JsonValue.ToString() |> dafs.parseUser
             MoreFromArtist = seq {
                 for element in o.MoreFromArtist do
                     let json = element.JsonValue.ToString()

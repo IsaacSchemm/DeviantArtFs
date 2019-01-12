@@ -11,7 +11,7 @@ type internal WhoFavedElement = JsonProvider<"""{
 }""">
 
 type WhoFavedUser = {
-    User: DeviantArtUser
+    User: IDeviantArtUser
     Time: int64
 }
 

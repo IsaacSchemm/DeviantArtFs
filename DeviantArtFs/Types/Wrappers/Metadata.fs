@@ -2,44 +2,6 @@
 
 open System
 
-[<AllowNullLiteral>]
-type IMetadataTag =
-    abstract member TagName: string
-    abstract member Sponsored: bool
-    abstract member Sponsor: string
-
-type MetadataTag = {
-    TagName: string
-    Sponsored: bool
-    Sponsor: string option
-} with
-    interface IMetadataTag with
-        member this.TagName = this.TagName
-        member this.Sponsored = this.Sponsored
-        member this.Sponsor = this.Sponsor |> Option.toObj
-
-[<AllowNullLiteral>]
-type IMetadataSubmittedWith =
-    abstract member App: string
-    abstract member Url: string
-
-[<AllowNullLiteral>]
-type IMetadataSubmission =
-    abstract member CreationTime: DateTimeOffset
-    abstract member Category: string
-    abstract member FileSize: string
-    abstract member Resolution: string
-    abstract member SubmittedWith: IMetadataSubmittedWith
-
-[<AllowNullLiteral>]
-type IMetadataStats =
-    abstract member Views: int
-    abstract member ViewsToday: int
-    abstract member Favourites: int
-    abstract member Comments: int
-    abstract member Downloads: int
-    abstract member DownloadsToday: int
-
 type IBclMetadata =
     abstract member Deviationid: Guid
     abstract member Printid: Nullable<Guid>
@@ -62,21 +24,18 @@ type Metadata(original: MetadataResponse.Metadata) =
     member __.Deviationid = original.Deviationid
     member __.Printid = original.Printid
     member __.Author = {
-        Userid = original.Author.Userid
-        Username = original.Author.Username
-        Usericon = original.Author.Usericon
-        Type = original.Author.Type
+        new IDeviantArtUser with
+            member __.Userid = original.Author.Userid
+            member __.Username = original.Author.Username
+            member __.Usericon = original.Author.Usericon
+            member __.Type = original.Author.Type
     }
     member __.IsWatching = original.IsWatching
     member __.Title = original.Title
     member __.Description = original.Description
     member __.License = original.License
     member __.AllowsComments = original.AllowsComments
-    member __.Tags = original.Tags |> Seq.map (fun o -> {
-        TagName = o.TagName
-        Sponsored = o.Sponsored
-        Sponsor = o.Sponsor
-    })
+    member __.Tags = original.Tags |> Seq.map MetadataTag
     member __.IsFavourited = original.IsFavourited
     member __.IsMature = original.IsMature
 
@@ -109,7 +68,7 @@ type Metadata(original: MetadataResponse.Metadata) =
 
     interface IBclMetadata with
         member this.AllowsComments = this.AllowsComments
-        member this.Author = this.Author :> IDeviantArtUser
+        member this.Author = this.Author
         member this.Description = this.Description
         member this.Deviationid = this.Deviationid
         member this.Folders = this.Folders

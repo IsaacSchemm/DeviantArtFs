@@ -78,10 +78,11 @@ module internal dafs =
     let parseUser (json: string) =
         let u = UserResponse.Parse json
         {
-            Userid = u.Userid
-            Username = u.Username
-            Usericon = u.Usericon
-            Type = u.Type
+            new IDeviantArtUser with
+                member __.Userid = u.Userid
+                member __.Username = u.Username
+                member __.Usericon = u.Usericon
+                member __.Type = u.Type
         }
 
     let toPlainTask (t: Task<unit>) = t :> Task
