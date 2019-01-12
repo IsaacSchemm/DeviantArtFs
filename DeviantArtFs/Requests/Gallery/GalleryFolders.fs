@@ -25,7 +25,7 @@ module GalleryFolders =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/folders?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return dafs.parsePage FoldersElement.Parse json
+        return dafs.parsePage (GalleryFoldersElement.Parse >> DeviantArtGalleryFolder) json
     }
 
     let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
@@ -34,22 +34,10 @@ module GalleryFolders =
         ToAsyncSeq token req offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toListAsync
-        |> iop.thenMap (fun f -> {
-            new IDeviantArtFolder with
-                member __.Folderid = f.Folderid
-                member __.Parent = f.Parent |> Option.toNullable
-                member __.Name = f.Name
-                member __.Size = f.Size |> Option.toNullable
-        })
+        |> iop.thenMap (fun f -> f :> IBclDeviantArtGalleryFolder)
         |> Async.StartAsTask
 
     let ExecuteAsync token req paging =
         AsyncExecute token req paging
-        |> iop.thenMapResult (fun f -> {
-            new IDeviantArtFolder with
-                member __.Folderid = f.Folderid
-                member __.Parent = f.Parent |> Option.toNullable
-                member __.Name = f.Name
-                member __.Size = f.Size |> Option.toNullable
-        })
+        |> iop.thenMapResult (fun f -> f :> IBclDeviantArtGalleryFolder)
         |> Async.StartAsTask

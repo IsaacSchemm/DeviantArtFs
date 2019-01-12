@@ -14,12 +14,6 @@ type IContentResult =
     abstract member Css: string
     abstract member CssFonts: seq<string>
 
-type IDeviantArtFolder =
-    abstract member Folderid: Guid
-    abstract member Parent: Nullable<Guid>
-    abstract member Name: string
-    abstract member Size: Nullable<int>
-
 [<AllowNullLiteral>]
 type IDeviantArtFile =
     abstract member Src: string

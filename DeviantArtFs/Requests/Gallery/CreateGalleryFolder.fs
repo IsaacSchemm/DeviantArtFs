@@ -23,16 +23,10 @@ module CreateGalleryFolder =
         }
 
         let! json = dafs.asyncRead req
-        return FoldersCreateResponse.Parse json
+        return GalleryFoldersElement.Parse json |> DeviantArtGalleryFolder
     }
 
-    let ExecuteAsync token folder = Async.StartAsTask (async {
-        let! f = AsyncExecute token folder
-        return {
-            new IDeviantArtFolder with
-                member __.Folderid = f.Folderid
-                member __.Parent = Nullable()
-                member __.Name = f.Name
-                member __.Size = Nullable()
-        }
-    })
+    let ExecuteAsync token folder =
+        AsyncExecute token folder
+        |> iop.thenTo (fun f -> f :> IBclDeviantArtGalleryFolder)
+        |> Async.StartAsTask

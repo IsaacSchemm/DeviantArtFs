@@ -18,7 +18,19 @@ type internal UserResponse = JsonProvider<"""{
     "type": "regular"
 }""">
 
-type FoldersElement = JsonProvider<"""[
+type internal CollectionFoldersElement = JsonProvider<"""[
+{
+    "folderid": "79A8B981-131F-C7B6-C5C0-2CDA5D5B8B29",
+    "name": "Featured",
+    "size": 1535
+},
+{
+    "folderid": "FF02CACB-466D-E167-A841-386078AAD276",
+    "name": "Favorites"
+}
+]""", SampleIsList=true>
+
+type internal GalleryFoldersElement = JsonProvider<"""[
 {
     "folderid": "47D47436-5683-8DF2-EEBF-2A6760BE1336",
     "parent": null,
@@ -31,11 +43,6 @@ type FoldersElement = JsonProvider<"""[
     "name": "My New Gallery"
 }
 ]""", SampleIsList=true>
-
-type FoldersCreateResponse = JsonProvider<"""{
-    "folderid": "E431BAFB-7A00-7EA1-EED7-2EF9FA0F04CE",
-    "name": "My New Gallery"
-}""">
 
 type internal GenericListResponse = JsonProvider<"""[
 {

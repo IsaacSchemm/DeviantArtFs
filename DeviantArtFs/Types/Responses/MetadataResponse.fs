@@ -165,12 +165,7 @@ type internal MetadataResponse = JsonProvider<"""{
             ],
             "is_favourited": true,
             "is_mature": false,
-            "collections": [
-                {
-                    "folderid": "E119A881-D0F8-5A8E-1A28-39CB29C4CF64",
-                    "name": "transformations"
-                }
-            ]
+            "collections": []
         }
     ]
 }""">

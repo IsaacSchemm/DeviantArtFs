@@ -26,10 +26,6 @@ type IDeviationStats =
     abstract member Comments: int
     abstract member Favourites: int
 
-type IDeviantArtCollection =
-    abstract member Folderid: Guid
-    abstract member Name: string
-
 [<AllowNullLiteral>]
 type IMetadataSubmittedWith =
     abstract member App: string
@@ -51,3 +47,10 @@ type IMetadataStats =
     abstract member Comments: int
     abstract member Downloads: int
     abstract member DownloadsToday: int
+
+type IProfileStats =
+    abstract member UserDeviations: int
+    abstract member UserFavourites: int
+    abstract member UserComments: int
+    abstract member ProfilePageviews: int
+    abstract member ProfileComments: int

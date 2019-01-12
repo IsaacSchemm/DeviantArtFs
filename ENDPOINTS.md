@@ -135,10 +135,10 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * Username: `string`
 
 ### DeviantArtFs.Requests.Collections.CollectionFolders
-* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (CollectionFoldersRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (CollectionFoldersRequest) -> `Task<IDeviantArtPagedResult<Interop.IDeviantArtFolder>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (CollectionFoldersRequest) (int) -> `AsyncSeq<???>`
-* ToListAsync (IDeviantArtAccessToken) (CollectionFoldersRequest) (int) (int) -> `Task<IEnumerable<Interop.IDeviantArtFolder>>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (CollectionFoldersRequest) -> `Async<DeviantArtPagedResult<DeviantArtCollectionFolder>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (CollectionFoldersRequest) -> `Task<IDeviantArtPagedResult<IBclDeviantArtCollectionFolder>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (CollectionFoldersRequest) (int) -> `AsyncSeq<DeviantArtCollectionFolder>`
+* ToListAsync (IDeviantArtAccessToken) (CollectionFoldersRequest) (int) (int) -> `Task<IEnumerable<IBclDeviantArtCollectionFolder>>`
 
 **CollectionFoldersRequest:**
 
@@ -146,8 +146,8 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * CalculateSize: `bool`
 
 ### DeviantArtFs.Requests.Collections.CreateCollectionFolder
-* AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<???>`
-* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<Interop.IDeviantArtFolder>`
+* AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<DeviantArtCollectionFolder>`
+* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtCollectionFolder>`
 
 ### DeviantArtFs.Requests.Collections.Fave
 * AsyncExecute (IDeviantArtAccessToken) (Guid) (IEnumerable<Guid>) -> `Async<int>`
@@ -217,8 +217,8 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * ToListAsync (IDeviantArtAccessToken) (Guid) (int) (int) -> `Task<FSharpList<WhoFavedUser>>`
 
 ### DeviantArtFs.Requests.Gallery.CreateGalleryFolder
-* AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<???>`
-* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<Interop.IDeviantArtFolder>`
+* AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<DeviantArtGalleryFolder>`
+* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtGalleryFolder>`
 
 ### DeviantArtFs.Requests.Gallery.GalleryAllView
 * AsyncExecute (IDeviantArtAccessToken) (PagingParams) (GalleryAllViewRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
@@ -243,10 +243,10 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * Mode: `GalleryRequestMode` (Popular, Newest)
 
 ### DeviantArtFs.Requests.Gallery.GalleryFolders
-* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (GalleryFoldersRequest) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (GalleryFoldersRequest) -> `Task<IDeviantArtPagedResult<Interop.IDeviantArtFolder>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (GalleryFoldersRequest) (int) -> `AsyncSeq<???>`
-* ToListAsync (IDeviantArtAccessToken) (GalleryFoldersRequest) (int) (int) -> `Task<IEnumerable<Interop.IDeviantArtFolder>>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (GalleryFoldersRequest) -> `Async<DeviantArtPagedResult<DeviantArtGalleryFolder>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (GalleryFoldersRequest) -> `Task<IDeviantArtPagedResult<IBclDeviantArtGalleryFolder>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (GalleryFoldersRequest) (int) -> `AsyncSeq<DeviantArtGalleryFolder>`
+* ToListAsync (IDeviantArtAccessToken) (GalleryFoldersRequest) (int) (int) -> `Task<IEnumerable<IBclDeviantArtGalleryFolder>>`
 
 **GalleryFoldersRequest:**
 
@@ -418,8 +418,8 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<bool>`
 
 ### DeviantArtFs.Requests.User.ProfileByName
-* AsyncExecute (IDeviantArtAccessToken) (ProfileByNameRequest) -> `Async<???>`
-* ExecuteAsync (IDeviantArtAccessToken) (ProfileByNameRequest) -> `Task<Interop.Profile>`
+* AsyncExecute (IDeviantArtAccessToken) (ProfileByNameRequest) -> `Async<Interop.Profile>`
+* ExecuteAsync (IDeviantArtAccessToken) (ProfileByNameRequest) -> `Task<Interop.IBclProfile>`
 
 **ProfileByNameRequest:**
 

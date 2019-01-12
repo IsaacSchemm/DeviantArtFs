@@ -1,6 +1,5 @@
 ﻿namespace DeviantArtFs.Requests.Collections
 
-open System
 open System.IO
 open DeviantArtFs
 open DeviantArtFs.Interop
@@ -22,16 +21,10 @@ module CreateCollectionFolder =
         }
 
         let! json = dafs.asyncRead req
-        return FoldersCreateResponse.Parse json
+        return CollectionFoldersElement.Parse json |> DeviantArtCollectionFolder
     }
 
-    let ExecuteAsync token folder = Async.StartAsTask (async {
-        let! f = AsyncExecute token folder
-        return {
-            new IDeviantArtFolder with
-                member __.Folderid = f.Folderid
-                member __.Parent = Nullable()
-                member __.Name = f.Name
-                member __.Size = Nullable()
-        }
-    })
+    let ExecuteAsync token folder =
+        AsyncExecute token folder
+        |> iop.thenTo (fun f -> f :> IBclDeviantArtCollectionFolder)
+        |> Async.StartAsTask

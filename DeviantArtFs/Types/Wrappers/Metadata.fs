@@ -16,7 +16,7 @@ type IBclMetadata =
     abstract member IsMature: bool
     abstract member Submission: IMetadataSubmission
     abstract member Stats: IMetadataStats
-    abstract member Folders: seq<IDeviantArtCollection>
+    abstract member Collections: seq<IBclDeviantArtCollectionFolder>
 
 type Metadata(original: MetadataResponse.Metadata) =
     member __.Original = original
@@ -60,18 +60,18 @@ type Metadata(original: MetadataResponse.Metadata) =
             member __.Downloads = s.Downloads
             member __.DownloadsToday = s.DownloadsToday
     })
-    member __.Folders = original.Collections |> Seq.map (fun f -> {
-        new IDeviantArtCollection with
-            member __.Folderid = f.Folderid
-            member __.Name = f.Name
-    })
+    member __.Collections =
+        original.Collections
+        |> Seq.map (fun g -> g.JsonValue.ToString())
+        |> Seq.map CollectionFoldersElement.Parse
+        |> Seq.map DeviantArtCollectionFolder
 
     interface IBclMetadata with
         member this.AllowsComments = this.AllowsComments
         member this.Author = this.Author
+        member this.Collections = this.Collections |> Seq.map (fun f -> f :> IBclDeviantArtCollectionFolder)
         member this.Description = this.Description
         member this.Deviationid = this.Deviationid
-        member this.Folders = this.Folders
         member this.IsFavourited = this.IsFavourited
         member this.IsMature = this.IsMature
         member this.IsWatching = this.IsWatching
