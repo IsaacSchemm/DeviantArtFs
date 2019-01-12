@@ -22,6 +22,7 @@ type Profile(original: ProfileResponse.Root) =
         |> Option.map (fun x -> x.JsonValue.ToString())
         |> Option.map StatusResponse.Parse
         |> Option.map Status
+        |> Option.map (fun d -> d :> IBclStatus)
 
     member __.Original = original
 

@@ -2,7 +2,7 @@
 
 open FSharp.Data
 
-type StatusResponse = JsonProvider<"""[
+type internal StatusResponse = JsonProvider<"""[
     {
         "statusid": "9F680E12-C156-55F2-F026-53B8BC00E291",
         "body": "sharing journals",

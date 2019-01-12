@@ -1,12 +1,24 @@
-﻿namespace DeviantArtFs.Interop
+﻿namespace DeviantArtFs
 
-open DeviantArtFs
+open System
 
 [<AllowNullLiteral>]
+type IBclStatus =
+    abstract member Statusid: Guid
+    abstract member Body: string
+    abstract member Ts: DateTimeOffset
+    abstract member Url: string
+    abstract member CommentsCount: int
+    abstract member IsShare: bool
+    abstract member IsDeleted: bool
+    abstract member Author: IDeviantArtUser
+    abstract member EmbeddedDeviations: seq<IBclDeviation>
+    abstract member EmbeddedStatuses: seq<IBclStatus>
+
 type Status(original: StatusResponse.Root) =
     member __.Original = original
 
-    member __.StatusId = original.Statusid
+    member __.Statusid = original.Statusid
     member __.Body = original.Body
     member __.Ts = original.Ts
     member __.Url = original.Url
@@ -34,3 +46,15 @@ type Status(original: StatusResponse.Root) =
                 | Some s -> yield s.JsonValue.ToString() |> StatusResponse.Parse |> Status
                 | None -> ()
     }
+
+    interface IBclStatus with
+        member this.Body = this.Body
+        member this.CommentsCount = this.CommentsCount
+        member this.EmbeddedDeviations = this.EmbeddedDeviations
+        member this.EmbeddedStatuses = this.EmbeddedStatuses |> Seq.map (fun s -> s :> IBclStatus)
+        member this.IsDeleted = this.IsDeleted
+        member this.IsShare = this.IsShare
+        member this.Statusid = this.Statusid
+        member this.Ts = this.Ts
+        member this.Url = this.Url
+        member this.Author = this.Author

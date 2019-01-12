@@ -2,7 +2,7 @@
 
 open FSharp.Data
 
-type MetadataResponse = JsonProvider<"""{
+type internal MetadataResponse = JsonProvider<"""{
     "metadata": [
         {
             "deviationid": "928DC00B-9A4E-AC29-BDEE-D985BD2CF16F",

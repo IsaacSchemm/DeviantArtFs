@@ -27,8 +27,8 @@
     <Compile Include="Types\Wrappers\Deviation.fs" />
     <Compile Include="Types\Wrappers\MetadataTag.fs" />
     <Compile Include="Types\Wrappers\Metadata.fs" />
+    <Compile Include="Types\Wrappers\Status.fs" />
     <Compile Include="Types\Interop\Interfaces.fs" />
-    <Compile Include="Types\Interop\Status.fs" />
     <Compile Include="Types\Interop\Profile.fs" />
     <Compile Include="Types\Interop\StashMetadata.fs" />
     <Compile Include="Types\Interop\DeltaEntry.fs" />

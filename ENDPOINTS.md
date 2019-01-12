@@ -385,8 +385,8 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * Username: `string`
 
 ### DeviantArtFs.Requests.User.FriendsSearch
-* AsyncExecute (IDeviantArtAccessToken) (FriendsSearchRequest) -> `Async<IEnumerable<DeviantArtUser>>`
-* ExecuteAsync (IDeviantArtAccessToken) (FriendsSearchRequest) -> `Task<IEnumerable<DeviantArtUser>>`
+* AsyncExecute (IDeviantArtAccessToken) (FriendsSearchRequest) -> `Async<IEnumerable<IDeviantArtUser>>`
+* ExecuteAsync (IDeviantArtAccessToken) (FriendsSearchRequest) -> `Task<IEnumerable<IDeviantArtUser>>`
 
 **FriendsSearchRequest:**
 
@@ -443,14 +443,14 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * Bio: `FieldChange<string>`
 
 ### DeviantArtFs.Requests.User.StatusesList
-* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (string) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (string) -> `Task<IDeviantArtPagedResult<Interop.Status>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (string) (int) -> `AsyncSeq<???>`
-* ToListAsync (IDeviantArtAccessToken) (string) (int) (int) -> `Task<IEnumerable<Interop.Status>>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (string) -> `Async<DeviantArtPagedResult<Status>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (string) -> `Task<IDeviantArtPagedResult<IBclStatus>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (string) (int) -> `AsyncSeq<Status>`
+* ToListAsync (IDeviantArtAccessToken) (string) (int) (int) -> `Task<IEnumerable<IBclStatus>>`
 
 ### DeviantArtFs.Requests.User.StatusesStatus
-* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<???>`
-* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<Interop.Status>`
+* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<Status>`
+* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<IBclStatus>`
 
 ### DeviantArtFs.Requests.User.StatusPost
 * AsyncExecute (IDeviantArtAccessToken) (StatusPostRequest) -> `Async<Guid>`
@@ -474,12 +474,12 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * Username: `string`
 
 ### DeviantArtFs.Requests.User.Whoami
-* AsyncExecute (IDeviantArtAccessToken) -> `Async<DeviantArtUser>`
-* ExecuteAsync (IDeviantArtAccessToken) -> `Task<DeviantArtUser>`
+* AsyncExecute (IDeviantArtAccessToken) -> `Async<IDeviantArtUser>`
+* ExecuteAsync (IDeviantArtAccessToken) -> `Task<IDeviantArtUser>`
 
 ### DeviantArtFs.Requests.User.Whois
-* AsyncExecute (IDeviantArtAccessToken) (IEnumerable<string>) -> `Async<IEnumerable<DeviantArtUser>>`
-* ExecuteAsync (IDeviantArtAccessToken) (IEnumerable<string>) -> `Task<IEnumerable<DeviantArtUser>>`
+* AsyncExecute (IDeviantArtAccessToken) (IEnumerable<string>) -> `Async<IEnumerable<IDeviantArtUser>>`
+* ExecuteAsync (IDeviantArtAccessToken) (IEnumerable<string>) -> `Task<IEnumerable<IDeviantArtUser>>`
 
 ### DeviantArtFs.Requests.Util.Placebo
 * AsyncIsValid (IDeviantArtAccessToken) -> `Async<bool>`
