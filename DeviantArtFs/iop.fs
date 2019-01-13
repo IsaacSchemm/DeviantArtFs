@@ -1,8 +1,6 @@
-﻿namespace DeviantArtFs.Interop
+﻿namespace DeviantArtFs
 
 module internal iop =
-    open DeviantArtFs
-
     let thenTo f a = async {
         let! o = a
         return f o

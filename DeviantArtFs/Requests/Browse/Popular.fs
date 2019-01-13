@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.Browse
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 type PopularTimeRange =
 | EightHours = 1

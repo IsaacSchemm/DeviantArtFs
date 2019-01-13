@@ -2,7 +2,6 @@
 
 open System
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 type DailyDeviationsRequest() = 
     member val Date = Nullable<DateTime>() with get, set

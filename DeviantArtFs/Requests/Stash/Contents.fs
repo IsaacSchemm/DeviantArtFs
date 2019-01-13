@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.Stash
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 module Contents =
     open System.Runtime.InteropServices

@@ -3,7 +3,6 @@
 open System
 open System.IO
 open DeviantArtFs
-open DeviantArtFs.Interop
 open FSharp.Data
 
 module CreateGalleryFolder =

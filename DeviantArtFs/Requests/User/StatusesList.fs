@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 module StatusesList =
     open System.Runtime.InteropServices

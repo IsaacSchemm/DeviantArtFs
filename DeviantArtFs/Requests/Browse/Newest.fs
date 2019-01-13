@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.Browse
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 type NewestRequest() =
     member val CategoryPath = null with get, set

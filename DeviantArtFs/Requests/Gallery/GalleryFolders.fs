@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.Gallery
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 type GalleryFoldersRequest() =
     member val Username = null with get, set

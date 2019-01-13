@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.Stash
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 type DeltaRequest() = 
     member val Cursor = null with get, set

@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.Browse
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 module Tags =
     let AsyncExecute token (paging: PagingParams) (tag: string) = async {

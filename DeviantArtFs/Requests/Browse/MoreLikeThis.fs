@@ -2,7 +2,6 @@
 
 open System
 open DeviantArtFs
-open DeviantArtFs.Interop
     open FSharp.Control
 
 type MoreLikeThisRequest(seed: Guid) = 

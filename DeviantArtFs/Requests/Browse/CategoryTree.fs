@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.Browse
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 open FSharp.Data
 
 type CategoryTreeResponse = JsonProvider<"""{

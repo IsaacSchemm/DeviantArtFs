@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.Browse
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 type UserJournalsRequest(username: string) =
     member __.Username = username

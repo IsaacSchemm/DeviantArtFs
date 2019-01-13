@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 type ProfileByNameRequest(username: string) =
     member __.Username = username

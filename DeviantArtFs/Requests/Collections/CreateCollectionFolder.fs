@@ -2,7 +2,6 @@
 
 open System.IO
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 module CreateCollectionFolder =
     let AsyncExecute token (folder: string) = async {

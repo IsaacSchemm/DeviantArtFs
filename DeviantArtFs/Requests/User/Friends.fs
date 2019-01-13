@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 open FSharp.Data
 
 type internal FriendsElement = JsonProvider<"""{

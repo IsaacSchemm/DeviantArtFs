@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.Collections
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 open System
 
 type CollectionByIdRequest(folderid: Guid) =

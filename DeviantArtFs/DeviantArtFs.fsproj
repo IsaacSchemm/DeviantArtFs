@@ -42,8 +42,8 @@
     <Compile Include="Types\Wrappers\StashMoveResult.fs" />
     <Compile Include="Types\Wrappers\DeltaEntry.fs" />
     <Compile Include="Types\Wrappers\DeltaResult.fs" />
-    <Compile Include="Types\Interop\iop.fs" />
     <Compile Include="dafs.fs" />
+    <Compile Include="iop.fs" />
     <Compile Include="fch.fs" />
     <Compile Include="DeviantArtAuth.fs" />
     <Compile Include="Requests\Browse\CategoryTree.fs" />
@@ -115,6 +115,10 @@
 
   <ItemGroup>
     <PackageReference Update="FSharp.Core" Version="4.5.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Types\Interop\" />
   </ItemGroup>
 
 </Project>

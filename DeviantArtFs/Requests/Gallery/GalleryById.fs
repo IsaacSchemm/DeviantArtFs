@@ -2,7 +2,6 @@
 
 open System
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 type GalleryRequestMode = Popular=1 | Newest=2
 

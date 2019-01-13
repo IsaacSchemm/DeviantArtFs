@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.Deviation
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 open System
 
 type MetadataRequest(deviationids: seq<Guid>) =
