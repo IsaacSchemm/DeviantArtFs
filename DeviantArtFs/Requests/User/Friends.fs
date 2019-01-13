@@ -24,7 +24,7 @@ type FriendRecord = {
     User: IDeviantArtUser
     IsWatching: bool
     WatchesYou: bool
-    Watch: WatchInfo
+    Watch: IWatchInfo
 }
 
 type FriendsRequest() =
@@ -51,14 +51,15 @@ module Friends =
                 IsWatching = r.IsWatching
                 WatchesYou = r.WatchesYou
                 Watch = {
-                    Friend = r.Watch.Friend
-                    Deviations = r.Watch.Deviations
-                    Journals = r.Watch.Journals
-                    ForumThreads = r.Watch.ForumThreads
-                    Critiques = r.Watch.Critiques
-                    Scraps = r.Watch.Scraps
-                    Activity = r.Watch.Activity
-                    Collections = r.Watch.Collections
+                    new IWatchInfo with
+                        member __.Friend = r.Watch.Friend
+                        member __.Deviations = r.Watch.Deviations
+                        member __.Journals = r.Watch.Journals
+                        member __.ForumThreads = r.Watch.ForumThreads
+                        member __.Critiques = r.Watch.Critiques
+                        member __.Scraps = r.Watch.Scraps
+                        member __.Activity = r.Watch.Activity
+                        member __.Collections = r.Watch.Collections
                 }
             })
     }

@@ -69,3 +69,13 @@ type ICategory =
     abstract member Title: string
     abstract member HasSubcategory: bool
     abstract member ParentCatpath: string
+
+type IWatchInfo =
+    abstract member Friend: bool
+    abstract member Deviations: bool
+    abstract member Journals: bool
+    abstract member ForumThreads: bool
+    abstract member Critiques: bool
+    abstract member Scraps: bool
+    abstract member Activity: bool
+    abstract member Collections: bool

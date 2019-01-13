@@ -21,8 +21,10 @@
     <Compile Include="Types\Responses\StatusResponse.fs" />
     <Compile Include="Types\Responses\ProfileResponse.fs" />
     <Compile Include="Types\Responses\StashMetadataResponse.fs" />
-    <Compile Include="Types\Types.fs" />
-    <Compile Include="Types\SharedTypes.fs" />
+    <Compile Include="Types\AccessTokens.fs" />
+    <Compile Include="Types\Exceptions.fs" />
+    <Compile Include="Types\SharedRequestTypes.fs" />
+    <Compile Include="Types\SharedResponseTypes.fs" />
     <Compile Include="Types\DeviantArtPagedResult.fs" />
     <Compile Include="Types\DeviationTextContent.fs" />
     <Compile Include="Types\Wrappers\DeviantArtGalleryFolder.fs" />
@@ -32,6 +34,7 @@
     <Compile Include="Types\Wrappers\Metadata.fs" />
     <Compile Include="Types\Wrappers\Status.fs" />
     <Compile Include="Types\Wrappers\Profile.fs" />
+    <Compile Include="Types\Wrappers\DeltaEntry.fs" />
     <Compile Include="Types\Interop\StashMetadata.fs" />
     <Compile Include="Types\Interop\DeltaEntry.fs" />
     <Compile Include="Types\Interop\iop.fs" />

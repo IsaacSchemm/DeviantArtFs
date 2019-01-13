@@ -42,7 +42,7 @@ type DeltaResultEntry = {
     Position: int option
 }
 with
-    interface IDeltaEntry with
+    interface IBclDeltaEntry with
         member this.Itemid = this.Itemid |> Option.toNullable
         member this.Stackid = this.Stackid |> Option.toNullable
         member this.MetadataJson = this.Metadata |> Option.map (fun j -> j.JsonValue.ToString()) |> Option.toObj

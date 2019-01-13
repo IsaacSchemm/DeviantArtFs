@@ -2,7 +2,7 @@
 
 open DeviantArtFs
 
-type DeltaEntry(original: IDeltaEntry) =
+type DeltaEntry(original: IBclDeltaEntry) =
     let metadata =
         original.MetadataJson
         |> Option.ofObj
@@ -18,7 +18,7 @@ type DeltaEntry(original: IDeltaEntry) =
 
     member __.Metadata = metadata |> Option.toObj
 
-    interface IDeltaEntry with
+    interface IBclDeltaEntry with
         member this.Itemid = this.Itemid
         member this.Stackid = this.Stackid
         member this.MetadataJson = this.MetadataJson
