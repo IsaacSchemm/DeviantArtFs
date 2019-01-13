@@ -42,7 +42,7 @@ module PublishCategoryTree =
         let! json = dafs.asyncRead req
         let o = PublishCategoryTreeResponse.Parse json
         return o.Categories |> Seq.map (fun c -> {
-            new ICategory with
+            new IDeviantArtCategory with
                 member __.Catpath = c.Catpath
                 member __.Title = c.Title
                 member __.HasSubcategory = c.HasSubcategory

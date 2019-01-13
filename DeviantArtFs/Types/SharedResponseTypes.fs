@@ -36,20 +36,20 @@ type IDeviationStats =
     abstract member Favourites: int
 
 [<AllowNullLiteral>]
-type IMetadataSubmittedWith =
+type IDeviantArtSubmittedWith =
     abstract member App: string
     abstract member Url: string
 
 [<AllowNullLiteral>]
-type IMetadataSubmission =
+type IDeviationMetadataSubmission =
     abstract member CreationTime: DateTimeOffset
     abstract member Category: string
     abstract member FileSize: string
     abstract member Resolution: string
-    abstract member SubmittedWith: IMetadataSubmittedWith
+    abstract member SubmittedWith: IDeviantArtSubmittedWith
 
 [<AllowNullLiteral>]
-type IMetadataStats =
+type IDeviationMetadataStats =
     abstract member Views: int
     abstract member ViewsToday: int
     abstract member Favourites: int
@@ -57,20 +57,20 @@ type IMetadataStats =
     abstract member Downloads: int
     abstract member DownloadsToday: int
 
-type IProfileStats =
+type IDeviantArtProfileStats =
     abstract member UserDeviations: int
     abstract member UserFavourites: int
     abstract member UserComments: int
     abstract member ProfilePageviews: int
     abstract member ProfileComments: int
 
-type ICategory =
+type IDeviantArtCategory =
     abstract member Catpath: string
     abstract member Title: string
     abstract member HasSubcategory: bool
     abstract member ParentCatpath: string
 
-type IWatchInfo =
+type IDeviantArtWatchInfo =
     abstract member Friend: bool
     abstract member Deviations: bool
     abstract member Journals: bool

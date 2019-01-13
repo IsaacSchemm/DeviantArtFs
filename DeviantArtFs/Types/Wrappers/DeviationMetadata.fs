@@ -2,7 +2,7 @@
 
 open System
 
-type IBclMetadata =
+type IBclDeviationMetadata =
     abstract member Deviationid: Guid
     abstract member Printid: Nullable<Guid>
     abstract member Author: IDeviantArtUser
@@ -11,14 +11,14 @@ type IBclMetadata =
     abstract member Description: string
     abstract member License: string
     abstract member AllowsComments: bool
-    abstract member Tags: seq<IMetadataTag>
+    abstract member Tags: seq<IBclDeviationTag>
     abstract member IsFavourited: bool
     abstract member IsMature: bool
-    abstract member Submission: IMetadataSubmission
-    abstract member Stats: IMetadataStats
+    abstract member Submission: IDeviationMetadataSubmission
+    abstract member Stats: IDeviationMetadataStats
     abstract member Collections: seq<IBclDeviantArtCollectionFolder>
 
-type Metadata(original: MetadataResponse.Metadata) =
+type DeviationMetadata(original: MetadataResponse.Metadata) =
     member __.Original = original
 
     member __.Deviationid = original.Deviationid
@@ -35,24 +35,24 @@ type Metadata(original: MetadataResponse.Metadata) =
     member __.Description = original.Description
     member __.License = original.License
     member __.AllowsComments = original.AllowsComments
-    member __.Tags = original.Tags |> Seq.map MetadataTag
+    member __.Tags = original.Tags |> Seq.map DeviationTag
     member __.IsFavourited = original.IsFavourited
     member __.IsMature = original.IsMature
 
     member __.Submission = original.Submission |> Option.map (fun s -> {
-        new IMetadataSubmission with
+        new IDeviationMetadataSubmission with
             member __.CreationTime = s.CreationTime
             member __.Category = s.Category
             member __.FileSize = s.FileSize
             member __.Resolution = s.Resolution
             member __.SubmittedWith = {
-                new IMetadataSubmittedWith with
+                new IDeviantArtSubmittedWith with
                     member __.App = s.SubmittedWith.App
                     member __.Url = s.SubmittedWith.Url
             }
     })
     member __.Stats = original.Stats |> Option.map (fun s -> {
-        new IMetadataStats with
+        new IDeviationMetadataStats with
             member __.Views = s.Views
             member __.ViewsToday = s.ViewsToday
             member __.Favourites = s.Favourites
@@ -66,7 +66,7 @@ type Metadata(original: MetadataResponse.Metadata) =
         |> Seq.map CollectionFoldersElement.Parse
         |> Seq.map DeviantArtCollectionFolder
 
-    interface IBclMetadata with
+    interface IBclDeviationMetadata with
         member this.AllowsComments = this.AllowsComments
         member this.Author = this.Author
         member this.Collections = this.Collections |> Seq.map (fun f -> f :> IBclDeviantArtCollectionFolder)
@@ -79,5 +79,5 @@ type Metadata(original: MetadataResponse.Metadata) =
         member this.Printid = this.Printid |> Option.toNullable
         member this.Stats = this.Stats |> Option.toObj
         member this.Submission = this.Submission |> Option.toObj
-        member this.Tags = this.Tags |> Seq.map (fun t -> t :> IMetadataTag)
+        member this.Tags = this.Tags |> Seq.map (fun t -> t :> IBclDeviationTag)
         member this.Title = this.Title

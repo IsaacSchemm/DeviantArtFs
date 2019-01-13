@@ -2,7 +2,7 @@
 
 open DeviantArtFs
 
-type IBclProfile =
+type IBclDeviantArtProfile =
     abstract member User: IDeviantArtUser
     abstract member IsWatching: bool
     abstract member ProfileUrl: string
@@ -17,12 +17,12 @@ type IBclProfile =
     abstract member Bio: string
     abstract member CoverPhoto: string
     abstract member ProfilePic: IBclDeviation
-    abstract member LastStatus: IBclStatus
-    abstract member Stats: IProfileStats
+    abstract member LastStatus: IBclDeviantArtStatus
+    abstract member Stats: IDeviantArtProfileStats
     abstract member Collections: seq<IBclDeviantArtCollectionFolder>
     abstract member Galleries: seq<IBclDeviantArtGalleryFolder>
 
-type Profile(original: ProfileResponse.Root) =
+type DeviantArtProfile(original: ProfileResponse.Root) =
     member __.Original = original
 
     member __.User = {
@@ -55,10 +55,10 @@ type Profile(original: ProfileResponse.Root) =
         original.LastStatus
         |> Option.map (fun x -> x.JsonValue.ToString())
         |> Option.map StatusResponse.Parse
-        |> Option.map Status
+        |> Option.map DeviantArtStatus
 
     member __.Stats = {
-        new IProfileStats with
+        new IDeviantArtProfileStats with
             member __.UserDeviations = original.Stats.UserDeviations
             member __.UserFavourites = original.Stats.UserFavourites
             member __.UserComments = original.Stats.UserComments
@@ -78,7 +78,7 @@ type Profile(original: ProfileResponse.Root) =
         |> Seq.map GalleryFoldersElement.Parse
         |> Seq.map DeviantArtGalleryFolder
 
-    interface IBclProfile with
+    interface IBclDeviantArtProfile with
         member this.ArtistLevel = this.ArtistLevel
         member this.ArtistSpecialty = this.ArtistSpecialty |> Option.toObj
         member this.Bio = this.Bio
@@ -88,7 +88,7 @@ type Profile(original: ProfileResponse.Root) =
         member this.CoverPhoto = this.CoverPhoto |> Option.toObj
         member this.Galleries = this.Galleries |> Seq.map (fun f -> f :> IBclDeviantArtGalleryFolder)
         member this.IsWatching = this.IsWatching
-        member this.LastStatus = this.LastStatus |> Option.map (fun s -> s :> IBclStatus) |> Option.toObj
+        member this.LastStatus = this.LastStatus |> Option.map (fun s -> s :> IBclDeviantArtStatus) |> Option.toObj
         member this.ProfilePic = this.ProfilePic |> Option.map (fun s -> s :> IBclDeviation) |> Option.toObj
         member this.ProfileUrl = this.ProfileUrl
         member this.RealName = this.RealName

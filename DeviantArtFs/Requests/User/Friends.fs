@@ -23,7 +23,7 @@ type FriendRecord = {
     User: IDeviantArtUser
     IsWatching: bool
     WatchesYou: bool
-    Watch: IWatchInfo
+    Watch: IDeviantArtWatchInfo
 }
 
 type FriendsRequest() =
@@ -50,7 +50,7 @@ module Friends =
                 IsWatching = r.IsWatching
                 WatchesYou = r.WatchesYou
                 Watch = {
-                    new IWatchInfo with
+                    new IDeviantArtWatchInfo with
                         member __.Friend = r.Watch.Friend
                         member __.Deviations = r.Watch.Deviations
                         member __.Journals = r.Watch.Journals

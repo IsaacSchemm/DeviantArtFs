@@ -46,7 +46,7 @@ type WatcherRecord = {
     User: IDeviantArtUser
     IsWatching: bool
     Lastvisit: DateTimeOffset option
-    Watch: IWatchInfo
+    Watch: IDeviantArtWatchInfo
 } with
     member this.GetLastVisit() = this.Lastvisit |> Option.toNullable
 
@@ -74,7 +74,7 @@ module Watchers =
                 IsWatching = r.IsWatching
                 Lastvisit = r.Lastvisit
                 Watch = {
-                    new IWatchInfo with
+                    new IDeviantArtWatchInfo with
                         member __.Friend = r.Watch.Friend
                         member __.Deviations = r.Watch.Deviations
                         member __.Journals = r.Watch.Journals

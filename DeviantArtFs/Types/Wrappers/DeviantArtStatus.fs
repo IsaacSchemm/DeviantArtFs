@@ -3,7 +3,7 @@
 open System
 
 [<AllowNullLiteral>]
-type IBclStatus =
+type IBclDeviantArtStatus =
     abstract member Statusid: Guid
     abstract member Body: string
     abstract member Ts: DateTimeOffset
@@ -13,9 +13,9 @@ type IBclStatus =
     abstract member IsDeleted: bool
     abstract member Author: IDeviantArtUser
     abstract member EmbeddedDeviations: seq<IBclDeviation>
-    abstract member EmbeddedStatuses: seq<IBclStatus>
+    abstract member EmbeddedStatuses: seq<IBclDeviantArtStatus>
 
-type Status(original: StatusResponse.Root) =
+type DeviantArtStatus(original: StatusResponse.Root) =
     member __.Original = original
 
     member __.Statusid = original.Statusid
@@ -43,15 +43,15 @@ type Status(original: StatusResponse.Root) =
     member __.EmbeddedStatuses = seq {
         for i in original.Items do
             match i.Status with
-                | Some s -> yield s.JsonValue.ToString() |> StatusResponse.Parse |> Status
+                | Some s -> yield s.JsonValue.ToString() |> StatusResponse.Parse |> DeviantArtStatus
                 | None -> ()
     }
 
-    interface IBclStatus with
+    interface IBclDeviantArtStatus with
         member this.Body = this.Body
         member this.CommentsCount = this.CommentsCount
         member this.EmbeddedDeviations = this.EmbeddedDeviations
-        member this.EmbeddedStatuses = this.EmbeddedStatuses |> Seq.map (fun s -> s :> IBclStatus)
+        member this.EmbeddedStatuses = this.EmbeddedStatuses |> Seq.map (fun s -> s :> IBclDeviantArtStatus)
         member this.IsDeleted = this.IsDeleted
         member this.IsShare = this.IsShare
         member this.Statusid = this.Statusid

@@ -18,7 +18,7 @@ module ProfileByName =
             sprintf "https://www.deviantart.com/api/v1/oauth2/user/profile/%s?%s" (dafs.urlEncode req.Username) qs
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return ProfileResponse.Parse json |> Profile
+        return ProfileResponse.Parse json |> DeviantArtProfile
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun p -> p :> IBclProfile) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun p -> p :> IBclDeviantArtProfile) |> Async.StartAsTask

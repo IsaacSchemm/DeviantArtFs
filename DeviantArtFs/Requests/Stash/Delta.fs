@@ -29,7 +29,7 @@ module Delta =
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
         let resp = DeltaResponse.Parse json
-        return DeltaResult resp
+        return StashDeltaResult resp
     }
 
     let GetAll token (extParams: ExtParams) = asyncSeq {
@@ -46,7 +46,7 @@ module Delta =
     let GetAllAsListAsync token extParams =
         GetAll token extParams
         |> AsyncSeq.toListAsync
-        |> iop.thenMap (fun x -> x :> IBclDeltaEntry)
+        |> iop.thenMap (fun x -> x :> IBclStashDeltaEntry)
         |> Async.StartAsTask
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun x -> x :> IBclDeltaResult) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun x -> x :> IBclStashDeltaResult) |> Async.StartAsTask

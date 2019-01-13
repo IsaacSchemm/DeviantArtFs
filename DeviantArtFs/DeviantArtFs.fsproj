@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <Compile Include="Types\Responses\CommonResponses.fs" />
+    <Compile Include="Types\Responses\GalleryFolderElement.fs" />
+    <Compile Include="Types\Responses\CollectionFolderElement.fs" />
     <Compile Include="Types\Responses\DeviationResponse.fs" />
     <Compile Include="Types\Responses\MetadataResponse.fs" />
     <Compile Include="Types\Responses\StatusResponse.fs" />
@@ -32,16 +34,16 @@
     <Compile Include="Types\Wrappers\DeviantArtGalleryFolder.fs" />
     <Compile Include="Types\Wrappers\DeviantArtCollectionFolder.fs" />
     <Compile Include="Types\Wrappers\Deviation.fs" />
-    <Compile Include="Types\Wrappers\MetadataTag.fs" />
-    <Compile Include="Types\Wrappers\Metadata.fs" />
-    <Compile Include="Types\Wrappers\Status.fs" />
-    <Compile Include="Types\Wrappers\Profile.fs" />
+    <Compile Include="Types\Wrappers\DeviationTag.fs" />
+    <Compile Include="Types\Wrappers\DeviationMetadata.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtStatus.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtProfile.fs" />
     <Compile Include="Types\Wrappers\StashStats.fs" />
     <Compile Include="Types\Wrappers\StashSubmission.fs" />
     <Compile Include="Types\Wrappers\StashMetadata.fs" />
     <Compile Include="Types\Wrappers\StashMoveResult.fs" />
-    <Compile Include="Types\Wrappers\DeltaEntry.fs" />
-    <Compile Include="Types\Wrappers\DeltaResult.fs" />
+    <Compile Include="Types\Wrappers\StashDeltaEntry.fs" />
+    <Compile Include="Types\Wrappers\StashDeltaResult.fs" />
     <Compile Include="dafs.fs" />
     <Compile Include="iop.fs" />
     <Compile Include="fch.fs" />

@@ -27,7 +27,7 @@ module MetadataById =
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
         let o = MetadataResponse.Parse json
-        return o.Metadata |> Seq.map Metadata
+        return o.Metadata |> Seq.map DeviationMetadata
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMap (fun m -> m :> IBclMetadata) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMap (fun m -> m :> IBclDeviationMetadata) |> Async.StartAsTask
