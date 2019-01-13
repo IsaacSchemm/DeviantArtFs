@@ -2,35 +2,6 @@
 
 open DeviantArtFs
 open DeviantArtFs.Interop
-open FSharp.Data
-
-type DeltaResultEntry = {
-    Itemid: int64 option
-    Stackid: int64 option
-    Metadata: StashMetadataResponse.Root option
-    Position: int option
-}
-with
-    interface IBclDeltaEntry with
-        member this.Itemid = this.Itemid |> Option.toNullable
-        member this.Stackid = this.Stackid |> Option.toNullable
-        member this.MetadataJson = this.Metadata |> Option.map (fun j -> j.JsonValue.ToString()) |> Option.toObj
-        member this.Position = this.Position |> Option.toNullable
-
-type DeltaResult = {
-    Cursor: string
-    HasMore: bool
-    NextOffset: int option
-    Reset: bool
-    Entries: seq<DeltaResultEntry>
-}
-with
-    interface IDeltaResult with
-        member this.Cursor = this.Cursor
-        member this.HasMore = this.HasMore
-        member this.NextOffset = this.NextOffset |> Option.toNullable
-        member this.Reset = this.Reset
-        member this.Entries = this.Entries |> Seq.map DeltaEntry
 
 type DeltaRequest() = 
     member val Cursor = null with get, set
@@ -59,21 +30,7 @@ module Delta =
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
         let resp = DeltaResponse.Parse json
-        return {
-            Cursor = resp.Cursor
-            HasMore = resp.HasMore
-            NextOffset = resp.NextOffset
-            Reset = resp.Reset
-            Entries = seq {
-                for e in resp.Entries do
-                    yield {
-                        Itemid = e.Itemid
-                        Stackid = e.Stackid
-                        Metadata = e.Metadata |> Option.map (fun j -> j.JsonValue.ToString() |> StashMetadataResponse.Parse)
-                        Position = e.Position
-                    }
-            }
-        }
+        return DeltaResult resp
     }
 
     let GetAll token (extParams: ExtParams) = asyncSeq {
@@ -90,7 +47,7 @@ module Delta =
     let GetAllAsListAsync token extParams =
         GetAll token extParams
         |> AsyncSeq.toListAsync
-        |> iop.thenMap DeltaEntry
+        |> iop.thenMap (fun x -> x :> IBclDeltaEntry)
         |> Async.StartAsTask
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun x -> x :> IDeltaResult) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun x -> x :> IBclDeltaResult) |> Async.StartAsTask

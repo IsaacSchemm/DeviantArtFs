@@ -1,4 +1,4 @@
-﻿namespace DeviantArtFs.Requests.Stash
+﻿namespace DeviantArtFs
 
 open FSharp.Data
 

@@ -269,9 +269,9 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 
 ### DeviantArtFs.Requests.Stash.Delta
 * AsyncExecute (IDeviantArtAccessToken) (DeltaRequest) -> `Async<DeltaResult>`
-* ExecuteAsync (IDeviantArtAccessToken) (DeltaRequest) -> `Task<Interop.IDeltaResult>`
-* GetAll (IDeviantArtAccessToken) (ExtParams) -> `AsyncSeq<DeltaResultEntry>`
-* GetAllAsListAsync (IDeviantArtAccessToken) (ExtParams) -> `Task<IEnumerable<Interop.DeltaEntry>>`
+* ExecuteAsync (IDeviantArtAccessToken) (DeltaRequest) -> `Task<IBclDeltaResult>`
+* GetAll (IDeviantArtAccessToken) (ExtParams) -> `AsyncSeq<DeltaEntry>`
+* GetAllAsListAsync (IDeviantArtAccessToken) (ExtParams) -> `Task<IEnumerable<IBclDeltaEntry>>`
 
 **DeltaRequest:**
 
