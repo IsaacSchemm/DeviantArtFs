@@ -28,17 +28,13 @@ module CategoryTree =
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
         let o = CategoryTreeResponse.Parse json
-        return o.Categories :> seq<CategoryTreeResponse.Category>
+        return o.Categories |> Seq.map (fun c -> {
+            new ICategory with
+                member __.Catpath = c.Catpath
+                member __.Title = c.Title
+                member __.HasSubcategory = c.HasSubcategory
+                member __.ParentCatpath = c.ParentCatpath
+        })
     }
 
-    let ExecuteAsync token catpath = Async.StartAsTask (async {
-        let! resp = AsyncExecute token catpath
-        return resp
-            |> Seq.map (fun c -> {
-                new ICategory with
-                    member __.Catpath = c.Catpath
-                    member __.Title = c.Title
-                    member __.HasSubcategory = c.HasSubcategory
-                    member __.ParentCatpath = c.ParentCatpath
-            })
-    })
+    let ExecuteAsync token catpath = AsyncExecute token catpath |> Async.StartAsTask

@@ -10,16 +10,25 @@ type IDeviantArtUser =
     abstract member Type: string
 
 [<AllowNullLiteral>]
-type IDeviationPreview =
+type IDeviationFile =
     abstract member Src: string
     abstract member Height: int
     abstract member Width: int
+
+[<AllowNullLiteral>]
+type IDeviationPreview =
+    inherit IDeviationFile
     abstract member Transparency: bool
+
+[<AllowNullLiteral>]
+type IDeviationDownload =
+    inherit IDeviationFile
+    abstract member Filesize: int
 
 [<AllowNullLiteral>]
 type IDeviationContent =
     inherit IDeviationPreview
-    abstract member Filesize: int
+    inherit IDeviationDownload
 
 [<AllowNullLiteral>]
 type IDeviationStats =

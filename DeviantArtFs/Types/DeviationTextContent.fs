@@ -13,19 +13,19 @@ type internal ContentResponse = JsonProvider<"""[
 {}
 ]""", SampleIsList=true>
 
-type IBclDeviationContent =
+type IBclDeviationTextContent =
     abstract member Html: string
     abstract member Css: string
     abstract member CssFonts: seq<string>
 
-type DeviationContent(original: ContentResponse.Root) =
+type DeviationTextContent(original: ContentResponse.Root) =
     member __.Original = original
 
     member __.Html = original.Html
     member __.Css = original.Css
     member __.CssFonts = original.CssFonts
 
-    interface IBclDeviationContent with
+    interface IBclDeviationTextContent with
         member this.Html = this.Html |> Option.toObj
         member this.Css = this.Css |> Option.toObj
         member this.CssFonts = this.CssFonts :> seq<string>

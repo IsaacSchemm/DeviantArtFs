@@ -43,8 +43,8 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * RefreshAsync (string) -> `Task<IDeviantArtRefreshToken>`
 
 ### DeviantArtFs.Requests.Browse.CategoryTree
-* AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<IEnumerable<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IEnumerable<Interop.ICategory>>`
+* AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<IEnumerable<ICategory>>`
+* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IEnumerable<ICategory>>`
 
 ### DeviantArtFs.Requests.Browse.DailyDeviations
 * AsyncExecute (IDeviantArtAccessToken) (DailyDeviationsRequest) -> `Async<IEnumerable<Deviation>>`
@@ -178,16 +178,16 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * ExecuteAsync (IDeviantArtAccessToken) -> `Task<string>`
 
 ### DeviantArtFs.Requests.Deviation.Content
-* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<???>`
-* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<Interop.IContentResult>`
+* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<DeviationTextContent>`
+* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<IBclDeviationTextContent>`
 
 ### DeviantArtFs.Requests.Deviation.DeviationById
 * AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<Deviation>`
 * ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<IBclDeviation>`
 
 ### DeviantArtFs.Requests.Deviation.Download
-* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<???>`
-* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<Interop.IDeviantArtFile>`
+* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<IDeviationDownload>`
+* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<IDeviationDownload>`
 
 ### DeviantArtFs.Requests.Deviation.EmbeddedContent
 * AsyncExecute (IDeviantArtAccessToken) (PagingParams) (EmbeddedContentRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
@@ -321,8 +321,8 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * Itemid: `long`
 
 ### DeviantArtFs.Requests.Stash.PublishCategoryTree
-* AsyncExecute (IDeviantArtAccessToken) (PublishCategoryTreeRequest) -> `Async<IEnumerable<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (PublishCategoryTreeRequest) -> `Task<IEnumerable<Interop.ICategory>>`
+* AsyncExecute (IDeviantArtAccessToken) (PublishCategoryTreeRequest) -> `Async<IEnumerable<ICategory>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PublishCategoryTreeRequest) -> `Task<IEnumerable<ICategory>>`
 
 **PublishCategoryTreeRequest:**
 

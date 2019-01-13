@@ -42,17 +42,13 @@ module PublishCategoryTree =
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
         let o = PublishCategoryTreeResponse.Parse json
-        return o.Categories :> seq<PublishCategoryTreeResponse.Category>
+        return o.Categories |> Seq.map (fun c -> {
+            new ICategory with
+                member __.Catpath = c.Catpath
+                member __.Title = c.Title
+                member __.HasSubcategory = c.HasSubcategory
+                member __.ParentCatpath = c.ParentCatpath
+        })
     }
 
-    let ExecuteAsync token req = Async.StartAsTask (async {
-        let! resp = AsyncExecute token req
-        return resp
-            |> Seq.map (fun c -> {
-                new ICategory with
-                    member __.Catpath = c.Catpath
-                    member __.Title = c.Title
-                    member __.HasSubcategory = c.HasSubcategory
-                    member __.ParentCatpath = c.ParentCatpath
-            })
-    })
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
