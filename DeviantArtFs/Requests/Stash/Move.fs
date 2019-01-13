@@ -5,19 +5,6 @@ open DeviantArtFs.Interop
 open FSharp.Data
 open System.IO
 
-type internal MoveResponse = JsonProvider<"""{
-    "target": {},
-    "changes": []
-}""">
-
-type MoveResult = {
-    Target: StashMetadataResponse.Root
-    Changes: seq<StashMetadataResponse.Root>
-} with
-    interface IMoveResult with
-        member this.Target = this.Target |> StashMetadata
-        member this.Changes = this.Changes |> Seq.map StashMetadata
-
 module Move =
     let AsyncExecute token (stackid: int64) (targetid: int64) = async {
         let query = seq {
@@ -35,11 +22,7 @@ module Move =
         }
 
         let! json = dafs.asyncRead req
-        let resp = MoveResponse.Parse json
-        return {
-            Target = resp.Target.JsonValue.ToString() |> StashMetadataResponse.Parse
-            Changes = resp.Changes |> Seq.map (fun j -> j.JsonValue.ToString()) |> Seq.map StashMetadataResponse.Parse
-        }
+        return StashMoveResponse.Parse json |> StashMoveResult
     }
 
-    let ExecuteAsync token stackid targetid = AsyncExecute token stackid targetid |> iop.thenTo (fun r -> r :> IMoveResult) |> Async.StartAsTask
+    let ExecuteAsync token stackid targetid = AsyncExecute token stackid targetid |> iop.thenTo (fun r -> r :> IBclStashMoveResult) |> Async.StartAsTask

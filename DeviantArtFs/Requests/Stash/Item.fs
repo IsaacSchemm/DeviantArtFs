@@ -21,7 +21,7 @@ module Item =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/item/%d?%s" req.Itemid
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return StashMetadataResponse.Parse json
+        return StashMetadataResponse.Parse json |> StashMetadata
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo StashMetadata |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun i -> i :> IBclStashMetadata) |> Async.StartAsTask

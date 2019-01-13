@@ -258,10 +258,10 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task`
 
 ### DeviantArtFs.Requests.Stash.Contents
-* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (long) -> `Async<DeviantArtPagedResult<???>>`
-* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (long) -> `Task<IDeviantArtPagedResult<Interop.StashMetadata>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (long) (int) -> `AsyncSeq<???>`
-* ToListAsync (IDeviantArtAccessToken) (long) (int) (int) -> `Task<IEnumerable<Interop.StashMetadata>>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (long) -> `Async<DeviantArtPagedResult<StashMetadata>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (long) -> `Task<IDeviantArtPagedResult<IBclStashMetadata>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (long) (int) -> `AsyncSeq<StashMetadata>`
+* ToListAsync (IDeviantArtAccessToken) (long) (int) (int) -> `Task<IEnumerable<IBclStashMetadata>>`
 
 ### DeviantArtFs.Requests.Stash.Delete
 * AsyncExecute (IDeviantArtAccessToken) (long) -> `Async<unit>`
@@ -281,8 +281,8 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * ExtParams: `ExtParams`
 
 ### DeviantArtFs.Requests.Stash.Item
-* AsyncExecute (IDeviantArtAccessToken) (ItemRequest) -> `Async<???>`
-* ExecuteAsync (IDeviantArtAccessToken) (ItemRequest) -> `Task<Interop.StashMetadata>`
+* AsyncExecute (IDeviantArtAccessToken) (ItemRequest) -> `Async<StashMetadata>`
+* ExecuteAsync (IDeviantArtAccessToken) (ItemRequest) -> `Task<IBclStashMetadata>`
 
 **ItemRequest:**
 
@@ -290,8 +290,8 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * ExtParams: `ExtParams`
 
 ### DeviantArtFs.Requests.Stash.Move
-* AsyncExecute (IDeviantArtAccessToken) (long) (long) -> `Async<MoveResult>`
-* ExecuteAsync (IDeviantArtAccessToken) (long) (long) -> `Task<Interop.IMoveResult>`
+* AsyncExecute (IDeviantArtAccessToken) (long) (long) -> `Async<StashMoveResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (long) (long) -> `Task<IBclStashMoveResult>`
 
 ### DeviantArtFs.Requests.Stash.Position
 * AsyncExecute (IDeviantArtAccessToken) (long) (int) -> `Async<unit>`
@@ -339,8 +339,8 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * ExecuteAsync (IDeviantArtAccessToken) -> `Task<SpaceResult>`
 
 ### DeviantArtFs.Requests.Stash.Stack
-* AsyncExecute (IDeviantArtAccessToken) (long) -> `Async<???>`
-* ExecuteAsync (IDeviantArtAccessToken) (long) -> `Task<Interop.StashMetadata>`
+* AsyncExecute (IDeviantArtAccessToken) (long) -> `Async<StashMetadata>`
+* ExecuteAsync (IDeviantArtAccessToken) (long) -> `Task<IBclStashMetadata>`
 
 ### DeviantArtFs.Requests.Stash.Submit
 * AsyncExecute (IDeviantArtAccessToken) (SubmitRequest) -> `Async<long>`

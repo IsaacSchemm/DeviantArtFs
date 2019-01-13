@@ -21,6 +21,8 @@
     <Compile Include="Types\Responses\StatusResponse.fs" />
     <Compile Include="Types\Responses\ProfileResponse.fs" />
     <Compile Include="Types\Responses\StashMetadataResponse.fs" />
+    <Compile Include="Types\Responses\StashMoveResponse.fs" />
+    <Compile Include="Types\Responses\DeltaResponse.fs" />
     <Compile Include="Types\AccessTokens.fs" />
     <Compile Include="Types\Exceptions.fs" />
     <Compile Include="Types\SharedRequestTypes.fs" />
@@ -34,8 +36,11 @@
     <Compile Include="Types\Wrappers\Metadata.fs" />
     <Compile Include="Types\Wrappers\Status.fs" />
     <Compile Include="Types\Wrappers\Profile.fs" />
+    <Compile Include="Types\Wrappers\StashStats.fs" />
+    <Compile Include="Types\Wrappers\StashSubmission.fs" />
+    <Compile Include="Types\Wrappers\StashMetadata.fs" />
+    <Compile Include="Types\Wrappers\StashMoveResult.fs" />
     <Compile Include="Types\Wrappers\DeltaEntry.fs" />
-    <Compile Include="Types\Interop\StashMetadata.fs" />
     <Compile Include="Types\Interop\DeltaEntry.fs" />
     <Compile Include="Types\Interop\iop.fs" />
     <Compile Include="dafs.fs" />

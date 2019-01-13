@@ -16,7 +16,7 @@ type DeltaEntry(original: IBclDeltaEntry) =
     member __.MetadataJson = original.MetadataJson
     member __.Position = original.Position
 
-    member __.Metadata = metadata |> Option.toObj
+    member __.Metadata = metadata |> Option.map (fun m -> m :> IBclStashMetadata) |> Option.toObj
 
     interface IBclDeltaEntry with
         member this.Itemid = this.Itemid

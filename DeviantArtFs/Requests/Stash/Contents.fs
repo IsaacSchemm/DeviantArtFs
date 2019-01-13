@@ -20,7 +20,7 @@ module Contents =
             |> dafs.createRequest token
 
         let! json = dafs.asyncRead req
-        return dafs.parsePage StashMetadataResponse.Parse json
+        return dafs.parsePage (StashMetadataResponse.Parse >> StashMetadata) json
     }
 
     let ToAsyncSeq token stackid offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 stackid
@@ -29,10 +29,10 @@ module Contents =
         ToAsyncSeq token req offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toListAsync
-        |> iop.thenMap StashMetadata
+        |> iop.thenMap (fun i -> i :> IBclStashMetadata)
         |> Async.StartAsTask
 
     let ExecuteAsync token paging stackid =
         AsyncExecute token paging stackid
-        |> iop.thenMapResult StashMetadata
+        |> iop.thenMapResult (fun i -> i :> IBclStashMetadata)
         |> Async.StartAsTask
