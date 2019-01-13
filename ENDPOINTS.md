@@ -162,7 +162,7 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * ExecuteAsync (IDeviantArtAccessToken) (Guid) (IEnumerable<Guid>) -> `Task<int>`
 
 ### DeviantArtFs.Requests.Data.Countries
-* AsyncExecute (IDeviantArtAccessToken) -> `Async<IEnumerable<???>>`
+* AsyncExecute (IDeviantArtAccessToken) -> `Async<IDictionary<int, string>>`
 * ExecuteAsync (IDeviantArtAccessToken) -> `Task<IDictionary<int, string>>`
 
 ### DeviantArtFs.Requests.Data.Privacy
@@ -418,8 +418,8 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<bool>`
 
 ### DeviantArtFs.Requests.User.ProfileByName
-* AsyncExecute (IDeviantArtAccessToken) (ProfileByNameRequest) -> `Async<Interop.Profile>`
-* ExecuteAsync (IDeviantArtAccessToken) (ProfileByNameRequest) -> `Task<Interop.IBclProfile>`
+* AsyncExecute (IDeviantArtAccessToken) (ProfileByNameRequest) -> `Async<Profile>`
+* ExecuteAsync (IDeviantArtAccessToken) (ProfileByNameRequest) -> `Task<IBclProfile>`
 
 **ProfileByNameRequest:**
 

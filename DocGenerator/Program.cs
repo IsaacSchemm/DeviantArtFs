@@ -10,7 +10,8 @@ namespace DocGenerator
     {
         static string PrintTypeName(Type t)
         {
-            string n = t.Name.Replace("`1", "").Replace("`2", "").Replace("IJsonDocument", "???");
+            if (t.Name.Contains("IJsonDocument")) throw new Exception("Library should not return JSON types");
+            string n = t.Name.Replace("`1", "").Replace("`2", "");
             if (n == "FSharpAsync") n = "Async";
             if (n == "IAsyncEnumerable") n = "AsyncSeq";
             if (n == "Boolean") n = "bool";
