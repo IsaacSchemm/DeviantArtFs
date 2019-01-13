@@ -14,7 +14,6 @@ This library sits on top of DeviantArtFs and provides a StashRoot object that ca
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Utils.fs" />
     <Compile Include="StashNode.fs" />
     <Compile Include="StashItem.fs" />
     <Compile Include="StashStack.fs" />

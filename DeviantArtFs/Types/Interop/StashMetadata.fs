@@ -21,7 +21,7 @@ type IStashStats =
 type StashMetadata(original: StashMetadataResponse.Root) =
     let toStashFile (f: StashMetadataResponse.Thumb) =
         {
-            new IStashFile with
+            new IDeviationPreview with
                 member __.Src = f.Src
                 member __.Width = f.Width
                 member __.Height = f.Height

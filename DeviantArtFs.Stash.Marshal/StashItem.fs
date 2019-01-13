@@ -20,7 +20,13 @@ type StashItem(root: IStashRoot, itemid: int64, metadata: StashMetadataResponse.
     member this.OriginalUrl = this.Metadata.OriginalUrl |> Option.toObj
     member this.Category = this.Metadata.Category |> Option.toObj
     member this.CreationTime = this.Metadata.CreationTime |> Option.toNullable
-    member this.Files = this.Metadata.Files |> Seq.map Utils.toStashFile
+    member this.Files = this.Metadata.Files |> Seq.map (fun f -> {
+        new IDeviationPreview with
+            member __.Src = f.Src
+            member __.Width = f.Width
+            member __.Height = f.Height
+            member __.Transparency = f.Transparency
+    })
 
     member this.OptSubmission = this.Metadata.Submission
     member this.OptStats = this.Metadata.Stats
