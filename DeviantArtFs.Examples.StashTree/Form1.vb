@@ -57,20 +57,16 @@ Public Class Form1
 
     Private Sub AddNodes(node As TreeNode, nodes As IEnumerable(Of StashNode))
         For Each n In nodes
-            If TypeOf n Is StashStack And CheckBox1.Checked Then
-                Dim s = CType(n, StashStack)
-                If Not s.Children.Skip(1).Any() Then
-                    AddNodes(node, s.Children)
+            If CheckBox1.Checked Then
+                If n.Children.Count() = 1 Then
+                    AddNodes(node, n.Children)
                     Continue For
                 End If
             End If
 
             Dim stackNode = node.Nodes.Add($"{n.BclMetadata.Title} ({n.GetType().Name})")
             NodeToItem.Add(stackNode, n)
-            If TypeOf n Is StashStack Then
-                Dim s = CType(n, StashStack)
-                AddNodes(stackNode, s.Children)
-            End If
+            AddNodes(stackNode, n.Children)
         Next
     End Sub
 
@@ -79,10 +75,10 @@ Public Class Form1
         PropertyGrid1.SelectedObject = item
         PropertyGrid2.SelectedObject = item?.BclMetadata
         If item IsNot Nothing Then
-            If TypeOf item Is StashItem Then
-                PictureBox1.ImageLocation = item.BclMetadata.Files.Where(Function(f) f.Width * f.Height > 0).OrderByDescending(Function(f) f.Width * f.Height).Select(Function(f) f.Src).FirstOrDefault()
-            ElseIf item.BclMetadata.Thumb IsNot Nothing Then
+            If item.BclMetadata.Thumb IsNot Nothing Then
                 PictureBox1.ImageLocation = item.BclMetadata.Thumb.Src
+            Else
+                PictureBox1.ImageLocation = item.BclMetadata.Files.Where(Function(f) f.Width * f.Height > 0).OrderByDescending(Function(f) f.Width * f.Height).Select(Function(f) f.Src).FirstOrDefault()
             End If
         End If
     End Sub

@@ -39,17 +39,17 @@ type StashRoot() =
     member __.FindItemById itemid =
         seq {
             for node in nodes do
-                match node with
-                | :? StashItem as i -> if i.Itemid = itemid then yield i
-                | _ -> ()
+                match node.Metadata.Itemid with
+                | Some i -> if i = itemid then yield node
+                | None -> ()
         } |> Seq.tryHead
 
     member __.FindStackById stackid =
         seq {
             for node in nodes do
-                match node with
-                | :? StashStack as s -> if s.Stackid = stackid then yield s
-                | _ -> ()
+                match node.Metadata.Itemid with
+                | Some _ -> ()
+                | None -> if node.Metadata.Stackid = Some stackid then yield node
         } |> Seq.tryHead
 
     member __.Children = seq {
@@ -63,10 +63,9 @@ type StashRoot() =
         let rec grab (list: seq<StashNode>) (stackid: int64 option) = seq {
             for n in list do
                 if n.ParentStackId = stackid then
-                    match n with
-                    | :? StashItem as i -> yield i
-                    | :? StashStack as s -> yield! grab s.Children (Some s.Stackid)
-                    | _ -> ()
+                    match n.Metadata.Itemid with
+                    | Some i -> yield n
+                    | None -> yield! grab n.Children n.Metadata.Stackid
         }
         grab nodes None
 
@@ -86,14 +85,14 @@ type StashRoot() =
                 | Some existing ->
                     update position existing metadata
                 | None ->
-                    new StashItem(this, itemid, metadata) |> insert (position |> Option.defaultValue 0)
+                    new StashNode(this, metadata) |> insert (position |> Option.defaultValue 0)
             | (None, Some stackid) ->
                 // Add or update stack
                 match this.FindStackById stackid with
                 | Some existing ->
                     update position existing metadata
                 | None ->
-                    new StashStack(this, stackid, metadata) |> insert (position |> Option.defaultValue 0)
+                    new StashNode(this, metadata) |> insert (position |> Option.defaultValue 0)
             | _ -> failwithf "Invalid combination of stackid/itemid with metadata"
         | None ->
             // Deletion
