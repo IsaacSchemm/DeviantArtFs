@@ -34,7 +34,7 @@ type DeviantArtStatus(original: StatusResponse.Root) =
     member __.EmbeddedDeviations = seq {
         for i in original.Items do
             match i.Deviation with
-                | Some s -> yield s.JsonValue.ToString() |> DeviationResponse.Parse |> Deviation :> IBclDeviation
+                | Some s -> yield s.JsonValue.ToString() |> DeviationResponse.Parse |> Deviation
                 | None -> ()
     }
 
@@ -48,7 +48,7 @@ type DeviantArtStatus(original: StatusResponse.Root) =
     interface IBclDeviantArtStatus with
         member this.Body = this.Body
         member this.CommentsCount = this.CommentsCount
-        member this.EmbeddedDeviations = this.EmbeddedDeviations
+        member this.EmbeddedDeviations = this.EmbeddedDeviations |> Seq.map (fun s -> s :> IBclDeviation)
         member this.EmbeddedStatuses = this.EmbeddedStatuses |> Seq.map (fun s -> s :> IBclDeviantArtStatus)
         member this.IsDeleted = this.IsDeleted
         member this.IsShare = this.IsShare
