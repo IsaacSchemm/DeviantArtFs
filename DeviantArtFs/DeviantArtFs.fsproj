@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.5.0</Version>
+    <Version>0.6.0</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>libertyernie</Authors>
     <Company></Company>
@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/libertyernie/DeviantArtFs</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Description>An F# library (.NET Standard 2.0) to interact with the DeviantArt / Sta.sh API</Description>
-    <PackageReleaseNotes>0.5.0: Implemented Collections, added AsyncSeq support, other changes</PackageReleaseNotes>
+    <PackageReleaseNotes>0.6.0: Refactoring (return types with F#-style fields for F#-style methods, and .NET-style fields for .NET-style methods)</PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
   </PropertyGroup>
 
