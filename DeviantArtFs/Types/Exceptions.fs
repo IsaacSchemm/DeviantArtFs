@@ -11,6 +11,3 @@ type DeviantArtException(resp: WebResponse, body: DeviantArtErrorResponse.Root) 
         match resp with
         | :? HttpWebResponse as h -> Nullable h.StatusCode
         | _ -> Nullable()
-
-type DeviantArtRateLimitException() =
-    inherit Exception()

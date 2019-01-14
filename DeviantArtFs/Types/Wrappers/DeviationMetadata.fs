@@ -19,8 +19,6 @@ type IBclDeviationMetadata =
     abstract member Collections: seq<IBclDeviantArtCollectionFolder>
 
 type DeviationMetadata(original: MetadataResponse.Metadata) =
-    member __.Original = original
-
     member __.Deviationid = original.Deviationid
     member __.Printid = original.Printid
     member __.Author = {

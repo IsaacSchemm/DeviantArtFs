@@ -13,7 +13,7 @@ module internal dafs =
         | _ -> failwithf "%s" (resp.ErrorDescription |> Option.defaultValue "An unknown error occurred.")
 
     let urlEncode = WebUtility.UrlEncode
-    let userAgent = "DeviantArtFs/0.5 (https://github.com/libertyernie/CrosspostSharp)"
+    let userAgent = "DeviantArtFs/0.6 (https://github.com/libertyernie/DeviantArtFs)"
 
     let createRequest (token: IDeviantArtAccessToken) (url: string) =
         let req = WebRequest.CreateHttp url

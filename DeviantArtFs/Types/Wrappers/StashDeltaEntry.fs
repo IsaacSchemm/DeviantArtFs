@@ -27,9 +27,7 @@ type StashDeltaEntry(serialized: ISerializedStashDeltaEntry) =
     member __.MetadataJson = serialized.MetadataJson |> Option.ofObj
     member __.Position = serialized.Position |> Option.ofNullable
 
-    member this.Metadata =
-        this.MetadataJson
-        |> Option.map (StashMetadataResponse.Parse >> StashMetadata)
+    member this.Metadata = this.MetadataJson |> Option.map StashMetadata.Parse
 
     interface IBclStashDeltaEntry with
         member __.Itemid = serialized.Itemid

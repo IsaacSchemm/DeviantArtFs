@@ -27,7 +27,6 @@ type IBclStashMetadata =
 type StashMetadata(original: StashMetadataResponse.Root) =
     let epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)
 
-    member __.Original = original
     member __.Json = original.JsonValue.ToString()
 
     member __.Title = original.Title
@@ -60,6 +59,8 @@ type StashMetadata(original: StashMetadataResponse.Root) =
     member __.Stackid = original.Stackid
     member __.Itemid = original.Itemid
     member __.Tags = original.Tags
+
+    static member Parse json = json |> StashMetadataResponse.Parse |> StashMetadata
 
     interface IBclStashMetadata with
         member this.Json = this.Json

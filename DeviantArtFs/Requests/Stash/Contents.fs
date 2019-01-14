@@ -19,7 +19,7 @@ module Contents =
             |> dafs.createRequest token
 
         let! json = dafs.asyncRead req
-        return dafs.parsePage (StashMetadataResponse.Parse >> StashMetadata) json
+        return dafs.parsePage StashMetadata.Parse json
     }
 
     let ToAsyncSeq token stackid offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 stackid

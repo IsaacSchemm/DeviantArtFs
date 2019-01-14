@@ -9,7 +9,7 @@ module Stack =
             sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d" stackid
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return StashMetadataResponse.Parse json |> StashMetadata
+        return StashMetadata.Parse json
     }
 
     let ExecuteAsync token stackid = AsyncExecute token stackid |> iop.thenTo (fun i -> i :> IBclStashMetadata) |> Async.StartAsTask

@@ -7,11 +7,11 @@ type IBclStashMoveResult =
 type StashMoveResult(original: StashMoveResponse.Root) =
     member __.Target =
         original.Target.JsonValue.ToString()
-        |> (StashMetadataResponse.Parse >> StashMetadata)
+        |> StashMetadata.Parse
     member __.Changes =
         original.Changes
         |> Seq.map (fun m -> m.JsonValue.ToString())
-        |> Seq.map (StashMetadataResponse.Parse >> StashMetadata)
+        |> Seq.map StashMetadata.Parse
 
     interface IBclStashMoveResult with
         member this.Target = this.Target :> IBclStashMetadata

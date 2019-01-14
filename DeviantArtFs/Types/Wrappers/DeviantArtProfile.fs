@@ -23,8 +23,6 @@ type IBclDeviantArtProfile =
     abstract member Galleries: seq<IBclDeviantArtGalleryFolder>
 
 type DeviantArtProfile(original: ProfileResponse.Root) =
-    member __.Original = original
-
     member __.User = {
         new IDeviantArtUser with
             member __.Userid = original.User.Userid

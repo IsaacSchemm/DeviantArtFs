@@ -10,8 +10,6 @@ type IBclStashStats =
     abstract member DownloadsToday: Nullable<int>
 
 type StashStats(original: StashMetadataResponse.Stats) =
-    member __.Original = original
-
     member __.Views = original.Views
     member __.ViewsToday = original.ViewsToday
     member __.Downloads = original.Downloads

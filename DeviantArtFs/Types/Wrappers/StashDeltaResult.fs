@@ -10,8 +10,6 @@ type IBclStashDeltaResult =
     abstract member Entries: seq<IBclStashDeltaEntry>
 
 type StashDeltaResult(original: DeltaResponse.Root) =
-    member __.Original = original
-
     member __.Cursor = original.Cursor
     member __.HasMore = original.HasMore
     member __.NextOffset = original.NextOffset

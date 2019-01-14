@@ -16,8 +16,6 @@ type IBclDeviantArtStatus =
     abstract member EmbeddedStatuses: seq<IBclDeviantArtStatus>
 
 type DeviantArtStatus(original: StatusResponse.Root) =
-    member __.Original = original
-
     member __.Statusid = original.Statusid
     member __.Body = original.Body
     member __.Ts = original.Ts

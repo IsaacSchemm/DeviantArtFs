@@ -87,8 +87,6 @@ type IBclDeviantArtFriendRecord =
     abstract member WatchesYou: bool
 
 type DeviantArtFriendRecord(original: FriendsElement.Root) =
-    member __.Original = original
-
     member __.User = {
         new IDeviantArtUser with
             member __.Userid = original.User.Userid
@@ -121,8 +119,6 @@ type IBclDeviantArtWatcherRecord =
     abstract member Lastvisit: Nullable<DateTimeOffset>
 
 type DeviantArtWatcherRecord(original: WatchersElement.Root) =
-    member __.Original = original
-
     member __.User = {
         new IDeviantArtUser with
             member __.Userid = original.User.Userid

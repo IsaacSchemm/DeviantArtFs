@@ -27,7 +27,6 @@ type Deviation(original: DeviationResponse.Root) =
     let orNull = Option.toObj
     let orFalse = Option.defaultValue false
 
-    member __.Original = original
     member __.Deviationid = original.Deviationid
     member __.IsDeleted = original.IsDeleted
     member __.Url = original.Url
