@@ -8,11 +8,23 @@ namespace DocGenerator
 {
     class Program
     {
-        static string PrintTypeName(Type t)
+        static string PrintTypeName(Type t, bool might_be_fsharp = true, bool might_be_csharp = true, bool isToListAsync = false)
         {
+            if (!might_be_fsharp && t.FullName.StartsWith("DeviantArtFs") && !t.IsInterface)
+            {
+                throw new Exception(".NET async method returns type that isn't an interface");
+            }
             if (t.Name.Contains("IJsonDocument")) throw new Exception("Library should not return JSON types");
             string n = t.Name.Replace("`1", "").Replace("`2", "");
-            if (n == "FSharpAsync") n = "Async";
+            if (n == "FSharpAsync")
+            {
+                n = "Async";
+                might_be_csharp = false;
+            }
+            if (n == "Task")
+            {
+                might_be_fsharp = false;
+            }
             if (n == "IAsyncEnumerable") n = "AsyncSeq";
             if (n == "Boolean") n = "bool";
             if (n == "Byte") n = "byte";
@@ -23,10 +35,25 @@ namespace DocGenerator
             if (n == "String") n = "string";
             if (n == "Unit") n = "unit";
             if (t.Namespace == "DeviantArtFs.Interop") n = $"Interop.{n}";
-            var generics = string.Join(", ", t.GenericTypeArguments.Select(x => PrintTypeName(x)));
-            return n == "Nullable" ? $"{generics}?"
-                : n == "FSharpOption" ? $"{generics} option"
-                : $"{n}{(t.GenericTypeArguments.Any() ? $"<{generics}>" : "")}";
+            var generics = string.Join(", ", t.GenericTypeArguments.Select(x => PrintTypeName(x, might_be_fsharp, might_be_csharp)));
+            if (n == "Nullable")
+            {
+                if (!might_be_csharp) throw new Exception("Nullable<T> in F# async method");
+                return $"{generics}?";
+            }
+            if (n == "FSharpOption")
+            {
+                if (!might_be_fsharp) throw new Exception("FSharpOption<T> in .NET async method");
+                return $"{generics} option";
+            }
+            if (isToListAsync && n == "Task")
+            {
+                if (generics.StartsWith("IEnumerable"))
+                {
+                    throw new Exception("A method called ToListAsync should return a List<T>");
+                }
+            }
+            return $"{n}{(t.GenericTypeArguments.Any() ? $"<{generics}>" : "")}";
         }
 
         static void Main(string[] args)
@@ -36,9 +63,9 @@ namespace DocGenerator
             {
                 sw.WriteLine(@"This is a list of functions in the DeviantArtFs library that call DeviantArt / Sta.sh API endpoints.
 
-Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and methods that return a Task<T> can be used from async methods in C# and VB.NET.
+Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and their return values use option types to represent missing or null fields.
 
-""???"" indicates a type generated from a JSON sample by FSharp.Data's JsonProvider.
+Methods that return a Task<T> can be used from async methods in C# and VB.NET, and their return values use null or Nullable<T> to represent missing or null fields.
 
 ""long"" indicates a 64-bit integer, and a question mark (?) following a type name indicates a Nullable<T>, as in C#.
 
@@ -99,7 +126,7 @@ The value of ""ExtParams"" determines what extra data (if any) is included with 
                                     typesToDescribe.Add(p.ParameterType);
                                 }
                             }
-                            sw.WriteLine($" -> `{PrintTypeName(x.ReturnType)}`");
+                            sw.WriteLine($" -> `{PrintTypeName(x.ReturnType, isToListAsync: x.Name == "ToListAsync")}`");
                         }
                         sw.WriteLine();
 

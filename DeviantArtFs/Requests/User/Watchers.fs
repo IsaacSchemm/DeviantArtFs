@@ -1,54 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
-open FSharp.Data
-open System
-
-type WatchersElement = JsonProvider<"""[
-{
-    "user": {
-        "userid": "EDCB4A55-BAE8-C146-B390-5118088A0CF5",
-        "username": "muteor",
-        "usericon": "https://a.deviantart.net/avatars/m/u/muteor.png?2",
-        "type": "regular"
-    },
-    "is_watching": true,
-    "lastvisit": "2014-10-13T22:34:16-0700",
-    "watch": {
-        "friend": true,
-        "deviations": true,
-        "journals": true,
-        "forum_threads": true,
-        "critiques": true,
-        "scraps": false,
-        "activity": true,
-        "collections": true
-    }
-},
-{
-    "user": {},
-    "is_watching": true,
-    "lastvisit": null,
-    "watch": {
-        "friend": true,
-        "deviations": true,
-        "journals": true,
-        "forum_threads": true,
-        "critiques": true,
-        "scraps": false,
-        "activity": true,
-        "collections": true
-    }
-}
-]""", SampleIsList=true>
-
-type WatcherRecord = {
-    User: IDeviantArtUser
-    IsWatching: bool
-    Lastvisit: DateTimeOffset option
-    Watch: IDeviantArtWatchInfo
-} with
-    member this.GetLastVisit() = this.Lastvisit |> Option.toNullable
 
 type WatchersRequest() =
     member val Username: string = null with get, set
@@ -67,24 +19,7 @@ module Watchers =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/watchers/%s?%s" (dafs.urlEncode req.Username)
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return json |> dafs.parsePage (fun j ->
-            let r = WatchersElement.Parse j
-            {
-                User = r.User.JsonValue.ToString() |> dafs.parseUser
-                IsWatching = r.IsWatching
-                Lastvisit = r.Lastvisit
-                Watch = {
-                    new IDeviantArtWatchInfo with
-                        member __.Friend = r.Watch.Friend
-                        member __.Deviations = r.Watch.Deviations
-                        member __.Journals = r.Watch.Journals
-                        member __.ForumThreads = r.Watch.ForumThreads
-                        member __.Critiques = r.Watch.Critiques
-                        member __.Scraps = r.Watch.Scraps
-                        member __.Activity = r.Watch.Activity
-                        member __.Collections = r.Watch.Collections
-                }
-            })
+        return json |> dafs.parsePage (WatchersElement.Parse >> DeviantArtWatcherRecord)
     }
 
     let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
@@ -92,7 +27,11 @@ module Watchers =
     let ToListAsync token req ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
         ToAsyncSeq token req offset
         |> AsyncSeq.take limit
+        |> AsyncSeq.map (fun w -> w :> IBclDeviantArtWatcherRecord)
         |> AsyncSeq.toListAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging req = AsyncExecute token paging req |> iop.thenCastResult |> Async.StartAsTask
+    let ExecuteAsync token paging req =
+        AsyncExecute token paging req
+        |> iop.thenMapResult (fun w -> w :> IBclDeviantArtWatcherRecord)
+        |> Async.StartAsTask

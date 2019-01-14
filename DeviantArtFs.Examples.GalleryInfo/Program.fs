@@ -62,6 +62,17 @@ let sandbox token_string = async {
     for s in stash do
         printfn "%s" s.Metadata.Title
 
+    let list = new ResizeArray<Deviation>()
+    let mutable offset = 0
+    let mutable more = true
+    while more do
+        let req = new DeviantArtFs.Requests.Gallery.GalleryAllViewRequest()
+        let paging = new PagingParams(Offset = 0, Limit = Nullable 24)
+        let! (resp: DeviantArtPagedResult<Deviation>) = DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token paging req
+        list.AddRange(resp.Results)
+        offset <- resp.NextOffset |> Option.defaultValue 0
+        more <- resp.HasMore
+
     return ()
 }
 

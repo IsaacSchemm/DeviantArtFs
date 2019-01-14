@@ -10,11 +10,6 @@ type internal PublishResponse = JsonProvider<"""{
     "deviationid": "DAF48E51-DE0E-B24D-4CEC-A23170DCE888"
 }""">
 
-type PublishResult = {
-    Url: string
-    DeviationId: Guid
-}
-
 type LicenseModifyOption = No=0 | Yes=1 | ShareAlike=2
 
 type MatureLevel = None=0 | Strict=1 | Moderate=2
@@ -108,8 +103,9 @@ module Publish =
         let! json = dafs.asyncRead req
         let resp = PublishResponse.Parse json
         return {
-            Url = resp.Url
-            DeviationId = resp.Deviationid
+            new IStashPublishResult with
+                member __.Url = resp.Url
+                member __.DeviationId = resp.Deviationid
         }
     }
 

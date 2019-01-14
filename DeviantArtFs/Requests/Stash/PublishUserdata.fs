@@ -14,11 +14,6 @@ type internal PublishUserdataResponse = JsonProvider<"""{
     ]
 }""">
 
-type PublishUserdataResult = {
-    Features: seq<string>
-    Agreements: seq<string>
-}
-
 module PublishUserdata =
     let AsyncExecute token = async {
         let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/publish/userdata"
@@ -26,8 +21,9 @@ module PublishUserdata =
         let! json = dafs.asyncRead req
         let resp = PublishUserdataResponse.Parse json
         return {
-            Features = resp.Features
-            Agreements = resp.Agreements
+            new IStashPublishUserdataResult with
+                member __.Features = resp.Features :> seq<string>
+                member __.Agreements = resp.Agreements :> seq<string>
         }
     }
 

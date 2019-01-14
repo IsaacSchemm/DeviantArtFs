@@ -2,7 +2,7 @@
 
 A .NET / F# library to interact with the [DeviantArt / Sta.sh API.](https://www.deviantart.com/developers/http/v1/20160316)
 
-If you're using this library in a .NET Framework project and it doesn't run, make sure that the dependicies (FSharp.Core, FSharp.Data, FSharp.Control.AsyncSeq) are installed.
+If you're using this library in a .NET Framework project and it doesn't run, make sure that the dependencies (FSharp.Core, FSharp.Data, FSharp.Control.AsyncSeq) are installed.
 
 ## Currently unsupported features
 
@@ -20,16 +20,16 @@ If you're using this library in a .NET Framework project and it doesn't run, mak
 ### Browse
 
 * GET /browse/categorytree
-* GET browse/dailydeviations
-* GET browse/hot
-* GET browse/morelikethis
-* GET browse/morelikethis/preview
-* GET browse/newest
-* GET browse/popular
-* GET browse/tags
-* GET browse/tags/search
-* GET browse/undiscovered
-* GET browse/user/journals
+* GET /browse/dailydeviations
+* GET /browse/hot
+* GET /browse/morelikethis
+* GET /browse/morelikethis/preview
+* GET /browse/newest
+* GET /browse/popular
+* GET /browse/tags
+* GET /browse/tags/search
+* GET /browse/undiscovered
+* GET /browse/user/journals
 
 ### Collections
 
@@ -105,38 +105,46 @@ If you're using this library in a .NET Framework project and it doesn't run, mak
 
 ## Usage
 
-Each request you can make has a module (static class) in one of the DeviantArtFs.Requests namespaces, with AsyncExecute and
-ExecuteAsync methods. AsyncExecute returns an F# asynchronous workflow, while ExecuteAsync returns a Task<T>.
+Each request you can make has a module (static class) in one of the
+DeviantArtFs.Requests namespaces, with AsyncExecute and ExecuteAsync methods.
+AsyncExecute returns an F# asynchronous workflow, while ExecuteAsync returns a
+Task<T>.
 
-The methods sometimes vary in their response objects as well; AsyncExecute will typically return a record or JsonProvider type
-that uses option types to represent fields that may or may not exist, while ExecuteAsync will return a class or interface that
-uses nullable reference types (or Nullable<T>) for such fields.
+The methods sometimes vary in their response objects as well; AsyncExecute
+will typically return a class or interface that uses option types to
+represent fields that may or may not exist, while ExecuteAsync will return an
+interface that uses nullable reference types (or Nullable<T>) for such fields.
+
+Some modules also have a ToAsyncSeq method (which takes a request and offset
+and wraps the results using FSharp.Control.AsyncSeq) or a ToListAsync (which
+takes a request and optionally an offset and/or limit and compiles a List<T>.)
 
 Example (C#):
 
-	var list = new List<DeviantArtFs.Interop.Deviation>();
-	int offset = 0;
-	while (true) {
-		var req = new DeviantArtFs.PagingParams {
-			Offset = offset,
-			Limit = 24
-		};
-        DeviantArtFs.IDeviantArtPagedResult<DeviantArtFs.Interop.Deviation> resp =
-            await DeviantArtFs.Requests.Gallery.GalleryAllView.ExecuteAsync(token, req, new DeviantArtFs.Requests.Gallery.GalleryAllViewRequest());
-		list.AddRange(resp.Results);
-		offset = resp.NextOffset ?? 0;
-		if (!resp.HasMore) break;
+    var list = new List<IBclDeviation>();
+    int offset = 0;
+    while (true) {
+        var req = new DeviantArtFs.Requests.Gallery.GalleryAllViewRequest();
+        var paging = new PagingParams {
+            Offset = offset,
+            Limit = 24
+        };
+        IDeviantArtPagedResult<IBclDeviation> resp =
+            await DeviantArtFs.Requests.Gallery.GalleryAllView.ExecuteAsync(token, paging, req);
+        list.AddRange(resp.Results);
+        offset = resp.NextOffset ?? 0;
+        if (!resp.HasMore) break;
     }
 
 Example (F#):
 
-    let list = new ResizeArray<DeviantArtFs.DeviationResponse.Root>()
+    let list = new ResizeArray<Deviation>()
     let mutable offset = 0
     let mutable more = true
     while more do
         let req = new DeviantArtFs.Requests.Gallery.GalleryAllViewRequest()
         let paging = new PagingParams(Offset = 0, Limit = Nullable 24)
-        let! (resp: DeviantArtPagedResult<DeviationResponse.Root>) = DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token paging req
+        let! (resp: DeviantArtPagedResult<Deviation>) = DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token paging req
         list.AddRange(resp.Results)
         offset <- resp.NextOffset |> Option.defaultValue 0
         more <- resp.HasMore

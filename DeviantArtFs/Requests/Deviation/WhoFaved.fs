@@ -9,11 +9,6 @@ type internal WhoFavedElement = JsonProvider<"""{
     "time": 2222222222
 }""">
 
-type WhoFavedUser = {
-    User: IDeviantArtUser
-    Time: int64
-}
-
 module WhoFaved =
     open System.Runtime.InteropServices
     open FSharp.Control
@@ -32,8 +27,9 @@ module WhoFaved =
         return json |> dafs.parsePage (fun j ->
             let w = WhoFavedElement.Parse j
             {
-                User = w.User.JsonValue.ToString() |> dafs.parseUser
-                Time = w.Time
+                new IWhoFavedUser with
+                    member __.User = w.User.JsonValue.ToString() |> dafs.parseUser
+                    member __.Time = w.Time
             })
     }
 

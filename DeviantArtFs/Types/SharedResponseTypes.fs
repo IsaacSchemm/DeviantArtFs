@@ -30,6 +30,12 @@ type IDeviationContent =
     inherit IDeviationPreview
     inherit IDeviationDownload
 
+type IMoreLikeThisPreviewResult<'a> =
+    abstract member Seed: Guid
+    abstract member Author: IDeviantArtUser
+    abstract member MoreFromArtist: seq<'a>
+    abstract member MoreFromDa: seq<'a>
+
 [<AllowNullLiteral>]
 type IDeviationStats =
     abstract member Comments: int
@@ -57,6 +63,22 @@ type IDeviationMetadataStats =
     abstract member Downloads: int
     abstract member DownloadsToday: int
 
+type IWhoFavedUser =
+    abstract member User: IDeviantArtUser
+    abstract member Time: int64
+
+type IStashPublishResult =
+    abstract member Url: string
+    abstract member DeviationId: Guid
+
+type IStashPublishUserdataResult =
+    abstract member Features: seq<string>
+    abstract member Agreements: seq<string>
+
+type IStashSpaceResult =
+    abstract member AvailableSpace: int64
+    abstract member TotalSpace: int64
+
 type IDeviantArtProfileStats =
     abstract member UserDeviations: int
     abstract member UserFavourites: int
@@ -69,13 +91,3 @@ type IDeviantArtCategory =
     abstract member Title: string
     abstract member HasSubcategory: bool
     abstract member ParentCatpath: string
-
-type IDeviantArtWatchInfo =
-    abstract member Friend: bool
-    abstract member Deviations: bool
-    abstract member Journals: bool
-    abstract member ForumThreads: bool
-    abstract member Critiques: bool
-    abstract member Scraps: bool
-    abstract member Activity: bool
-    abstract member Collections: bool

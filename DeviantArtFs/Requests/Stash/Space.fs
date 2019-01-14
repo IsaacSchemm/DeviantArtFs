@@ -8,11 +8,6 @@ type internal SpaceResponse = JsonProvider<"""{
     "total_space": 10737418240
 }""">
 
-type SpaceResult = {
-    AvailableSpace: int64
-    TotalSpace: int64
-}
-
 module Space =
     let AsyncExecute token = async {
         let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/space"
@@ -20,8 +15,9 @@ module Space =
         let! json = dafs.asyncRead req
         let resp = SpaceResponse.Parse json
         return {
-            AvailableSpace = resp.AvailableSpace
-            TotalSpace = resp.TotalSpace
+            new IStashSpaceResult with
+                member __.AvailableSpace = resp.AvailableSpace
+                member __.TotalSpace = resp.TotalSpace
         }
     }
 

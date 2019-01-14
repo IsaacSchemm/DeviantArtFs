@@ -44,6 +44,7 @@
     <Compile Include="Types\Wrappers\StashMoveResult.fs" />
     <Compile Include="Types\Wrappers\StashDeltaEntry.fs" />
     <Compile Include="Types\Wrappers\StashDeltaResult.fs" />
+    <Compile Include="Types\Wrappers\RelationshipRecords.fs" />
     <Compile Include="dafs.fs" />
     <Compile Include="iop.fs" />
     <Compile Include="fch.fs" />
