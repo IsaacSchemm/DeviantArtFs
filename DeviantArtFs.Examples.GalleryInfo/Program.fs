@@ -1,6 +1,7 @@
 ﻿open System
 open System.IO
 open DeviantArtFs
+open FSharp.Control
 
 // Learn more about F# at http://fsharp.org
 // See the 'F# Tutorial' project for more help.
@@ -50,11 +51,47 @@ let sandbox token_string = async {
         | "" -> me.Username
         | s -> s
 
+    let! deviations =
+        DeviantArtFs.Requests.Gallery.GalleryAllViewRequest(Username = username)
+        |> DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token (page 0 1)
+    let deviation = Seq.tryHead deviations.Results
+    match deviation with
+    | Some s -> 
+        printfn "Most recent deviation: %s (%A)" (s.Title |> Option.defaultValue "???") s.PublishedTime
+
+        let! favorites =
+            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.Deviationid 0
+            |> AsyncSeq.toArrayAsync
+        if (not << Seq.isEmpty) favorites then
+            printfn "Favorited by:"
+            for f in favorites do
+                printfn "%s (%A)" f.User.Username f.Time
+        printfn ""
+    | None -> ()
+
+    let! journals =
+        DeviantArtFs.Requests.Browse.UserJournalsRequest(username, Featured = false)
+        |> DeviantArtFs.Requests.Browse.UserJournals.AsyncExecute token (page 0 1)
+    let journal = Seq.tryHead journals.Results
+    match journal with
+    | Some s -> 
+        printfn "Most recent journal: %s (%A)" (s.Title |> Option.defaultValue "???") s.PublishedTime
+
+        let! favorites =
+            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.Deviationid 0
+            |> AsyncSeq.toArrayAsync
+        if (not << Seq.isEmpty) favorites then
+            printfn "Favorited by:"
+            for f in favorites do
+                printfn "%s (%A)" f.User.Username f.Time
+        printfn ""
+    | None -> ()
+
     let! statuses = DeviantArtFs.Requests.User.StatusesList.AsyncExecute token (page 0 1) username
     let status = Seq.tryHead statuses.Results
     match status with
     | Some s -> 
-        printfn "Most recent status: %s (%O)" s.Body s.Ts
+        printfn "Most recent status: %s (%A)" s.Body s.Ts
         printfn ""
     | None -> ()
 

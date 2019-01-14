@@ -13,9 +13,9 @@ module internal iop =
 
     let thenMapResult f a = async {
         let! o = a
-        let r = o :> IDeviantArtPagedResult<'a>
+        let r = o :> IBclDeviantArtPagedResult<'a>
         return {
-            new IDeviantArtPagedResult<'b> with
+            new IBclDeviantArtPagedResult<'b> with
                 member __.HasMore = r.HasMore
                 member __.NextOffset = r.NextOffset
                 member __.HasLess = r.HasLess

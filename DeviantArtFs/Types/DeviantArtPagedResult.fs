@@ -2,7 +2,7 @@
 
 open System
 
-type IDeviantArtPagedResult<'a> =
+type IBclDeviantArtPagedResult<'a> =
     abstract member HasMore: bool
     abstract member NextOffset: Nullable<int>
     abstract member HasLess: Nullable<bool>
@@ -20,7 +20,7 @@ type DeviantArtPagedResult<'a> = {
     Name: string option
     Results: seq<'a>
 } with
-    interface IDeviantArtPagedResult<'a> with
+    interface IBclDeviantArtPagedResult<'a> with
         member this.HasMore = this.HasMore
         member this.NextOffset = this.NextOffset |> Option.toNullable
         member this.HasLess = this.HasLess |> Option.toNullable

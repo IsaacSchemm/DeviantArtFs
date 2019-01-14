@@ -106,18 +106,25 @@ If you're using this library in a .NET Framework project and it doesn't run, mak
 ## Usage
 
 Each request you can make has a module (static class) in one of the
-DeviantArtFs.Requests namespaces, with AsyncExecute and ExecuteAsync methods.
-AsyncExecute returns an F# asynchronous workflow, while ExecuteAsync returns a
-Task<T>.
+DeviantArtFs.Requests namespaces, with AsyncExecute and ExecuteAsync
+methods. AsyncExecute returns an F# asynchronous workflow, while
+ExecuteAsync returns a Task<T>.
+
+Some modules also have the methods ToAsyncSeq (which takes a request and
+offset and wraps the results using FSharp.Control.AsyncSeq) or ToArrayAsync
+(which takes a request and optionally an offset and/or limit and compiles an
+array.)
 
 The methods sometimes vary in their response objects as well; AsyncExecute
-will typically return a class or interface that uses option types to
-represent fields that may or may not exist, while ExecuteAsync will return an
-interface that uses nullable reference types (or Nullable<T>) for such fields.
-
-Some modules also have a ToAsyncSeq method (which takes a request and offset
-and wraps the results using FSharp.Control.AsyncSeq) or a ToArrayAsync (which
-takes a request and optionally an offset and/or limit and compiles an array.)
+and ToAsyncSeq will typically return a class or interface that uses option
+types to represent fields that may or may not exist, while ExecuteAsync and
+ToArrayAsync will return an interface that uses nullable reference types (or
+Nullable<T>) for such fields. In many cases, the return object is actually the
+same, even when the type is different. For example, the Deviation class has
+a property named Excerpt of type `string option`, but it also implements the
+interface IBclDeviation, which has a Excerpt property of type `string` that
+can also be null. ("Bcl" stands for Base Class Library - these interfaces are
+designed to be used from other .NET languages outside F#.)
 
 Example (C#):
 
@@ -129,7 +136,7 @@ Example (C#):
             Offset = offset,
             Limit = 24
         };
-        IDeviantArtPagedResult<IBclDeviation> resp =
+        IBclDeviantArtPagedResult<IBclDeviation> resp =
             await DeviantArtFs.Requests.Gallery.GalleryAllView.ExecuteAsync(token, paging, req);
         list.AddRange(resp.Results);
         offset = resp.NextOffset ?? 0;
@@ -150,7 +157,7 @@ Example (F#):
         more <- resp.HasMore
 
 Note how the result from AsyncExecute is `DeviantArtPagedResult`, which has a NextOffset field of `int option`,
-while the result from ExecuteAsync is `IDeviantArtPagedResult`, which has a NextOffset field of `int?`.
+while the result from ExecuteAsync is `IBclDeviantArtPagedResult`, which has a NextOffset field of `int?`.
 
 See ENDPOINTS.md for more information.
 

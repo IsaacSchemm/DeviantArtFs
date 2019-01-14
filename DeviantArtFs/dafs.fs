@@ -87,7 +87,7 @@ module internal dafs =
 
     let toPlainTask (t: Task<unit>) = t :> Task
 
-    let toAsyncSeq (offset: int) (limit: int) (req: 'a) (f: PagingParams -> 'a -> Async<'b> when 'b :> IDeviantArtPagedResult<'c>) = asyncSeq {
+    let toAsyncSeq (offset: int) (limit: int) (req: 'a) (f: PagingParams -> 'a -> Async<'b> when 'b :> IBclDeviantArtPagedResult<'c>) = asyncSeq {
         let mutable cursor = offset
         let mutable has_more = true
         while has_more do
