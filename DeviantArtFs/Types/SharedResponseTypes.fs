@@ -65,7 +65,7 @@ type IDeviationMetadataStats =
 
 type IWhoFavedUser =
     abstract member User: IDeviantArtUser
-    abstract member Time: int64
+    abstract member Time: DateTimeOffset
 
 type IStashPublishResult =
     abstract member Url: string

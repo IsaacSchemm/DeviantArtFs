@@ -13,6 +13,8 @@ module WhoFaved =
     open System.Runtime.InteropServices
     open FSharp.Control
 
+    let internal epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)
+
     let AsyncExecute token (paging: PagingParams) (deviationid: Guid) = async {
         let query = seq {
             yield sprintf "deviationid=%O" deviationid
@@ -29,7 +31,7 @@ module WhoFaved =
             {
                 new IWhoFavedUser with
                     member __.User = w.User.JsonValue.ToString() |> dafs.parseUser
-                    member __.Time = w.Time
+                    member __.Time = w.Time |> float |> epoch.AddSeconds
             })
     }
 
