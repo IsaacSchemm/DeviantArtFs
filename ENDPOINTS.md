@@ -1,8 +1,8 @@
 This is a list of functions in the DeviantArtFs library that call DeviantArt / Sta.sh API endpoints.
 
-Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and methods that return a Task<T> can be used from async methods in C# and VB.NET.
+Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and their return values use option types to represent missing or null fields.
 
-"???" indicates a type generated from a JSON sample by FSharp.Data's JsonProvider.
+Methods that return a Task<T> can be used from async methods in C# and VB.NET, and their return values use null or Nullable<T> to represent missing or null fields.
 
 "long" indicates a 64-bit integer, and a question mark (?) following a type name indicates a Nullable<T>, as in C#.
 
@@ -74,8 +74,8 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * Category: `string`
 
 ### DeviantArtFs.Requests.Browse.MoreLikeThisPreview
-* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<MoreLikeThisResult<Deviation>>`
-* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<MoreLikeThisResult<IBclDeviation>>`
+* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<IMoreLikeThisPreviewResult<Deviation>>`
+* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<IMoreLikeThisPreviewResult<IBclDeviation>>`
 
 ### DeviantArtFs.Requests.Browse.Newest
 * AsyncExecute (IDeviantArtAccessToken) (PagingParams) (NewestRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
@@ -211,10 +211,10 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * ExtCollection: `bool`
 
 ### DeviantArtFs.Requests.Deviation.WhoFaved
-* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (Guid) -> `Async<DeviantArtPagedResult<WhoFavedUser>>`
-* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (Guid) -> `Task<IDeviantArtPagedResult<WhoFavedUser>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (Guid) (int) -> `AsyncSeq<WhoFavedUser>`
-* ToListAsync (IDeviantArtAccessToken) (Guid) (int) (int) -> `Task<FSharpList<WhoFavedUser>>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (Guid) -> `Async<DeviantArtPagedResult<IWhoFavedUser>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (Guid) -> `Task<IDeviantArtPagedResult<IWhoFavedUser>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (Guid) (int) -> `AsyncSeq<IWhoFavedUser>`
+* ToListAsync (IDeviantArtAccessToken) (Guid) (int) (int) -> `Task<FSharpList<IWhoFavedUser>>`
 
 ### DeviantArtFs.Requests.Gallery.CreateGalleryFolder
 * AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<DeviantArtGalleryFolder>`
@@ -298,8 +298,8 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * ExecuteAsync (IDeviantArtAccessToken) (long) (int) -> `Task`
 
 ### DeviantArtFs.Requests.Stash.Publish
-* AsyncExecute (IDeviantArtAccessToken) (PublishRequest) -> `Async<PublishResult>`
-* ExecuteAsync (IDeviantArtAccessToken) (PublishRequest) -> `Task<PublishResult>`
+* AsyncExecute (IDeviantArtAccessToken) (PublishRequest) -> `Async<IStashPublishResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (PublishRequest) -> `Task<IStashPublishResult>`
 
 **PublishRequest:**
 
@@ -331,12 +331,12 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * Frequent: `bool`
 
 ### DeviantArtFs.Requests.Stash.PublishUserdata
-* AsyncExecute (IDeviantArtAccessToken) -> `Async<PublishUserdataResult>`
-* ExecuteAsync (IDeviantArtAccessToken) -> `Task<PublishUserdataResult>`
+* AsyncExecute (IDeviantArtAccessToken) -> `Async<IStashPublishUserdataResult>`
+* ExecuteAsync (IDeviantArtAccessToken) -> `Task<IStashPublishUserdataResult>`
 
 ### DeviantArtFs.Requests.Stash.Space
-* AsyncExecute (IDeviantArtAccessToken) -> `Async<SpaceResult>`
-* ExecuteAsync (IDeviantArtAccessToken) -> `Task<SpaceResult>`
+* AsyncExecute (IDeviantArtAccessToken) -> `Async<IStashSpaceResult>`
+* ExecuteAsync (IDeviantArtAccessToken) -> `Task<IStashSpaceResult>`
 
 ### DeviantArtFs.Requests.Stash.Stack
 * AsyncExecute (IDeviantArtAccessToken) (long) -> `Async<StashMetadata>`
@@ -375,10 +375,10 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * ExecuteAsync (IDeviantArtAccessToken) -> `Task<string>`
 
 ### DeviantArtFs.Requests.User.Friends
-* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (FriendsRequest) -> `Async<DeviantArtPagedResult<FriendRecord>>`
-* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (FriendsRequest) -> `Task<IDeviantArtPagedResult<FriendRecord>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (FriendsRequest) (int) -> `AsyncSeq<FriendRecord>`
-* ToListAsync (IDeviantArtAccessToken) (FriendsRequest) (int) (int) -> `Task<FSharpList<FriendRecord>>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (FriendsRequest) -> `Async<DeviantArtPagedResult<DeviantArtFriendRecord>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (FriendsRequest) -> `Task<IDeviantArtPagedResult<IBclDeviantArtFriendRecord>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (FriendsRequest) (int) -> `AsyncSeq<DeviantArtFriendRecord>`
+* ToListAsync (IDeviantArtAccessToken) (FriendsRequest) (int) (int) -> `Task<FSharpList<IBclDeviantArtFriendRecord>>`
 
 **FriendsRequest:**
 
@@ -464,10 +464,10 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * Stashid: `long?`
 
 ### DeviantArtFs.Requests.User.Watchers
-* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (WatchersRequest) -> `Async<DeviantArtPagedResult<WatcherRecord>>`
-* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (WatchersRequest) -> `Task<IDeviantArtPagedResult<WatcherRecord>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (WatchersRequest) (int) -> `AsyncSeq<WatcherRecord>`
-* ToListAsync (IDeviantArtAccessToken) (WatchersRequest) (int) (int) -> `Task<FSharpList<WatcherRecord>>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (WatchersRequest) -> `Async<DeviantArtPagedResult<DeviantArtWatcherRecord>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (WatchersRequest) -> `Task<IDeviantArtPagedResult<IBclDeviantArtWatcherRecord>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (WatchersRequest) (int) -> `AsyncSeq<DeviantArtWatcherRecord>`
+* ToListAsync (IDeviantArtAccessToken) (WatchersRequest) (int) (int) -> `Task<FSharpList<IBclDeviantArtWatcherRecord>>`
 
 **WatchersRequest:**
 

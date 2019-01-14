@@ -8,23 +8,10 @@ namespace DocGenerator
 {
     class Program
     {
-        static string PrintTypeName(Type t, bool might_be_fsharp = true, bool might_be_csharp = true, bool isToListAsync = false)
+        static string PrintTypeName(Type t)
         {
-            if (!might_be_fsharp && t.FullName.StartsWith("DeviantArtFs") && !t.IsInterface)
-            {
-                throw new Exception(".NET async method returns type that isn't an interface");
-            }
-            if (t.Name.Contains("IJsonDocument")) throw new Exception("Library should not return JSON types");
             string n = t.Name.Replace("`1", "").Replace("`2", "");
-            if (n == "FSharpAsync")
-            {
-                n = "Async";
-                might_be_csharp = false;
-            }
-            if (n == "Task")
-            {
-                might_be_fsharp = false;
-            }
+            if (n == "FSharpAsync") n = "Async";
             if (n == "IAsyncEnumerable") n = "AsyncSeq";
             if (n == "Boolean") n = "bool";
             if (n == "Byte") n = "byte";
@@ -35,24 +22,9 @@ namespace DocGenerator
             if (n == "String") n = "string";
             if (n == "Unit") n = "unit";
             if (t.Namespace == "DeviantArtFs.Interop") n = $"Interop.{n}";
-            var generics = string.Join(", ", t.GenericTypeArguments.Select(x => PrintTypeName(x, might_be_fsharp, might_be_csharp)));
-            if (n == "Nullable")
-            {
-                if (!might_be_csharp) throw new Exception("Nullable<T> in F# async method");
-                return $"{generics}?";
-            }
-            if (n == "FSharpOption")
-            {
-                if (!might_be_fsharp) throw new Exception("FSharpOption<T> in .NET async method");
-                return $"{generics} option";
-            }
-            if (isToListAsync && n == "Task")
-            {
-                if (generics.StartsWith("IEnumerable"))
-                {
-                    throw new Exception("A method called ToListAsync should return a List<T>");
-                }
-            }
+            var generics = string.Join(", ", t.GenericTypeArguments.Select(x => PrintTypeName(x)));
+            if (n == "Nullable") return $"{generics}?";
+            if (n == "FSharpOption") return $"{generics} option";
             return $"{n}{(t.GenericTypeArguments.Any() ? $"<{generics}>" : "")}";
         }
 
@@ -126,7 +98,7 @@ The value of ""ExtParams"" determines what extra data (if any) is included with 
                                     typesToDescribe.Add(p.ParameterType);
                                 }
                             }
-                            sw.WriteLine($" -> `{PrintTypeName(x.ReturnType, isToListAsync: x.Name == "ToListAsync")}`");
+                            sw.WriteLine($" -> `{PrintTypeName(x.ReturnType)}`");
                         }
                         sw.WriteLine();
 
