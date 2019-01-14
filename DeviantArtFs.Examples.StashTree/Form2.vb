@@ -43,10 +43,10 @@ Public Class Form2
 
         If TypeOf item Is IBclDeviation Then
             PictureBox1.ImageLocation = CType(item, IBclDeviation).Content?.Src
-        ElseIf TypeOf item Is Requests.User.FriendRecord Then
-            PictureBox1.ImageLocation = CType(item, Requests.User.FriendRecord).User.Usericon
-        ElseIf TypeOf item Is Requests.User.WatcherRecord Then
-            PictureBox1.ImageLocation = CType(item, Requests.User.WatcherRecord).User.Usericon
+        ElseIf TypeOf item Is IBClDeviantArtFriendRecord Then
+            PictureBox1.ImageLocation = CType(item, IBclDeviantArtFriendRecord).User.Usericon
+        ElseIf TypeOf item Is IBClDeviantArtWatcherRecord Then
+            PictureBox1.ImageLocation = CType(item, IBclDeviantArtWatcherRecord).User.Usericon
         ElseIf TypeOf item Is IBclDeviantArtStatus Then
             PictureBox1.ImageLocation = CType(item, IBclDeviantArtStatus).EmbeddedDeviations.Select(Function(d) d.Content?.Src).FirstOrDefault()
         Else

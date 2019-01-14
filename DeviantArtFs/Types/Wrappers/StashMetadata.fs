@@ -4,6 +4,7 @@ open System
 
 [<AllowNullLiteral>]
 type IBclStashMetadata =
+    abstract member Json: string
     abstract member Title: string
     abstract member Path: string
     abstract member Size: Nullable<int>
@@ -18,6 +19,7 @@ type IBclStashMetadata =
     abstract member Html: string
     abstract member Submission: IBclStashSubmission
     abstract member Stats: IBclStashStats
+    abstract member CameraJson: string
     abstract member Stackid: Nullable<int64>
     abstract member Itemid: Nullable<int64>
     abstract member Tags: seq<string>
@@ -26,6 +28,7 @@ type StashMetadata(original: StashMetadataResponse.Root) =
     let epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)
 
     member __.Original = original
+    member __.Json = original.JsonValue.ToString()
 
     member __.Title = original.Title
     member __.Path = original.Path
@@ -53,11 +56,13 @@ type StashMetadata(original: StashMetadataResponse.Root) =
     member __.Html = original.Html
     member __.Submission = original.Submission |> Option.map StashSubmission
     member __.Stats = original.Stats |> Option.map StashStats
+    member __.CameraJson = original.Camera |> Option.map (fun c -> c.JsonValue.ToString())
     member __.Stackid = original.Stackid
     member __.Itemid = original.Itemid
     member __.Tags = original.Tags
 
     interface IBclStashMetadata with
+        member this.Json = this.Json
         member this.ArtistComments = this.ArtistComments |> Option.toObj
         member this.Category = this.Category |> Option.toObj
         member this.CreationTime = this.CreationTime |> Option.toNullable
@@ -71,6 +76,7 @@ type StashMetadata(original: StashMetadataResponse.Root) =
         member this.Size = this.Size |> Option.toNullable
         member this.Stackid = this.Stackid |> Option.toNullable
         member this.Stats = this.Stats |> Option.map (fun o -> o :> IBclStashStats) |> Option.toObj
+        member this.CameraJson = this.CameraJson |> Option.toObj
         member this.Submission = this.Submission |> Option.map (fun o -> o :> IBclStashSubmission) |> Option.toObj
         member this.Tags = this.Tags :> seq<string>
         member this.Thumb = this.Thumb |> Option.toObj

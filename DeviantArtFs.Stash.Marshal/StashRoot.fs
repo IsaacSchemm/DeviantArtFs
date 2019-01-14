@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Stash.Marshal
 
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 type StashRoot() =
     let nodes = new ResizeArray<StashNode>()
@@ -22,7 +21,7 @@ type StashRoot() =
         let new_master_pos = nodes.IndexOf(insert_before)
         insert new_master_pos node
 
-    let update pos (node: StashNode) (metadata: StashMetadataResponse.Root) =
+    let update pos (node: StashNode) (metadata: StashMetadata) =
         let original_stackid = node.ParentStackId
         node.Metadata <- metadata
 
@@ -70,10 +69,10 @@ type StashRoot() =
         }
         grab nodes None
 
-    member this.Apply (entry: IDeltaEntry) =
+    member this.Apply (entry: ISerializedStashDeltaEntry) =
         let itemid = entry.Itemid |> Option.ofNullable
         let stackid = entry.Stackid |> Option.ofNullable
-        let metadata = entry.MetadataJson |> Option.ofObj |> Option.map StashMetadataResponse.Parse
+        let metadata = entry.MetadataJson |> Option.ofObj |> Option.map (StashMetadataResponse.Parse >> StashMetadata)
         let position = entry.Position |> Option.ofNullable
 
         match metadata with

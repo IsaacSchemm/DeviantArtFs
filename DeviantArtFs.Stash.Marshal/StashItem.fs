@@ -3,7 +3,7 @@
 open DeviantArtFs
 open DeviantArtFs.Requests.Stash
 
-type StashItem(root: IStashRoot, itemid: int64, metadata: StashMetadataResponse.Root) =
+type StashItem(root: IStashRoot, itemid: int64, metadata: StashMetadata) =
     inherit StashNode(root, metadata)
 
     static member AsyncGetItem token req = async {
@@ -20,17 +20,11 @@ type StashItem(root: IStashRoot, itemid: int64, metadata: StashMetadataResponse.
     member this.OriginalUrl = this.Metadata.OriginalUrl |> Option.toObj
     member this.Category = this.Metadata.Category |> Option.toObj
     member this.CreationTime = this.Metadata.CreationTime |> Option.toNullable
-    member this.Files = this.Metadata.Files |> Seq.map (fun f -> {
-        new IDeviationPreview with
-            member __.Src = f.Src
-            member __.Width = f.Width
-            member __.Height = f.Height
-            member __.Transparency = f.Transparency
-    })
+    member this.Files = this.Metadata.Files
 
-    member this.OptSubmission = this.Metadata.Submission
-    member this.OptStats = this.Metadata.Stats
-    member this.OptCamera = this.Metadata.Camera
+    member this.Submission = this.Metadata.Submission |> Option.map (fun s -> s :> IBclStashSubmission) |> Option.toObj
+    member this.Stats = this.Metadata.Stats |> Option.map (fun s -> s :> IBclStashStats) |> Option.toObj
+    member this.CameraJson = this.Metadata.CameraJson |> Option.toObj
     
     override this.ParentStackId =
         match this.Metadata.Stackid with
@@ -40,7 +34,7 @@ type StashItem(root: IStashRoot, itemid: int64, metadata: StashMetadataResponse.
     override this.Save() = {
         Itemid = this.Itemid |> System.Nullable
         Stackid = this.ParentStackId.Value
-        MetadataJson = this.Metadata.JsonValue.ToString()
+        MetadataJson = this.Metadata.Json
         Position = this.Position
     }
 

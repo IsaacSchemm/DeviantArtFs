@@ -15,6 +15,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="Types\Interop\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="Types\Responses\CommonResponses.fs" />
     <Compile Include="Types\Responses\GalleryFolderElement.fs" />
     <Compile Include="Types\Responses\CollectionFolderElement.fs" />
@@ -44,7 +48,7 @@
     <Compile Include="Types\Wrappers\StashMoveResult.fs" />
     <Compile Include="Types\Wrappers\StashDeltaEntry.fs" />
     <Compile Include="Types\Wrappers\StashDeltaResult.fs" />
-    <Compile Include="Types\Wrappers\RelationshipRecords.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtRelationshipRecords.fs" />
     <Compile Include="dafs.fs" />
     <Compile Include="iop.fs" />
     <Compile Include="fch.fs" />
@@ -118,10 +122,6 @@
 
   <ItemGroup>
     <PackageReference Update="FSharp.Core" Version="4.5.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Types\Interop\" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,6 @@
 
 open System
 open DeviantArtFs
-open DeviantArtFs.Interop
 
 type SavedDeltaEntry =
     {
@@ -11,14 +10,14 @@ type SavedDeltaEntry =
         MetadataJson: string
         Position: int
     }
-    interface IDeltaEntry with
+    interface ISerializedStashDeltaEntry with
         member this.Itemid = this.Itemid
         member this.Stackid = this.Stackid |> Nullable
         member this.MetadataJson = this.MetadataJson
         member this.Position = this.Position |> Nullable
 
 [<AbstractClass>]
-type StashNode(root: IStashRoot, metadata: StashMetadataResponse.Root) =
+type StashNode(root: IStashRoot, metadata: StashMetadata) =
     member val Metadata = metadata with get, set
     member this.Title = this.Metadata.Title |> Option.toObj
 
