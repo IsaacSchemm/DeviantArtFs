@@ -43,10 +43,10 @@ module Delta =
             has_more <- resp.HasMore
     }
 
-    let GetAllAsListAsync token extParams =
+    let GetAllAsArrayAsync token extParams =
         GetAll token extParams
-        |> AsyncSeq.toListAsync
-        |> iop.thenMap (fun x -> x :> IBclStashDeltaEntry)
+        |> AsyncSeq.map (fun x -> x :> IBclStashDeltaEntry)
+        |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
     let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun x -> x :> IBclStashDeltaResult) |> Async.StartAsTask

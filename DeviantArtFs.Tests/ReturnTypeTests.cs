@@ -76,5 +76,22 @@ namespace DeviantArtFs.Tests
                 }
             }
         }
+
+        [TestMethod]
+        public void TestToArrayAsync()
+        {
+            var a = Assembly.GetAssembly(typeof(Deviation));
+            foreach (var t in a.GetTypes())
+            {
+                if (t.Name.Contains("@")) continue;
+                var f = t.GetMethod("ToArrayAsync");
+                if (f != null)
+                {
+                    Assert.AreEqual("Task`1", f.ReturnType.Name, $"Failure in type {t.Name}");
+                    Assert.AreEqual(1, f.ReturnType.GenericTypeArguments.Length);
+                    Assert.IsTrue(f.ReturnType.GenericTypeArguments[0].IsArray, $"ToArrayAsync in type {t.Name} returns {f.ReturnType.GenericTypeArguments[0].FullName}");
+                }
+            }
+        }
     }
 }

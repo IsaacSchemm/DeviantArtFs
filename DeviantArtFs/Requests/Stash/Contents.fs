@@ -24,11 +24,11 @@ module Contents =
 
     let ToAsyncSeq token stackid offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 stackid
 
-    let ToListAsync token req ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
+    let ToArrayAsync token req ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
         ToAsyncSeq token req offset
         |> AsyncSeq.take limit
-        |> AsyncSeq.toListAsync
-        |> iop.thenMap (fun i -> i :> IBclStashMetadata)
+        |> AsyncSeq.map (fun i -> i :> IBclStashMetadata)
+        |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
     let ExecuteAsync token paging stackid =

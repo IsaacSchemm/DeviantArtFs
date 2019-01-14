@@ -116,8 +116,8 @@ represent fields that may or may not exist, while ExecuteAsync will return an
 interface that uses nullable reference types (or Nullable<T>) for such fields.
 
 Some modules also have a ToAsyncSeq method (which takes a request and offset
-and wraps the results using FSharp.Control.AsyncSeq) or a ToListAsync (which
-takes a request and optionally an offset and/or limit and compiles a List<T>.)
+and wraps the results using FSharp.Control.AsyncSeq) or a ToArrayAsync (which
+takes a request and optionally an offset and/or limit and compiles an array.)
 
 Example (C#):
 
