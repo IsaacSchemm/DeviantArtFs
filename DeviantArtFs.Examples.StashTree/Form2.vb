@@ -1,4 +1,4 @@
-﻿Imports DeviantArtFs.Interop
+﻿Imports DeviantArtFs
 
 Public Class Form2
     Public Token As IDeviantArtAccessToken
@@ -47,8 +47,8 @@ Public Class Form2
             PictureBox1.ImageLocation = CType(item, Requests.User.FriendRecord).User.Usericon
         ElseIf TypeOf item Is Requests.User.WatcherRecord Then
             PictureBox1.ImageLocation = CType(item, Requests.User.WatcherRecord).User.Usericon
-        ElseIf TypeOf item Is Status Then
-            PictureBox1.ImageLocation = CType(item, Status).EmbeddedDeviations.Select(Function(d) d.Content?.Src).FirstOrDefault()
+        ElseIf TypeOf item Is IBclDeviantArtStatus Then
+            PictureBox1.ImageLocation = CType(item, IBclDeviantArtStatus).EmbeddedDeviations.Select(Function(d) d.Content?.Src).FirstOrDefault()
         Else
             PictureBox1.ImageLocation = Nothing
         End If
