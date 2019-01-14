@@ -11,6 +11,7 @@ namespace DeviantArtFs.Tests
         {
             if (t.Name.Contains("IJsonDocument")) Assert.Fail($"Found JsonProvider type in result of {methodName} on {typeName}");
             if (t.Name.StartsWith("Nullable")) Assert.Fail($"Found Nullable<T> in result of {methodName} on {typeName}");
+            if (t.Name.StartsWith("IBcl")) Assert.Fail($"Found one of the IBcl*** types in result of {methodName} on {typeName}");
             foreach (var p in t.GenericTypeArguments)
             {
                 AssertNoNullables(p, methodName, typeName);
@@ -38,6 +39,21 @@ namespace DeviantArtFs.Tests
                 if (f != null)
                 {
                     Assert.AreEqual("FSharpAsync`1", f.ReturnType.Name, $"Failure in type {t.Name}");
+                    AssertNoNullables(f.ReturnType, f.Name, t.Name);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void TestToAsyncSeq()
+        {
+            var a = Assembly.GetAssembly(typeof(Deviation));
+            foreach (var t in a.GetTypes())
+            {
+                if (t.Name.Contains("@")) continue;
+                var f = t.GetMethod("ToAsyncSeq");
+                if (f != null)
+                {
                     AssertNoNullables(f.ReturnType, f.Name, t.Name);
                 }
             }

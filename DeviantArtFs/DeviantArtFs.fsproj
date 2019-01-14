@@ -29,6 +29,8 @@
     <Compile Include="Types\Responses\StashMetadataResponse.fs" />
     <Compile Include="Types\Responses\StashMoveResponse.fs" />
     <Compile Include="Types\Responses\DeltaResponse.fs" />
+    <Compile Include="Types\Responses\CommentResponse.fs" />
+    <Compile Include="Types\Responses\CommentPagedResponse.fs" />
     <Compile Include="Types\AccessTokens.fs" />
     <Compile Include="Types\Exceptions.fs" />
     <Compile Include="Types\SharedRequestTypes.fs" />
@@ -49,10 +51,13 @@
     <Compile Include="Types\Wrappers\StashDeltaEntry.fs" />
     <Compile Include="Types\Wrappers\StashDeltaResult.fs" />
     <Compile Include="Types\Wrappers\DeviantArtRelationshipRecords.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtComment.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtCommentPagedResult.fs" />
     <Compile Include="dafs.fs" />
     <Compile Include="iop.fs" />
     <Compile Include="fch.fs" />
     <Compile Include="DeviantArtAuth.fs" />
+    <Compile Include="Requests\Comments\DeviationComments.fs" />
     <Compile Include="Requests\Browse\CategoryTree.fs" />
     <Compile Include="Requests\Browse\DailyDeviations.fs" />
     <Compile Include="Requests\Browse\Hot.fs" />
