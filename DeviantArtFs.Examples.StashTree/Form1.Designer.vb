@@ -40,6 +40,7 @@ Partial Class Form1
         Me.WhoamiToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.UserdataToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SpaceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PropertyGrid2 = New System.Windows.Forms.PropertyGrid()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
@@ -87,6 +88,7 @@ Partial Class Form1
         '
         'SplitContainer3.Panel1
         '
+        Me.SplitContainer3.Panel1.Controls.Add(Me.PropertyGrid2)
         Me.SplitContainer3.Panel1.Controls.Add(Me.PropertyGrid1)
         '
         'SplitContainer3.Panel2
@@ -98,10 +100,10 @@ Partial Class Form1
         '
         'PropertyGrid1
         '
-        Me.PropertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.PropertyGrid1.Dock = System.Windows.Forms.DockStyle.Top
         Me.PropertyGrid1.Location = New System.Drawing.Point(0, 0)
         Me.PropertyGrid1.Name = "PropertyGrid1"
-        Me.PropertyGrid1.Size = New System.Drawing.Size(284, 411)
+        Me.PropertyGrid1.Size = New System.Drawing.Size(284, 175)
         Me.PropertyGrid1.TabIndex = 1
         '
         'PictureBox1
@@ -188,13 +190,13 @@ Partial Class Form1
         'SaveToXMLToolStripMenuItem
         '
         Me.SaveToXMLToolStripMenuItem.Name = "SaveToXMLToolStripMenuItem"
-        Me.SaveToXMLToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.SaveToXMLToolStripMenuItem.Size = New System.Drawing.Size(144, 22)
         Me.SaveToXMLToolStripMenuItem.Text = "&Save to XML"
         '
         'LoadFromXMLToolStripMenuItem
         '
         Me.LoadFromXMLToolStripMenuItem.Name = "LoadFromXMLToolStripMenuItem"
-        Me.LoadFromXMLToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.LoadFromXMLToolStripMenuItem.Size = New System.Drawing.Size(144, 22)
         Me.LoadFromXMLToolStripMenuItem.Text = "&Load from XML"
         '
         'UserInfoToolStripMenuItem
@@ -221,6 +223,14 @@ Partial Class Form1
         Me.SpaceToolStripMenuItem.Name = "SpaceToolStripMenuItem"
         Me.SpaceToolStripMenuItem.Size = New System.Drawing.Size(118, 22)
         Me.SpaceToolStripMenuItem.Text = "&Space"
+        '
+        'PropertyGrid2
+        '
+        Me.PropertyGrid2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.PropertyGrid2.Location = New System.Drawing.Point(0, 175)
+        Me.PropertyGrid2.Name = "PropertyGrid2"
+        Me.PropertyGrid2.Size = New System.Drawing.Size(284, 236)
+        Me.PropertyGrid2.TabIndex = 2
         '
         'Form1
         '
@@ -266,4 +276,5 @@ Partial Class Form1
     Friend WithEvents WhoamiToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents UserdataToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SpaceToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents PropertyGrid2 As PropertyGrid
 End Class

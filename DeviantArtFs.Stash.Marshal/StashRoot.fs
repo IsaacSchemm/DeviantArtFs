@@ -54,6 +54,7 @@ type StashRoot() =
 
     member __.Children = seq {
         for n in nodes do
+            printfn "%A" n.ParentStackId
             if Option.isNone n.ParentStackId then
                 yield n
     }

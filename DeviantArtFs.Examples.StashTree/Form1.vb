@@ -65,7 +65,7 @@ Public Class Form1
                 End If
             End If
 
-            Dim stackNode = node.Nodes.Add($"{n.Title} ({n.GetType().Name})")
+            Dim stackNode = node.Nodes.Add($"{n.BclMetadata.Title} ({n.GetType().Name})")
             NodeToItem.Add(stackNode, n)
             If TypeOf n Is StashStack Then
                 Dim s = CType(n, StashStack)
@@ -77,10 +77,13 @@ Public Class Form1
     Private Sub TreeView1_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles TreeView1.AfterSelect
         Dim item = If(NodeToItem.ContainsKey(TreeView1.SelectedNode), NodeToItem(TreeView1.SelectedNode), Nothing)
         PropertyGrid1.SelectedObject = item
-        If TypeOf item Is StashItem Then
-            PictureBox1.ImageLocation = CType(item, StashItem).OriginalImageUrl
-        Else
-            PictureBox1.ImageLocation = Nothing
+        PropertyGrid2.SelectedObject = item?.BclMetadata
+        If item IsNot Nothing Then
+            If TypeOf item Is StashItem Then
+                PictureBox1.ImageLocation = item.BclMetadata.Files.Where(Function(f) f.Width * f.Height > 0).OrderByDescending(Function(f) f.Width * f.Height).Select(Function(f) f.Src).FirstOrDefault()
+            ElseIf item.BclMetadata.Thumb IsNot Nothing Then
+                PictureBox1.ImageLocation = item.BclMetadata.Thumb.Src
+            End If
         End If
     End Sub
 
