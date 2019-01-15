@@ -161,6 +161,18 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * AsyncExecute (IDeviantArtAccessToken) (Guid) (IEnumerable<Guid>) -> `Async<int>`
 * ExecuteAsync (IDeviantArtAccessToken) (Guid) (IEnumerable<Guid>) -> `Task<int>`
 
+### DeviantArtFs.Requests.Comments.DeviationComments
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (DeviationCommentsRequest) -> `Async<DeviantArtCommentPagedResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (DeviationCommentsRequest) -> `Task<IBclDeviantArtCommentPagedResult>`
+* ToAsyncSeq (IDeviantArtAccessToken) (DeviationCommentsRequest) (int) -> `AsyncSeq<DeviantArtComment>`
+* ToArrayAsync (IDeviantArtAccessToken) (DeviationCommentsRequest) (int) (int) -> `Task<IBclDeviantArtComment[]>`
+
+**DeviationCommentsRequest:**
+
+* Deviationid: `Guid`
+* Commentid: `Guid?`
+* Maxdepth: `int`
+
 ### DeviantArtFs.Requests.Data.Countries
 * AsyncExecute (IDeviantArtAccessToken) -> `Async<IDictionary<int, string>>`
 * ExecuteAsync (IDeviantArtAccessToken) -> `Task<IDictionary<int, string>>`
@@ -268,16 +280,14 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * ExecuteAsync (IDeviantArtAccessToken) (long) -> `Task`
 
 ### DeviantArtFs.Requests.Stash.Delta
-* AsyncExecute (IDeviantArtAccessToken) (DeltaRequest) -> `Async<StashDeltaResult>`
-* ExecuteAsync (IDeviantArtAccessToken) (DeltaRequest) -> `Task<IBclStashDeltaResult>`
-* GetAll (IDeviantArtAccessToken) (ExtParams) -> `AsyncSeq<StashDeltaEntry>`
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (DeltaRequest) -> `Async<StashDeltaResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (DeltaRequest) -> `Task<IBclStashDeltaResult>`
+* GetAll (IDeviantArtAccessToken) (DeltaRequest) (int) -> `AsyncSeq<StashDeltaEntry>`
 * GetAllAsArrayAsync (IDeviantArtAccessToken) (ExtParams) -> `Task<IBclStashDeltaEntry[]>`
 
 **DeltaRequest:**
 
 * Cursor: `string`
-* Offset: `int`
-* Limit: `int`
 * ExtParams: `ExtParams`
 
 ### DeviantArtFs.Requests.Stash.Item

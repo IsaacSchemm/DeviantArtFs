@@ -57,7 +57,6 @@
     <Compile Include="iop.fs" />
     <Compile Include="fch.fs" />
     <Compile Include="DeviantArtAuth.fs" />
-    <Compile Include="Requests\Comments\DeviationComments.fs" />
     <Compile Include="Requests\Browse\CategoryTree.fs" />
     <Compile Include="Requests\Browse\DailyDeviations.fs" />
     <Compile Include="Requests\Browse\Hot.fs" />
@@ -75,6 +74,7 @@
     <Compile Include="Requests\Collections\Unfave.fs" />
     <Compile Include="Requests\Collections\CreateCollectionFolder.fs" />
     <Compile Include="Requests\Collections\RemoveCollectionFolder.fs" />
+    <Compile Include="Requests\Comments\DeviationComments.fs" />
     <Compile Include="Requests\Data\Countries.fs" />
     <Compile Include="Requests\Data\Privacy.fs" />
     <Compile Include="Requests\Data\Submission.fs" />

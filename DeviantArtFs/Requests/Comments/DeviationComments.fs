@@ -38,4 +38,4 @@ module DeviationComments =
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenMapResult (fun c -> c :> IBclDeviantArtComment) |> Async.StartAsTask
+    let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenTo (fun r -> r :> IBclDeviantArtCommentPagedResult) |> Async.StartAsTask

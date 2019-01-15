@@ -2,6 +2,11 @@
 
 open System
 
+type IDeviantArtConvertibleToAsyncSeq<'a> =
+    abstract member HasMore: bool
+    abstract member NextOffset: int option
+    abstract member Results: seq<'a>
+
 type IBclDeviantArtPagedResult<'a> =
     abstract member HasMore: bool
     abstract member NextOffset: Nullable<int>
@@ -27,4 +32,8 @@ type DeviantArtPagedResult<'a> = {
         member this.PrevOffset = this.PrevOffset |> Option.toNullable
         member this.EstimatedTotal = this.EstimatedTotal |> Option.toNullable
         member this.Name = this.Name |> Option.toObj
+        member this.Results = this.Results
+    interface IDeviantArtConvertibleToAsyncSeq<'a> with
+        member this.HasMore = this.HasMore
+        member this.NextOffset = this.NextOffset
         member this.Results = this.Results

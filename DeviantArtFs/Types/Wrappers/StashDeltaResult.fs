@@ -22,3 +22,8 @@ type StashDeltaResult(original: DeltaResponse.Root) =
         member this.NextOffset = this.NextOffset |> Option.toNullable
         member this.Reset = this.Reset
         member this.Entries = this.Entries |> Seq.map (fun e -> e :> IBclStashDeltaEntry)
+
+    interface IDeviantArtConvertibleToAsyncSeq<StashDeltaEntry> with
+        member this.HasMore = this.HasMore
+        member this.NextOffset = this.NextOffset
+        member this.Results = this.Entries

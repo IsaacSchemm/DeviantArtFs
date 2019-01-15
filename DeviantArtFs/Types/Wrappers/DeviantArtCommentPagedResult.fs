@@ -2,6 +2,14 @@
 
 open System
 
+type IBclDeviantArtCommentPagedResult =
+    abstract member HasMore: bool
+    abstract member NextOffset: Nullable<int>
+    abstract member HasLess: bool
+    abstract member PrevOffset: Nullable<int>
+    abstract member Total: Nullable<int>
+    abstract member Thread: seq<IBclDeviantArtComment>
+
 type DeviantArtCommentPagedResult(original: CommentPagedResponse.Root) =
     member __.HasMore = original.HasMore
     member __.NextOffset = original.NextOffset
@@ -13,12 +21,15 @@ type DeviantArtCommentPagedResult(original: CommentPagedResponse.Root) =
         |> Seq.map (fun c -> c.JsonValue.ToString())
         |> Seq.map (CommentResponse.Parse >> DeviantArtComment)
 
-    // TODO - Reusing this interface seems confusing
-    interface IBclDeviantArtPagedResult<DeviantArtComment> with
+    interface IBclDeviantArtCommentPagedResult with
         member this.HasMore = this.HasMore
         member this.NextOffset = this.NextOffset |> Option.toNullable
-        member this.HasLess = Nullable(this.HasLess)
+        member this.HasLess = this.HasLess
         member this.PrevOffset = this.PrevOffset |> Option.toNullable
-        member this.EstimatedTotal = this.Total |> Option.toNullable
-        member this.Name = null
+        member this.Total = this.Total |> Option.toNullable
+        member this.Thread = this.Thread |> Seq.map (fun c -> c :> IBclDeviantArtComment)
+        
+    interface IDeviantArtConvertibleToAsyncSeq<DeviantArtComment> with
+        member this.HasMore = this.HasMore
+        member this.NextOffset = this.NextOffset
         member this.Results = this.Thread
