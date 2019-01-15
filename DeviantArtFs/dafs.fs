@@ -7,7 +7,7 @@ open System.Threading.Tasks
 open FSharp.Control
 
 module internal dafs =
-    let assertSuccess (resp: SuccessOrErrorResponse.Root) =
+    let assertSuccess (resp: SuccessOrErrorResponse) =
         match (resp.Success, resp.ErrorDescription) with
         | (true, None) -> ()
         | _ -> failwithf "%s" (resp.ErrorDescription |> Option.defaultValue "An unknown error occurred.")
@@ -30,8 +30,7 @@ module internal dafs =
             let! json = sr.ReadToEndAsync() |> Async.AwaitTask
             let obj = DeviantArtBaseResponse.Parse json
             if obj.Status = "error" then
-                let error_obj = DeviantArtErrorResponse.Parse json
-                return raise (new DeviantArtException(resp, error_obj))
+                return raise (new DeviantArtException(resp, obj))
             else
                 retry429 <- 500
                 return json
@@ -47,7 +46,7 @@ module internal dafs =
                 else
                     use sr = new StreamReader(resp.GetResponseStream())
                     let! json = sr.ReadToEndAsync() |> Async.AwaitTask
-                    let error_obj = DeviantArtErrorResponse.Parse json
+                    let error_obj = DeviantArtBaseResponse.Parse json
                     return raise (new DeviantArtException(resp, error_obj))
     }
 

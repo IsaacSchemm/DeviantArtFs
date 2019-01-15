@@ -2,15 +2,6 @@
 
 open FSharp.Data
 
-type internal DeviantArtBaseResponse = JsonProvider<"""{"status":"error"}""">
-
-type internal DeviantArtErrorResponse = JsonProvider<"""{"error":"invalid_request","error_description":"Must provide an access_token to access this resource.","status":"error"}""">
-
-type internal SuccessOrErrorResponse = JsonProvider<"""[
-{ "success": false, "error_description": "str" },
-{ "success": true }
-]""", SampleIsList=true>
-
 type internal UserResponse = JsonProvider<"""{
     "userid": "CAFD9087-C6EF-2F2C-183B-A658AE61FB95",
     "username": "verycoolusername",
