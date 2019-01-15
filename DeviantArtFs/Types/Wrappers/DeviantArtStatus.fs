@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs
 
 open System
+open FSharp.Json
 
 [<AllowNullLiteral>]
 type IBclDeviantArtStatus =
@@ -15,44 +16,61 @@ type IBclDeviantArtStatus =
     abstract member EmbeddedDeviations: seq<IBclDeviation>
     abstract member EmbeddedStatuses: seq<IBclDeviantArtStatus>
 
-type DeviantArtStatus(original: StatusResponse.Root) =
-    member __.Statusid = original.Statusid
-    member __.Body = original.Body
-    member __.Ts = original.Ts
-    member __.Url = original.Url
-    member __.CommentsCount = original.CommentsCount
-    member __.IsShare = original.IsShare
-    member __.IsDeleted = original.IsDeleted
-    member __.Author = {
-        new IDeviantArtUser with
-            member __.Userid = original.Author.Userid
-            member __.Username = original.Author.Username
-            member __.Usericon = original.Author.Usericon
-            member __.Type = original.Author.Type
-    }
+type PossiblyDeletedDeviantArtStatus = {
+    is_deleted: bool
+}
 
-    member __.EmbeddedDeviations = seq {
-        for i in original.Items do
-            match i.Deviation with
-                | Some s -> yield s.JsonValue.ToString() |> Deviation.Parse
+type DeviantArtStatusItem = {
+    ``type``: string
+    status: DeviantArtStatus option
+    deviation: Deviation option
+}
+
+and DeviantArtStatus = {
+    statusid: Guid
+    body: string
+    ts: DateTimeOffset
+    url: string
+    comments_count: int
+    is_share: bool
+    is_deleted: bool
+    author: DeviantArtUser
+    items: DeviantArtStatusItem[]
+} with
+    static member internal Parse json =
+        let o = Json.deserialize<PossiblyDeletedDeviantArtStatus> json
+        if o.is_deleted then
+            None
+        else
+            Some (Json.deserialize<DeviantArtStatus> json)
+
+    static member internal MapToBclInterface (o: DeviantArtStatus option) =
+        match o with
+        | Some s -> s :> IBclDeviantArtStatus
+        | None -> null
+
+    member this.EmbeddedDeviations = seq {
+        for i in this.items do
+            match i.deviation with
+                | Some s -> yield s
                 | None -> ()
     }
 
-    member __.EmbeddedStatuses = seq {
-        for i in original.Items do
-            match i.Status with
-                | Some s -> yield s.JsonValue.ToString() |> StatusResponse.Parse |> DeviantArtStatus
+    member this.EmbeddedStatuses = seq {
+        for i in this.items do
+            match i.status with
+                | Some s -> yield s
                 | None -> ()
     }
 
     interface IBclDeviantArtStatus with
-        member this.Body = this.Body
-        member this.CommentsCount = this.CommentsCount
+        member this.Body = this.body
+        member this.CommentsCount = this.comments_count
         member this.EmbeddedDeviations = this.EmbeddedDeviations |> Seq.map (fun s -> s :> IBclDeviation)
         member this.EmbeddedStatuses = this.EmbeddedStatuses |> Seq.map (fun s -> s :> IBclDeviantArtStatus)
-        member this.IsDeleted = this.IsDeleted
-        member this.IsShare = this.IsShare
-        member this.Statusid = this.Statusid
-        member this.Ts = this.Ts
-        member this.Url = this.Url
-        member this.Author = this.Author
+        member this.IsDeleted = this.is_deleted
+        member this.IsShare = this.is_share
+        member this.Statusid = this.statusid
+        member this.Ts = this.ts
+        member this.Url = this.url
+        member this.Author = this.author :> IDeviantArtUser

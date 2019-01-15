@@ -51,8 +51,7 @@ type DeviantArtProfile(original: ProfileResponse.Root) =
     member __.LastStatus =
         original.LastStatus
         |> Option.map (fun x -> x.JsonValue.ToString())
-        |> Option.map StatusResponse.Parse
-        |> Option.map DeviantArtStatus
+        |> Option.map DeviantArtStatus.Parse
 
     member __.Stats = {
         new IDeviantArtProfileStats with
@@ -83,7 +82,7 @@ type DeviantArtProfile(original: ProfileResponse.Root) =
         member this.CoverPhoto = this.CoverPhoto |> Option.toObj
         member this.Galleries = this.Galleries |> Seq.map (fun f -> f :> IBclDeviantArtGalleryFolder)
         member this.IsWatching = this.IsWatching
-        member this.LastStatus = this.LastStatus |> Option.map (fun s -> s :> IBclDeviantArtStatus) |> Option.toObj
+        member this.LastStatus = this.LastStatus |> Option.map DeviantArtStatus.MapToBclInterface |> Option.toObj
         member this.ProfilePic = this.ProfilePic |> Option.map (fun s -> s :> IBclDeviation) |> Option.toObj
         member this.ProfileUrl = this.ProfileUrl
         member this.RealName = this.RealName

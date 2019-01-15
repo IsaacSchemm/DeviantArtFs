@@ -20,5 +20,3 @@ type internal GenericListResponse = JsonProvider<"""[
 ]""", SampleIsList=true>
 
 type internal ListOnlyResponse = JsonProvider<"""{ "results": [] }""">
-
-type internal TextOnlyResponse = JsonProvider<"""{ "text": "html_content" }""">

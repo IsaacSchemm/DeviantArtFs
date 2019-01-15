@@ -35,13 +35,14 @@
     <Compile Include="Types\SharedRequestTypes.fs" />
     <Compile Include="Types\SharedResponseTypes.fs" />
     <Compile Include="Types\DeviantArtPagedResult.fs" />
-    <Compile Include="Types\DeviationTextContent.fs" />
+    <Compile Include="Types\TextOnlyResponse.fs" />
     <Compile Include="Types\Wrappers\DeviantArtUser.fs" />
     <Compile Include="Types\Wrappers\DeviationFile.fs" />
     <Compile Include="Types\Wrappers\DeviantArtGalleryFolder.fs" />
     <Compile Include="Types\Wrappers\DeviantArtCollectionFolder.fs" />
     <Compile Include="Types\Wrappers\DeviationStats.fs" />
     <Compile Include="Types\Wrappers\Deviation.fs" />
+    <Compile Include="Types\Wrappers\DeviationTextContent.fs" />
     <Compile Include="Types\Wrappers\DeviationTag.fs" />
     <Compile Include="Types\Wrappers\DeviantArtSubmittedWith.fs" />
     <Compile Include="Types\Wrappers\DeviationMetadataSubmission.fs" />
