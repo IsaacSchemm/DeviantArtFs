@@ -10,12 +10,14 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 
 An interface that provides an "AccessToken" string property. You can get one from DeviantArtFs.DeviantArtAuth or implement the interface yourself.
 
-**ExtParams:**
+**IExtParams:**
 
-The value of "ExtParams" determines what extra data (if any) is included with deviations and Sta.sh metadata.
+The value of "IExtParams" determines what extra data (if any) is included with deviations and Sta.sh metadata.
 
     // C#
-    ExtParams e1 = new ExtParams { ExtSubmission = true, ExtCamera = false, ExtStats = false };
+    IExtParams e1 = new ExtParams { ExtSubmission = true, ExtCamera = false, ExtStats = false };
+    IExtParams e2 = ExtParams.None;
+    IExtParams e3 = ExtParams.All;
 
 **FieldChange:**
 
@@ -213,13 +215,13 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * OffsetDeviationid: `Guid?`
 
 ### DeviantArtFs.Requests.Deviation.MetadataById
-* AsyncExecute (IDeviantArtAccessToken) (MetadataRequest) -> `Async<IEnumerable<DeviationMetadata>>`
+* AsyncExecute (IDeviantArtAccessToken) (MetadataRequest) -> `Async<DeviationMetadataResponse>`
 * ExecuteAsync (IDeviantArtAccessToken) (MetadataRequest) -> `Task<IEnumerable<IBclDeviationMetadata>>`
 
 **MetadataRequest:**
 
 * Deviationids: `IEnumerable<Guid>`
-* ExtParams: `ExtParams`
+* ExtParams: `IExtParams`
 * ExtCollection: `bool`
 
 ### DeviantArtFs.Requests.Deviation.WhoFaved
@@ -283,12 +285,12 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * AsyncExecute (IDeviantArtAccessToken) (PagingParams) (DeltaRequest) -> `Async<StashDeltaResult>`
 * ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (DeltaRequest) -> `Task<IBclStashDeltaResult>`
 * GetAll (IDeviantArtAccessToken) (DeltaRequest) (int) -> `AsyncSeq<StashDeltaEntry>`
-* GetAllAsArrayAsync (IDeviantArtAccessToken) (ExtParams) -> `Task<IBclStashDeltaEntry[]>`
+* GetAllAsArrayAsync (IDeviantArtAccessToken) (IExtParams) -> `Task<IBclStashDeltaEntry[]>`
 
 **DeltaRequest:**
 
 * Cursor: `string`
-* ExtParams: `ExtParams`
+* ExtParams: `IExtParams`
 
 ### DeviantArtFs.Requests.Stash.Item
 * AsyncExecute (IDeviantArtAccessToken) (ItemRequest) -> `Async<StashMetadata>`
@@ -297,7 +299,7 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 **ItemRequest:**
 
 * Itemid: `long`
-* ExtParams: `ExtParams`
+* ExtParams: `IExtParams`
 
 ### DeviantArtFs.Requests.Stash.Move
 * AsyncExecute (IDeviantArtAccessToken) (long) (long) -> `Async<StashMoveResult>`

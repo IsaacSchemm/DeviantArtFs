@@ -13,10 +13,22 @@ type PagingParams() =
             yield sprintf "limit=%d" this.Limit.Value
     }
 
-type ExtParams() =
-    member val ExtSubmission = false
-    member val ExtCamera = false
-    member val ExtStats = false
+type IExtParams =
+    abstract member ExtSubmission: bool
+    abstract member ExtCamera: bool
+    abstract member ExtStats: bool
+
+type ExtParams = {
+    ExtSubmission: bool
+    ExtCamera: bool
+    ExtStats: bool
+} with
+    static member None = { ExtSubmission = false; ExtCamera = false; ExtStats = false } :> IExtParams
+    static member All = { ExtSubmission = true; ExtCamera = true; ExtStats = true } :> IExtParams
+    interface IExtParams with
+        member this.ExtSubmission = this.ExtSubmission
+        member this.ExtCamera = this.ExtCamera
+        member this.ExtStats = this.ExtStats
 
 [<RequireQualifiedAccess>]
 type FieldChange<'a> =

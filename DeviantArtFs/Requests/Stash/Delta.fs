@@ -4,7 +4,7 @@ open DeviantArtFs
 
 type DeltaRequest() = 
     member val Cursor = null with get, set
-    member val ExtParams = new ExtParams() with get, set
+    member val ExtParams = ExtParams.None with get, set
 
 module Delta =
     open FSharp.Control

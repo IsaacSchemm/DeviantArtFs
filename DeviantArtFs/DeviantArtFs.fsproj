@@ -23,7 +23,6 @@
     <Compile Include="Types\BasicResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="Types\BasicResponseTypes\SuccessOrErrorResponse.fs" />
     <Compile Include="Types\Responses\CommonResponses.fs" />
-    <Compile Include="Types\Responses\MetadataResponse.fs" />
     <Compile Include="Types\Responses\StatusResponse.fs" />
     <Compile Include="Types\Responses\ProfileResponse.fs" />
     <Compile Include="Types\Responses\StashMetadataResponse.fs" />
@@ -38,10 +37,15 @@
     <Compile Include="Types\DeviantArtPagedResult.fs" />
     <Compile Include="Types\DeviationTextContent.fs" />
     <Compile Include="Types\Wrappers\DeviantArtUser.fs" />
+    <Compile Include="Types\Wrappers\DeviationFile.fs" />
     <Compile Include="Types\Wrappers\DeviantArtGalleryFolder.fs" />
     <Compile Include="Types\Wrappers\DeviantArtCollectionFolder.fs" />
+    <Compile Include="Types\Wrappers\DeviationStats.fs" />
     <Compile Include="Types\Wrappers\Deviation.fs" />
     <Compile Include="Types\Wrappers\DeviationTag.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtSubmittedWith.fs" />
+    <Compile Include="Types\Wrappers\DeviationMetadataSubmission.fs" />
+    <Compile Include="Types\Wrappers\DeviationMetadataStats.fs" />
     <Compile Include="Types\Wrappers\DeviationMetadata.fs" />
     <Compile Include="Types\Wrappers\DeviantArtStatus.fs" />
     <Compile Include="Types\Wrappers\DeviantArtProfile.fs" />

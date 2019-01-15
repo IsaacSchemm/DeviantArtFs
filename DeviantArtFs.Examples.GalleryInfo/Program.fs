@@ -59,6 +59,12 @@ let sandbox token_string = async {
     | Some s -> 
         printfn "Most recent deviation: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
 
+        let! metadata =
+            new DeviantArtFs.Requests.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = ExtParams.All)
+            |> DeviantArtFs.Requests.Deviation.MetadataById.AsyncExecute token
+        for m in metadata do
+            printfn "%A" m
+
         let! favorites =
             DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.deviationid 0
             |> AsyncSeq.toArrayAsync
