@@ -74,7 +74,7 @@ module internal dafs =
                 yield f json
         }
 
-    let parseUser (json: string) = DeviantArtUser.Parse json :> IDeviantArtUser
+    let parseUser (json: string) = DeviantArtUser.Parse json :> IBclDeviantArtUser
 
     let toPlainTask (t: Task<unit>) = t :> Task
 

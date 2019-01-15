@@ -17,7 +17,7 @@ type IBclDeviantArtComment =
     abstract member Replies: int
     abstract member Hidden: DeviantArtCommentHideType
     abstract member Body: string
-    abstract member User: IDeviantArtUser
+    abstract member User: IBclDeviantArtUser
 
 type DeviantArtComment(original: CommentResponse.Root) =
     member __.Commentid = original.Commentid
@@ -34,7 +34,7 @@ type DeviantArtComment(original: CommentResponse.Root) =
         | Some _ -> DeviantArtCommentHideType.UnknownReason
     member __.Body = original.Body
     member __.User = {
-        new IDeviantArtUser with
+        new IBclDeviantArtUser with
             member __.Userid = original.User.Userid
             member __.Username = original.User.Username
             member __.Usericon = original.User.Usericon

@@ -10,6 +10,7 @@ namespace DeviantArtFs.Tests
         private static void AssertNoNullables(Type t, string methodName, string typeName)
         {
             if (t.Name.Contains("IJsonDocument")) Assert.Fail($"Found JsonProvider type in result of {methodName} on {typeName}");
+            if (t.Namespace.StartsWith("DeviantArtFs") && t.IsInterface) Assert.Fail($"Found interface {t.Name} in result of {methodName} on {typeName}");
             if (t.Name.StartsWith("Nullable")) Assert.Fail($"Found Nullable<T> in result of {methodName} on {typeName}");
             if (t.Name.StartsWith("IBcl")) Assert.Fail($"Found one of the IBcl*** types in result of {methodName} on {typeName}");
             foreach (var p in t.GenericTypeArguments)
@@ -21,6 +22,7 @@ namespace DeviantArtFs.Tests
         private static void AssertNoOptions(Type t, string methodName, string typeName)
         {
             if (t.Name.Contains("IJsonDocument")) Assert.Fail($"Found JsonProvider type in result of {methodName} on {typeName}");
+            if (t.Namespace.StartsWith("DeviantArtFs") && t.IsInterface && !t.Name.StartsWith("IBcl")) Assert.Fail($"Found interface {t.Name} in result of {methodName} on {typeName} that does not conform to naming convention");
             if (t.Name.StartsWith("FSharpOption")) Assert.Fail($"Found FSharpOption<T> in result of {methodName} on {typeName}");
             foreach (var p in t.GenericTypeArguments)
             {

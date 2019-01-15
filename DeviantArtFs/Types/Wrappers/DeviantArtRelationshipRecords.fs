@@ -78,7 +78,7 @@ type IDeviantArtWatchInfo =
     abstract member Collections: bool
 
 type IDeviantArtRelationshipRecord =
-    abstract member User: IDeviantArtUser
+    abstract member User: IBclDeviantArtUser
     abstract member IsWatching: bool
     abstract member Watch: IDeviantArtWatchInfo
 
@@ -88,7 +88,7 @@ type IBclDeviantArtFriendRecord =
 
 type DeviantArtFriendRecord(original: FriendsElement.Root) =
     member __.User = {
-        new IDeviantArtUser with
+        new IBclDeviantArtUser with
             member __.Userid = original.User.Userid
             member __.Username = original.User.Username
             member __.Usericon = original.User.Usericon
@@ -120,7 +120,7 @@ type IBclDeviantArtWatcherRecord =
 
 type DeviantArtWatcherRecord(original: WatchersElement.Root) =
     member __.User = {
-        new IDeviantArtUser with
+        new IBclDeviantArtUser with
             member __.Userid = original.User.Userid
             member __.Username = original.User.Username
             member __.Usericon = original.User.Usericon

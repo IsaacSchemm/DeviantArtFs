@@ -4,7 +4,7 @@ open DeviantArtFs
 open FSharp.Json
 
 type IBclDeviantArtProfile =
-    abstract member User: IDeviantArtUser
+    abstract member User: IBclDeviantArtUser
     abstract member IsWatching: bool
     abstract member ProfileUrl: string
     abstract member UserIsArtist: bool
@@ -68,6 +68,6 @@ type DeviantArtProfile = {
         member this.RealName = this.real_name
         member this.Stats = this.stats :> IBclDeviantArtProfileStats
         member this.Tagline = this.tagline
-        member this.User = this.user :> IDeviantArtUser
+        member this.User = this.user :> IBclDeviantArtUser
         member this.UserIsArtist = this.user_is_artist
         member this.Website = this.website

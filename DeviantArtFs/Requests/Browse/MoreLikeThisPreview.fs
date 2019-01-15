@@ -24,7 +24,7 @@ module MoreLikeThisPreview =
         let! json = dafs.asyncRead req
         let o = MoreLikeThisResponse.Parse json
         return {
-            new IMoreLikeThisPreviewResult<IDeviantArtUser, Deviation> with
+            new IMoreLikeThisPreviewResult<IBclDeviantArtUser, Deviation> with
                 member __.Seed = o.Seed
                 member __.Author = o.Author.JsonValue.ToString() |> dafs.parseUser
                 member __.MoreFromArtist = seq {
@@ -43,7 +43,7 @@ module MoreLikeThisPreview =
     let ExecuteAsync token seed = Async.StartAsTask (async {
         let! o = AsyncExecute token seed
         return {
-            new IMoreLikeThisPreviewResult<IDeviantArtUser, IBclDeviation> with
+            new IMoreLikeThisPreviewResult<IBclDeviantArtUser, IBclDeviation> with
                 member __.Seed = o.Seed
                 member __.Author = o.Author
                 member __.MoreFromArtist = o.MoreFromArtist |> Seq.map dafs.asBclDeviation

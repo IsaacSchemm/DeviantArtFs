@@ -12,7 +12,7 @@ type IBclDeviantArtStatus =
     abstract member CommentsCount: int
     abstract member IsShare: bool
     abstract member IsDeleted: bool
-    abstract member Author: IDeviantArtUser
+    abstract member Author: IBclDeviantArtUser
     abstract member EmbeddedDeviations: seq<IBclDeviation>
     abstract member EmbeddedStatuses: seq<IBclDeviantArtStatus>
 
@@ -70,4 +70,4 @@ and DeviantArtStatus = {
         member this.Statusid = this.statusid
         member this.Ts = this.ts
         member this.Url = this.url
-        member this.Author = this.author :> IDeviantArtUser
+        member this.Author = this.author :> IBclDeviantArtUser

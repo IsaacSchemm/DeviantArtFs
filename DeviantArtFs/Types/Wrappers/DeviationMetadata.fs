@@ -6,7 +6,7 @@ open FSharp.Json
 type IBclDeviationMetadata =
     abstract member Deviationid: Guid
     abstract member Printid: Nullable<Guid>
-    abstract member Author: IDeviantArtUser
+    abstract member Author: IBclDeviantArtUser
     abstract member IsWatching: bool
     abstract member Title: string
     abstract member Description: string
@@ -38,7 +38,7 @@ type DeviationMetadata = {
 } with
     interface IBclDeviationMetadata with
         member this.AllowsComments = this.allows_comments
-        member this.Author = this.author :> IDeviantArtUser
+        member this.Author = this.author :> IBclDeviantArtUser
         member this.Collections = this.collections |> Option.map (Seq.map (fun f -> f :> IBclDeviantArtCollectionFolder)) |> Option.defaultValue Seq.empty
         member this.Description = this.description
         member this.Deviationid = this.deviationid

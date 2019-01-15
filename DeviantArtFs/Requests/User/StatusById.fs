@@ -12,7 +12,7 @@ module StatusById =
         return DeviantArtStatus.ParseOrNone json
     }
 
-    let ExecuteAsync token id =
-        AsyncExecute token id
-        |> iop.thenTo (Option.map (fun o -> o :> IBclDeviantArtStatus))
-        |> Async.StartAsTask
+    let ExecuteAsync token id = Async.StartAsTask (async {
+        let! status = AsyncExecute token id
+        return status |> Option.map (fun o -> o :> IBclDeviantArtStatus) |> Option.toObj
+    })

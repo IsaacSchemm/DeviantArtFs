@@ -4,7 +4,7 @@ open System
 open FSharp.Json
 
 [<AllowNullLiteral>]
-type IDeviantArtUser =
+type IBclDeviantArtUser =
     abstract member Userid: Guid
     abstract member Username: string
     abstract member Usericon: string
@@ -17,7 +17,7 @@ type DeviantArtUser = {
     ``type``: string
 } with
     static member Parse json = Json.deserialize<DeviantArtUser> json
-    interface IDeviantArtUser with
+    interface IBclDeviantArtUser with
         member this.Userid = this.userid
         member this.Username = this.username
         member this.Usericon = this.usericon

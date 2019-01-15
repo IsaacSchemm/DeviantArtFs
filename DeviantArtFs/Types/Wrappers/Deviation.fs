@@ -12,7 +12,7 @@ type IBclDeviation =
     abstract member Category: string
     abstract member CategoryPath: string
     abstract member IsFavourited: bool
-    abstract member Author: IDeviantArtUser
+    abstract member Author: IBclDeviantArtUser
     abstract member Stats: IDeviationStats
     abstract member PublishedTime: Nullable<DateTimeOffset>
     abstract member IsMature: bool
@@ -44,7 +44,7 @@ type Deviation = {
     static member Parse json = Json.deserialize<Deviation> json
     interface IBclDeviation with
         member this.AllowsComments = this.allows_comments |> Option.defaultValue false
-        member this.Author = this.author |> Option.map (fun u -> u :> IDeviantArtUser) |> Option.toObj
+        member this.Author = this.author |> Option.map (fun u -> u :> IBclDeviantArtUser) |> Option.toObj
         member this.Category = this.category |> Option.toObj
         member this.CategoryPath = this.category_path |> Option.toObj
         member this.Content = this.content |> Option.map (fun u -> u :> IDeviationContent) |> Option.toObj
