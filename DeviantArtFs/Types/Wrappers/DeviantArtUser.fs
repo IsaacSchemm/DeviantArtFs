@@ -3,6 +3,13 @@
 open System
 open FSharp.Json
 
+[<AllowNullLiteral>]
+type IDeviantArtUser =
+    abstract member Userid: Guid
+    abstract member Username: string
+    abstract member Usericon: string
+    abstract member Type: string
+
 type DeviantArtUser = {
     userid: Guid
     username: string

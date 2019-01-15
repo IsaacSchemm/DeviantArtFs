@@ -35,6 +35,7 @@
     <Compile Include="Types\DeviantArtPagedResult.fs" />
     <Compile Include="Types\TextOnlyResponse.fs" />
     <Compile Include="Types\Wrappers\DeviantArtUser.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtWhoFavedUser.fs" />
     <Compile Include="Types\Wrappers\DeviationFile.fs" />
     <Compile Include="Types\Wrappers\DeviantArtGalleryFolder.fs" />
     <Compile Include="Types\Wrappers\DeviantArtCollectionFolder.fs" />

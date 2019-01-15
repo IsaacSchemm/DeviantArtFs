@@ -2,22 +2,11 @@
 
 open System
 
-[<AllowNullLiteral>]
-type IDeviantArtUser =
-    abstract member Userid: Guid
-    abstract member Username: string
-    abstract member Usericon: string
-    abstract member Type: string
-
-type IMoreLikeThisPreviewResult<'a> =
+type IMoreLikeThisPreviewResult<'a, 'b> =
     abstract member Seed: Guid
-    abstract member Author: IDeviantArtUser
-    abstract member MoreFromArtist: seq<'a>
-    abstract member MoreFromDa: seq<'a>
-
-type IWhoFavedUser =
-    abstract member User: IDeviantArtUser
-    abstract member Time: DateTimeOffset
+    abstract member Author: 'a
+    abstract member MoreFromArtist: seq<'b>
+    abstract member MoreFromDa: seq<'b>
 
 type IStashPublishResult =
     abstract member Url: string
