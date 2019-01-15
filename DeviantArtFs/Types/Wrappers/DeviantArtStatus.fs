@@ -37,17 +37,14 @@ and DeviantArtStatus = {
     author: DeviantArtUser
     items: DeviantArtStatusItem[]
 } with
-    static member internal Parse json =
+    static member internal Parse json = Json.deserialize<DeviantArtStatus> json
+
+    static member internal ParseOrNone json =
         let o = Json.deserialize<PossiblyDeletedDeviantArtStatus> json
         if o.is_deleted then
             None
         else
             Some (Json.deserialize<DeviantArtStatus> json)
-
-    static member internal MapToBclInterface (o: DeviantArtStatus option) =
-        match o with
-        | Some s -> s :> IBclDeviantArtStatus
-        | None -> null
 
     member this.EmbeddedDeviations = seq {
         for i in this.items do

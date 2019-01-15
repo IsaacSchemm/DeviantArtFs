@@ -25,8 +25,8 @@ module StatusesList =
     let ToArrayAsync token req ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
         ToAsyncSeq token req offset
         |> AsyncSeq.take limit
-        |> AsyncSeq.map DeviantArtStatus.MapToBclInterface
+        |> AsyncSeq.map (fun o -> o :> IBclDeviantArtStatus)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging username = AsyncExecute token paging username |> iop.thenMapResult DeviantArtStatus.MapToBclInterface |> Async.StartAsTask
+    let ExecuteAsync token paging username = AsyncExecute token paging username |> iop.thenMapResult (fun o -> o :> IBclDeviantArtStatus) |> Async.StartAsTask

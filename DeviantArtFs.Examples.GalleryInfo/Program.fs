@@ -105,7 +105,7 @@ let sandbox token_string = async {
     let status = Seq.tryHead statuses.Results
     match status with
     | Some s -> 
-        printfn "Most recent status: %s (%A)" s.Body s.Ts
+        printfn "Most recent status: %s (%A)" s.body s.ts
         printfn ""
     | None -> ()
 
