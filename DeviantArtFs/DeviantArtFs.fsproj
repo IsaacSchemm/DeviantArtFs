@@ -111,7 +111,7 @@
     <Compile Include="Requests\User\FriendsWatching.fs" />
     <Compile Include="Requests\User\ProfileByName.fs" />
     <Compile Include="Requests\User\ProfileUpdate.fs" />
-    <Compile Include="Requests\User\StatusesStatus.fs" />
+    <Compile Include="Requests\User\StatusById.fs" />
     <Compile Include="Requests\User\StatusesList.fs" />
     <Compile Include="Requests\User\StatusesPost.fs" />
     <Compile Include="Requests\User\Watchers.fs" />

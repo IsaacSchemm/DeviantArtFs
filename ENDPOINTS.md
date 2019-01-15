@@ -452,15 +452,15 @@ The value of "ExtParams" determines what extra data (if any) is included with de
 * Website: `FieldChange<string>`
 * Bio: `FieldChange<string>`
 
+### DeviantArtFs.Requests.User.StatusById
+* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<DeviantArtStatus>`
+* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<IBclDeviantArtStatus>`
+
 ### DeviantArtFs.Requests.User.StatusesList
 * AsyncExecute (IDeviantArtAccessToken) (PagingParams) (string) -> `Async<DeviantArtPagedResult<DeviantArtStatus>>`
 * ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (string) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtStatus>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (string) (int) -> `AsyncSeq<DeviantArtStatus>`
 * ToArrayAsync (IDeviantArtAccessToken) (string) (int) (int) -> `Task<IBclDeviantArtStatus[]>`
-
-### DeviantArtFs.Requests.User.StatusesStatus
-* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<DeviantArtStatus>`
-* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<IBclDeviantArtStatus>`
 
 ### DeviantArtFs.Requests.User.StatusPost
 * AsyncExecute (IDeviantArtAccessToken) (StatusPostRequest) -> `Async<Guid>`
