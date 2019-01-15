@@ -61,8 +61,7 @@ type DeviationMetadata(original: MetadataResponse.Metadata) =
     member __.Collections =
         original.Collections
         |> Seq.map (fun g -> g.JsonValue.ToString())
-        |> Seq.map CollectionFoldersElement.Parse
-        |> Seq.map DeviantArtCollectionFolder
+        |> Seq.map DeviantArtCollectionFolder.Parse
 
     interface IBclDeviationMetadata with
         member this.AllowsComments = this.AllowsComments

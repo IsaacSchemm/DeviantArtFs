@@ -74,15 +74,7 @@ module internal dafs =
                 yield f json
         }
 
-    let parseUser (json: string) =
-        let u = UserResponse.Parse json
-        {
-            new IDeviantArtUser with
-                member __.Userid = u.Userid
-                member __.Username = u.Username
-                member __.Usericon = u.Usericon
-                member __.Type = u.Type
-        }
+    let parseUser (json: string) = DeviantArtUser.Parse json :> IDeviantArtUser
 
     let toPlainTask (t: Task<unit>) = t :> Task
 

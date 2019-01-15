@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs
 
 open System
+open FSharp.Json
 
 type IBclDeviantArtGalleryFolder =
     abstract member Folderid: Guid
@@ -8,11 +9,13 @@ type IBclDeviantArtGalleryFolder =
     abstract member Name: string
     abstract member Size: Nullable<int>
 
-type DeviantArtGalleryFolder(folder: GalleryFoldersElement.Root) =
-    member __.Folderid = folder.Folderid
-    member __.Parent = folder.Parent
-    member __.Name = folder.Name
-    member __.Size = folder.Size
+type DeviantArtGalleryFolder = {
+    Folderid: Guid
+    Parent: Guid option
+    Name: string
+    Size: int option
+} with
+    static member Parse json = Json.deserialize<DeviantArtGalleryFolder> json
     interface IBclDeviantArtGalleryFolder with
         member this.Folderid = this.Folderid
         member this.Parent = this.Parent |> Option.toNullable

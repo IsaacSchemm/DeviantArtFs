@@ -67,14 +67,12 @@ type DeviantArtProfile(original: ProfileResponse.Root) =
     member __.Collections =
         original.Collections
         |> Seq.map (fun g -> g.JsonValue.ToString())
-        |> Seq.map CollectionFoldersElement.Parse
-        |> Seq.map DeviantArtCollectionFolder
+        |> Seq.map DeviantArtCollectionFolder.Parse
 
     member __.Galleries =
         original.Galleries
         |> Seq.map (fun g -> g.JsonValue.ToString())
-        |> Seq.map GalleryFoldersElement.Parse
-        |> Seq.map DeviantArtGalleryFolder
+        |> Seq.map DeviantArtGalleryFolder.Parse
 
     interface IBclDeviantArtProfile with
         member this.ArtistLevel = this.ArtistLevel

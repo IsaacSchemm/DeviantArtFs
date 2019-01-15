@@ -19,11 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Types\ResponseTypes\DeviantArtBaseResponse.fs" />
-    <Compile Include="Types\ResponseTypes\SuccessOrErrorResponse.fs" />
+    <Compile Include="Types\BasicResponseTypes\DeviantArtBaseResponse.fs" />
+    <Compile Include="Types\BasicResponseTypes\SuccessOrErrorResponse.fs" />
     <Compile Include="Types\Responses\CommonResponses.fs" />
-    <Compile Include="Types\Responses\GalleryFolderElement.fs" />
-    <Compile Include="Types\Responses\CollectionFolderElement.fs" />
     <Compile Include="Types\Responses\DeviationResponse.fs" />
     <Compile Include="Types\Responses\MetadataResponse.fs" />
     <Compile Include="Types\Responses\StatusResponse.fs" />
@@ -39,6 +37,7 @@
     <Compile Include="Types\SharedResponseTypes.fs" />
     <Compile Include="Types\DeviantArtPagedResult.fs" />
     <Compile Include="Types\DeviationTextContent.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtUser.fs" />
     <Compile Include="Types\Wrappers\DeviantArtGalleryFolder.fs" />
     <Compile Include="Types\Wrappers\DeviantArtCollectionFolder.fs" />
     <Compile Include="Types\Wrappers\Deviation.fs" />
