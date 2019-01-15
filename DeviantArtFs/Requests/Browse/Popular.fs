@@ -40,7 +40,7 @@ module Popular =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/popular?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return dafs.parsePage (DeviationResponse.Parse >> Deviation) json
+        return dafs.parsePage Deviation.Parse json
     }
 
     let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset 120

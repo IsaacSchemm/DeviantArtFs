@@ -57,17 +57,17 @@ let sandbox token_string = async {
     let deviation = Seq.tryHead deviations.Results
     match deviation with
     | Some s -> 
-        printfn "Most recent deviation: %s (%A)" (s.Title |> Option.defaultValue "???") s.PublishedTime
+        printfn "Most recent deviation: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
 
         let! favorites =
-            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.Deviationid 0
+            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.deviationid 0
             |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) favorites then
             printfn "Favorited by:"
             for f in favorites do
                 printfn "    %s (%A)" f.User.Username f.Time
 
-        let comments_req = new DeviantArtFs.Requests.Comments.DeviationCommentsRequest(s.Deviationid, Maxdepth = 5)
+        let comments_req = new DeviantArtFs.Requests.Comments.DeviationCommentsRequest(s.deviationid, Maxdepth = 5)
         let! comments = DeviantArtFs.Requests.Comments.DeviationComments.ToAsyncSeq token comments_req 0 |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) comments then
             printfn "Comments:"
@@ -83,10 +83,10 @@ let sandbox token_string = async {
     let journal = Seq.tryHead journals.Results
     match journal with
     | Some s -> 
-        printfn "Most recent journal: %s (%A)" (s.Title |> Option.defaultValue "???") s.PublishedTime
+        printfn "Most recent journal: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
 
         let! favorites =
-            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.Deviationid 0
+            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.deviationid 0
             |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) favorites then
             printfn "Favorited by:"

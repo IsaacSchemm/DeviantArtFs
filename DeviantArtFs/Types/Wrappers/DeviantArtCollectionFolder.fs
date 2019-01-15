@@ -9,12 +9,12 @@ type IBclDeviantArtCollectionFolder =
     abstract member Size: Nullable<int>
 
 type DeviantArtCollectionFolder = {
-    Folderid: Guid
-    Name: string
-    Size: int option
+    folderid: Guid
+    name: string
+    size: int option
 } with
     static member Parse json = Json.deserialize<DeviantArtCollectionFolder> json
     interface IBclDeviantArtCollectionFolder with
-        member this.Folderid = this.Folderid
-        member this.Name = this.Name
-        member this.Size = this.Size |> Option.toNullable
+        member this.Folderid = this.folderid
+        member this.Name = this.name
+        member this.Size = this.size |> Option.toNullable

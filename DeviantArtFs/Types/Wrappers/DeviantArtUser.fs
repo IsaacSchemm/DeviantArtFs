@@ -4,14 +4,14 @@ open System
 open FSharp.Json
 
 type DeviantArtUser = {
-    Userid: Guid
-    Username: string
-    Usericon: string
-    Type: string
+    userid: Guid
+    username: string
+    usericon: string
+    ``type``: string
 } with
     static member Parse json = Json.deserialize<DeviantArtUser> json
     interface IDeviantArtUser with
-        member this.Userid = this.Userid
-        member this.Username = this.Username
-        member this.Usericon = this.Usericon
-        member this.Type = this.Type
+        member this.Userid = this.userid
+        member this.Username = this.username
+        member this.Usericon = this.usericon
+        member this.Type = this.``type``

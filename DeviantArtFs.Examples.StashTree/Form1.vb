@@ -14,14 +14,13 @@ Public Class Form1
         If Token IsNot Nothing Then
             Dim list As New List(Of ISerializedStashDeltaEntry)
 
-            Dim req = New Requests.Stash.DeltaRequest With {.Cursor = StashCursor}
-            req.Limit = 120
+            Dim paging = New PagingParams With {.Offset = 0, .Limit = 120}
 
             While True
-                Dim resp = Await Requests.Stash.Delta.ExecuteAsync(Token, req)
+                Dim resp = Await Requests.Stash.Delta.ExecuteAsync(Token, paging, New Requests.Stash.DeltaRequest With {.Cursor = StashCursor})
                 list.AddRange(resp.Entries)
                 If resp.HasMore Then
-                    req.Offset = If(resp.NextOffset, 0)
+                    paging.Offset = If(resp.NextOffset, 0)
                 Else
                     StashCursor = resp.Cursor
                     Exit While

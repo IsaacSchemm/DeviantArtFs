@@ -19,10 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Types\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Types\BasicResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="Types\BasicResponseTypes\SuccessOrErrorResponse.fs" />
     <Compile Include="Types\Responses\CommonResponses.fs" />
-    <Compile Include="Types\Responses\DeviationResponse.fs" />
     <Compile Include="Types\Responses\MetadataResponse.fs" />
     <Compile Include="Types\Responses\StatusResponse.fs" />
     <Compile Include="Types\Responses\ProfileResponse.fs" />

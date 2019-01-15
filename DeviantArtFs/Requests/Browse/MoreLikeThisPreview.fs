@@ -30,12 +30,12 @@ module MoreLikeThisPreview =
                 member __.MoreFromArtist = seq {
                     for element in o.MoreFromArtist do
                         let json = element.JsonValue.ToString()
-                        yield json |> DeviationResponse.Parse |> Deviation
+                        yield json |> Deviation.Parse
                 }
                 member __.MoreFromDa = seq {
                     for element in o.MoreFromDa do
                         let json = element.JsonValue.ToString()
-                        yield json |> DeviationResponse.Parse |> Deviation
+                        yield json |> Deviation.Parse
                 }
         }
     }

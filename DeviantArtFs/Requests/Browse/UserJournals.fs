@@ -22,7 +22,7 @@ module UserJournals =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/user/journals?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return dafs.parsePage (DeviationResponse.Parse >> Deviation) json
+        return dafs.parsePage Deviation.Parse json
     }
 
     let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req

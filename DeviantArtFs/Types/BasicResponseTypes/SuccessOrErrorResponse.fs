@@ -3,7 +3,7 @@
 open FSharp.Json
 
 type SuccessOrErrorResponse = {
-    Success: bool
-    ErrorDescription: string option
+    success: bool
+    error_description: string option
 } with
     static member Parse json = Json.deserialize<SuccessOrErrorResponse> json

@@ -34,7 +34,7 @@ type DeviantArtStatus(original: StatusResponse.Root) =
     member __.EmbeddedDeviations = seq {
         for i in original.Items do
             match i.Deviation with
-                | Some s -> yield s.JsonValue.ToString() |> DeviationResponse.Parse |> Deviation
+                | Some s -> yield s.JsonValue.ToString() |> Deviation.Parse
                 | None -> ()
     }
 

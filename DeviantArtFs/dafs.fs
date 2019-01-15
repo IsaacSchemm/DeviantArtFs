@@ -8,9 +8,9 @@ open FSharp.Control
 
 module internal dafs =
     let assertSuccess (resp: SuccessOrErrorResponse) =
-        match (resp.Success, resp.ErrorDescription) with
+        match (resp.success, resp.error_description) with
         | (true, None) -> ()
-        | _ -> failwithf "%s" (resp.ErrorDescription |> Option.defaultValue "An unknown error occurred.")
+        | _ -> failwithf "%s" (resp.error_description |> Option.defaultValue "An unknown error occurred.")
 
     let urlEncode = WebUtility.UrlEncode
     let userAgent = "DeviantArtFs/0.6 (https://github.com/libertyernie/DeviantArtFs)"
@@ -29,7 +29,7 @@ module internal dafs =
             use sr = new StreamReader(resp.GetResponseStream())
             let! json = sr.ReadToEndAsync() |> Async.AwaitTask
             let obj = DeviantArtBaseResponse.Parse json
-            if obj.Status = "error" then
+            if obj.status = Some "error" then
                 return raise (new DeviantArtException(resp, obj))
             else
                 retry429 <- 500

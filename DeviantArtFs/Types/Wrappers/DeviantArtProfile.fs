@@ -47,8 +47,7 @@ type DeviantArtProfile(original: ProfileResponse.Root) =
     member __.ProfilePic =
         original.ProfilePic
         |> Option.map (fun x -> x.JsonValue.ToString())
-        |> Option.map DeviationResponse.Parse
-        |> Option.map Deviation
+        |> Option.map Deviation.Parse
     member __.LastStatus =
         original.LastStatus
         |> Option.map (fun x -> x.JsonValue.ToString())

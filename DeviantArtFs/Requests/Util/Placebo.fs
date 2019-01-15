@@ -11,7 +11,7 @@ module Placebo =
             ignore json
             return true
         with
-            | :? DeviantArtException as e when e.ResponseBody.Error = Some "invalid_token" -> return false
+            | :? DeviantArtException as e when e.ResponseBody.error = Some "invalid_token" -> return false
     }
 
     let IsValidAsync token = AsyncIsValid token |> Async.StartAsTask
