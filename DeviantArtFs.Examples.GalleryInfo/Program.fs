@@ -65,7 +65,15 @@ let sandbox token_string = async {
         if (not << Seq.isEmpty) favorites then
             printfn "Favorited by:"
             for f in favorites do
-                printfn "%s (%A)" f.User.Username f.Time
+                printfn "    %s (%A)" f.User.Username f.Time
+
+        let comments_req = new DeviantArtFs.Requests.Comments.DeviationCommentsRequest(s.Deviationid, Maxdepth = 5)
+        let! comments = DeviantArtFs.Requests.Comments.DeviationComments.ToAsyncSeq token comments_req 0 |> AsyncSeq.toArrayAsync
+        if (not << Seq.isEmpty) comments then
+            printfn "Comments:"
+        for c in comments do
+            printfn "    %s: %s" c.User.Username c.Body
+
         printfn ""
     | None -> ()
 
