@@ -31,13 +31,6 @@ type IStashSpaceResult =
     abstract member AvailableSpace: int64
     abstract member TotalSpace: int64
 
-type IDeviantArtProfileStats =
-    abstract member UserDeviations: int
-    abstract member UserFavourites: int
-    abstract member UserComments: int
-    abstract member ProfilePageviews: int
-    abstract member ProfileComments: int
-
 type IDeviantArtCategory =
     abstract member Catpath: string
     abstract member Title: string

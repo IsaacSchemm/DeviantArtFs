@@ -23,8 +23,6 @@
     <Compile Include="Types\BasicResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="Types\BasicResponseTypes\SuccessOrErrorResponse.fs" />
     <Compile Include="Types\Responses\CommonResponses.fs" />
-    <Compile Include="Types\Responses\StatusResponse.fs" />
-    <Compile Include="Types\Responses\ProfileResponse.fs" />
     <Compile Include="Types\Responses\StashMetadataResponse.fs" />
     <Compile Include="Types\Responses\StashMoveResponse.fs" />
     <Compile Include="Types\Responses\DeltaResponse.fs" />
@@ -49,6 +47,7 @@
     <Compile Include="Types\Wrappers\DeviationMetadataStats.fs" />
     <Compile Include="Types\Wrappers\DeviationMetadata.fs" />
     <Compile Include="Types\Wrappers\DeviantArtStatus.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtProfileStats.fs" />
     <Compile Include="Types\Wrappers\DeviantArtProfile.fs" />
     <Compile Include="Types\Wrappers\StashStats.fs" />
     <Compile Include="Types\Wrappers\StashSubmission.fs" />
