@@ -1,12 +1,12 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
-open FSharp.Data
+open FSharp.Json
 open System.Net
 
-type internal FriendsWatchingResponse = JsonProvider<"""{
-    "watching": true
-}""">
+type internal FriendsWatchingResponse = {
+    watching: bool
+}
 
 module FriendsWatching =
     let AsyncExecute token username = async {
@@ -16,8 +16,8 @@ module FriendsWatching =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/watching/%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        let o = FriendsWatchingResponse.Parse json
-        return o.Watching
+        let o = Json.deserialize<FriendsWatchingResponse> json
+        return o.watching
     }
 
     let ExecuteAsync token username = AsyncExecute token username |> Async.StartAsTask

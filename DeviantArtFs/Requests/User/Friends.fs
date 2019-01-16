@@ -19,7 +19,7 @@ module Friends =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/%s?%s" (dafs.urlEncode req.Username)
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return json |> dafs.parsePage (FriendsElement.Parse >> DeviantArtFriendRecord)
+        return json |> dafs.parsePage DeviantArtFriendRecord.Parse
     }
 
     let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req

@@ -1,12 +1,12 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
-open FSharp.Data
+open FSharp.Json
 open System
 
-type StatusPostResponse = JsonProvider<"""{
-    "statusid": "85B05A5E-7773-9AAF-CEC7-88F522A5AF5B"
-}""">
+type StatusPostResponse = {
+    statusid: Guid
+}
 
 type StatusPostRequest(body: string) =
     member __.Body = body
@@ -41,8 +41,8 @@ module StatusPost =
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
         let! json = dafs.asyncRead req
-        let result = StatusPostResponse.Parse json
-        return result.Statusid
+        let result = Json.deserialize<StatusPostResponse> json
+        return result.statusid
     }
 
     let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask
