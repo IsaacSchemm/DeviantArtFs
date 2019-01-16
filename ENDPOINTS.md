@@ -76,8 +76,8 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 * Category: `string`
 
 ### DeviantArtFs.Requests.Browse.MoreLikeThisPreview
-* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<IMoreLikeThisPreviewResult<DeviantArtUser, Deviation>>`
-* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<IMoreLikeThisPreviewResult<IBclDeviantArtUser, IBclDeviation>>`
+* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<DeviantArtMoreLikeThisPreviewResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<IBclDeviantArtMoreLikeThisPreviewResult>`
 
 ### DeviantArtFs.Requests.Browse.Newest
 * AsyncExecute (IDeviantArtAccessToken) (PagingParams) (NewestRequest) -> `Async<DeviantArtPagedResult<Deviation>>`

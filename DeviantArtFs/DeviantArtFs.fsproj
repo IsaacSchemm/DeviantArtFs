@@ -22,13 +22,12 @@
     <Compile Include="Types\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Types\BasicResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="Types\BasicResponseTypes\SuccessOrErrorResponse.fs" />
-    <Compile Include="Types\Responses\CommonResponses.fs" />
     <Compile Include="Types\AccessTokens.fs" />
     <Compile Include="Types\Exceptions.fs" />
     <Compile Include="Types\SharedRequestTypes.fs" />
-    <Compile Include="Types\SharedResponseTypes.fs" />
-    <Compile Include="Types\DeviantArtPagedResult.fs" />
-    <Compile Include="Types\TextOnlyResponse.fs" />
+    <Compile Include="Types\Wrappers\TextOnlyResponse.fs" />
+    <Compile Include="Types\Wrappers\ListOnlyResponse.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtPagedResult.fs" />
     <Compile Include="Types\Wrappers\DeviantArtUser.fs" />
     <Compile Include="Types\Wrappers\DeviantArtWhoFavedUser.fs" />
     <Compile Include="Types\Wrappers\DeviationFile.fs" />
@@ -37,6 +36,7 @@
     <Compile Include="Types\Wrappers\DeviantArtCategory.fs" />
     <Compile Include="Types\Wrappers\DeviationStats.fs" />
     <Compile Include="Types\Wrappers\Deviation.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtMoreLikeThisPreviewResult.fs" />
     <Compile Include="Types\Wrappers\DeviationTextContent.fs" />
     <Compile Include="Types\Wrappers\DeviationTag.fs" />
     <Compile Include="Types\Wrappers\DeviantArtSubmittedWith.fs" />

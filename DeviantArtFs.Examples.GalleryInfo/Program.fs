@@ -54,7 +54,7 @@ let sandbox token_string = async {
     let! deviations =
         DeviantArtFs.Requests.Gallery.GalleryAllViewRequest(Username = username)
         |> DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token (page 0 1)
-    let deviation = Seq.tryHead deviations.Results
+    let deviation = Seq.tryHead deviations.results
     match deviation with
     | Some s -> 
         printfn "Most recent deviation: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
@@ -86,7 +86,7 @@ let sandbox token_string = async {
     let! journals =
         DeviantArtFs.Requests.Browse.UserJournalsRequest(username, Featured = false)
         |> DeviantArtFs.Requests.Browse.UserJournals.AsyncExecute token (page 0 1)
-    let journal = Seq.tryHead journals.Results
+    let journal = Seq.tryHead journals.results
     match journal with
     | Some s -> 
         printfn "Most recent journal: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
@@ -102,7 +102,7 @@ let sandbox token_string = async {
     | None -> ()
 
     let! statuses = DeviantArtFs.Requests.User.StatusesList.AsyncExecute token (page 0 1) username
-    let status = Seq.tryHead statuses.Results
+    let status = Seq.tryHead statuses.results
     match status with
     | Some s -> 
         printfn "Most recent status: %s (%A)" s.body s.ts

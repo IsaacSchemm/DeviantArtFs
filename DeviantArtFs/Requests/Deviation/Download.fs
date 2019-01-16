@@ -1,15 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.Deviation
 
 open DeviantArtFs
-open FSharp.Data
 open System
-
-type internal DownloadResponse = JsonProvider<"""{
-    "src": "https://www.example.com",
-    "width": 640,
-    "height": 480,
-    "filesize": 10000
-}""">
 
 module Download =
     let AsyncExecute token (deviationid: Guid) = async {

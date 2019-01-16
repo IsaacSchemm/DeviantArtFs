@@ -5,15 +5,20 @@ open System.Net
 open System.IO
 open System.Collections.Generic
 open System
+open FSharp.Json
 
-type internal TokenResponse = JsonProvider<""" {
-  "expires_in": 3600,
-  "status": "success",
-  "access_token": "Alph4num3r1ct0k3nv4lu3",
-  "token_type": "Bearer",
-  "refresh_token": "3ul4vn3k0tc1r3mun4hplA",
-  "scope": "basic"
-} """>
+type internal TokenResponse = {
+  expires_in: int
+  status: string
+  access_token: string
+  token_type: string
+  refresh_token: string
+  scope: string
+} with
+    interface IDeviantArtRefreshToken with
+        member this.AccessToken = this.access_token
+        member this.ExpiresAt = DateTimeOffset.UtcNow.AddSeconds (float this.expires_in)
+        member this.RefreshToken = this.refresh_token
 
 type DeviantArtAuth(client_id: int, client_secret: string) =
     let UserAgent = "DeviantArtFs/0.1 (https://github.com/libertyernie/CrosspostSharp"
@@ -60,17 +65,12 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
         use! resp = req.GetResponseAsync() |> Async.AwaitTask
         use sr = new StreamReader(resp.GetResponseStream())
         let! json = sr.ReadToEndAsync() |> Async.AwaitTask
-        let obj = TokenResponse.Parse json
-        if obj.Status <> "success" then
+        let obj = Json.deserialize<TokenResponse> json
+        if obj.status <> "success" then
             failwithf "An unknown error occured"
-        if obj.TokenType <> "Bearer" then
+        if obj.token_type <> "Bearer" then
             failwithf "token_type was not Bearer"
-        return {
-            new IDeviantArtRefreshToken with
-                member __.AccessToken = obj.AccessToken
-                member __.RefreshToken = obj.RefreshToken
-                member __.ExpiresAt = DateTimeOffset.UtcNow.AddSeconds (float obj.ExpiresIn)
-        }
+        return obj :> IDeviantArtRefreshToken
     }
 
     member __.AsyncRefresh (refresh_token: string) = async {
@@ -101,17 +101,12 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
         use! resp = req.GetResponseAsync() |> Async.AwaitTask
         use sr = new StreamReader(resp.GetResponseStream())
         let! json = sr.ReadToEndAsync() |> Async.AwaitTask
-        let obj = TokenResponse.Parse json
-        if obj.Status <> "success" then
+        let obj = Json.deserialize<TokenResponse> json
+        if obj.status <> "success" then
             failwithf "An unknown error occured"
-        if obj.TokenType <> "Bearer" then
+        if obj.token_type <> "Bearer" then
             failwithf "token_type was not Bearer"
-        return {
-            new IDeviantArtRefreshToken with
-                member __.AccessToken = obj.AccessToken
-                member __.RefreshToken = obj.RefreshToken
-                member __.ExpiresAt = DateTimeOffset.UtcNow.AddSeconds (float obj.ExpiresIn)
-        }
+        return obj :> IDeviantArtRefreshToken
     }
 
     member this.GetTokenAsync code redirect_uri =

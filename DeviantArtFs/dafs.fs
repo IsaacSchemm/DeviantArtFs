@@ -50,29 +50,11 @@ module internal dafs =
                     return raise (new DeviantArtException(resp, error_obj))
     }
 
-    let parsePage (f: string -> 'a) (json: string) =
-        let o = GenericListResponse.Parse json
-        {
-            HasMore = o.HasMore
-            NextOffset = o.NextOffset
-            HasLess = o.HasLess
-            PrevOffset = o.PrevOffset
-            EstimatedTotal = o.EstimatedTotal
-            Name = o.Name
-            Results = seq {
-                for element in o.Results do
-                    let json = element.JsonValue.ToString()
-                    yield f json
-            }
-        }
+    let parsePage (f: string -> 'a) (json: string) = DeviantArtPagedResult<'a>.Parse json
 
     let parseListOnly (f: string -> 'a) (json: string) =
-        let o = ListOnlyResponse.Parse json
-        seq {
-            for element in o.Results do
-                let json = element.JsonValue.ToString()
-                yield f json
-        }
+        let o = ListOnlyResponse<'a>.Parse json
+        Seq.ofArray o.results
 
     let parseUser (json: string) = DeviantArtUser.Parse json
 

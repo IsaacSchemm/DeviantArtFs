@@ -1,16 +1,16 @@
 ﻿namespace DeviantArtFs.Requests.Stash
 
 open DeviantArtFs
-open FSharp.Data
+open FSharp.Json
 open System
 open System.IO
 
-type SubmitResponse = JsonProvider<"""{
-    "status": "success",
-    "itemid": 123456789876,
-    "stack": "Stash Uploads 1",
-    "stackid": 12345678987
-}""">
+type internal SubmitResponse = {
+    status: string
+    itemid: int64
+    stack: string
+    stackid: int64
+}
 
 type SubmitRequest(filename: string, contentType: string, data: byte[]) =
     member __.Filename = filename
@@ -125,8 +125,8 @@ module Submit =
         }
 
         let! json = dafs.asyncRead req
-        let o = SubmitResponse.Parse json
-        return o.Itemid
+        let o = Json.deserialize<SubmitResponse> json
+        return o.itemid
     }
 
     let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask
