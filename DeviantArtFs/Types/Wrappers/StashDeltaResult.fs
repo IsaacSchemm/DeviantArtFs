@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs
 
 open System
+open FSharp.Json
 
 type IBclStashDeltaResult =
     abstract member Cursor: string
@@ -9,21 +10,22 @@ type IBclStashDeltaResult =
     abstract member Reset: bool
     abstract member Entries: seq<IBclStashDeltaEntry>
 
-type StashDeltaResult(original: DeltaResponse.Root) =
-    member __.Cursor = original.Cursor
-    member __.HasMore = original.HasMore
-    member __.NextOffset = original.NextOffset
-    member __.Reset = original.Reset
-    member __.Entries = original.Entries |> Seq.map StashDeltaEntry
-
+type StashDeltaResult = {
+    cursor: string
+    has_more: bool
+    next_offset: int option
+    reset: bool
+    entries: StashDeltaEntry[]
+} with
+    static member Parse json = Json.deserialize<StashDeltaResult> json
     interface IBclStashDeltaResult with
-        member this.Cursor = this.Cursor
-        member this.HasMore = this.HasMore
-        member this.NextOffset = this.NextOffset |> Option.toNullable
-        member this.Reset = this.Reset
-        member this.Entries = this.Entries |> Seq.map (fun e -> e :> IBclStashDeltaEntry)
+        member this.Cursor = this.cursor
+        member this.HasMore = this.has_more
+        member this.NextOffset = this.next_offset |> Option.toNullable
+        member this.Reset = this.reset
+        member this.Entries = this.entries |> Seq.map (fun e -> e :> IBclStashDeltaEntry)
 
     interface IDeviantArtConvertibleToAsyncSeq<StashDeltaEntry> with
-        member this.HasMore = this.HasMore
-        member this.NextOffset = this.NextOffset
-        member this.Results = this.Entries
+        member this.HasMore = this.has_more
+        member this.NextOffset = this.next_offset
+        member this.Results = this.entries |> Seq.ofArray

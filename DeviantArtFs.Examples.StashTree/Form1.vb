@@ -12,7 +12,7 @@ Public Class Form1
         Button1.Enabled = False
 
         If Token IsNot Nothing Then
-            Dim list As New List(Of ISerializedStashDeltaEntry)
+            Dim list As New List(Of ISerializableStashDeltaEntry)
 
             Dim paging = New PagingParams With {.Offset = 0, .Limit = 120}
 

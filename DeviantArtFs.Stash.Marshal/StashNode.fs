@@ -10,7 +10,7 @@ type SavedDeltaEntry =
         MetadataJson: string
         Position: int
     }
-    interface ISerializedStashDeltaEntry with
+    interface ISerializableStashDeltaEntry with
         member this.Itemid = this.Itemid
         member this.Stackid = this.Stackid
         member this.MetadataJson = this.MetadataJson

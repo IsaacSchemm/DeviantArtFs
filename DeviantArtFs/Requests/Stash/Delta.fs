@@ -25,8 +25,7 @@ module Delta =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/delta?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        let resp = DeltaResponse.Parse json
-        return StashDeltaResult resp
+        return StashDeltaResult.Parse json
     }
 
     let GetAll token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 120 req

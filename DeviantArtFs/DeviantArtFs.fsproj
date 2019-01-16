@@ -25,7 +25,6 @@
     <Compile Include="Types\Responses\CommonResponses.fs" />
     <Compile Include="Types\AccessTokens.fs" />
     <Compile Include="Types\Exceptions.fs" />
-    <Compile Include="Types\Responses\DeltaResponse.fs" />
     <Compile Include="Types\SharedRequestTypes.fs" />
     <Compile Include="Types\SharedResponseTypes.fs" />
     <Compile Include="Types\DeviantArtPagedResult.fs" />

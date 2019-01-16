@@ -46,8 +46,8 @@ type StashMetadata = {
     tags: string[] option
     html: string option
 } with
-    static member Parse json = Json.deserializeEx<StashMetadata> (JsonConfig.create(allowUntyped=true)) json
-    member this.Json = Json.serializeEx (JsonConfig.create(allowUntyped=true)) this
+    static member Parse json = Json.deserialize<StashMetadata> json
+    member this.Json = Json.serialize this
     interface IBclStashMetadata with
         member this.Json = this.Json
         member this.ArtistComments = this.artist_comments |> Option.toObj
