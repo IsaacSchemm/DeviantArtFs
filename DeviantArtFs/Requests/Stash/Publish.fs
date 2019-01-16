@@ -1,14 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.Stash
 
 open DeviantArtFs
-open FSharp.Data
 open System
-
-type internal PublishResponse = JsonProvider<"""{
-    "status": "success",
-    "url": "https://username.deviantart.com/art/My-Great-Artwork-1234567890",
-    "deviationid": "DAF48E51-DE0E-B24D-4CEC-A23170DCE888"
-}""">
 
 type LicenseModifyOption = No=0 | Yes=1 | ShareAlike=2
 
@@ -101,12 +94,7 @@ module Publish =
         }
 
         let! json = dafs.asyncRead req
-        let resp = PublishResponse.Parse json
-        return {
-            new IStashPublishResult with
-                member __.Url = resp.Url
-                member __.DeviationId = resp.Deviationid
-        }
+        return StashPublishResponse.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun r -> r :> IBclStashPublishResponse) |> Async.StartAsTask

@@ -1,5 +1,7 @@
 ﻿namespace DeviantArtFs
 
+open FSharp.Json
+
 [<AllowNullLiteral>]
 type IBclDeviationFile =
     abstract member Src: string
@@ -34,6 +36,7 @@ type DeviationDownload = {
     width: int
     filesize: int
 } with
+    static member Parse json = Json.deserialize<DeviationDownload> json
     interface IBclDeviationDownload with
         member this.Src = this.src
         member this.Height = this.height

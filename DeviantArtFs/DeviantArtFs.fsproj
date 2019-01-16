@@ -39,6 +39,7 @@
     <Compile Include="Types\Wrappers\DeviationFile.fs" />
     <Compile Include="Types\Wrappers\DeviantArtGalleryFolder.fs" />
     <Compile Include="Types\Wrappers\DeviantArtCollectionFolder.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtCategory.fs" />
     <Compile Include="Types\Wrappers\DeviationStats.fs" />
     <Compile Include="Types\Wrappers\Deviation.fs" />
     <Compile Include="Types\Wrappers\DeviationTextContent.fs" />
@@ -56,6 +57,9 @@
     <Compile Include="Types\Wrappers\StashMoveResult.fs" />
     <Compile Include="Types\Wrappers\StashDeltaEntry.fs" />
     <Compile Include="Types\Wrappers\StashDeltaResult.fs" />
+    <Compile Include="Types\Wrappers\StashSpaceResult.fs" />
+    <Compile Include="Types\Wrappers\StashPublishUserdataResult.fs" />
+    <Compile Include="Types\Wrappers\StashPublishResponse.fs" />
     <Compile Include="Types\Wrappers\DeviantArtRelationshipRecords.fs" />
     <Compile Include="Types\Wrappers\DeviantArtComment.fs" />
     <Compile Include="Types\Wrappers\DeviantArtCommentPagedResult.fs" />
