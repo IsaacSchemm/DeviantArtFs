@@ -14,7 +14,7 @@ module CategoryTree =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/categorytree?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return DeviantArtCategoryList.Parse json
+        return DeviantArtCategoryList.ParseSeq json
     }
 
     let ExecuteAsync token catpath = AsyncExecute token catpath |> iop.thenMap (fun c -> c :> IBclDeviantArtCategory) |> Async.StartAsTask

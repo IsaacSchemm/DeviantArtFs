@@ -20,10 +20,12 @@ type DeviantArtCategory = {
         member this.HasSubcategory = this.has_subcategory
         member this.ParentCatpath = this.parent_catpath
 
-type DeviantArtCategoryList = {
+type internal DeviantArtCategoryList = {
     categories: DeviantArtCategory[]
 } with
-    static member Parse json = Json.deserialize<DeviantArtCategoryList> json
+    static member ParseSeq json =
+        let o = Json.deserialize<DeviantArtCategoryList> json
+        o.categories :> seq<DeviantArtCategory>
     interface seq<DeviantArtCategory> with
-        member this.GetEnumerator() = this.categories.GetEnumerator()
         member this.GetEnumerator() = (this.categories :> seq<DeviantArtCategory>).GetEnumerator()
+        member this.GetEnumerator() = this.categories.GetEnumerator()
