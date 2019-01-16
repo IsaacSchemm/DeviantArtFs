@@ -1,11 +1,12 @@
 ﻿namespace DeviantArtFs
 
 open System
+open FSharp.Json
 
 type IBclDeviationMetadata =
     abstract member Deviationid: Guid
     abstract member Printid: Nullable<Guid>
-    abstract member Author: IDeviantArtUser
+    abstract member Author: IBclDeviantArtUser
     abstract member IsWatching: bool
     abstract member Title: string
     abstract member Description: string
@@ -14,68 +15,49 @@ type IBclDeviationMetadata =
     abstract member Tags: seq<IBclDeviationTag>
     abstract member IsFavourited: bool
     abstract member IsMature: bool
-    abstract member Submission: IDeviationMetadataSubmission
-    abstract member Stats: IDeviationMetadataStats
+    abstract member Submission: IBclDeviationMetadataSubmission
+    abstract member Stats: IBclDeviationMetadataStats
+    abstract member Camera: System.Collections.Generic.IDictionary<string, string>
     abstract member Collections: seq<IBclDeviantArtCollectionFolder>
 
-type DeviationMetadata(original: MetadataResponse.Metadata) =
-    member __.Deviationid = original.Deviationid
-    member __.Printid = original.Printid
-    member __.Author = {
-        new IDeviantArtUser with
-            member __.Userid = original.Author.Userid
-            member __.Username = original.Author.Username
-            member __.Usericon = original.Author.Usericon
-            member __.Type = original.Author.Type
-    }
-    member __.IsWatching = original.IsWatching
-    member __.Title = original.Title
-    member __.Description = original.Description
-    member __.License = original.License
-    member __.AllowsComments = original.AllowsComments
-    member __.Tags = original.Tags |> Seq.map DeviationTag
-    member __.IsFavourited = original.IsFavourited
-    member __.IsMature = original.IsMature
-
-    member __.Submission = original.Submission |> Option.map (fun s -> {
-        new IDeviationMetadataSubmission with
-            member __.CreationTime = s.CreationTime
-            member __.Category = s.Category
-            member __.FileSize = s.FileSize
-            member __.Resolution = s.Resolution
-            member __.SubmittedWith = {
-                new IDeviantArtSubmittedWith with
-                    member __.App = s.SubmittedWith.App
-                    member __.Url = s.SubmittedWith.Url
-            }
-    })
-    member __.Stats = original.Stats |> Option.map (fun s -> {
-        new IDeviationMetadataStats with
-            member __.Views = s.Views
-            member __.ViewsToday = s.ViewsToday
-            member __.Favourites = s.Favourites
-            member __.Comments = s.Comments
-            member __.Downloads = s.Downloads
-            member __.DownloadsToday = s.DownloadsToday
-    })
-    member __.Collections =
-        original.Collections
-        |> Seq.map (fun g -> g.JsonValue.ToString())
-        |> Seq.map CollectionFoldersElement.Parse
-        |> Seq.map DeviantArtCollectionFolder
-
+type DeviationMetadata = {
+    deviationid: Guid
+    printid: Guid option
+    author: DeviantArtUser
+    is_watching: bool
+    title: string
+    description: string
+    license: string
+    allows_comments: bool
+    tags: DeviationTag[]
+    is_favourited: bool
+    is_mature: bool
+    submission: DeviationMetadataSubmission option
+    stats: DeviationMetadataStats option
+    camera: Map<string, string> option
+    collections: DeviantArtCollectionFolder[] option
+} with
     interface IBclDeviationMetadata with
-        member this.AllowsComments = this.AllowsComments
-        member this.Author = this.Author
-        member this.Collections = this.Collections |> Seq.map (fun f -> f :> IBclDeviantArtCollectionFolder)
-        member this.Description = this.Description
-        member this.Deviationid = this.Deviationid
-        member this.IsFavourited = this.IsFavourited
-        member this.IsMature = this.IsMature
-        member this.IsWatching = this.IsWatching
-        member this.License = this.License
-        member this.Printid = this.Printid |> Option.toNullable
-        member this.Stats = this.Stats |> Option.toObj
-        member this.Submission = this.Submission |> Option.toObj
-        member this.Tags = this.Tags |> Seq.map (fun t -> t :> IBclDeviationTag)
-        member this.Title = this.Title
+        member this.AllowsComments = this.allows_comments
+        member this.Author = this.author :> IBclDeviantArtUser
+        member this.Camera = this.camera |> Option.map (fun o -> o :> System.Collections.Generic.IDictionary<string, string>) |> Option.toObj
+        member this.Collections = this.collections |> Option.map (Seq.map (fun f -> f :> IBclDeviantArtCollectionFolder)) |> Option.defaultValue Seq.empty
+        member this.Description = this.description
+        member this.Deviationid = this.deviationid
+        member this.IsFavourited = this.is_favourited
+        member this.IsMature = this.is_mature
+        member this.IsWatching = this.is_watching
+        member this.License = this.license
+        member this.Printid = this.printid |> Option.toNullable
+        member this.Stats = this.stats |> Option.map (fun x -> x :> IBclDeviationMetadataStats) |> Option.toObj
+        member this.Submission = this.submission |> Option.map (fun x -> x :> IBclDeviationMetadataSubmission) |> Option.toObj
+        member this.Tags = this.tags |> Seq.map (fun t -> t :> IBclDeviationTag)
+        member this.Title = this.title
+
+type DeviationMetadataResponse = {
+    metadata: DeviationMetadata[]
+} with
+    static member Parse json = Json.deserialize<DeviationMetadataResponse> json
+    interface System.Collections.Generic.IEnumerable<DeviationMetadata> with
+        member this.GetEnumerator() = this.metadata.GetEnumerator()
+        member this.GetEnumerator() = (this.metadata :> seq<DeviationMetadata>).GetEnumerator()

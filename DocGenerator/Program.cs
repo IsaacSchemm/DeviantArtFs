@@ -45,12 +45,14 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 
 An interface that provides an ""AccessToken"" string property. You can get one from DeviantArtFs.DeviantArtAuth or implement the interface yourself.
 
-**ExtParams:**
+**IExtParams:**
 
-The value of ""ExtParams"" determines what extra data (if any) is included with deviations and Sta.sh metadata.
+The value of ""IExtParams"" determines what extra data (if any) is included with deviations and Sta.sh metadata.
 
     // C#
-    ExtParams e1 = new ExtParams { ExtSubmission = true, ExtCamera = false, ExtStats = false };
+    IExtParams e1 = new ExtParams { ExtSubmission = true, ExtCamera = false, ExtStats = false };
+    IExtParams e2 = ExtParams.None;
+    IExtParams e3 = ExtParams.All;
 
 **FieldChange:**
 
@@ -93,7 +95,7 @@ The value of ""ExtParams"" determines what extra data (if any) is included with 
                             foreach (var p in x.GetParameters())
                             {
                                 sw.Write($" ({PrintTypeName(p.ParameterType)})");
-                                if (p.ParameterType.FullName.StartsWith("DeviantArtFs.") && !new[] { "IDeviantArtAccessToken", "ExtParams", "PagingParams" }.Contains(p.ParameterType.Name))
+                                if (p.ParameterType.FullName.StartsWith("DeviantArtFs.") && !new[] { "IDeviantArtAccessToken", "IExtParams", "PagingParams" }.Contains(p.ParameterType.Name))
                                 {
                                     typesToDescribe.Add(p.ParameterType);
                                 }

@@ -17,16 +17,16 @@ module StatusesList =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/statuses?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return dafs.parsePage (StatusResponse.Parse >> DeviantArtStatus) json
+        return dafs.parsePage DeviantArtStatus.Parse json
     }
 
     let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
 
-    let ToArrayAsync token req ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
+    let ToArrayAsync token req offset limit =
         ToAsyncSeq token req offset
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun s -> s :> IBclDeviantArtStatus) 
+        |> AsyncSeq.map (fun o -> o :> IBclDeviantArtStatus)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging username = AsyncExecute token paging username |> iop.thenMapResult (fun s -> s :> IBclDeviantArtStatus)  |> Async.StartAsTask
+    let ExecuteAsync token paging username = AsyncExecute token paging username |> iop.thenMapResult (fun o -> o :> IBclDeviantArtStatus) |> Async.StartAsTask

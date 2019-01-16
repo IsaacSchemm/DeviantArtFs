@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs
 
 open System
+open FSharp.Json
 
 [<AllowNullLiteral>]
 type IBclStashMetadata =
@@ -10,75 +11,60 @@ type IBclStashMetadata =
     abstract member Size: Nullable<int>
     abstract member Description: string
     abstract member Parentid: Nullable<int64>
-    abstract member Thumb: IDeviationPreview
+    abstract member Thumb: IBclDeviationPreview
     abstract member ArtistComments: string
     abstract member OriginalUrl: string
     abstract member Category: string
     abstract member CreationTime: Nullable<DateTimeOffset>
-    abstract member Files: seq<IDeviationPreview>
+    abstract member Files: seq<IBclDeviationPreview>
     abstract member Html: string
     abstract member Submission: IBclStashSubmission
     abstract member Stats: IBclStashStats
-    abstract member CameraJson: string
+    abstract member Camera: System.Collections.Generic.IDictionary<string, string>
     abstract member Stackid: Nullable<int64>
     abstract member Itemid: Nullable<int64>
     abstract member Tags: seq<string>
 
-type StashMetadata(original: StashMetadataResponse.Root) =
-    let epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)
-
-    member __.Json = original.JsonValue.ToString()
-
-    member __.Title = original.Title
-    member __.Path = original.Path
-    member __.Size = original.Size
-    member __.Description = original.Description
-    member __.Parentid = original.Parentid
-    member __.Thumb = original.Thumb |> Option.map (fun f -> {
-        new IDeviationPreview with
-            member __.Src = f.Src
-            member __.Width = f.Width
-            member __.Height = f.Height
-            member __.Transparency = f.Transparency
-    })
-    member __.ArtistComments = original.ArtistComments
-    member __.OriginalUrl = original.OriginalUrl
-    member __.Category = original.Category
-    member __.CreationTime = original.CreationTime |> Option.map (float >> epoch.AddSeconds)
-    member __.Files = original.Files |> Seq.map (fun f -> {
-        new IDeviationPreview with
-            member __.Src = f.Src
-            member __.Width = f.Width
-            member __.Height = f.Height
-            member __.Transparency = f.Transparency
-    })
-    member __.Html = original.Html
-    member __.Submission = original.Submission |> Option.map StashSubmission
-    member __.Stats = original.Stats |> Option.map StashStats
-    member __.CameraJson = original.Camera |> Option.map (fun c -> c.JsonValue.ToString())
-    member __.Stackid = original.Stackid
-    member __.Itemid = original.Itemid
-    member __.Tags = original.Tags
-
-    static member Parse json = json |> StashMetadataResponse.Parse |> StashMetadata
-
+type StashMetadata = {
+    title: string
+    path: string option
+    size: int option
+    description: string option
+    parentid: int64 option
+    thumb: DeviationPreview option
+    artist_comments: string option
+    original_url: string option
+    category: string option
+    [<JsonField(Transform=typeof<Transforms.DateTimeOffsetEpoch>)>]
+    creation_time: DateTimeOffset option
+    files: DeviationPreview[] option
+    submission: StashSubmission option
+    stats: StashStats option
+    camera: Map<string, string> option
+    stackid: int64 option
+    itemid: int64 option
+    tags: string[] option
+    html: string option
+} with
+    static member Parse json = Json.deserialize<StashMetadata> json
+    member this.Json = Json.serialize this
     interface IBclStashMetadata with
         member this.Json = this.Json
-        member this.ArtistComments = this.ArtistComments |> Option.toObj
-        member this.Category = this.Category |> Option.toObj
-        member this.CreationTime = this.CreationTime |> Option.toNullable
-        member this.Description = this.Description |> Option.toObj
-        member this.Files = this.Files
-        member this.Html = this.Html |> Option.toObj
-        member this.Itemid = this.Itemid |> Option.toNullable
-        member this.OriginalUrl = this.OriginalUrl |> Option.toObj
-        member this.Parentid = this.Parentid |> Option.toNullable
-        member this.Path = this.Path |> Option.toObj
-        member this.Size = this.Size |> Option.toNullable
-        member this.Stackid = this.Stackid |> Option.toNullable
-        member this.Stats = this.Stats |> Option.map (fun o -> o :> IBclStashStats) |> Option.toObj
-        member this.CameraJson = this.CameraJson |> Option.toObj
-        member this.Submission = this.Submission |> Option.map (fun o -> o :> IBclStashSubmission) |> Option.toObj
-        member this.Tags = this.Tags :> seq<string>
-        member this.Thumb = this.Thumb |> Option.toObj
-        member this.Title = this.Title |> Option.toObj
+        member this.ArtistComments = this.artist_comments |> Option.toObj
+        member this.Camera = this.camera |> Option.map (fun o -> o :> System.Collections.Generic.IDictionary<string, string>) |> Option.toObj
+        member this.Category = this.category |> Option.toObj
+        member this.CreationTime = this.creation_time |> Option.toNullable
+        member this.Description = this.description |> Option.toObj
+        member this.Files = this.files |> Option.map Seq.ofArray |> Option.defaultValue Seq.empty |> Seq.map (fun o -> o :> IBclDeviationPreview)
+        member this.Html = this.html |> Option.toObj
+        member this.Itemid = this.itemid |> Option.toNullable
+        member this.OriginalUrl = this.original_url |> Option.toObj
+        member this.Parentid = this.parentid |> Option.toNullable
+        member this.Path = this.path |> Option.toObj
+        member this.Size = this.size |> Option.toNullable
+        member this.Stackid = this.stackid |> Option.toNullable
+        member this.Stats = this.stats |> Option.map (fun o -> o :> IBclStashStats) |> Option.toObj
+        member this.Submission = this.submission |> Option.map (fun o -> o :> IBclStashSubmission) |> Option.toObj
+        member this.Tags = this.tags |> Option.map Seq.ofArray |> Option.defaultValue Seq.empty
+        member this.Thumb = this.thumb |> Option.map (fun o -> o :> IBclDeviationPreview) |> Option.toObj
+        member this.Title = this.title

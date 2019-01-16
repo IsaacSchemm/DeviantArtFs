@@ -4,18 +4,14 @@
 type IBclStashSubmission =
     abstract member FileSize: string
     abstract member Resolution: string
-    abstract member SubmittedWith: IDeviantArtSubmittedWith
+    abstract member SubmittedWith: IBclDeviantArtSubmittedWith
 
-type StashSubmission(original: StashMetadataResponse.Submission) =
-    member __.FileSize = original.FileSize
-    member __.Resolution = original.Resolution
-    member __.SubmittedWith = original.SubmittedWith |> Option.map (fun w -> {
-        new IDeviantArtSubmittedWith with
-            member __.App = w.App
-            member __.Url = w.Url
-    })
-
+type StashSubmission = {
+    file_size: string option
+    resolution: string option
+    submitted_with: DeviantArtSubmittedWith option
+} with
     interface IBclStashSubmission with
-        member this.FileSize = this.FileSize |> Option.toObj
-        member this.Resolution = this.Resolution |> Option.toObj
-        member this.SubmittedWith = this.SubmittedWith |> Option.toObj
+        member this.FileSize = this.file_size |> Option.toObj
+        member this.Resolution = this.resolution |> Option.toObj
+        member this.SubmittedWith = this.submitted_with |> Option.map (fun s -> s :> IBclDeviantArtSubmittedWith) |> Option.toObj

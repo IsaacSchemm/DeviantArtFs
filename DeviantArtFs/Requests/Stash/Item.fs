@@ -1,11 +1,10 @@
 ﻿namespace DeviantArtFs.Requests.Stash
 
 open DeviantArtFs
-open FSharp.Data
 
 type ItemRequest(itemid: int64) = 
     member __.Itemid = itemid
-    member val ExtParams = new ExtParams() with get, set
+    member val ExtParams = ExtParams.None with get, set
 
 module Item =
     let AsyncExecute token (req: ItemRequest) = async {

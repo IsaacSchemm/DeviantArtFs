@@ -19,30 +19,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Types\Responses\CommonResponses.fs" />
-    <Compile Include="Types\Responses\GalleryFolderElement.fs" />
-    <Compile Include="Types\Responses\CollectionFolderElement.fs" />
-    <Compile Include="Types\Responses\DeviationResponse.fs" />
-    <Compile Include="Types\Responses\MetadataResponse.fs" />
-    <Compile Include="Types\Responses\StatusResponse.fs" />
-    <Compile Include="Types\Responses\ProfileResponse.fs" />
-    <Compile Include="Types\Responses\StashMetadataResponse.fs" />
-    <Compile Include="Types\Responses\StashMoveResponse.fs" />
-    <Compile Include="Types\Responses\DeltaResponse.fs" />
-    <Compile Include="Types\Responses\CommentResponse.fs" />
-    <Compile Include="Types\Responses\CommentPagedResponse.fs" />
+    <Compile Include="Types\DateTimeOffsetEpochAsString.fs" />
+    <Compile Include="Types\BasicResponseTypes\DeviantArtBaseResponse.fs" />
+    <Compile Include="Types\BasicResponseTypes\SuccessOrErrorResponse.fs" />
     <Compile Include="Types\AccessTokens.fs" />
     <Compile Include="Types\Exceptions.fs" />
     <Compile Include="Types\SharedRequestTypes.fs" />
-    <Compile Include="Types\SharedResponseTypes.fs" />
-    <Compile Include="Types\DeviantArtPagedResult.fs" />
-    <Compile Include="Types\DeviationTextContent.fs" />
+    <Compile Include="Types\Wrappers\TextOnlyResponse.fs" />
+    <Compile Include="Types\Wrappers\ListOnlyResponse.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtPagedResult.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtUser.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtWhoFavedUser.fs" />
+    <Compile Include="Types\Wrappers\DeviationFile.fs" />
     <Compile Include="Types\Wrappers\DeviantArtGalleryFolder.fs" />
     <Compile Include="Types\Wrappers\DeviantArtCollectionFolder.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtCategory.fs" />
+    <Compile Include="Types\Wrappers\DeviationStats.fs" />
     <Compile Include="Types\Wrappers\Deviation.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtMoreLikeThisPreviewResult.fs" />
+    <Compile Include="Types\Wrappers\DeviationTextContent.fs" />
     <Compile Include="Types\Wrappers\DeviationTag.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtSubmittedWith.fs" />
+    <Compile Include="Types\Wrappers\DeviationMetadataSubmission.fs" />
+    <Compile Include="Types\Wrappers\DeviationMetadataStats.fs" />
     <Compile Include="Types\Wrappers\DeviationMetadata.fs" />
     <Compile Include="Types\Wrappers\DeviantArtStatus.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtProfileStats.fs" />
     <Compile Include="Types\Wrappers\DeviantArtProfile.fs" />
     <Compile Include="Types\Wrappers\StashStats.fs" />
     <Compile Include="Types\Wrappers\StashSubmission.fs" />
@@ -50,6 +52,9 @@
     <Compile Include="Types\Wrappers\StashMoveResult.fs" />
     <Compile Include="Types\Wrappers\StashDeltaEntry.fs" />
     <Compile Include="Types\Wrappers\StashDeltaResult.fs" />
+    <Compile Include="Types\Wrappers\StashSpaceResult.fs" />
+    <Compile Include="Types\Wrappers\StashPublishUserdataResult.fs" />
+    <Compile Include="Types\Wrappers\StashPublishResponse.fs" />
     <Compile Include="Types\Wrappers\DeviantArtRelationshipRecords.fs" />
     <Compile Include="Types\Wrappers\DeviantArtComment.fs" />
     <Compile Include="Types\Wrappers\DeviantArtCommentPagedResult.fs" />
@@ -122,7 +127,7 @@
 
   <ItemGroup>
     <PackageReference Include="FSharp.Control.AsyncSeq" Version="2.0.21" />
-    <PackageReference Include="FSharp.Data" Version="3.0.0" />
+    <PackageReference Include="FSharp.Json" Version="0.3.4" />
   </ItemGroup>
 
   <ItemGroup>

@@ -20,7 +20,7 @@ module CreateCollectionFolder =
         }
 
         let! json = dafs.asyncRead req
-        return CollectionFoldersElement.Parse json |> DeviantArtCollectionFolder
+        return DeviantArtCollectionFolder.Parse json
     }
 
     let ExecuteAsync token folder =

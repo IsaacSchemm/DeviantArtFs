@@ -3,14 +3,15 @@
 open System
 open System.IO
 open DeviantArtFs
-open FSharp.Data
 
-type internal FaveResponse = JsonProvider<"""{
-    "success": true,
-    "favourites": 2
-}""">
+type internal FaveResponse = {
+    success: bool
+    favourites: int
+}
 
 module Fave =
+    open FSharp.Json
+
     let AsyncExecute token (deviationid: Guid) (folderids: seq<Guid>) = async {
         let query = seq {
             yield sprintf "deviationid=%O" deviationid
@@ -34,8 +35,8 @@ module Fave =
         let resp = SuccessOrErrorResponse.Parse json
         dafs.assertSuccess resp
 
-        let o = FaveResponse.Parse json
-        return o.Favourites
+        let o = Json.deserialize<FaveResponse> json
+        return o.favourites
     }
 
     let ExecuteAsync token deviationid folderids = AsyncExecute token deviationid folderids |> Async.StartAsTask

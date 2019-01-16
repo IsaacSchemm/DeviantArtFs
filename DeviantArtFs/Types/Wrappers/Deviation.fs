@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs
 
 open System
+open FSharp.Json
 
 [<AllowNullLiteral>]
 type IBclDeviation =
@@ -11,82 +12,50 @@ type IBclDeviation =
     abstract member Category: string
     abstract member CategoryPath: string
     abstract member IsFavourited: bool
-    abstract member Author: IDeviantArtUser
+    abstract member Author: IBclDeviantArtUser
     abstract member Stats: IDeviationStats
     abstract member PublishedTime: Nullable<DateTimeOffset>
     abstract member IsMature: bool
     abstract member AllowsComments: bool
     abstract member Excerpt: string
-    abstract member Preview: IDeviationPreview
-    abstract member Content: IDeviationContent
-    abstract member Thumbs: seq<IDeviationPreview>
+    abstract member Preview: IBclDeviationPreview
+    abstract member Content: IBclDeviationContent
+    abstract member Thumbs: seq<IBclDeviationPreview>
 
-type Deviation(original: DeviationResponse.Root) =
-    let epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)
-
-    let orNull = Option.toObj
-    let orFalse = Option.defaultValue false
-
-    member __.Deviationid = original.Deviationid
-    member __.IsDeleted = original.IsDeleted
-    member __.Url = original.Url
-    member __.Title = original.Title
-    member __.Category = original.Category
-    member __.CategoryPath = original.CategoryPath
-    member __.IsFavourited = original.IsFavourited
-    member __.Author = original.Author |> Option.map (fun u -> {
-        new IDeviantArtUser with
-            member __.Userid = u.Userid
-            member __.Username = u.Username
-            member __.Usericon = u.Usericon
-            member __.Type = u.Type
-    })
-    member __.Stats = original.Stats |> Option.map (fun s -> {
-        new IDeviationStats with
-            member __.Comments = s.Comments
-            member __.Favourites = s.Favourites
-    })
-    member __.PublishedTime = original.PublishedTime |> Option.map (float >> epoch.AddSeconds)
-    member __.IsMature = original.IsMature
-    member __.AllowsComments = original.AllowsComments
-    member __.Excerpt = original.Excerpt
-    member __.Preview = original.Preview |> Option.map (fun o -> {
-        new IDeviationPreview with
-            member __.Src = o.Src
-            member __.Height = o.Height
-            member __.Width = o.Width
-            member __.Transparency = o.Transparency
-    })
-    member __.Content = original.Content |> Option.map (fun o -> {
-        new IDeviationContent with
-            member __.Src = o.Src
-            member __.Height = o.Height
-            member __.Width = o.Width
-            member __.Transparency = o.Transparency
-            member __.Filesize = o.Filesize
-    })
-    member __.Thumbs = original.Thumbs |> Seq.map (fun o -> {
-        new IDeviationPreview with
-            member __.Src = o.Src
-            member __.Height = o.Height
-            member __.Width = o.Width
-            member __.Transparency = o.Transparency
-    })
-
+type Deviation = {
+    deviationid: Guid
+    is_deleted: bool
+    url: string option
+    title: string option
+    category: string option
+    category_path: string option
+    is_favourited: bool option
+    author: DeviantArtUser option
+    stats: DeviationStats option
+    [<JsonField(Transform=typeof<DateTimeOffsetEpochAsString>)>]
+    published_time: DateTimeOffset option
+    is_mature: bool option
+    allows_comments: bool option
+    excerpt: string option
+    preview: DeviationPreview option
+    content: DeviationContent option
+    thumbs: DeviationPreview[]
+} with
+    static member Parse json = Json.deserialize<Deviation> json
     interface IBclDeviation with
-        member this.AllowsComments = this.AllowsComments |> orFalse
-        member this.Author = this.Author |> orNull
-        member this.Category = this.Category |> orNull
-        member this.CategoryPath = this.CategoryPath |> orNull
-        member this.Content = this.Content |> orNull
-        member this.Deviationid = this.Deviationid
-        member this.Excerpt = this.Excerpt |> orNull
-        member this.IsDeleted = this.IsDeleted
-        member this.IsFavourited = this.IsFavourited |> orFalse
-        member this.IsMature = this.IsMature |> orFalse
-        member this.Preview = this.Preview |> orNull
-        member this.PublishedTime = this.PublishedTime |> Option.toNullable
-        member this.Stats = this.Stats |> orNull
-        member this.Thumbs = this.Thumbs
-        member this.Title = this.Title |> orNull
-        member this.Url = this.Url |> orNull
+        member this.AllowsComments = this.allows_comments |> Option.defaultValue false
+        member this.Author = this.author |> Option.map (fun u -> u :> IBclDeviantArtUser) |> Option.toObj
+        member this.Category = this.category |> Option.toObj
+        member this.CategoryPath = this.category_path |> Option.toObj
+        member this.Content = this.content |> Option.map (fun u -> u :> IBclDeviationContent) |> Option.toObj
+        member this.Deviationid = this.deviationid
+        member this.Excerpt = this.excerpt |> Option.toObj
+        member this.IsDeleted = this.is_deleted
+        member this.IsFavourited = this.is_favourited |> Option.defaultValue false
+        member this.IsMature = this.is_mature |> Option.defaultValue false
+        member this.Preview = this.preview |> Option.map (fun u -> u :> IBclDeviationPreview) |> Option.toObj
+        member this.PublishedTime = this.published_time |> Option.toNullable
+        member this.Stats = this.stats |> Option.map (fun u -> u :> IDeviationStats) |> Option.toObj
+        member this.Thumbs = this.thumbs |> Seq.map (fun u -> u :> IBclDeviationPreview)
+        member this.Title = this.title |> Option.toObj
+        member this.Url = this.url |> Option.toObj

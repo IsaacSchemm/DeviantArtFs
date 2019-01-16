@@ -9,14 +9,14 @@ type IBclStashStats =
     abstract member Downloads: Nullable<int>
     abstract member DownloadsToday: Nullable<int>
 
-type StashStats(original: StashMetadataResponse.Stats) =
-    member __.Views = original.Views
-    member __.ViewsToday = original.ViewsToday
-    member __.Downloads = original.Downloads
-    member __.DownloadsToday = original.DownloadsToday
-
+type StashStats = {
+    views: int option
+    views_today: int option
+    downloads: int option
+    downloads_today: int option
+} with
     interface IBclStashStats with
-        member this.Views = this.Views |> Option.toNullable
-        member this.ViewsToday = this.ViewsToday |> Option.toNullable
-        member this.Downloads = this.Downloads |> Option.toNullable
-        member this.DownloadsToday = this.DownloadsToday |> Option.toNullable
+        member this.Views = this.views |> Option.toNullable
+        member this.ViewsToday = this.views_today |> Option.toNullable
+        member this.Downloads = this.downloads |> Option.toNullable
+        member this.DownloadsToday = this.downloads_today |> Option.toNullable

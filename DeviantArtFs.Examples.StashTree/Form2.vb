@@ -67,7 +67,7 @@ Public Class Form2
             NodeToItem.Clear()
 
             Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
-            Dim journals = Await Requests.Browse.UserJournals.ToArrayAsync(Token, New Requests.Browse.UserJournalsRequest(user.Username))
+            Dim journals = Await Requests.Browse.UserJournals.ToArrayAsync(Token, New Requests.Browse.UserJournalsRequest(user.Username), 0, Integer.MaxValue)
 
             For Each deviation In journals
                 Dim node = New TreeNode(If(deviation.Title, deviation.Deviationid.ToString()))
@@ -85,7 +85,7 @@ Public Class Form2
             NodeToItem.Clear()
 
             Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
-            Dim friends = Await Requests.User.Friends.ToArrayAsync(Token, New Requests.User.FriendsRequest With {.Username = user.Username})
+            Dim friends = Await Requests.User.Friends.ToArrayAsync(Token, New Requests.User.FriendsRequest With {.Username = user.Username}, 0, Integer.MaxValue)
 
             For Each f In friends
                 Dim node = New TreeNode(f.User.Username)
@@ -103,7 +103,7 @@ Public Class Form2
             NodeToItem.Clear()
 
             Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
-            Dim watchers = Await Requests.User.Watchers.ToArrayAsync(Token, New Requests.User.WatchersRequest With {.Username = user.Username})
+            Dim watchers = Await Requests.User.Watchers.ToArrayAsync(Token, New Requests.User.WatchersRequest With {.Username = user.Username}, 0, Integer.MaxValue)
 
             For Each w In watchers
                 Dim node = New TreeNode(w.User.Username)
@@ -121,7 +121,7 @@ Public Class Form2
             NodeToItem.Clear()
 
             Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
-            Dim statuses = Await Requests.User.StatusesList.ToArrayAsync(Token, user.Username)
+            Dim statuses = Await Requests.User.StatusesList.ToArrayAsync(Token, user.Username, 0, Integer.MaxValue)
 
             For Each w In statuses
                 Dim node = New TreeNode(w.Body)

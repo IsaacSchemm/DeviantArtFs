@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.Browse
 
 open DeviantArtFs
+open FSharp.Control
 
 type UndiscoveredRequest() =
     member val CategoryPath = null with get, set
@@ -19,9 +20,16 @@ module Undiscovered =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/undiscovered?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return dafs.parsePage (DeviationResponse.Parse >> Deviation) json
+        return dafs.parsePage Deviation.Parse json
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset 120
+    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 120 req
+
+    let ToArrayAsync token req offset limit =
+        ToAsyncSeq token req offset
+        |> AsyncSeq.take limit
+        |> AsyncSeq.map dafs.asBclDeviation
+        |> AsyncSeq.toArrayAsync
+        |> Async.StartAsTask
 
     let ExecuteAsync token req paging = AsyncExecute token req paging|> iop.thenMapResult dafs.asBclDeviation |> Async.StartAsTask

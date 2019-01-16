@@ -5,7 +5,7 @@ open System
 
 type MetadataRequest(deviationids: seq<Guid>) =
     member __.Deviationids = deviationids
-    member val ExtParams = new ExtParams() with get, set
+    member val ExtParams = ExtParams.None with get, set
     member val ExtCollection = false with get, set
 
 module MetadataById =
@@ -26,8 +26,7 @@ module MetadataById =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/metadata?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        let o = MetadataResponse.Parse json
-        return o.Metadata |> Seq.map DeviationMetadata
+        return DeviationMetadataResponse.Parse json
     }
 
     let ExecuteAsync token req = AsyncExecute token req |> iop.thenMap (fun m -> m :> IBclDeviationMetadata) |> Async.StartAsTask

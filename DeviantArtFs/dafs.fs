@@ -7,10 +7,10 @@ open System.Threading.Tasks
 open FSharp.Control
 
 module internal dafs =
-    let assertSuccess (resp: SuccessOrErrorResponse.Root) =
-        match (resp.Success, resp.ErrorDescription) with
+    let assertSuccess (resp: SuccessOrErrorResponse) =
+        match (resp.success, resp.error_description) with
         | (true, None) -> ()
-        | _ -> failwithf "%s" (resp.ErrorDescription |> Option.defaultValue "An unknown error occurred.")
+        | _ -> failwithf "%s" (resp.error_description |> Option.defaultValue "An unknown error occurred.")
 
     let urlEncode = WebUtility.UrlEncode
     let userAgent = "DeviantArtFs/0.6 (https://github.com/libertyernie/DeviantArtFs)"
@@ -29,9 +29,8 @@ module internal dafs =
             use sr = new StreamReader(resp.GetResponseStream())
             let! json = sr.ReadToEndAsync() |> Async.AwaitTask
             let obj = DeviantArtBaseResponse.Parse json
-            if obj.Status = "error" then
-                let error_obj = DeviantArtErrorResponse.Parse json
-                return raise (new DeviantArtException(resp, error_obj))
+            if obj.status = Some "error" then
+                return raise (new DeviantArtException(resp, obj))
             else
                 retry429 <- 500
                 return json
@@ -47,43 +46,17 @@ module internal dafs =
                 else
                     use sr = new StreamReader(resp.GetResponseStream())
                     let! json = sr.ReadToEndAsync() |> Async.AwaitTask
-                    let error_obj = DeviantArtErrorResponse.Parse json
+                    let error_obj = DeviantArtBaseResponse.Parse json
                     return raise (new DeviantArtException(resp, error_obj))
     }
 
-    let parsePage (f: string -> 'a) (json: string) =
-        let o = GenericListResponse.Parse json
-        {
-            HasMore = o.HasMore
-            NextOffset = o.NextOffset
-            HasLess = o.HasLess
-            PrevOffset = o.PrevOffset
-            EstimatedTotal = o.EstimatedTotal
-            Name = o.Name
-            Results = seq {
-                for element in o.Results do
-                    let json = element.JsonValue.ToString()
-                    yield f json
-            }
-        }
+    let parsePage (f: string -> 'a) (json: string) = DeviantArtPagedResult<'a>.Parse json
 
     let parseListOnly (f: string -> 'a) (json: string) =
-        let o = ListOnlyResponse.Parse json
-        seq {
-            for element in o.Results do
-                let json = element.JsonValue.ToString()
-                yield f json
-        }
+        let o = ListOnlyResponse<'a>.Parse json
+        Seq.ofArray o.results
 
-    let parseUser (json: string) =
-        let u = UserResponse.Parse json
-        {
-            new IDeviantArtUser with
-                member __.Userid = u.Userid
-                member __.Username = u.Username
-                member __.Usericon = u.Usericon
-                member __.Type = u.Type
-        }
+    let parseUser (json: string) = DeviantArtUser.Parse json
 
     let toPlainTask (t: Task<unit>) = t :> Task
 
@@ -98,5 +71,6 @@ module internal dafs =
             cursor <- resp.NextOffset |> Option.defaultValue 0
             has_more <- resp.HasMore
     }
-
+    
+    let asBclUser u = u :> IBclDeviantArtUser
     let asBclDeviation d = d :> IBclDeviation

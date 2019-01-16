@@ -8,7 +8,7 @@ module Content =
     let AsyncExecute token (deviationid: Guid) = async {
         let req = sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/content?deviationid=%O" deviationid |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return ContentResponse.Parse json |> DeviationTextContent
+        return DeviationTextContent.Parse json
     }
 
     let ExecuteAsync token deviationid =

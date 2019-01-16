@@ -22,7 +22,7 @@ module CreateGalleryFolder =
         }
 
         let! json = dafs.asyncRead req
-        return GalleryFoldersElement.Parse json |> DeviantArtGalleryFolder
+        return DeviantArtGalleryFolder.Parse json
     }
 
     let ExecuteAsync token folder =

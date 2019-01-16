@@ -48,31 +48,37 @@ let sandbox token_string = async {
 
     let username =
         match read with
-        | "" -> me.Username
+        | "" -> me.username
         | s -> s
 
     let! deviations =
         DeviantArtFs.Requests.Gallery.GalleryAllViewRequest(Username = username)
         |> DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token (page 0 1)
-    let deviation = Seq.tryHead deviations.Results
+    let deviation = Seq.tryHead deviations.results
     match deviation with
     | Some s -> 
-        printfn "Most recent deviation: %s (%A)" (s.Title |> Option.defaultValue "???") s.PublishedTime
+        printfn "Most recent deviation: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
+
+        let! metadata =
+            new DeviantArtFs.Requests.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = ExtParams.All)
+            |> DeviantArtFs.Requests.Deviation.MetadataById.AsyncExecute token
+        for m in metadata do
+            printfn "%A" m
 
         let! favorites =
-            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.Deviationid 0
+            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.deviationid 0
             |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) favorites then
             printfn "Favorited by:"
             for f in favorites do
-                printfn "    %s (%A)" f.User.Username f.Time
+                printfn "    %s (%A)" f.user.username f.time
 
-        let comments_req = new DeviantArtFs.Requests.Comments.DeviationCommentsRequest(s.Deviationid, Maxdepth = 5)
+        let comments_req = new DeviantArtFs.Requests.Comments.DeviationCommentsRequest(s.deviationid, Maxdepth = 5)
         let! comments = DeviantArtFs.Requests.Comments.DeviationComments.ToAsyncSeq token comments_req 0 |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) comments then
             printfn "Comments:"
         for c in comments do
-            printfn "    %s: %s" c.User.Username c.Body
+            printfn "    %s: %s" c.user.username c.body
 
         printfn ""
     | None -> ()
@@ -80,26 +86,26 @@ let sandbox token_string = async {
     let! journals =
         DeviantArtFs.Requests.Browse.UserJournalsRequest(username, Featured = false)
         |> DeviantArtFs.Requests.Browse.UserJournals.AsyncExecute token (page 0 1)
-    let journal = Seq.tryHead journals.Results
+    let journal = Seq.tryHead journals.results
     match journal with
     | Some s -> 
-        printfn "Most recent journal: %s (%A)" (s.Title |> Option.defaultValue "???") s.PublishedTime
+        printfn "Most recent journal: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
 
         let! favorites =
-            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.Deviationid 0
+            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.deviationid 0
             |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) favorites then
             printfn "Favorited by:"
             for f in favorites do
-                printfn "%s (%A)" f.User.Username f.Time
+                printfn "%s (%A)" f.user.username f.time
         printfn ""
     | None -> ()
 
     let! statuses = DeviantArtFs.Requests.User.StatusesList.AsyncExecute token (page 0 1) username
-    let status = Seq.tryHead statuses.Results
+    let status = Seq.tryHead statuses.results
     match status with
     | Some s -> 
-        printfn "Most recent status: %s (%A)" s.Body s.Ts
+        printfn "Most recent status: %s (%A)" s.body s.ts
         printfn ""
     | None -> ()
 

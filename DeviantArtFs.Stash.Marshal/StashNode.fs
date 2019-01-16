@@ -10,7 +10,7 @@ type SavedDeltaEntry =
         MetadataJson: string
         Position: int
     }
-    interface ISerializedStashDeltaEntry with
+    interface IStashDelta with
         member this.Itemid = this.Itemid
         member this.Stackid = this.Stackid
         member this.MetadataJson = this.MetadataJson
@@ -22,9 +22,9 @@ type StashNode(root: IStashRoot, metadata: StashMetadata) =
     member this.BclMetadata = this.Metadata :> IBclStashMetadata
 
     member internal this.ParentStackId =
-        match this.Metadata.Itemid with
-        | Some _ -> this.Metadata.Stackid
-        | None -> this.Metadata.Parentid
+        match this.Metadata.itemid with
+        | Some _ -> this.Metadata.stackid
+        | None -> this.Metadata.parentid
 
     member this.Position =
         match root.Nodes |> Seq.tryFindIndex (LanguagePrimitives.PhysicalEquality this) with
@@ -32,42 +32,42 @@ type StashNode(root: IStashRoot, metadata: StashMetadata) =
         | None -> -1
 
     member this.Save() = {
-        Itemid = this.Metadata.Itemid |> Option.toNullable
-        Stackid = this.Metadata.Stackid |> Option.toNullable
+        Itemid = this.Metadata.itemid |> Option.toNullable
+        Stackid = this.Metadata.stackid |> Option.toNullable
         MetadataJson = this.Metadata.Json
         Position = this.Position
     }
 
     member this.Children =
-        match this.Metadata.Itemid with
+        match this.Metadata.itemid with
         | Some _ -> Seq.empty
         | None -> seq {
             for n in root.Nodes do
-                if n.ParentStackId = this.Metadata.Stackid then
+                if n.ParentStackId = this.Metadata.stackid then
                     yield n
         }
 
     member this.Stacks =
-        match this.Metadata.Itemid with
+        match this.Metadata.itemid with
         | Some _ -> Seq.empty
         | None -> seq {
             for n in this.Children do
-                match n.Metadata.Itemid with
+                match n.Metadata.itemid with
                 | Some _ -> ()
                 | None -> yield n
         }
 
     member this.Items =
-        match this.Metadata.Itemid with
+        match this.Metadata.itemid with
         | Some _ -> Seq.empty
         | None -> seq {
             for n in this.Children do
-                match n.Metadata.Itemid with
+                match n.Metadata.itemid with
                 | Some _ -> yield n
                 | None -> ()
         }
 
-    override this.ToString() = this.Metadata.Title |> Option.defaultValue metadata.Json
+    override this.ToString() = this.Metadata.title
 and IStashRoot =
     abstract member Nodes: seq<StashNode>
 

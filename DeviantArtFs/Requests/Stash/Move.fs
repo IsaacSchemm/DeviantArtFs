@@ -21,7 +21,7 @@ module Move =
         }
 
         let! json = dafs.asyncRead req
-        return StashMoveResponse.Parse json |> StashMoveResult
+        return StashMoveResult.Parse json
     }
 
     let ExecuteAsync token stackid targetid = AsyncExecute token stackid targetid |> iop.thenTo (fun r -> r :> IBclStashMoveResult) |> Async.StartAsTask
