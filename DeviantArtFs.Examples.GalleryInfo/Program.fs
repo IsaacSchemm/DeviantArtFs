@@ -48,7 +48,7 @@ let sandbox token_string = async {
 
     let username =
         match read with
-        | "" -> me.Username
+        | "" -> me.username
         | s -> s
 
     let! deviations =

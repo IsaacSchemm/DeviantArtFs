@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
-open FSharp.Data
 
 module Whoami =
     let AsyncExecute token = async {
@@ -10,4 +9,4 @@ module Whoami =
         return dafs.parseUser json
     }
 
-    let ExecuteAsync token = AsyncExecute token |> Async.StartAsTask
+    let ExecuteAsync token = AsyncExecute token |> iop.thenTo dafs.asBclUser |> Async.StartAsTask

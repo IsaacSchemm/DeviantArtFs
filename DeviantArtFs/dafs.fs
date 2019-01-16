@@ -74,7 +74,7 @@ module internal dafs =
                 yield f json
         }
 
-    let parseUser (json: string) = DeviantArtUser.Parse json :> IBclDeviantArtUser
+    let parseUser (json: string) = DeviantArtUser.Parse json
 
     let toPlainTask (t: Task<unit>) = t :> Task
 
@@ -89,5 +89,6 @@ module internal dafs =
             cursor <- resp.NextOffset |> Option.defaultValue 0
             has_more <- resp.HasMore
     }
-
+    
+    let asBclUser u = u :> IBclDeviantArtUser
     let asBclDeviation d = d :> IBclDeviation

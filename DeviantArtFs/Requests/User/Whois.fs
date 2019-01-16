@@ -1,8 +1,6 @@
 ﻿namespace DeviantArtFs.Requests.User
 
 open DeviantArtFs
-open FSharp.Data
-open System.Net
 open System.IO
 
 module Whois =
@@ -23,4 +21,4 @@ module Whois =
         return dafs.parseListOnly dafs.parseUser json
     }
 
-    let ExecuteAsync token usernames = AsyncExecute token usernames |> Async.StartAsTask
+    let ExecuteAsync token usernames = AsyncExecute token usernames |> iop.thenMap dafs.asBclUser |> Async.StartAsTask

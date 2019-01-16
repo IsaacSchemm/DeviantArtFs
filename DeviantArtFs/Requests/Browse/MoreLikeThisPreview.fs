@@ -24,7 +24,7 @@ module MoreLikeThisPreview =
         let! json = dafs.asyncRead req
         let o = MoreLikeThisResponse.Parse json
         return {
-            new IMoreLikeThisPreviewResult<IBclDeviantArtUser, Deviation> with
+            new IMoreLikeThisPreviewResult<DeviantArtUser, Deviation> with
                 member __.Seed = o.Seed
                 member __.Author = o.Author.JsonValue.ToString() |> dafs.parseUser
                 member __.MoreFromArtist = seq {
@@ -45,7 +45,7 @@ module MoreLikeThisPreview =
         return {
             new IMoreLikeThisPreviewResult<IBclDeviantArtUser, IBclDeviation> with
                 member __.Seed = o.Seed
-                member __.Author = o.Author
+                member __.Author = o.Author |> dafs.asBclUser
                 member __.MoreFromArtist = o.MoreFromArtist |> Seq.map dafs.asBclDeviation
                 member __.MoreFromDa = o.MoreFromDa |> Seq.map dafs.asBclDeviation
         }
