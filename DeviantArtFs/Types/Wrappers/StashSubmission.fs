@@ -4,13 +4,13 @@
 type IBclStashSubmission =
     abstract member FileSize: string
     abstract member Resolution: string
-    abstract member SubmittedWith: IDeviantArtSubmittedWith
+    abstract member SubmittedWith: IBclDeviantArtSubmittedWith
 
 type StashSubmission(original: StashMetadataResponse.Submission) =
     member __.FileSize = original.FileSize
     member __.Resolution = original.Resolution
     member __.SubmittedWith = original.SubmittedWith |> Option.map (fun w -> {
-        new IDeviantArtSubmittedWith with
+        new IBclDeviantArtSubmittedWith with
             member __.App = w.App
             member __.Url = w.Url
     })

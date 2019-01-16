@@ -17,7 +17,7 @@ module Download =
         let! json = dafs.asyncRead req
         let resp = DownloadResponse.Parse json
         return {
-            new IDeviationDownload with
+            new IBclDeviationDownload with
                 member __.Src = resp.Src
                 member __.Width = resp.Width
                 member __.Height = resp.Height

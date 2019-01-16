@@ -18,9 +18,9 @@ type IBclDeviation =
     abstract member IsMature: bool
     abstract member AllowsComments: bool
     abstract member Excerpt: string
-    abstract member Preview: IDeviationPreview
-    abstract member Content: IDeviationContent
-    abstract member Thumbs: seq<IDeviationPreview>
+    abstract member Preview: IBclDeviationPreview
+    abstract member Content: IBclDeviationContent
+    abstract member Thumbs: seq<IBclDeviationPreview>
 
 type Deviation = {
     deviationid: Guid
@@ -47,15 +47,15 @@ type Deviation = {
         member this.Author = this.author |> Option.map (fun u -> u :> IBclDeviantArtUser) |> Option.toObj
         member this.Category = this.category |> Option.toObj
         member this.CategoryPath = this.category_path |> Option.toObj
-        member this.Content = this.content |> Option.map (fun u -> u :> IDeviationContent) |> Option.toObj
+        member this.Content = this.content |> Option.map (fun u -> u :> IBclDeviationContent) |> Option.toObj
         member this.Deviationid = this.deviationid
         member this.Excerpt = this.excerpt |> Option.toObj
         member this.IsDeleted = this.is_deleted
         member this.IsFavourited = this.is_favourited |> Option.defaultValue false
         member this.IsMature = this.is_mature |> Option.defaultValue false
-        member this.Preview = this.preview |> Option.map (fun u -> u :> IDeviationPreview) |> Option.toObj
+        member this.Preview = this.preview |> Option.map (fun u -> u :> IBclDeviationPreview) |> Option.toObj
         member this.PublishedTime = this.published_time |> Option.toNullable
         member this.Stats = this.stats |> Option.map (fun u -> u :> IDeviationStats) |> Option.toObj
-        member this.Thumbs = this.thumbs |> Seq.map (fun u -> u :> IDeviationPreview)
+        member this.Thumbs = this.thumbs |> Seq.map (fun u -> u :> IBclDeviationPreview)
         member this.Title = this.title |> Option.toObj
         member this.Url = this.url |> Option.toObj

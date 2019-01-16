@@ -10,12 +10,12 @@ type IBclStashMetadata =
     abstract member Size: Nullable<int>
     abstract member Description: string
     abstract member Parentid: Nullable<int64>
-    abstract member Thumb: IDeviationPreview
+    abstract member Thumb: IBclDeviationPreview
     abstract member ArtistComments: string
     abstract member OriginalUrl: string
     abstract member Category: string
     abstract member CreationTime: Nullable<DateTimeOffset>
-    abstract member Files: seq<IDeviationPreview>
+    abstract member Files: seq<IBclDeviationPreview>
     abstract member Html: string
     abstract member Submission: IBclStashSubmission
     abstract member Stats: IBclStashStats
@@ -35,7 +35,7 @@ type StashMetadata(original: StashMetadataResponse.Root) =
     member __.Description = original.Description
     member __.Parentid = original.Parentid
     member __.Thumb = original.Thumb |> Option.map (fun f -> {
-        new IDeviationPreview with
+        new IBclDeviationPreview with
             member __.Src = f.Src
             member __.Width = f.Width
             member __.Height = f.Height
@@ -46,7 +46,7 @@ type StashMetadata(original: StashMetadataResponse.Root) =
     member __.Category = original.Category
     member __.CreationTime = original.CreationTime |> Option.map (float >> epoch.AddSeconds)
     member __.Files = original.Files |> Seq.map (fun f -> {
-        new IDeviationPreview with
+        new IBclDeviationPreview with
             member __.Src = f.Src
             member __.Width = f.Width
             member __.Height = f.Height

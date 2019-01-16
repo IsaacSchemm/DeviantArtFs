@@ -8,7 +8,7 @@ type IBclDeviationMetadataSubmission =
     abstract member Category: string
     abstract member FileSize: string
     abstract member Resolution: string
-    abstract member SubmittedWith: IDeviantArtSubmittedWith
+    abstract member SubmittedWith: IBclDeviantArtSubmittedWith
 
 type DeviationMetadataSubmission = {
     creation_time: DateTimeOffset
@@ -22,4 +22,4 @@ type DeviationMetadataSubmission = {
         member this.CreationTime = this.creation_time
         member this.FileSize = this.file_size |> Option.toObj
         member this.Resolution = this.resolution |> Option.toObj
-        member this.SubmittedWith = this.submitted_with :> IDeviantArtSubmittedWith
+        member this.SubmittedWith = this.submitted_with :> IBclDeviantArtSubmittedWith

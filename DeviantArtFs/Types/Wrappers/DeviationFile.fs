@@ -1,14 +1,14 @@
 ﻿namespace DeviantArtFs
 
 [<AllowNullLiteral>]
-type IDeviationFile =
+type IBclDeviationFile =
     abstract member Src: string
     abstract member Height: int
     abstract member Width: int
 
 [<AllowNullLiteral>]
-type IDeviationPreview =
-    inherit IDeviationFile
+type IBclDeviationPreview =
+    inherit IBclDeviationFile
     abstract member Transparency: bool
 
 type DeviationPreview = {
@@ -17,15 +17,15 @@ type DeviationPreview = {
     width: int
     transparency: bool
 } with
-    interface IDeviationPreview with
+    interface IBclDeviationPreview with
         member this.Src = this.src
         member this.Height = this.height
         member this.Width = this.width
         member this.Transparency = this.transparency
 
 [<AllowNullLiteral>]
-type IDeviationDownload =
-    inherit IDeviationFile
+type IBclDeviationDownload =
+    inherit IBclDeviationFile
     abstract member Filesize: int
 
 type DeviationDownload = {
@@ -34,16 +34,16 @@ type DeviationDownload = {
     width: int
     filesize: int
 } with
-    interface IDeviationDownload with
+    interface IBclDeviationDownload with
         member this.Src = this.src
         member this.Height = this.height
         member this.Width = this.width
         member this.Filesize = this.filesize
 
 [<AllowNullLiteral>]
-type IDeviationContent =
-    inherit IDeviationPreview
-    inherit IDeviationDownload
+type IBclDeviationContent =
+    inherit IBclDeviationPreview
+    inherit IBclDeviationDownload
 
 type DeviationContent = {
     src: string
@@ -52,7 +52,7 @@ type DeviationContent = {
     transparency: bool
     filesize: int
 } with
-    interface IDeviationContent with
+    interface IBclDeviationContent with
         member this.Src = this.src
         member this.Height = this.height
         member this.Width = this.width
