@@ -69,7 +69,7 @@ type StashRoot() =
         }
         grab nodes None
 
-    member this.Apply (entry: ISerializableStashDeltaEntry) =
+    member this.Apply (entry: IStashDelta) =
         let itemid = entry.Itemid |> Option.ofNullable
         let stackid = entry.Stackid |> Option.ofNullable
         let metadata = entry.MetadataJson |> Option.ofObj |> Option.map StashMetadata.Parse

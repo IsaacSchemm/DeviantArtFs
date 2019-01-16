@@ -3,7 +3,7 @@ Imports DeviantArtFs
 
 Public Class SerializationExample
     Class MyDeltaEntry
-        Implements ISerializableStashDeltaEntry
+        Implements IStashDelta
 
         ' XmlSerializer cannot serialize the type SavedDeltaEntry, so let's create our own
         ' Note that the type names do not have to be the same when implementing the interface
@@ -12,23 +12,23 @@ Public Class SerializationExample
 
         End Sub
 
-        Sub New(copyFrom As ISerializableStashDeltaEntry)
+        Sub New(copyFrom As IStashDelta)
             I = copyFrom.Itemid
             S = copyFrom.Stackid
             M = copyFrom.MetadataJson
             P = copyFrom.Position
         End Sub
 
-        Public Property I As Long? Implements ISerializableStashDeltaEntry.Itemid
+        Public Property I As Long? Implements IStashDelta.Itemid
 
-        Public Property S As Long? Implements ISerializableStashDeltaEntry.Stackid
+        Public Property S As Long? Implements IStashDelta.Stackid
 
-        Public Property M As String Implements ISerializableStashDeltaEntry.MetadataJson
+        Public Property M As String Implements IStashDelta.MetadataJson
 
-        Public Property P As Integer? Implements ISerializableStashDeltaEntry.Position
+        Public Property P As Integer? Implements IStashDelta.Position
     End Class
 
-    Public Shared Sub Save(source As IEnumerable(Of ISerializableStashDeltaEntry))
+    Public Shared Sub Save(source As IEnumerable(Of IStashDelta))
         Using f As New SaveFileDialog
             f.DefaultExt = "xml"
             If f.ShowDialog() = DialogResult.OK Then
@@ -41,7 +41,7 @@ Public Class SerializationExample
         End Using
     End Sub
 
-    Public Shared Function Load() As IEnumerable(Of ISerializableStashDeltaEntry)
+    Public Shared Function Load() As IEnumerable(Of IStashDelta)
         Using f As New OpenFileDialog
             f.DefaultExt = "xml"
             If f.ShowDialog() = DialogResult.OK Then

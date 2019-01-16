@@ -2,14 +2,14 @@
 
 open System
 
-type ISerializableStashDeltaEntry =
+type IStashDelta =
     abstract member Itemid: Nullable<int64>
     abstract member Stackid: Nullable<int64>
     abstract member MetadataJson: string
     abstract member Position: Nullable<int>
 
 type IBclStashDeltaEntry =
-    inherit ISerializableStashDeltaEntry
+    inherit IStashDelta
     abstract member Metadata: IBclStashMetadata
 
 type StashDeltaEntry = {
