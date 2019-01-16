@@ -17,7 +17,7 @@ Public Class Form1
             Dim paging = New PagingParams With {.Offset = 0, .Limit = 120}
 
             While True
-                Dim resp = Await Requests.Stash.Delta.ExecuteAsync(Token, paging, New Requests.Stash.DeltaRequest With {.Cursor = StashCursor})
+                Dim resp = Await Requests.Stash.Delta.ExecuteAsync(Token, paging, New Requests.Stash.DeltaRequest With {.Cursor = StashCursor, .ExtParams = ExtParams.All})
                 list.AddRange(resp.Entries)
                 If resp.HasMore Then
                     paging.Offset = If(resp.NextOffset, 0)

@@ -23,13 +23,9 @@
     <Compile Include="Types\BasicResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="Types\BasicResponseTypes\SuccessOrErrorResponse.fs" />
     <Compile Include="Types\Responses\CommonResponses.fs" />
-    <Compile Include="Types\Responses\StashMetadataResponse.fs" />
-    <Compile Include="Types\Responses\StashMoveResponse.fs" />
-    <Compile Include="Types\Responses\DeltaResponse.fs" />
-    <Compile Include="Types\Responses\CommentResponse.fs" />
-    <Compile Include="Types\Responses\CommentPagedResponse.fs" />
     <Compile Include="Types\AccessTokens.fs" />
     <Compile Include="Types\Exceptions.fs" />
+    <Compile Include="Types\Responses\DeltaResponse.fs" />
     <Compile Include="Types\SharedRequestTypes.fs" />
     <Compile Include="Types\SharedResponseTypes.fs" />
     <Compile Include="Types\DeviantArtPagedResult.fs" />

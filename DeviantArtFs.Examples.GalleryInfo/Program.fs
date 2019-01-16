@@ -78,7 +78,7 @@ let sandbox token_string = async {
         if (not << Seq.isEmpty) comments then
             printfn "Comments:"
         for c in comments do
-            printfn "    %s: %s" c.User.Username c.Body
+            printfn "    %s: %s" c.user.username c.body
 
         printfn ""
     | None -> ()

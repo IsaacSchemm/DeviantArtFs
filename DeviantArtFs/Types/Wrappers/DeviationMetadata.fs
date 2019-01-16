@@ -17,6 +17,7 @@ type IBclDeviationMetadata =
     abstract member IsMature: bool
     abstract member Submission: IBclDeviationMetadataSubmission
     abstract member Stats: IBclDeviationMetadataStats
+    abstract member Camera: System.Collections.Generic.IDictionary<string, string>
     abstract member Collections: seq<IBclDeviantArtCollectionFolder>
 
 type DeviationMetadata = {
@@ -33,12 +34,13 @@ type DeviationMetadata = {
     is_mature: bool
     submission: DeviationMetadataSubmission option
     stats: DeviationMetadataStats option
-    camera: obj option
+    camera: Map<string, string> option
     collections: DeviantArtCollectionFolder[] option
 } with
     interface IBclDeviationMetadata with
         member this.AllowsComments = this.allows_comments
         member this.Author = this.author :> IBclDeviantArtUser
+        member this.Camera = this.camera |> Option.map (fun o -> o :> System.Collections.Generic.IDictionary<string, string>) |> Option.toObj
         member this.Collections = this.collections |> Option.map (Seq.map (fun f -> f :> IBclDeviantArtCollectionFolder)) |> Option.defaultValue Seq.empty
         member this.Description = this.description
         member this.Deviationid = this.deviationid

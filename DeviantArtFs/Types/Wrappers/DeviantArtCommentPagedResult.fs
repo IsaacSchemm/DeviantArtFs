@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs
 
 open System
+open FSharp.Json
 
 type IBclDeviantArtCommentPagedResult =
     abstract member HasMore: bool
@@ -10,26 +11,24 @@ type IBclDeviantArtCommentPagedResult =
     abstract member Total: Nullable<int>
     abstract member Thread: seq<IBclDeviantArtComment>
 
-type DeviantArtCommentPagedResult(original: CommentPagedResponse.Root) =
-    member __.HasMore = original.HasMore
-    member __.NextOffset = original.NextOffset
-    member __.HasLess = original.HasLess
-    member __.PrevOffset = original.PrevOffset
-    member __.Total = original.Total
-    member __.Thread =
-        original.Thread
-        |> Seq.map (fun c -> c.JsonValue.ToString())
-        |> Seq.map (CommentResponse.Parse >> DeviantArtComment)
-
+type DeviantArtCommentPagedResult = {
+    has_more: bool
+    next_offset: int option
+    has_less: bool
+    prev_offset: int option
+    total: int option
+    thread: DeviantArtComment[]
+} with
+    static member Parse json = Json.deserialize<DeviantArtCommentPagedResult> json
     interface IBclDeviantArtCommentPagedResult with
-        member this.HasMore = this.HasMore
-        member this.NextOffset = this.NextOffset |> Option.toNullable
-        member this.HasLess = this.HasLess
-        member this.PrevOffset = this.PrevOffset |> Option.toNullable
-        member this.Total = this.Total |> Option.toNullable
-        member this.Thread = this.Thread |> Seq.map (fun c -> c :> IBclDeviantArtComment)
+        member this.HasMore = this.has_more
+        member this.NextOffset = this.next_offset |> Option.toNullable
+        member this.HasLess = this.has_less
+        member this.PrevOffset = this.prev_offset |> Option.toNullable
+        member this.Total = this.total |> Option.toNullable
+        member this.Thread = this.thread |> Seq.map (fun c -> c :> IBclDeviantArtComment)
         
     interface IDeviantArtConvertibleToAsyncSeq<DeviantArtComment> with
-        member this.HasMore = this.HasMore
-        member this.NextOffset = this.NextOffset
-        member this.Results = this.Thread
+        member this.HasMore = this.has_more
+        member this.NextOffset = this.next_offset
+        member this.Results = this.thread |> Seq.ofArray
