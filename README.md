@@ -2,7 +2,23 @@
 
 A .NET / F# library to interact with the [DeviantArt / Sta.sh API.](https://www.deviantart.com/developers/http/v1/20160316)
 
-If you're using this library in a .NET Framework project and it doesn't run, make sure that the dependencies (FSharp.Core, FSharp.Json, FSharp.Control.AsyncSeq) are installed.
+If you're using this library in a .NET Framework project and it doesn't run, make sure that the dependencies (FSharp.Core, FSharp.Json, FSharp.Control.AsyncSeq) are installed via NuGet.
+
+## Notes
+
+Each request that can be made to DeviantArt is represented by a module
+somewhere in the DeviantArtFs.Requests namespace. These modules have static
+methods that take an IDeviantArtAccessToken (see "Authentication" below) and
+usually at least one other parameter.
+
+In most cases, these static methods exist in pairs - one method will use F#
+async and use F# features such as records and option types, while the other
+will return a Task<T> and use interfaces and null values for interoperability
+with C# and VB.NET.
+
+Some modules also have ToAsyncSeq and ToArrayAsync methods, which can be used
+to fetch an arbitary amount of data as needed. (Keep in mind that some of the
+endpoints under /browse/ might consist of many, many pages...)
 
 ## Currently unsupported features
 
@@ -105,27 +121,6 @@ If you're using this library in a .NET Framework project and it doesn't run, mak
 
 ## Usage
 
-Each request you can make has a module (static class) in one of the
-DeviantArtFs.Requests namespaces, with AsyncExecute and ExecuteAsync
-methods. AsyncExecute returns an F# asynchronous workflow, while
-ExecuteAsync returns a Task<T>.
-
-Some modules also have the methods ToAsyncSeq (which takes a request and
-offset and wraps the results using FSharp.Control.AsyncSeq) or ToArrayAsync
-(which takes a request and optionally an offset and/or limit and compiles an
-array.)
-
-The methods sometimes vary in their response objects as well; AsyncExecute
-and ToAsyncSeq will typically return a record that uses option
-types to represent fields that may or may not exist, while ExecuteAsync and
-ToArrayAsync will return an interface that uses nullable reference types (or
-Nullable<T>) for such fields. In many cases, the return object is actually the
-same, even when the type is different. For example, the Deviation record has
-a property named excerpt of type `string option`, but it also implements the
-interface IBclDeviation, which has a Excerpt property of type `string` that
-can also be null. ("Bcl" stands for Base Class Library - these interfaces are
-designed to be used from other .NET languages outside F#.)
-
 Example (C#):
 
     var list = new List<IBclDeviation>();
@@ -166,6 +161,6 @@ See ENDPOINTS.md for more information.
 See also: https://www.deviantart.com/developers/authentication
 
 Both Authorization Code (recommended) and Implicit grant types are supported.
-If you are writing a Windows desktop application, you can use the forms in the DeviantArtFs.WinForms package to get a code or token from the user.
+If you are writing a Windows desktop application, you can use the forms in the DeviantArtFs.WinForms package to get a code or token from the user using either grant type.
 
 The DeviantArtAuth class provides methods to support the Authorization Code grant type (getting tokens from an authorization code and refreshing tokens).

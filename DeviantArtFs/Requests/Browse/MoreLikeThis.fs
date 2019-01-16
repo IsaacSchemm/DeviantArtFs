@@ -2,7 +2,7 @@
 
 open System
 open DeviantArtFs
-    open FSharp.Control
+open FSharp.Control
 
 type MoreLikeThisRequest(seed: Guid) = 
     member __.Seed = seed
@@ -27,5 +27,12 @@ module MoreLikeThis =
     }
 
     let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
+
+    let ToArrayAsync token req offset limit =
+        ToAsyncSeq token req offset
+        |> AsyncSeq.take limit
+        |> AsyncSeq.map dafs.asBclDeviation
+        |> AsyncSeq.toArrayAsync
+        |> Async.StartAsTask
 
     let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenMapResult dafs.asBclDeviation |> Async.StartAsTask

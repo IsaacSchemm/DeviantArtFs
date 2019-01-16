@@ -24,7 +24,7 @@ module Contents =
 
     let ToAsyncSeq token stackid offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 stackid
 
-    let ToArrayAsync token req ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
+    let ToArrayAsync token req offset limit =
         ToAsyncSeq token req offset
         |> AsyncSeq.take limit
         |> AsyncSeq.map (fun i -> i :> IBclStashMetadata)

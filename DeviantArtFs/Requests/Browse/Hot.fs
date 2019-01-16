@@ -25,4 +25,11 @@ module Hot =
 
     let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 120 req
 
+    let ToArrayAsync token req offset limit =
+        ToAsyncSeq token req offset
+        |> AsyncSeq.take limit
+        |> AsyncSeq.map dafs.asBclDeviation
+        |> AsyncSeq.toArrayAsync
+        |> Async.StartAsTask
+
     let ExecuteAsync token paging req = AsyncExecute token paging req |> iop.thenMapResult dafs.asBclDeviation |> Async.StartAsTask

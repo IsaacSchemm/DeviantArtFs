@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Requests.Browse
 
 open DeviantArtFs
+open FSharp.Control
 
 module Tags =
     let AsyncExecute token (paging: PagingParams) (tag: string) = async {
@@ -17,6 +18,13 @@ module Tags =
         return dafs.parsePage Deviation.Parse json
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token req |> dafs.toAsyncSeq offset 50
+    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
+
+    let ToArrayAsync token req offset limit =
+        ToAsyncSeq token req offset
+        |> AsyncSeq.take limit
+        |> AsyncSeq.map dafs.asBclDeviation
+        |> AsyncSeq.toArrayAsync
+        |> Async.StartAsTask
 
     let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenMapResult dafs.asBclDeviation |> Async.StartAsTask

@@ -26,7 +26,7 @@ module WhoFaved =
 
     let ToAsyncSeq token deviationid offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 deviationid
 
-    let ToArrayAsync token deviationid ([<Optional; DefaultParameterValue(0)>] offset: int) ([<Optional; DefaultParameterValue(2147483647)>] limit: int) =
+    let ToArrayAsync token deviationid offset limit =
         ToAsyncSeq token deviationid offset
         |> AsyncSeq.take limit
         |> AsyncSeq.map (fun w -> w :> IBclDeviantArtWhoFavedUser)
