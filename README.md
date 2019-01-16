@@ -2,7 +2,7 @@
 
 A .NET / F# library to interact with the [DeviantArt / Sta.sh API.](https://www.deviantart.com/developers/http/v1/20160316)
 
-If you're using this library in a .NET Framework project and it doesn't run, make sure that the dependencies (FSharp.Core, FSharp.Data, FSharp.Control.AsyncSeq) are installed.
+If you're using this library in a .NET Framework project and it doesn't run, make sure that the dependencies (FSharp.Core, FSharp.Json, FSharp.Control.AsyncSeq) are installed.
 
 ## Currently unsupported features
 
@@ -116,12 +116,12 @@ offset and wraps the results using FSharp.Control.AsyncSeq) or ToArrayAsync
 array.)
 
 The methods sometimes vary in their response objects as well; AsyncExecute
-and ToAsyncSeq will typically return a class or interface that uses option
+and ToAsyncSeq will typically return a record that uses option
 types to represent fields that may or may not exist, while ExecuteAsync and
 ToArrayAsync will return an interface that uses nullable reference types (or
 Nullable<T>) for such fields. In many cases, the return object is actually the
-same, even when the type is different. For example, the Deviation class has
-a property named Excerpt of type `string option`, but it also implements the
+same, even when the type is different. For example, the Deviation record has
+a property named excerpt of type `string option`, but it also implements the
 interface IBclDeviation, which has a Excerpt property of type `string` that
 can also be null. ("Bcl" stands for Base Class Library - these interfaces are
 designed to be used from other .NET languages outside F#.)
@@ -152,11 +152,11 @@ Example (F#):
         let req = new DeviantArtFs.Requests.Gallery.GalleryAllViewRequest()
         let paging = new PagingParams(Offset = 0, Limit = Nullable 24)
         let! (resp: DeviantArtPagedResult<Deviation>) = DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token paging req
-        list.AddRange(resp.Results)
-        offset <- resp.NextOffset |> Option.defaultValue 0
-        more <- resp.HasMore
+        list.AddRange(resp.results)
+        offset <- resp.next_offset |> Option.defaultValue 0
+        more <- resp.has_more
 
-Note how the result from AsyncExecute is `DeviantArtPagedResult`, which has a NextOffset field of `int option`,
+Note how the result from AsyncExecute is `DeviantArtPagedResult`, which has a next_offset field of `int option`,
 while the result from ExecuteAsync is `IBclDeviantArtPagedResult`, which has a NextOffset field of `int?`.
 
 See ENDPOINTS.md for more information.
