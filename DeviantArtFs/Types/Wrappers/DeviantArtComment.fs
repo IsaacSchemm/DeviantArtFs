@@ -9,6 +9,7 @@ type DeviantArtCommentHideType =
 | hidden_by_commenter = 3
 | hidden_as_spam = 4
 
+[<AllowNullLiteral>]
 type IBclDeviantArtComment =
     abstract member Commentid: Guid
     abstract member Parentid: Nullable<Guid>

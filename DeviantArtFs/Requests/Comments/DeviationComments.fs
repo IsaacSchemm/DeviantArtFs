@@ -2,6 +2,7 @@
 
 open DeviantArtFs
 open System
+open FSharp.Control
 
 type DeviationCommentsRequest(deviationid: Guid) =
     member __.Deviationid = deviationid
@@ -9,9 +10,6 @@ type DeviationCommentsRequest(deviationid: Guid) =
     member val Maxdepth = 0 with get, set
 
 module DeviationComments =
-    open System.Runtime.InteropServices
-    open FSharp.Control
-
     let AsyncExecute token (paging: PagingParams) (req: DeviationCommentsRequest) = async {
         let query = seq {
             match Option.ofNullable req.Commentid with
