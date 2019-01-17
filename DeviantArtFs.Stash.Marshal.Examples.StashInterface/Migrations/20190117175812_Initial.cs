@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace DeviantArtFs.Examples.StashInterface.Migrations
+namespace DeviantArtFs.Stash.Marshal.Examples.StashInterface.Migrations
 {
     public partial class Initial : Migration
     {

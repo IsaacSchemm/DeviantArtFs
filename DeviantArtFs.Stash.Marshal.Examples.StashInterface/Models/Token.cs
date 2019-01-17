@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DeviantArtFs.Examples.StashInterface.Models
+namespace DeviantArtFs.Stash.Marshal.Examples.StashInterface.Models
 {
     public class Token : IDeviantArtRefreshToken
     {

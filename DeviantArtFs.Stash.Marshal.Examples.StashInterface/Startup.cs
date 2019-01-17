@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DeviantArtFs.Examples.StashInterface.Data;
+using DeviantArtFs.Stash.Marshal.Examples.StashInterface.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DeviantArtFs.Examples.StashInterface
+namespace DeviantArtFs.Stash.Marshal.Examples.StashInterface
 {
     public class Startup
     {

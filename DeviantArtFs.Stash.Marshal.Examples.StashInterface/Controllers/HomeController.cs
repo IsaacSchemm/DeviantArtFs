@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DeviantArtFs.Examples.StashInterface.Data;
-using DeviantArtFs.Examples.StashInterface.Models;
+using DeviantArtFs.Stash.Marshal.Examples.StashInterface.Data;
+using DeviantArtFs.Stash.Marshal.Examples.StashInterface.Models;
 using DeviantArtFs.Stash.Marshal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace DeviantArtFs.Examples.StashInterface.Controllers
+namespace DeviantArtFs.Stash.Marshal.Examples.StashInterface.Controllers
 {
     public class HomeController : Controller
     {

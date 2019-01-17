@@ -24,7 +24,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviantArtFs.Tests", "Devia
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DeviantArtFs.Examples.GalleryViewer", "DeviantArtFs.Examples.GalleryViewer\DeviantArtFs.Examples.GalleryViewer.vbproj", "{058DAC80-0B10-4158-80FB-C5A54F75C995}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviantArtFs.Examples.StashInterface", "DeviantArtFs.Examples.StashInterface\DeviantArtFs.Examples.StashInterface.csproj", "{039AFA4C-3DE4-4218-A419-8ADDAFD6E476}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviantArtFs.Stash.Marshal.Examples.StashInterface", "DeviantArtFs.Stash.Marshal.Examples.StashInterface\DeviantArtFs.Stash.Marshal.Examples.StashInterface.csproj", "{039AFA4C-3DE4-4218-A419-8ADDAFD6E476}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
