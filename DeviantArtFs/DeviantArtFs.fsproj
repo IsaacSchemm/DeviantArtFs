@@ -84,6 +84,8 @@
     <Compile Include="Requests\Comments\StatusComments.fs" />
     <Compile Include="Requests\Comments\ProfileComments.fs" />
     <Compile Include="Requests\Comments\CommentSiblings.fs" />
+    <Compile Include="Requests\Comments\PostDeviationComment.fs" />
+    <Compile Include="Requests\Comments\PostStatusComment.fs" />
     <Compile Include="Requests\Comments\PostProfileComment.fs" />
     <Compile Include="Requests\Data\Countries.fs" />
     <Compile Include="Requests\Data\Privacy.fs" />

@@ -173,6 +173,15 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 * AsyncExecute (IDeviantArtAccessToken) (Guid) (IEnumerable<Guid>) -> `Async<int>`
 * ExecuteAsync (IDeviantArtAccessToken) (Guid) (IEnumerable<Guid>) -> `Task<int>`
 
+### DeviantArtFs.Requests.Comments.CommentSiblings
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (CommentSiblingsRequest) -> `Async<DeviantArtCommentSiblingsPagedResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (CommentSiblingsRequest) -> `Task<DeviantArtCommentSiblingsPagedResult>`
+
+**CommentSiblingsRequest:**
+
+* Commentid: `Guid`
+* ExtItem: `bool`
+
 ### DeviantArtFs.Requests.Comments.DeviationComments
 * AsyncExecute (IDeviantArtAccessToken) (PagingParams) (DeviationCommentsRequest) -> `Async<DeviantArtCommentPagedResult>`
 * ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (DeviationCommentsRequest) -> `Task<IBclDeviantArtCommentPagedResult>`
@@ -182,6 +191,60 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 **DeviationCommentsRequest:**
 
 * Deviationid: `Guid`
+* Commentid: `Guid?`
+* Maxdepth: `int`
+
+### DeviantArtFs.Requests.Comments.PostDeviationComment
+* AsyncExecute (IDeviantArtAccessToken) (PostDeviationCommentRequest) -> `Async<DeviantArtComment>`
+* ExecuteAsync (IDeviantArtAccessToken) (PostDeviationCommentRequest) -> `Task<IBclDeviantArtComment>`
+
+**PostDeviationCommentRequest:**
+
+* Deviationid: `Guid`
+* Body: `string`
+* Commentid: `Guid?`
+
+### DeviantArtFs.Requests.Comments.PostProfileComment
+* AsyncExecute (IDeviantArtAccessToken) (PostProfileCommentRequest) -> `Async<DeviantArtComment>`
+* ExecuteAsync (IDeviantArtAccessToken) (PostProfileCommentRequest) -> `Task<IBclDeviantArtComment>`
+
+**PostProfileCommentRequest:**
+
+* Username: `string`
+* Body: `string`
+* Commentid: `Guid?`
+
+### DeviantArtFs.Requests.Comments.PostStatusComment
+* AsyncExecute (IDeviantArtAccessToken) (PostStatusCommentRequest) -> `Async<DeviantArtComment>`
+* ExecuteAsync (IDeviantArtAccessToken) (PostStatusCommentRequest) -> `Task<IBclDeviantArtComment>`
+
+**PostStatusCommentRequest:**
+
+* Statusid: `Guid`
+* Body: `string`
+* Commentid: `Guid?`
+
+### DeviantArtFs.Requests.Comments.ProfileComments
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (ProfileCommentsRequest) -> `Async<DeviantArtCommentPagedResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (ProfileCommentsRequest) -> `Task<IBclDeviantArtCommentPagedResult>`
+* ToAsyncSeq (IDeviantArtAccessToken) (ProfileCommentsRequest) (int) -> `AsyncSeq<DeviantArtComment>`
+* ToArrayAsync (IDeviantArtAccessToken) (ProfileCommentsRequest) (int) (int) -> `Task<IBclDeviantArtComment[]>`
+
+**ProfileCommentsRequest:**
+
+* Username: `string`
+* Commentid: `Guid?`
+* Maxdepth: `int`
+
+### DeviantArtFs.Requests.Comments.StatusComments
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (StatusCommentsRequest) -> `Async<DeviantArtCommentPagedResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (StatusCommentsRequest) -> `Task<IBclDeviantArtCommentPagedResult>`
+* ToAsyncSeq (IDeviantArtAccessToken) (StatusCommentsRequest) (int) -> `AsyncSeq<DeviantArtComment>`
+* ToArrayAsync (IDeviantArtAccessToken) (StatusCommentsRequest) (int) (int) -> `Task<IBclDeviantArtComment[]>`
+
+**StatusCommentsRequest:**
+
+* Statusid: `Guid`
 * Commentid: `Guid?`
 * Maxdepth: `int`
 

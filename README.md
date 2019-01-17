@@ -23,7 +23,6 @@ endpoints under /browse/ might consist of many, many pages...)
 ## Currently unsupported features
 
 * The following groups of endpoints are not currently implemented:
-  * Comments
   * Feed
   * Messages
   * Notes
@@ -54,7 +53,17 @@ endpoints under /browse/ might consist of many, many pages...)
 * POST /collections/fave
 * POST /collections/unfave
 * POST /collections/folders/create
-* GET /collections/folders/remove/{folderid} 	
+* GET /collections/folders/remove/{folderid}
+
+### Comments
+
+* GET /comments/{commentid}/siblings
+* GET /comments/deviation/{deviationid}
+* POST /comments/post/deviation/{deviationid}
+* POST /comments/post/profile/{username}
+* POST /comments/post/status/{statusid}
+* GET /comments/profile/{username}
+* GET /comments/status/{statusid}
 
 ### Data
 
