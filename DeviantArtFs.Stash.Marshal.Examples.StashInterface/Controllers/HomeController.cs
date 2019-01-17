@@ -228,7 +228,26 @@ namespace DeviantArtFs.Stash.Marshal.Examples.StashInterface.Controllers
             var children = stackid is long s
                 ? stashRoot.FindStackById(s).Children
                 : stashRoot.Children;
+            if (children.Count() == 1) {
+                return RedirectToAction("ViewItem", new { itemid = children.First().BclMetadata.Itemid });
+            }
             return View("ViewStack", children);
+        }
+
+        public async Task<IActionResult> ViewItem(long itemid)
+        {
+            var t = await GetAccessTokenAsync();
+            if (t == null)
+                return RedirectToAction("Login");
+
+            var me = await Requests.User.Whoami.ExecuteAsync(t);
+
+            var existingItems = await _context.StashEntries
+                .Where(x => x.UserId == me.Userid)
+                .Where(x => x.ItemId == itemid)
+                .SingleAsync();
+            IBclStashMetadata m = StashMetadata.Parse(existingItems.MetadataJson);
+            return View("ViewItem", m);
         }
     }
 }

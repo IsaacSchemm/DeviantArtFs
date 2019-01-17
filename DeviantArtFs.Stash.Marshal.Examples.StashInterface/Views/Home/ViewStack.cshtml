@@ -9,6 +9,9 @@
 @foreach (var node in Model)
 {
     var meta = node.BclMetadata;
+    string url = meta.Itemid is long itemid
+        ? $"/Home/ViewItem?itemid={itemid}"
+        : $"/Home/ViewStack?stackid={meta.Stackid}";
     <div>
         @if (meta.Thumb?.Src != null)
         {
@@ -25,21 +28,9 @@
                 <img align="left" src="@smallest.Src" style="max-width: 128px; max-height: 128px" />
             }
         }
-        <h3>@meta.Title</h3>
+        <h3><a href="@url">@meta.Title</a></h3>
         <p>@(meta.Itemid ?? meta.Stackid)</p>
-        @if (meta.Itemid == null)
-        {
-            <a href="/Home/ViewStack?stackid=@meta.Stackid">View contents</a>
-        }
-        @if (meta.Files != null)
-        {
-            <ul>
-                @foreach (var f in meta.Files)
-                {
-                    <li><a href="@f.Src">@f.Src</a></li>
-                }
-            </ul>
-        }
+        <p>@meta.Description</p>
     </div>
     <div style="clear: both"></div>
     <hr />

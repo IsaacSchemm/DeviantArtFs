@@ -1,0 +1,39 @@
+﻿@model DeviantArtFs.IBclStashMetadata
+
+@{
+    ViewData["Title"] = "View Stack";
+    var meta = Model;
+}
+
+<h2>View Stack</h2>
+
+@if (meta.Files != null)
+{
+    var smallest = meta.Files
+        .Where(f => f.Width * f.Height > 0)
+        .OrderBy(f => f.Width * f.Height > 0)
+        .FirstOrDefault();
+    if (smallest != null)
+    {
+        <img align="left" src="@smallest.Src" style="max-width: 128px; max-height: 128px" />
+    }
+}
+<h3>@meta.Title</h3>
+<p>@meta.Itemid</p>
+<p>@Html.Raw(meta.ArtistComments)</p>
+<p>
+    @foreach (var tag in meta.Tags)
+    {
+        @:#@tag
+    }
+</p>
+<div style="clear: both"></div>
+@if (meta.Files != null)
+{
+    <ul>
+        @foreach (var f in meta.Files)
+        {
+            <li><a href="@f.Src">@(f.Width)x@(f.Height)</a></li>
+        }
+    </ul>
+}

@@ -70,7 +70,3 @@ type StashNode(root: IStashRoot, metadata: StashMetadata) =
     override this.ToString() = this.Metadata.title
 and IStashRoot =
     abstract member Nodes: seq<StashNode>
-
-type internal EmptyRoot() =
-    interface IStashRoot with
-        member __.Nodes = Seq.empty
