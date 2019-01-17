@@ -7,7 +7,7 @@ open System.Collections.Generic
 open System
 open FSharp.Json
 
-type internal TokenResponse = {
+type TokenResponse = {
   expires_in: int
   status: string
   access_token: string
@@ -33,6 +33,9 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
                 yield sprintf "%s=%s" key value
         }
         String.concat "&" parameters
+
+    member __.ClientId = client_id
+    member __.ClientSecret = client_secret
 
     member __.AsyncGetToken (code: string) (redirect_uri: Uri) = async {
         if isNull code then

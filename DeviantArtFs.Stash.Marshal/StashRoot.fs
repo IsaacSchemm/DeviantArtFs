@@ -36,7 +36,7 @@ type StashRoot() =
     interface IStashRoot with
         member this.Nodes = this.Nodes
 
-    member __.FindItemById itemid =
+    member __.TryFindItemById itemid =
         seq {
             for node in nodes do
                 match node.Metadata.itemid with
@@ -44,13 +44,16 @@ type StashRoot() =
                 | None -> ()
         } |> Seq.tryHead
 
-    member __.FindStackById stackid =
+    member __.TryFindStackById stackid =
         seq {
             for node in nodes do
                 match node.Metadata.itemid with
                 | Some _ -> ()
                 | None -> if node.Metadata.stackid = Some stackid then yield node
         } |> Seq.tryHead
+
+    member this.FindItemById itemid = Option.get (this.TryFindItemById itemid)
+    member this.FindStackById stackid = Option.get (this.TryFindStackById stackid)
 
     member __.Children = seq {
         for n in nodes do
@@ -81,14 +84,14 @@ type StashRoot() =
             match (itemid, stackid) with
             | (Some itemid, _) ->
                 // Add or update item
-                match this.FindItemById itemid with
+                match this.TryFindItemById itemid with
                 | Some existing ->
                     update position existing metadata
                 | None ->
                     new StashNode(this, metadata) |> insert (position |> Option.defaultValue 0)
             | (None, Some stackid) ->
                 // Add or update stack
-                match this.FindStackById stackid with
+                match this.TryFindStackById stackid with
                 | Some existing ->
                     update position existing metadata
                 | None ->
@@ -99,12 +102,12 @@ type StashRoot() =
             match (itemid, stackid) with
             | (Some itemid, None) ->
                 // Delete item
-                match this.FindItemById itemid with
+                match this.TryFindItemById itemid with
                 | Some x -> nodes.Remove(x) |> ignore
                 | None -> () // This item's parent stack may have been already removed
             | (None, Some stackid) ->
                 // Delete stack
-                match this.FindStackById stackid with
+                match this.TryFindStackById stackid with
                 | Some x -> nodes.Remove(x) |> ignore
                 | None -> () // This stack's parent stack may have been already removed
             | _ -> failwithf "Invalid combination of stackid/itemid without metadata"

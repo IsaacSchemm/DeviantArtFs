@@ -36,4 +36,4 @@ module Delta =
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token req offset = AsyncExecute token req offset |> iop.thenTo (fun x -> x :> IBclStashDeltaResult) |> Async.StartAsTask
+    let ExecuteAsync token paging req = AsyncExecute token paging req |> iop.thenTo (fun x -> x :> IBclStashDeltaResult) |> Async.StartAsTask
