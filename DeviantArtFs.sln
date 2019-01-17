@@ -16,15 +16,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DeviantArtFs.Examples.GalleryInfo", "DeviantArtFs.Examples.GalleryInfo\DeviantArtFs.Examples.GalleryInfo.fsproj", "{7B4B5218-A33D-4453-B165-E8D1E40F07ED}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "DeviantArtFs.Stash.Marshal", "DeviantArtFs.Stash.Marshal\DeviantArtFs.Stash.Marshal.fsproj", "{933C59ED-2C09-4FF2-8EB8-C6385EC93CBE}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocGenerator", "DocGenerator\DocGenerator.csproj", "{0D8EB9C5-AA74-417B-B405-48107688011D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviantArtFs.Tests", "DeviantArtFs.Tests\DeviantArtFs.Tests.csproj", "{525EC5A9-35B2-4061-B578-C7D5717EED81}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DeviantArtFs.Examples.GalleryViewer", "DeviantArtFs.Examples.GalleryViewer\DeviantArtFs.Examples.GalleryViewer.vbproj", "{058DAC80-0B10-4158-80FB-C5A54F75C995}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviantArtFs.Stash.Marshal.Examples.StashInterface", "DeviantArtFs.Stash.Marshal.Examples.StashInterface\DeviantArtFs.Stash.Marshal.Examples.StashInterface.csproj", "{039AFA4C-3DE4-4218-A419-8ADDAFD6E476}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,10 +40,6 @@ Global
 		{7B4B5218-A33D-4453-B165-E8D1E40F07ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B4B5218-A33D-4453-B165-E8D1E40F07ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B4B5218-A33D-4453-B165-E8D1E40F07ED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{933C59ED-2C09-4FF2-8EB8-C6385EC93CBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{933C59ED-2C09-4FF2-8EB8-C6385EC93CBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{933C59ED-2C09-4FF2-8EB8-C6385EC93CBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{933C59ED-2C09-4FF2-8EB8-C6385EC93CBE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0D8EB9C5-AA74-417B-B405-48107688011D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0D8EB9C5-AA74-417B-B405-48107688011D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D8EB9C5-AA74-417B-B405-48107688011D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -60,10 +52,6 @@ Global
 		{058DAC80-0B10-4158-80FB-C5A54F75C995}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{058DAC80-0B10-4158-80FB-C5A54F75C995}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{058DAC80-0B10-4158-80FB-C5A54F75C995}.Release|Any CPU.Build.0 = Release|Any CPU
-		{039AFA4C-3DE4-4218-A419-8ADDAFD6E476}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{039AFA4C-3DE4-4218-A419-8ADDAFD6E476}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{039AFA4C-3DE4-4218-A419-8ADDAFD6E476}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{039AFA4C-3DE4-4218-A419-8ADDAFD6E476}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

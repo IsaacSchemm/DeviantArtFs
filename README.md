@@ -105,7 +105,7 @@ endpoints under /browse/ might consist of many, many pages...)
 * POST /stash/submit
 * POST /stash/update/{stackid}
 
-> The DeviantArt.Stash.Marshal library provides a StashRoot object that can process delta entries.
+> The DeviantArtFs.Stash.Marshal library (https://github.com/libertyernie/DeviantArtFs.Stash.Marshal) provides a StashRoot object that can process delta entries.
 
 ### User
 
