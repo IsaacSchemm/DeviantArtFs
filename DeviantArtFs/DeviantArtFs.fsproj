@@ -82,6 +82,8 @@
     <Compile Include="Requests\Collections\RemoveCollectionFolder.fs" />
     <Compile Include="Requests\Comments\DeviationComments.fs" />
     <Compile Include="Requests\Comments\CommentSiblings.fs" />
+    <Compile Include="Requests\Comments\StatusComments.fs" />
+    <Compile Include="Requests\Comments\ProfileComments.fs" />
     <Compile Include="Requests\Data\Countries.fs" />
     <Compile Include="Requests\Data\Privacy.fs" />
     <Compile Include="Requests\Data\Submission.fs" />

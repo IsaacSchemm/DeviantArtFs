@@ -4,13 +4,13 @@ open DeviantArtFs
 open System
 open FSharp.Control
 
-type DeviationCommentsRequest(deviationid: Guid) =
-    member __.Deviationid = deviationid
+type StatusCommentsRequest(statusid: Guid) =
+    member __.Statusid = statusid
     member val Commentid = Nullable<Guid>() with get, set
     member val Maxdepth = 0 with get, set
 
-module DeviationComments =
-    let AsyncExecute token (paging: PagingParams) (req: DeviationCommentsRequest) = async {
+module StatusComments =
+    let AsyncExecute token (paging: PagingParams) (req: StatusCommentsRequest) = async {
         let query = seq {
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s
@@ -21,7 +21,7 @@ module DeviationComments =
         let req =
             query
             |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/comments/deviation/%O?%s" req.Deviationid
+            |> sprintf "https://www.deviantart.com/api/v1/oauth2/comments/status/%O?%s" req.Statusid
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
         return json |> DeviantArtCommentPagedResult.Parse
