@@ -93,7 +93,6 @@ namespace DeviantArtFs.Stash.Marshal.Examples.StashInterface.Controllers
             var me = await Requests.User.Whoami.ExecuteAsync(t);
             var existingCursors = await _context.DeltaCursors
                 .Where(x => x.UserId == me.Userid)
-                .Select(x => x.Cursor)
                 .ToListAsync();
 
             var existingItems = await _context.StashEntries
@@ -106,6 +105,30 @@ namespace DeviantArtFs.Stash.Marshal.Examples.StashInterface.Controllers
             await _context.SaveChangesAsync();
 
             return await Refresh();
+        }
+
+        public async Task<IActionResult> Dump()
+        {
+            var t = await GetAccessTokenAsync();
+            if (t == null)
+                return RedirectToAction("Login");
+
+            var me = await Requests.User.Whoami.ExecuteAsync(t);
+            var existingCursor = await _context.DeltaCursors
+                .Where(x => x.UserId == me.Userid)
+                .Select(x => x.Cursor)
+                .SingleOrDefaultAsync();
+
+            var existingItems = await _context.StashEntries
+                .Where(x => x.UserId == me.Userid)
+                .OrderBy(x => x.Position)
+                .ToListAsync();
+
+            return Json(new
+            {
+                existingCursor,
+                existingItems
+            });
         }
 
         public async Task<IActionResult> Refresh()
@@ -169,6 +192,16 @@ namespace DeviantArtFs.Stash.Marshal.Examples.StashInterface.Controllers
                 });
             }
 
+            var ex = await _context.DeltaCursors
+                .Where(x => x.UserId == me.Userid)
+                .SingleOrDefaultAsync();
+            if (ex == null)
+            {
+                ex = new DeltaCursor { UserId = me.Userid };
+                _context.DeltaCursors.Add(ex);
+            }
+            ex.Cursor = existingCursor;
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("ViewStack");
@@ -195,7 +228,7 @@ namespace DeviantArtFs.Stash.Marshal.Examples.StashInterface.Controllers
             var children = stackid is long s
                 ? stashRoot.FindStackById(s).Children
                 : stashRoot.Children;
-            return Json(children);
+            return View("ViewStack", children);
         }
     }
 }

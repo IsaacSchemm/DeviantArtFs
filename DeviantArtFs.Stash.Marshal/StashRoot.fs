@@ -9,6 +9,19 @@ type StashRoot() =
         nodes.Remove(node) |> ignore
         nodes.Insert(absolute_pos, node)
 
+    let relative_insert relative_pos (node: StashNode) =
+        let siblings =
+            nodes
+            |> Seq.where (fun n -> n.ParentStackId = node.ParentStackId)
+            |> ResizeArray
+        if Seq.length siblings <= relative_pos then
+            nodes.Add(node)
+        else
+            let insert_before = siblings.[relative_pos]
+
+            let new_master_pos = nodes.IndexOf(insert_before)
+            nodes.Insert(new_master_pos, node)
+
     let move relative_pos (node: StashNode) =
         let siblings =
             nodes
@@ -88,14 +101,14 @@ type StashRoot() =
                 | Some existing ->
                     update position existing metadata
                 | None ->
-                    new StashNode(this, metadata) |> insert (position |> Option.defaultValue 0)
+                    new StashNode(this, metadata) |> relative_insert (position |> Option.defaultValue 0)
             | (None, Some stackid) ->
                 // Add or update stack
                 match this.TryFindStackById stackid with
                 | Some existing ->
                     update position existing metadata
                 | None ->
-                    new StashNode(this, metadata) |> insert (position |> Option.defaultValue 0)
+                    new StashNode(this, metadata) |> relative_insert (position |> Option.defaultValue 0)
             | _ -> failwithf "Invalid combination of stackid/itemid with metadata"
         | None ->
             // Deletion
