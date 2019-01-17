@@ -29,6 +29,7 @@ type DeviantArtComment = {
     body: string
     user: DeviantArtUser
 } with
+    static member Parse json = Json.deserialize<DeviantArtComment> json
     interface IBclDeviantArtComment with
         member this.Body = this.body
         member this.Commentid = this.commentid
