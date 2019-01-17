@@ -5,11 +5,7 @@ open DeviantArtFs
 type StashRoot() =
     let nodes = new ResizeArray<StashNode>()
 
-    let insert absolute_pos (node: StashNode) =
-        nodes.Remove(node) |> ignore
-        nodes.Insert(absolute_pos, node)
-
-    let relative_insert relative_pos (node: StashNode) =
+    let insert relative_pos (node: StashNode) =
         let siblings =
             nodes
             |> Seq.where (fun n -> n.ParentStackId = node.ParentStackId)
@@ -32,14 +28,16 @@ type StashRoot() =
         let insert_before = siblings.[new_pos]
 
         let new_master_pos = nodes.IndexOf(insert_before)
-        insert new_master_pos node
+        nodes.Remove(node) |> ignore
+        nodes.Insert(new_master_pos, node)
 
     let update pos (node: StashNode) (metadata: StashMetadata) =
         let original_stackid = node.ParentStackId
         node.Metadata <- metadata
 
         if original_stackid <> node.ParentStackId then
-            node |> insert 0
+            nodes.Remove(node) |> ignore
+            nodes.Insert(0, node)
 
         match pos with
         | Some s -> node |> move s
@@ -101,14 +99,14 @@ type StashRoot() =
                 | Some existing ->
                     update position existing metadata
                 | None ->
-                    new StashNode(this, metadata) |> relative_insert (position |> Option.defaultValue 0)
+                    new StashNode(this, metadata) |> insert (position |> Option.defaultValue 0)
             | (None, Some stackid) ->
                 // Add or update stack
                 match this.TryFindStackById stackid with
                 | Some existing ->
                     update position existing metadata
                 | None ->
-                    new StashNode(this, metadata) |> relative_insert (position |> Option.defaultValue 0)
+                    new StashNode(this, metadata) |> insert (position |> Option.defaultValue 0)
             | _ -> failwithf "Invalid combination of stackid/itemid with metadata"
         | None ->
             // Deletion
