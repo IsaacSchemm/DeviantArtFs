@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+@if (!User.Identity.IsAuthenticated)
+{
+    <p>
+        <a href="/Home/Login">Log in</a>
+    </p>
+}
+else
+{
+    <h2>
+        Logged in as: @User.Identity.Name
+    </h2>
+    <ul>
+        <li>
+            <a href="/Home/Whoami">Whoami</a>
+        </li>
+        <li>
+            <a href="/Home/Logout">Log out</a>
+        </li>
+    </ul>
+}
