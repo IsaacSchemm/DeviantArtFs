@@ -33,4 +33,4 @@ module WhoFaved =
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token deviationid paging = AsyncExecute token deviationid paging |> iop.thenMapResult (fun w -> w :> IBclDeviantArtWhoFavedUser) |> Async.StartAsTask
+    let ExecuteAsync token paging deviationid = AsyncExecute token paging deviationid |> iop.thenMapResult (fun w -> w :> IBclDeviantArtWhoFavedUser) |> Async.StartAsTask

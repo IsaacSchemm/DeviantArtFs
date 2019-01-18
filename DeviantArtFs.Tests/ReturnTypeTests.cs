@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace DeviantArtFs.Tests
@@ -7,26 +8,41 @@ namespace DeviantArtFs.Tests
     [TestClass]
     public class ReturnTypeTests
     {
-        private static void AssertNoNullables(Type t, string methodName, string typeName)
+        private static readonly ISet<Type> TypesCheckedForFSharp = new HashSet<Type>();
+        private static readonly ISet<Type> TypesCheckedForCSharp = new HashSet<Type>();
+
+        private static void AssertOkForFSharp(Type t, string methodName, string typeName)
         {
-            if (t.Name.Contains("IJsonDocument")) Assert.Fail($"Found JsonProvider type in result of {methodName} on {typeName}");
+            if (TypesCheckedForFSharp.Contains(t)) return;
+            TypesCheckedForFSharp.Add(t);
+
             if (t.Namespace.StartsWith("DeviantArtFs") && t.IsInterface) Assert.Fail($"Found interface {t.Name} in result of {methodName} on {typeName}");
             if (t.Name.StartsWith("Nullable")) Assert.Fail($"Found Nullable<T> in result of {methodName} on {typeName}");
             if (t.Name.StartsWith("IBcl")) Assert.Fail($"Found one of the IBcl*** types in result of {methodName} on {typeName}");
-            foreach (var p in t.GenericTypeArguments)
+            foreach (var a in t.GenericTypeArguments)
             {
-                AssertNoNullables(p, methodName, typeName);
+                AssertOkForFSharp(a, methodName, typeName);
+            }
+            foreach (var p in t.GetProperties())
+            {
+                AssertOkForFSharp(p.PropertyType, methodName, typeName);
             }
         }
-
-        private static void AssertNoOptions(Type t, string methodName, string typeName)
+         
+        private static void AssertOkForCSharp(Type t, string methodName, string typeName)
         {
-            if (t.Name.Contains("IJsonDocument")) Assert.Fail($"Found JsonProvider type in result of {methodName} on {typeName}");
+            if (TypesCheckedForCSharp.Contains(t)) return;
+            TypesCheckedForCSharp.Add(t);
+
             if (t.Namespace.StartsWith("DeviantArtFs") && t.IsInterface && !t.Name.StartsWith("IBcl")) Assert.Fail($"Found interface {t.Name} in result of {methodName} on {typeName} that does not conform to naming convention");
             if (t.Name.StartsWith("FSharpOption")) Assert.Fail($"Found FSharpOption<T> in result of {methodName} on {typeName}");
-            foreach (var p in t.GenericTypeArguments)
+            foreach (var a in t.GenericTypeArguments)
             {
-                AssertNoOptions(p, methodName, typeName);
+                AssertOkForCSharp(a, methodName, typeName);
+            }
+            foreach (var p in t.GetProperties())
+            {
+                AssertOkForCSharp(p.PropertyType, methodName, typeName);
             }
         }
 
@@ -41,7 +57,13 @@ namespace DeviantArtFs.Tests
                 if (f != null)
                 {
                     Assert.AreEqual("FSharpAsync`1", f.ReturnType.Name, $"Failure in type {t.Name}");
-                    AssertNoNullables(f.ReturnType, f.Name, t.Name);
+                    AssertOkForFSharp(f.ReturnType, f.Name, t.Name);
+
+                    foreach (var p in f.GetParameters())
+                    {
+                        if (p.Name == "paging") Assert.AreEqual("PagingParams", p.ParameterType.Name, "Parameter \"paging\" is not of type PagingParams");
+                        if (p.Name != "paging") Assert.AreNotEqual("PagingParams", p.ParameterType.Name, "Parameter of type PagingParams is not named \"paging\"");
+                    }
                 }
             }
         }
@@ -56,7 +78,7 @@ namespace DeviantArtFs.Tests
                 var f = t.GetMethod("ToAsyncSeq");
                 if (f != null)
                 {
-                    AssertNoNullables(f.ReturnType, f.Name, t.Name);
+                    AssertOkForFSharp(f.ReturnType, f.Name, t.Name);
                 }
             }
         }
@@ -72,25 +94,13 @@ namespace DeviantArtFs.Tests
                 if (f != null)
                 {
                     Assert.IsTrue(f.ReturnType.FullName.StartsWith("System.Threading.Tasks.Task"), $"Failure in type {t.Name}");
-                    AssertNoOptions(f.ReturnType, f.Name, t.Name);
-                }
-            }
-        }
+                    AssertOkForCSharp(f.ReturnType, f.Name, t.Name);
 
-        [TestMethod]
-        public void TestToListAsync()
-        {
-            var a = Assembly.GetAssembly(typeof(Deviation));
-            foreach (var t in a.GetTypes())
-            {
-                if (t.Name.Contains("@")) continue;
-                var f = t.GetMethod("ToListAsync");
-                if (f != null)
-                {
-                    Assert.AreEqual("Task`1", f.ReturnType.Name, $"Failure in type {t.Name}");
-                    Assert.AreEqual(1, f.ReturnType.GenericTypeArguments.Length);
-                    Assert.IsTrue(f.ReturnType.GenericTypeArguments[0].FullName.StartsWith("System.Collections.Generic.List"), $"Failure in type {t.Name}: ToListAsync returns {f.ReturnType.GenericTypeArguments[0].FullName} instead of List<T>");
-                    AssertNoOptions(f.ReturnType, f.Name, t.Name);
+                    foreach (var p in f.GetParameters())
+                    {
+                        if (p.Name == "paging") Assert.AreEqual("PagingParams", p.ParameterType.Name, $"Parameter {p.Name}, function {f.Name} on {t.Name}");
+                        if (p.Name != "paging") Assert.AreNotEqual("PagingParams", p.ParameterType.Name, $"Parameter {p.Name}, function {f.Name} on {t.Name}");
+                    }
                 }
             }
         }

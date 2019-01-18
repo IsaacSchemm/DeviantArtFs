@@ -27,4 +27,4 @@ module Tags =
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token req paging = AsyncExecute token req paging |> iop.thenMapResult dafs.asBclDeviation |> Async.StartAsTask
+    let ExecuteAsync token paging req = AsyncExecute token paging req |> iop.thenMapResult dafs.asBclDeviation |> Async.StartAsTask

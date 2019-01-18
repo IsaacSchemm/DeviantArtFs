@@ -23,4 +23,4 @@ module CommentSiblings =
         return json |> DeviantArtCommentSiblingsPagedResult.Parse
     }
 
-    let ExecuteAsync token req paging = AsyncExecute token req paging |> Async.StartAsTask
+    let ExecuteAsync token paging req = AsyncExecute token paging req |> iop.thenTo (fun o -> o :> IBclDeviantArtCommentSiblingsPagedResult) |> Async.StartAsTask

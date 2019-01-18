@@ -13,7 +13,7 @@ type IBclDeviation =
     abstract member CategoryPath: string
     abstract member IsFavourited: bool
     abstract member Author: IBclDeviantArtUser
-    abstract member Stats: IDeviationStats
+    abstract member Stats: IBclDeviationStats
     abstract member PublishedTime: Nullable<DateTimeOffset>
     abstract member IsMature: bool
     abstract member AllowsComments: bool
@@ -55,7 +55,7 @@ type Deviation = {
         member this.IsMature = this.is_mature |> Option.defaultValue false
         member this.Preview = this.preview |> Option.map (fun u -> u :> IBclDeviationPreview) |> Option.toObj
         member this.PublishedTime = this.published_time |> Option.toNullable
-        member this.Stats = this.stats |> Option.map (fun u -> u :> IDeviationStats) |> Option.toObj
+        member this.Stats = this.stats |> Option.map (fun u -> u :> IBclDeviationStats) |> Option.toObj
         member this.Thumbs = this.thumbs |> Seq.map (fun u -> u :> IBclDeviationPreview)
         member this.Title = this.title |> Option.toObj
         member this.Url = this.url |> Option.toObj

@@ -36,7 +36,7 @@ module CollectionFolders =
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token ps paging =
-        AsyncExecute token ps paging
+    let ExecuteAsync token paging req =
+        AsyncExecute token paging req
         |> iop.thenMapResult (fun f -> f :> IBclDeviantArtCollectionFolder)
         |> Async.StartAsTask

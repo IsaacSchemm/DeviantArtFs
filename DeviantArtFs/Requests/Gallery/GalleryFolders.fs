@@ -36,7 +36,7 @@ module GalleryFolders =
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token req paging =
-        AsyncExecute token req paging
+    let ExecuteAsync token paging req =
+        AsyncExecute token paging req
         |> iop.thenMapResult (fun f -> f :> IBclDeviantArtGalleryFolder)
         |> Async.StartAsTask
