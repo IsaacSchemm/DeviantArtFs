@@ -41,8 +41,10 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 ### DeviantArtFs.DeviantArtAuth
 * AsyncGetToken (string) (Uri) -> `Async<IDeviantArtRefreshToken>`
 * AsyncRefresh (string) -> `Async<IDeviantArtRefreshToken>`
+* AsyncRevoke (string) (bool) -> `Async<unit>`
 * GetTokenAsync (string) (Uri) -> `Task<IDeviantArtRefreshToken>`
 * RefreshAsync (string) -> `Task<IDeviantArtRefreshToken>`
+* RevokeAsync (string) (bool) -> `Task`
 
 ### DeviantArtFs.Requests.Browse.CategoryTree
 * AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<IEnumerable<DeviantArtCategory>>`

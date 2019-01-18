@@ -107,6 +107,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
                 await _context.SaveChangesAsync();
                 await HttpContext.SignOutAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme);
+                await _appReg.RevokeAsync(t.RefreshToken, revoke_refresh_only: true);
             }
             return RedirectToAction("Index");
         }
