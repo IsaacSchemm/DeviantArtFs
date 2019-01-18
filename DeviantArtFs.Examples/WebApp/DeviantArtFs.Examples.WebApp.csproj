@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DeviantArtFs\DeviantArtFs.fsproj" />
+    <ProjectReference Include="..\..\DeviantArtFs\DeviantArtFs.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

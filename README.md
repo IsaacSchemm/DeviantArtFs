@@ -165,6 +165,24 @@ while the result from ExecuteAsync is `IBclDeviantArtPagedResult`, which has a N
 
 See ENDPOINTS.md for more information.
 
+## Examples
+
+The Examples folder in the source code repository contains small applications
+that use DeviantArtFs:
+
+* **RecentSubmissions.CSharp**: A C# console application that shows the most
+  recent submission, journal, and status for a user, along with any favorites
+  or comments. (WinForms is needed for the login window, however.)
+  Uses the Implicit grant and stores tokens in a file.
+* **RecentSubmissions.FSharp**: As above, but in F#, to demonstrate how
+  DeviantArtFs has both F#-style and .NET-style functions and types.
+* **GalleryViewer**: A VB.NET app that lets you see the "All" view of
+  someone's gallery and read the descriptions of individual submissions.
+  Uses the Client Credentials grant and stores tokens in a file.
+* **WebApp**: An ASP.NET Core 2.1 app written in C# that lets you view
+  someone's gallery folders and corresponding submission thumbnails.
+  Uses the Client Credentials grant and stores tokens in a database.
+
 ## Authentication
 
 See also: https://www.deviantart.com/developers/authentication
