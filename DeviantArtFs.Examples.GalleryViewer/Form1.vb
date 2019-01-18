@@ -2,15 +2,15 @@
 Imports DeviantArtFs.WinForms
 
 Public Class Form1
-    Private Token As IDeviantArtAccessToken = Nothing
+    Private Token As IDeviantArtRefreshToken = Nothing
 
     Private CurrentUsername As String = Nothing
     Private NextOffset As Integer? = Nothing
 
     Private Async Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         If Token Is Nothing Then
-            If File.Exists("token.txt") Then
-                Token = New AccessToken(File.ReadAllText("token.txt"))
+            If File.Exists("refresh_token.txt") Then
+                Token = AccessToken.ReadFrom("refresh_token.txt")
             End If
         End If
 
@@ -24,22 +24,26 @@ Public Class Form1
     End Sub
 
     Private Async Function CheckToken() As Task
+        Dim auth = New DeviantArtAuth(DeviantArtClientId, DeviantArtClientSecret)
+
         If Token IsNot Nothing Then
+            If Token.ExpiresAt < DateTimeOffset.UtcNow.AddMinutes(5) Then
+                Token = Await auth.RefreshAsync(Token.RefreshToken)
+                AccessToken.WriteTo("refresh_token.txt", Token)
+            End If
+
             If Not Await Requests.Util.Placebo.IsValidAsync(Token) Then
                 Token = Nothing
             End If
         End If
 
         If Token Is Nothing Then
-            Dim clientIdStr = InputBox("Please enter the client ID (e.g. 1234)")
-            Dim clientId = Integer.Parse(clientIdStr)
-            Dim urlStr = InputBox("Please enter the redirect URL", DefaultResponse:="https://www.example.com")
-            Dim url As New Uri(urlStr)
+            Dim url As New Uri(DeviantArtRedirectUrl)
 
-            Using form = New DeviantArtImplicitGrantForm(clientId, url, {"stash"})
+            Using form = New DeviantArtAuthorizationCodeForm(DeviantArtClientId, url, {"stash"})
                 If form.ShowDialog() = DialogResult.OK Then
-                    File.WriteAllText("token.txt", form.AccessToken)
-                    Token = New AccessToken(form.AccessToken)
+                    Token = Await auth.GetTokenAsync(form.Code, url)
+                    AccessToken.WriteTo("refresh_token.txt", Token)
                 End If
             End Using
         End If

@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessToken.vb" />
+    <Compile Include="ClientCredentials.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
     </Compile>
