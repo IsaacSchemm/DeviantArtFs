@@ -61,11 +61,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DeviantArtFs.WinForms\DeviantArtFs.WinForms.csproj">
+    <ProjectReference Include="..\..\DeviantArtFs.WinForms\DeviantArtFs.WinForms.csproj">
       <Project>{9a66e829-3d74-4ae9-a200-21b5c9f170b6}</Project>
       <Name>DeviantArtFs.WinForms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DeviantArtFs\DeviantArtFs.fsproj">
+    <ProjectReference Include="..\..\DeviantArtFs\DeviantArtFs.fsproj">
       <Project>{32448e41-c600-46d2-98c4-f9ddb4118691}</Project>
       <Name>DeviantArtFs</Name>
     </ProjectReference>

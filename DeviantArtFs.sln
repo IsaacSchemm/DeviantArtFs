@@ -14,15 +14,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DeviantArtFs.Examples.RecentSubmissions.FSharp", "DeviantArtFs.Examples.RecentSubmissions.FSharp\DeviantArtFs.Examples.RecentSubmissions.FSharp.fsproj", "{7B4B5218-A33D-4453-B165-E8D1E40F07ED}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DeviantArtFs.Examples.RecentSubmissions.FSharp", "DeviantArtFs.Examples\RecentSubmissions.FSharp\DeviantArtFs.Examples.RecentSubmissions.FSharp.fsproj", "{7B4B5218-A33D-4453-B165-E8D1E40F07ED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocGenerator", "DocGenerator\DocGenerator.csproj", "{0D8EB9C5-AA74-417B-B405-48107688011D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviantArtFs.Tests", "DeviantArtFs.Tests\DeviantArtFs.Tests.csproj", "{525EC5A9-35B2-4061-B578-C7D5717EED81}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DeviantArtFs.Examples.GalleryViewer", "DeviantArtFs.Examples.GalleryViewer\DeviantArtFs.Examples.GalleryViewer.vbproj", "{058DAC80-0B10-4158-80FB-C5A54F75C995}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DeviantArtFs.Examples.GalleryViewer", "DeviantArtFs.Examples\GalleryViewer\DeviantArtFs.Examples.GalleryViewer.vbproj", "{058DAC80-0B10-4158-80FB-C5A54F75C995}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviantArtFs.Examples.RecentSubmissions.CSharp", "DeviantArtFs.Examples.RecentSubmissions.CSharp\DeviantArtFs.Examples.RecentSubmissions.CSharp.csproj", "{475968D9-6F53-4F28-9D16-AC09EF199328}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviantArtFs.Examples.RecentSubmissions.CSharp", "DeviantArtFs.Examples\RecentSubmissions.CSharp\DeviantArtFs.Examples.RecentSubmissions.CSharp.csproj", "{475968D9-6F53-4F28-9D16-AC09EF199328}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
