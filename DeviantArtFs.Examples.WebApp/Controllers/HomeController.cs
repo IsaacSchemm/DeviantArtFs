@@ -12,45 +12,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DeviantArtFs.Examples.WebApp.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ControllerBase
     {
-        private readonly ExampleDbContext _context;
-        private readonly DeviantArtAuth _appReg;
-
-        public HomeController(ExampleDbContext context, DeviantArtAuth appReg)
-        {
-            _context = context;
-            _appReg = appReg;
-        }
+        public HomeController(ExampleDbContext context, DeviantArtAuth appReg) : base(context, appReg) { }
 
         public IActionResult Index()
         {
             return View();
-        }
-
-        private async Task<Token> GetAccessTokenAsync()
-        {
-            string str = User.Claims
-                .Where(c => c.Type == "token-id")
-                .Select(c => c.Value)
-                .FirstOrDefault();
-            if (str != null && Guid.TryParse(str, out Guid tokenId))
-            {
-                var token = await _context.Tokens.SingleOrDefaultAsync(t => t.Id == tokenId);
-                if (token != null)
-                {
-                    if (token.ExpiresAt < DateTimeOffset.UtcNow.AddMinutes(5))
-                    {
-                        var result = await _appReg.RefreshAsync(token.RefreshToken);
-                        token.AccessToken = result.AccessToken;
-                        token.RefreshToken = result.RefreshToken;
-                        token.ExpiresAt = result.ExpiresAt;
-                        await _context.SaveChangesAsync();
-                    }
-                    return token;
-                }
-            }
-            return null;
         }
 
         public async Task<IActionResult> Login()
@@ -101,15 +69,19 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
         public async Task<IActionResult> Logout()
         {
             var t = await GetAccessTokenAsync();
-            if (t != null)
+            if (t is Token dbToken)
             {
-                _context.Tokens.RemoveRange(_context.Tokens.Where(x => x.Id == t.Id));
+                _context.Tokens.RemoveRange(_context.Tokens.Where(x => x.Id == dbToken.Id));
                 await _context.SaveChangesAsync();
                 await HttpContext.SignOutAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme);
-                await _appReg.RevokeAsync(t.RefreshToken, revoke_refresh_only: true);
+                await _appReg.RevokeAsync(dbToken.RefreshToken, revoke_refresh_only: true);
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+            else
+            {
+                return Content($"The token returned by GetAccessTokenAsync() is not from the database");
+            }
         }
     }
 }

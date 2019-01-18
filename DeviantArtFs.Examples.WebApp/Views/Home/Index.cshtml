@@ -16,6 +16,14 @@ else
     <h2>
         Logged in as: @User.Identity.Name
     </h2>
+    <form action="/Gallery/List" method="GET">
+        <label>
+            Username:
+            <input type="text" name="username" />
+            <input type="submit" value="Get Gallery List" />
+        </label>
+    </form>
+    <hr />
     <ul>
         <li>
             <a href="/Home/Whoami">Whoami</a>
