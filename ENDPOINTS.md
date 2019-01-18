@@ -175,7 +175,7 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 
 ### DeviantArtFs.Requests.Comments.CommentSiblings
 * AsyncExecute (IDeviantArtAccessToken) (PagingParams) (CommentSiblingsRequest) -> `Async<DeviantArtCommentSiblingsPagedResult>`
-* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (CommentSiblingsRequest) -> `Task<DeviantArtCommentSiblingsPagedResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (CommentSiblingsRequest) -> `Task<IBclDeviantArtCommentSiblingsPagedResult>`
 
 **CommentSiblingsRequest:**
 
