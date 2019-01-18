@@ -20,10 +20,10 @@ let get_token =
         token_string
     else
         printf "Please enter the client ID (e.g. 1234): "
-        let client_id = System.Console.ReadLine() |> Int32.Parse
+        let client_id = Console.ReadLine() |> Int32.Parse
 
         printf "Please enter the redirect URL (default: https://www.example.com): "
-        let url1 = System.Console.ReadLine()
+        let url1 = Console.ReadLine()
         let url2 =
             match url1 with
             | "" -> "https://www.example.com"
@@ -33,7 +33,7 @@ let get_token =
         if form.ShowDialog() <> System.Windows.Forms.DialogResult.OK then
             failwithf "Login cancelled"
         else
-            File.WriteAllText("token.txt", form.AccessToken)
+            File.WriteAllText(token_file, form.AccessToken)
             form.AccessToken
 
 let page offset limit = new PagingParams(Offset = offset, Limit = Nullable limit)
@@ -43,6 +43,7 @@ let sandbox token_string = async {
 
     printf "Enter a username (leave blank to see your own submissions): "
     let read = Console.ReadLine()
+    printfn ""
 
     let! me = DeviantArtFs.Requests.User.Whoami.AsyncExecute token
 
@@ -63,7 +64,7 @@ let sandbox token_string = async {
             new DeviantArtFs.Requests.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = ExtParams.All)
             |> DeviantArtFs.Requests.Deviation.MetadataById.AsyncExecute token
         for m in metadata do
-            printfn "%A" m
+            m.tags |> Seq.map (fun t -> sprintf "#%s" t.tag_name) |> String.concat " " |> printfn "%s"
 
         let! favorites =
             DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.deviationid 0
@@ -98,6 +99,14 @@ let sandbox token_string = async {
             printfn "Favorited by:"
             for f in favorites do
                 printfn "%s (%A)" f.user.username f.time
+
+        let comments_req = new DeviantArtFs.Requests.Comments.DeviationCommentsRequest(s.deviationid, Maxdepth = 5)
+        let! comments = DeviantArtFs.Requests.Comments.DeviationComments.ToAsyncSeq token comments_req 0 |> AsyncSeq.toArrayAsync
+        if (not << Seq.isEmpty) comments then
+            printfn "Comments:"
+        for c in comments do
+            printfn "    %s: %s" c.user.username c.body
+
         printfn ""
     | None -> ()
 
@@ -106,10 +115,16 @@ let sandbox token_string = async {
     match status with
     | Some s -> 
         printfn "Most recent status: %s (%A)" s.body s.ts
+
+        let comments_req = new DeviantArtFs.Requests.Comments.StatusCommentsRequest(s.statusid, Maxdepth = 5)
+        let! comments = DeviantArtFs.Requests.Comments.StatusComments.ToAsyncSeq token comments_req 0 |> AsyncSeq.toArrayAsync
+        if (not << Seq.isEmpty) comments then
+            printfn "Comments:"
+        for c in comments do
+            printfn "    %s: %s" c.user.username c.body
+
         printfn ""
     | None -> ()
-
-    return ()
 }
 
 [<EntryPoint>]
