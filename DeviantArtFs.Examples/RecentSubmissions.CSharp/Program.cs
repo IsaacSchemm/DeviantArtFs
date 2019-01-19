@@ -73,6 +73,17 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 ? me.Username
                 : read;
 
+            var profile = await Requests.User.ProfileByName.ExecuteAsync(
+                token,
+                new Requests.User.ProfileByNameRequest(username));
+            Console.WriteLine(profile.RealName);
+            if (!string.IsNullOrEmpty(profile.Tagline))
+            {
+                Console.WriteLine(profile.Tagline);
+            }
+            Console.WriteLine($"{profile.Stats.UserDeviations} deviations");
+            Console.WriteLine();
+
             var deviations = await Requests.Gallery.GalleryAllView.ExecuteAsync(
                 token,
                 Page(0, 1),

@@ -8,15 +8,15 @@ type IBclDeviantArtProfileStats =
     abstract member ProfileComments: int
 
 type DeviantArtProfileStats = {
-    UserDeviations: int
-    UserFavourites: int
-    UserComments: int
-    ProfilePageviews: int
-    ProfileComments: int
+    user_deviations: int
+    user_favourites: int
+    user_comments: int
+    profile_pageviews: int
+    profile_comments: int
 } with
     interface IBclDeviantArtProfileStats with
-        member this.ProfileComments = this.ProfileComments
-        member this.ProfilePageviews = this.ProfilePageviews
-        member this.UserComments = this.UserComments
-        member this.UserDeviations = this.UserDeviations
-        member this.UserFavourites = this.UserFavourites
+        member this.ProfileComments = this.profile_comments
+        member this.ProfilePageviews = this.profile_pageviews
+        member this.UserComments = this.user_comments
+        member this.UserDeviations = this.user_deviations
+        member this.UserFavourites = this.user_favourites

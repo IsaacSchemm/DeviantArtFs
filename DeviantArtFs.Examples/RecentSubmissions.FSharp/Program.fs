@@ -52,6 +52,16 @@ let sandbox token_string = async {
         | "" -> me.username
         | s -> s
 
+    let! profile =
+        username
+        |> DeviantArtFs.Requests.User.ProfileByNameRequest
+        |> DeviantArtFs.Requests.User.ProfileByName.AsyncExecute token
+    printfn "%s" profile.real_name
+    if not (String.IsNullOrEmpty profile.tagline) then
+        printfn "%s" profile.tagline
+    printfn "%d deviations" profile.stats.user_deviations
+    printfn ""
+
     let! deviations =
         DeviantArtFs.Requests.Gallery.GalleryAllViewRequest(Username = username)
         |> DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token (page 0 1)
