@@ -3,7 +3,7 @@
 open DeviantArtFs
 open FSharp.Json
 
-type internal dAmnTokenResponse = {
+type dAmnTokenResponse = {
     damntoken: string
 }
 

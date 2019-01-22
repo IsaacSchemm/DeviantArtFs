@@ -4,7 +4,7 @@ open DeviantArtFs
 open FSharp.Json
 open System.Net
 
-type internal FriendsWatchingResponse = {
+type FriendsWatchingResponse = {
     watching: bool
 }
 

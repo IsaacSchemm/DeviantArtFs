@@ -2,7 +2,7 @@
 
 open DeviantArtFs
 
-type internal TagsElement = {
+type TagsElement = {
     tag_name: string
 }
 

@@ -2,7 +2,7 @@
 
 open DeviantArtFs
 
-type internal CountriesElement = {
+type CountriesElement = {
     countryid: int
     name: string
 }

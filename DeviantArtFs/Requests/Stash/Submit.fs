@@ -5,7 +5,7 @@ open FSharp.Json
 open System
 open System.IO
 
-type internal SubmitResponse = {
+type SubmitResponse = {
     status: string
     itemid: int64
     stack: string

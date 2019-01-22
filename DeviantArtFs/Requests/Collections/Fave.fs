@@ -4,7 +4,7 @@ open System
 open System.IO
 open DeviantArtFs
 
-type internal FaveResponse = {
+type FaveResponse = {
     success: bool
     favourites: int
 }

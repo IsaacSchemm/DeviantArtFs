@@ -2,7 +2,7 @@
 
 open FSharp.Json
 
-type internal TextOnlyResponse = {
+type TextOnlyResponse = {
     text: string
 } with  
     static member Parse json = Json.deserialize<TextOnlyResponse> json
