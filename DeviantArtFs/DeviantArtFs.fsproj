@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.7.1</Version>
+    <Version>0.7.2</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>libertyernie</Authors>
     <Company></Company>
@@ -10,8 +10,7 @@
     <PackageProjectUrl>https://github.com/libertyernie/DeviantArtFs</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Description>An F# library (.NET Standard 2.0) to interact with the DeviantArt / Sta.sh API</Description>
-    <PackageReleaseNotes>0.7.0: More refactoring, add Comments-related methods, switch deserialization library to FSharp.Json
-0.7.1: Fix profile stats object</PackageReleaseNotes>
+    <PackageReleaseNotes>0.7.2: Category tree bugfix</PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
   </PropertyGroup>
 

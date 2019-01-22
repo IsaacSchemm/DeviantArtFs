@@ -20,7 +20,7 @@ type DeviantArtCategory = {
         member this.HasSubcategory = this.has_subcategory
         member this.ParentCatpath = this.parent_catpath
 
-type internal DeviantArtCategoryList = {
+type DeviantArtCategoryList = {
     categories: DeviantArtCategory[]
 } with
     static member ParseSeq json =
