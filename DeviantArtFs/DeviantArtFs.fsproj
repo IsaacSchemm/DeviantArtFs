@@ -34,7 +34,6 @@
     <Compile Include="Types\Wrappers\DeviantArtGalleryFolder.fs" />
     <Compile Include="Types\Wrappers\DeviantArtCollectionFolder.fs" />
     <Compile Include="Types\Wrappers\DeviantArtCategory.fs" />
-    <Compile Include="Types\Wrappers\DeviationStats.fs" />
     <Compile Include="Types\Wrappers\Deviation.fs" />
     <Compile Include="Types\Wrappers\DeviantArtMoreLikeThisPreviewResult.fs" />
     <Compile Include="Types\Wrappers\DeviationTextContent.fs" />
