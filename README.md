@@ -87,6 +87,7 @@ endpoints under /browse/ might consist of many, many pages...)
 ### Feed
 
 * GET /feed/home
+* GET /feed/home/{bucketid}
 
 ### Gallery
 

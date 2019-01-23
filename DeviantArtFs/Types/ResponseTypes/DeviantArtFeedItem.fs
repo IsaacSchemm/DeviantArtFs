@@ -85,30 +85,6 @@ type DeviantArtFeedItem = {
     added_count: int option
     poll: DeviantArtFeedItemPoll option
 } with
-    member this.Test1() = Seq.head (seq {
-        match this.deviations with
-        | Some s -> yield sprintf "%d deviations" (Array.length s)
-        | None -> ()
-        match this.status with
-        | Some s -> yield sprintf "Status"
-        | None -> ()
-        match this.comment with
-        | Some s -> yield sprintf "Comment"
-        | None -> ()
-        match this.critique_text with
-        | Some s -> yield sprintf "Critique text: %s" s
-        | None -> ()
-        match this.collection with
-        | Some s -> yield sprintf "Collection: %s" s.name
-        | None -> ()
-        match this.formerly with
-        | Some s -> yield sprintf "Formerly: %s" s
-        | None -> ()
-        match this.poll with
-        | Some s -> yield sprintf "Poll: %s" s.question
-        | None -> ()
-        yield "?"
-    })
     interface IBclDeviantArtFeedItem with
         member this.AddedCount = this.added_count |> Option.toNullable
         member this.BucketTotal = this.bucket_total |> Option.toNullable

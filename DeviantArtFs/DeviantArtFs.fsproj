@@ -99,6 +99,7 @@
     <Compile Include="Requests\Deviation\MetadataById.fs" />
     <Compile Include="Requests\Deviation\WhoFaved.fs" />
     <Compile Include="Requests\Feed\FeedHome.fs" />
+    <Compile Include="Requests\Feed\FeedHomeBucket.fs" />
     <Compile Include="Requests\Gallery\GalleryAllView.fs" />
     <Compile Include="Requests\Gallery\GalleryById.fs" />
     <Compile Include="Requests\Gallery\GalleryFolders.fs" />

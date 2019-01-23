@@ -316,6 +316,12 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 
 * Cursor: `string`
 
+### DeviantArtFs.Requests.Feed.FeedHomeBucket
+* AsyncExecute (IDeviantArtAccessToken) (PagingParams) (Guid) -> `Async<DeviantArtPagedResult<Deviation>>`
+* ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (Guid) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (Guid) (int) -> `AsyncSeq<Deviation>`
+* ToArrayAsync (IDeviantArtAccessToken) (Guid) (int) (int) -> `Task<IBclDeviation[]>`
+
 ### DeviantArtFs.Requests.Gallery.CreateGalleryFolder
 * AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<DeviantArtGalleryFolder>`
 * ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtGalleryFolder>`
