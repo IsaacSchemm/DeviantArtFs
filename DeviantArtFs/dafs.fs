@@ -71,6 +71,6 @@ module internal dafs =
             cursor <- resp.NextOffset |> Option.defaultValue 0
             has_more <- resp.HasMore
     }
-    
+
     let asBclUser u = u :> IBclDeviantArtUser
     let asBclDeviation d = d :> IBclDeviation

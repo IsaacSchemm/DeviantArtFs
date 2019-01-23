@@ -3,6 +3,7 @@
 open DeviantArtFs
 open FSharp.Json
 
+[<AllowNullLiteral>]
 type IBclDeviantArtProfile =
     abstract member User: IBclDeviantArtUser
     abstract member IsWatching: bool

@@ -305,6 +305,16 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 * ToAsyncSeq (IDeviantArtAccessToken) (Guid) (int) -> `AsyncSeq<DeviantArtWhoFavedUser>`
 * ToArrayAsync (IDeviantArtAccessToken) (Guid) (int) (int) -> `Task<IBclDeviantArtWhoFavedUser[]>`
 
+### DeviantArtFs.Requests.Feed.FeedHome
+* AsyncExecute (IDeviantArtAccessToken) (FeedHomeRequest) -> `Async<DeviantArtFeedPagedResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (FeedHomeRequest) -> `Task<IBclDeviantArtFeedPagedResult>`
+* ToAsyncSeq (IDeviantArtAccessToken) (FeedHomeRequest) -> `AsyncSeq<DeviantArtFeedItem>`
+* ToArrayAsync (IDeviantArtAccessToken) (FeedHomeRequest) (int) -> `Task<IBclDeviantArtFeedItem[]>`
+
+**FeedHomeRequest:**
+
+* Cursor: `string`
+
 ### DeviantArtFs.Requests.Gallery.CreateGalleryFolder
 * AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<DeviantArtGalleryFolder>`
 * ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtGalleryFolder>`

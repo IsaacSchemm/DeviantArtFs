@@ -81,6 +81,10 @@ endpoints under /browse/ might consist of many, many pages...)
 * GET /deviation/metadata
 * GET /deviation/whofaved
 
+### Feed
+
+* GET /feed/home
+
 ### Gallery
 
 * GET /gallery/gallery/{folderid}
