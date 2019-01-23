@@ -12,7 +12,7 @@ module Countries =
         let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/data/countries"
         let! json = dafs.asyncRead req
         return json
-            |> dafs.parseListOnly (fun _ -> { countryid = 0; name = "" })
+            |> ListOnlyResponse<CountriesElement>.Parse
             |> Seq.map (fun r -> (r.countryid, r.name))
             |> dict
     }

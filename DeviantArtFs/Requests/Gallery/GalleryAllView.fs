@@ -22,7 +22,7 @@ module GalleryAllView =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/all?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return dafs.parsePage Deviation.Parse json
+        return DeviantArtPagedResult<Deviation>.Parse json
     }
 
     let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 24 req
@@ -30,8 +30,8 @@ module GalleryAllView =
     let ToArrayAsync token req offset limit =
         ToAsyncSeq token req offset
         |> AsyncSeq.take limit
-        |> AsyncSeq.map dafs.asBclDeviation
+        |> AsyncSeq.map (fun o -> o :> IBclDeviation)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging req = AsyncExecute token paging req |> iop.thenMapResult dafs.asBclDeviation |> Async.StartAsTask
+    let ExecuteAsync token paging req = AsyncExecute token paging req |> iop.thenMapResult (fun o -> o :> IBclDeviation) |> Async.StartAsTask

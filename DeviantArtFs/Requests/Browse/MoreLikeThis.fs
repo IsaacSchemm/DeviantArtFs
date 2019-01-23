@@ -23,7 +23,7 @@ module MoreLikeThis =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/morelikethis?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return json |> dafs.parsePage Deviation.Parse
+        return json |> DeviantArtPagedResult<Deviation>.Parse
     }
 
     let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
@@ -31,8 +31,8 @@ module MoreLikeThis =
     let ToArrayAsync token req offset limit =
         ToAsyncSeq token req offset
         |> AsyncSeq.take limit
-        |> AsyncSeq.map dafs.asBclDeviation
+        |> AsyncSeq.map (fun o -> o :> IBclDeviation)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging req = AsyncExecute token paging req |> iop.thenMapResult dafs.asBclDeviation |> Async.StartAsTask
+    let ExecuteAsync token paging req = AsyncExecute token paging req |> iop.thenMapResult (fun o -> o :> IBclDeviation) |> Async.StartAsTask

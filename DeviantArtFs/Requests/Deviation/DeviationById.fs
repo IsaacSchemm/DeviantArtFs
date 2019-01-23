@@ -12,4 +12,4 @@ module DeviationById =
         return json |> Deviation.Parse
     }
 
-    let ExecuteAsync token id = AsyncExecute token id |> iop.thenTo dafs.asBclDeviation |> Async.StartAsTask
+    let ExecuteAsync token id = AsyncExecute token id |> iop.thenTo (fun o -> o :> IBclDeviation) |> Async.StartAsTask

@@ -21,7 +21,7 @@ module WhoFaved =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/whofaved?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return json |> dafs.parsePage DeviantArtWhoFavedUser.Parse
+        return json |> DeviantArtPagedResult<DeviantArtWhoFavedUser>.Parse
     }
 
     let ToAsyncSeq token deviationid offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 deviationid

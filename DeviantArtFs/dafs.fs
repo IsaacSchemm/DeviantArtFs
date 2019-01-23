@@ -50,12 +50,6 @@ module internal dafs =
                     return raise (new DeviantArtException(resp, error_obj))
     }
 
-    let parsePage (f: string -> 'a) (json: string) = DeviantArtPagedResult<'a>.Parse json
-
-    let parseListOnly (f: string -> 'a) (json: string) =
-        let o = ListOnlyResponse<'a>.Parse json
-        Seq.ofArray o.results
-
     let parseUser (json: string) = DeviantArtUser.Parse json
 
     let toPlainTask (t: Task<unit>) = t :> Task
@@ -84,4 +78,3 @@ module internal dafs =
     }
 
     let asBclUser u = u :> IBclDeviantArtUser
-    let asBclDeviation d = d :> IBclDeviation

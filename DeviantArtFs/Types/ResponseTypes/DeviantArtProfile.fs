@@ -64,7 +64,7 @@ type DeviantArtProfile = {
             |> Seq.map (fun d -> d :> IBclDeviantArtGalleryFolder)
         member this.IsWatching = this.is_watching
         member this.LastStatus = this.last_status |> Option.map (fun s -> s :> IBclDeviantArtStatus) |> Option.toObj
-        member this.ProfilePic = this.profile_pic |> Option.map (fun d -> d :> IBclDeviation) |> Option.toObj
+        member this.ProfilePic = this.profile_pic |> Option.map (fun o -> o :> IBclDeviation) |> Option.toObj
         member this.ProfileUrl = this.profile_url
         member this.RealName = this.real_name
         member this.Stats = this.stats :> IBclDeviantArtProfileStats

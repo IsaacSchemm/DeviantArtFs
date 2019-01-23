@@ -19,7 +19,7 @@ module FriendsSearch =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/search?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return dafs.parseListOnly dafs.parseUser json
+        return ListOnlyResponse<DeviantArtUser>.Parse json
     }
 
     let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

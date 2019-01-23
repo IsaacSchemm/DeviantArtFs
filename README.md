@@ -88,6 +88,7 @@ endpoints under /browse/ might consist of many, many pages...)
 
 * GET /feed/home
 * GET /feed/home/{bucketid}
+* GET /feed/notifications
 
 ### Gallery
 
