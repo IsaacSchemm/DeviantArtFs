@@ -22,4 +22,4 @@ module DailyDeviations =
         return ListOnlyResponse<Deviation>.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMap (fun o -> o :> IBclDeviation) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapSeq (fun o -> o :> IBclDeviation) |> Async.StartAsTask

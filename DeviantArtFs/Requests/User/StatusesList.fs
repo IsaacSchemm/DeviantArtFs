@@ -29,4 +29,4 @@ module StatusesList =
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging username = AsyncExecute token paging username |> iop.thenMapResult (fun o -> o :> IBclDeviantArtStatus) |> Async.StartAsTask
+    let ExecuteAsync token paging username = AsyncExecute token paging username |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtStatus) |> Async.StartAsTask

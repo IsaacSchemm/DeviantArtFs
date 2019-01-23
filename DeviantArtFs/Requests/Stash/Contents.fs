@@ -33,5 +33,5 @@ module Contents =
 
     let ExecuteAsync token paging stackid =
         AsyncExecute token paging stackid
-        |> iop.thenMapResult (fun i -> i :> IBclStashMetadata)
+        |> AsyncThen.mapPagedResult (fun i -> i :> IBclStashMetadata)
         |> Async.StartAsTask

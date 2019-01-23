@@ -13,5 +13,5 @@ module Content =
 
     let ExecuteAsync token deviationid =
         AsyncExecute token deviationid
-        |> iop.thenTo (fun c -> c :> IBclDeviationTextContent)
+        |> AsyncThen.map (fun c -> c :> IBclDeviationTextContent)
         |> Async.StartAsTask

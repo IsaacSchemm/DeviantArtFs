@@ -1,17 +1,17 @@
 ﻿namespace DeviantArtFs
 
-module internal iop =
-    let thenTo f a = async {
+module internal AsyncThen =
+    let map f a = async {
         let! o = a
         return f o
     }
 
-    let thenMap f a = async {
+    let mapSeq f a = async {
         let! o = a
         return Seq.map f o
     }
 
-    let thenMapResult f a = async {
+    let mapPagedResult f a = async {
         let! o = a
         let r = o :> IBclDeviantArtPagedResult<'a>
         return {
@@ -26,7 +26,7 @@ module internal iop =
         }
     }
 
-    let thenMapCursorResult f a = async {
+    let mapCursorResult f a = async {
         let! o = a
         let r = o :> IBclDeviantArtCursorResult<'a>
         return {

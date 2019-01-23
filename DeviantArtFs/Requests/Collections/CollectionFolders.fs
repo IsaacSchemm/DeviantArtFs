@@ -39,5 +39,5 @@ module CollectionFolders =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> iop.thenMapResult (fun f -> f :> IBclDeviantArtCollectionFolder)
+        |> AsyncThen.mapPagedResult (fun f -> f :> IBclDeviantArtCollectionFolder)
         |> Async.StartAsTask

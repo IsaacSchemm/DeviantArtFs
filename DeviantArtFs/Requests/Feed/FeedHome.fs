@@ -35,5 +35,5 @@ module FeedHome =
         cursor
         |> Option.ofObj
         |> AsyncExecute token
-        |> iop.thenMapCursorResult (fun o -> o :> IBclDeviantArtFeedItem)
+        |> AsyncThen.mapCursorResult (fun o -> o :> IBclDeviantArtFeedItem)
         |> Async.StartAsTask

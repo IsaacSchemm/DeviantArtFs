@@ -21,4 +21,4 @@ module Whois =
         return ListOnlyResponse<DeviantArtUser>.Parse json
     }
 
-    let ExecuteAsync token usernames = AsyncExecute token usernames |> iop.thenMap dafs.asBclUser |> Async.StartAsTask
+    let ExecuteAsync token usernames = AsyncExecute token usernames |> AsyncThen.mapSeq dafs.asBclUser |> Async.StartAsTask

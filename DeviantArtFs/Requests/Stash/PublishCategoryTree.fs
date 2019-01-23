@@ -24,4 +24,4 @@ module PublishCategoryTree =
         return DeviantArtCategoryList.ParseSeq json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMap (fun c -> c :> IBclDeviantArtCategory) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapSeq (fun c -> c :> IBclDeviantArtCategory) |> Async.StartAsTask

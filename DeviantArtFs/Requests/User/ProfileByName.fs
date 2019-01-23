@@ -21,4 +21,4 @@ module ProfileByName =
         return DeviantArtProfile.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun p -> p :> IBclDeviantArtProfile) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.map (fun p -> p :> IBclDeviantArtProfile) |> Async.StartAsTask

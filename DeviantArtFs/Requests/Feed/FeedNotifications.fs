@@ -36,5 +36,5 @@ module FeedNotifications =
         cursor
         |> Option.ofObj
         |> AsyncExecute token
-        |> iop.thenMapCursorResult (fun o -> o :> IBclDeviantArtFeedNotification)
+        |> AsyncThen.mapCursorResult (fun o -> o :> IBclDeviantArtFeedNotification)
         |> Async.StartAsTask

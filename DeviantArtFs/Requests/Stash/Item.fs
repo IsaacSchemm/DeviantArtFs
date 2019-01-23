@@ -22,4 +22,4 @@ module Item =
         return StashMetadata.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun i -> i :> IBclStashMetadata) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.map (fun i -> i :> IBclStashMetadata) |> Async.StartAsTask

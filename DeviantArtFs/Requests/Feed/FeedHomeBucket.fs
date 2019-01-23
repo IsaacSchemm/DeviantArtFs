@@ -28,4 +28,4 @@ module FeedHomeBucket =
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging bucketid = AsyncExecute token paging bucketid |> iop.thenMapResult (fun o -> o :> IBclDeviation) |> Async.StartAsTask
+    let ExecuteAsync token paging bucketid = AsyncExecute token paging bucketid |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation) |> Async.StartAsTask

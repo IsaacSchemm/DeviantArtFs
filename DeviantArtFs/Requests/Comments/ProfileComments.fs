@@ -36,4 +36,4 @@ module ProfileComments =
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging req = AsyncExecute token paging req |> iop.thenTo (fun r -> r :> IBclDeviantArtCommentPagedResult) |> Async.StartAsTask
+    let ExecuteAsync token paging req = AsyncExecute token paging req |> AsyncThen.map (fun r -> r :> IBclDeviantArtCommentPagedResult) |> Async.StartAsTask

@@ -24,4 +24,4 @@ module Move =
         return StashMoveResult.Parse json
     }
 
-    let ExecuteAsync token stackid targetid = AsyncExecute token stackid targetid |> iop.thenTo (fun r -> r :> IBclStashMoveResult) |> Async.StartAsTask
+    let ExecuteAsync token stackid targetid = AsyncExecute token stackid targetid |> AsyncThen.map (fun r -> r :> IBclStashMoveResult) |> Async.StartAsTask

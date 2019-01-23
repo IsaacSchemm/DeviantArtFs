@@ -33,5 +33,5 @@ module Watchers =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> iop.thenMapResult (fun w -> w :> IBclDeviantArtWatcherRecord)
+        |> AsyncThen.mapPagedResult (fun w -> w :> IBclDeviantArtWatcherRecord)
         |> Async.StartAsTask

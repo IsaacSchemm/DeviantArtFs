@@ -33,5 +33,5 @@ module Friends =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> iop.thenMapResult (fun w -> w :> IBclDeviantArtFriendRecord)
+        |> AsyncThen.mapPagedResult (fun w -> w :> IBclDeviantArtFriendRecord)
         |> Async.StartAsTask

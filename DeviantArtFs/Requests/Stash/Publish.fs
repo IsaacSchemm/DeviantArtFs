@@ -97,4 +97,4 @@ module Publish =
         return StashPublishResponse.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun r -> r :> IBclStashPublishResponse) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.map (fun r -> r :> IBclStashPublishResponse) |> Async.StartAsTask

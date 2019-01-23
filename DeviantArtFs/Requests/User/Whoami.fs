@@ -9,4 +9,4 @@ module Whoami =
         return dafs.parseUser json
     }
 
-    let ExecuteAsync token = AsyncExecute token |> iop.thenTo dafs.asBclUser |> Async.StartAsTask
+    let ExecuteAsync token = AsyncExecute token |> AsyncThen.map dafs.asBclUser |> Async.StartAsTask

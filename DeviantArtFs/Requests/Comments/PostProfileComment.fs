@@ -32,4 +32,4 @@ module PostProfileComment =
         return json |> DeviantArtComment.Parse
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenTo (fun r -> r :> IBclDeviantArtComment) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.map (fun r -> r :> IBclDeviantArtComment) |> Async.StartAsTask

@@ -27,5 +27,5 @@ module CreateGalleryFolder =
 
     let ExecuteAsync token folder =
         AsyncExecute token folder
-        |> iop.thenTo (fun f -> f :> IBclDeviantArtGalleryFolder)
+        |> AsyncThen.map (fun f -> f :> IBclDeviantArtGalleryFolder)
         |> Async.StartAsTask

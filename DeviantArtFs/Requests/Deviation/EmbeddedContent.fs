@@ -37,4 +37,4 @@ module EmbeddedContent =
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging req = AsyncExecute token paging req |> iop.thenMapResult (fun o -> o :> IBclDeviation) |> Async.StartAsTask
+    let ExecuteAsync token paging req = AsyncExecute token paging req |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation) |> Async.StartAsTask

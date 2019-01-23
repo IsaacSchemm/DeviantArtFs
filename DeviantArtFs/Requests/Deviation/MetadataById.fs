@@ -29,4 +29,4 @@ module MetadataById =
         return DeviationMetadataResponse.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> iop.thenMap (fun m -> m :> IBclDeviationMetadata) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapSeq (fun m -> m :> IBclDeviationMetadata) |> Async.StartAsTask

@@ -12,4 +12,4 @@ module Stack =
         return StashMetadata.Parse json
     }
 
-    let ExecuteAsync token stackid = AsyncExecute token stackid |> iop.thenTo (fun i -> i :> IBclStashMetadata) |> Async.StartAsTask
+    let ExecuteAsync token stackid = AsyncExecute token stackid |> AsyncThen.map (fun i -> i :> IBclStashMetadata) |> Async.StartAsTask

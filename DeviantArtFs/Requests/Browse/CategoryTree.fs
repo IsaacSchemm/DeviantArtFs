@@ -17,4 +17,4 @@ module CategoryTree =
         return DeviantArtCategoryList.ParseSeq json
     }
 
-    let ExecuteAsync token catpath = AsyncExecute token catpath |> iop.thenMap (fun c -> c :> IBclDeviantArtCategory) |> Async.StartAsTask
+    let ExecuteAsync token catpath = AsyncExecute token catpath |> AsyncThen.mapSeq (fun c -> c :> IBclDeviantArtCategory) |> Async.StartAsTask
