@@ -307,8 +307,8 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 * ToArrayAsync (IDeviantArtAccessToken) (Guid) (int) (int) -> `Task<IBclDeviantArtWhoFavedUser[]>`
 
 ### DeviantArtFs.Requests.Feed.FeedHome
-* AsyncExecute (IDeviantArtAccessToken) (FeedHomeRequest) -> `Async<DeviantArtFeedPagedResult>`
-* ExecuteAsync (IDeviantArtAccessToken) (FeedHomeRequest) -> `Task<IBclDeviantArtFeedPagedResult>`
+* AsyncExecute (IDeviantArtAccessToken) (FeedHomeRequest) -> `Async<DeviantArtFeedPagedResult<DeviantArtFeedItem>>`
+* ExecuteAsync (IDeviantArtAccessToken) (FeedHomeRequest) -> `Task<IBclDeviantArtFeedPagedResult<IBclDeviantArtFeedItem>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (FeedHomeRequest) -> `AsyncSeq<DeviantArtFeedItem>`
 * ToArrayAsync (IDeviantArtAccessToken) (FeedHomeRequest) (int) -> `Task<IBclDeviantArtFeedItem[]>`
 
@@ -321,6 +321,20 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 * ExecuteAsync (IDeviantArtAccessToken) (PagingParams) (Guid) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (Guid) (int) -> `AsyncSeq<Deviation>`
 * ToArrayAsync (IDeviantArtAccessToken) (Guid) (int) (int) -> `Task<IBclDeviation[]>`
+
+### DeviantArtFs.Requests.Feed.FeedNotifications
+* AsyncExecute (IDeviantArtAccessToken) (FeedNotificationsRequest) -> `Async<DeviantArtFeedPagedResult<DeviantArtFeedNotification>>`
+* ExecuteAsync (IDeviantArtAccessToken) (FeedNotificationsRequest) -> `Task<IBclDeviantArtFeedPagedResult<IBclDeviantArtFeedNotification>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (FeedHomeRequest) -> `AsyncSeq<DeviantArtFeedNotification>`
+* ToArrayAsync (IDeviantArtAccessToken) (FeedHomeRequest) (int) -> `Task<IBclDeviantArtFeedNotification[]>`
+
+**FeedNotificationsRequest:**
+
+* Cursor: `string`
+
+**FeedHomeRequest:**
+
+* Cursor: `string`
 
 ### DeviantArtFs.Requests.Gallery.CreateGalleryFolder
 * AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<DeviantArtGalleryFolder>`

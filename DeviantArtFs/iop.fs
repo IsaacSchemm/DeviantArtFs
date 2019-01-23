@@ -27,3 +27,16 @@ module internal iop =
     }
 
     let thenCastResult a = thenMapResult id a
+
+    let thenMapFeedResult f a = async {
+        let! o = a
+        let r = o :> IBclDeviantArtFeedPagedResult<'a>
+        return {
+            new IBclDeviantArtFeedPagedResult<'b> with
+                member __.HasMore = r.HasMore
+                member __.Cursor = r.Cursor
+                member __.Items = Seq.map f r.Items
+        }
+    }
+
+    let thenCastFeedResult a = thenMapFeedResult id a
