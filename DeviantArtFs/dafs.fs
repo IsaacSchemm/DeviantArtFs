@@ -72,5 +72,16 @@ module internal dafs =
             has_more <- resp.HasMore
     }
 
+    let cursorToAsyncSeq (initial_cursor: string option) (f: string option -> Async<DeviantArtCursorResult<'c>>) = asyncSeq {
+        let mutable cursor = initial_cursor
+        let mutable has_more = true
+        while has_more do
+            let! resp = f cursor
+            for r in resp.items do
+                yield r
+            cursor <- Some resp.cursor
+            has_more <- resp.has_more
+    }
+
     let asBclUser u = u :> IBclDeviantArtUser
     let asBclDeviation d = d :> IBclDeviation

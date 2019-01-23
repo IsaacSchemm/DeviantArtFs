@@ -28,6 +28,7 @@
     <Compile Include="Types\ResponseTypes\TextOnlyResponse.fs" />
     <Compile Include="Types\ResponseTypes\ListOnlyResponse.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtPagedResult.fs" />
+    <Compile Include="Types\ResponseTypes\DeviantArtCursorResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtUser.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtWhoFavedUser.fs" />
     <Compile Include="Types\ResponseTypes\DeviationFile.fs" />
@@ -58,7 +59,6 @@
     <Compile Include="Types\ResponseTypes\DeviantArtComment.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtCommentPagedResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtCommentSiblingsPagedResult.fs" />
-    <Compile Include="Types\ResponseTypes\DeviantArtFeedPagedResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtFeedItem.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtFeedNotification.fs" />
     <Compile Include="dafs.fs" />
