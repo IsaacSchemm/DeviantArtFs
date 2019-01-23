@@ -26,9 +26,12 @@ endpoints under /browse/ might consist of many, many pages...)
   * Feed
   * Messages
   * Notes
-* The "expand" parameter (user.details, user.geo, etc) is not currently supported.
-* The "ext_preload" parameter (gallery/folders, collections/folders) is not currently supported.
+* The "expand" parameter (user.details, user.geo, etc) is not supported.
 * The "mature_content" parameter is not currently supported.
+* The following fields in the deviation object are not currently supported:
+  * challenge
+  * challenge_entry
+  * motion_book
 
 ## Supported endpoints
 

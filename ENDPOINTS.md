@@ -158,6 +158,7 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 
 * Username: `string`
 * CalculateSize: `bool`
+* ExtPreload: `bool`
 
 ### DeviantArtFs.Requests.Collections.CreateCollectionFolder
 * AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<DeviantArtCollectionFolder>`
@@ -351,6 +352,7 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 
 * Username: `string`
 * CalculateSize: `bool`
+* ExtPreload: `bool`
 
 ### DeviantArtFs.Requests.Gallery.RemoveGalleryFolder
 * AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<unit>`
