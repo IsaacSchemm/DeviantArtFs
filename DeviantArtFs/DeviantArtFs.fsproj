@@ -31,10 +31,10 @@
     <Compile Include="Types\Wrappers\DeviantArtUser.fs" />
     <Compile Include="Types\Wrappers\DeviantArtWhoFavedUser.fs" />
     <Compile Include="Types\Wrappers\DeviationFile.fs" />
-    <Compile Include="Types\Wrappers\DeviantArtGalleryFolder.fs" />
-    <Compile Include="Types\Wrappers\DeviantArtCollectionFolder.fs" />
     <Compile Include="Types\Wrappers\DeviantArtCategory.fs" />
     <Compile Include="Types\Wrappers\Deviation.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtGalleryFolder.fs" />
+    <Compile Include="Types\Wrappers\DeviantArtCollectionFolder.fs" />
     <Compile Include="Types\Wrappers\DeviantArtMoreLikeThisPreviewResult.fs" />
     <Compile Include="Types\Wrappers\DeviationTextContent.fs" />
     <Compile Include="Types\Wrappers\DeviationTag.fs" />

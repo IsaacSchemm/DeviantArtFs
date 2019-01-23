@@ -5,9 +5,9 @@ open DeviantArtFs
 type CollectionFoldersRequest() =
     member val Username = null with get, set
     member val CalculateSize = false with get, set
+    member val ExtPreload = false with get, set
 
 module CollectionFolders =
-    open System.Runtime.InteropServices
     open FSharp.Control
 
     let AsyncExecute token (paging: PagingParams) (ps: CollectionFoldersRequest) = async {
@@ -16,6 +16,7 @@ module CollectionFolders =
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
             | None -> ()
             yield sprintf "calculate_size=%b" ps.CalculateSize
+            yield sprintf "ext_preload=%b" ps.ExtPreload
             yield! paging.GetQuery()
         }
         let req =
