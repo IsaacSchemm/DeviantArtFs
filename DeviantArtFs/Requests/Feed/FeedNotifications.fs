@@ -18,7 +18,7 @@ module FeedNotifications =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/feed/notifications?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return DeviantArtCursorResult<DeviantArtFeedNotification>.Parse json
+        return DeviantArtCursorResult<DeviantArtFeedItem>.Parse json
     }
 
     let ToAsyncSeq token cursor = AsyncExecute token |> dafs.cursorToAsyncSeq cursor
@@ -28,7 +28,7 @@ module FeedNotifications =
         |> Option.ofObj
         |> ToAsyncSeq token
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun o -> o :> IBclDeviantArtFeedNotification)
+        |> AsyncSeq.map (fun o -> o :> IBclDeviantArtFeedItem)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
@@ -36,5 +36,5 @@ module FeedNotifications =
         cursor
         |> Option.ofObj
         |> AsyncExecute token
-        |> AsyncThen.mapCursorResult (fun o -> o :> IBclDeviantArtFeedNotification)
+        |> AsyncThen.mapCursorResult (fun o -> o :> IBclDeviantArtFeedItem)
         |> Async.StartAsTask

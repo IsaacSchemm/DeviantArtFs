@@ -17,7 +17,7 @@ module ProfileFeed =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/feed/profile?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return DeviantArtCursorResult<DeviantArtProfileFeedItem>.Parse json
+        return DeviantArtCursorResult<DeviantArtFeedItem>.Parse json
     }
 
     let ToAsyncSeq token cursor = AsyncExecute token |> dafs.cursorToAsyncSeq cursor
@@ -27,7 +27,7 @@ module ProfileFeed =
         |> Option.ofObj
         |> ToAsyncSeq token
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun o -> o :> IBclDeviantArtProfileFeedItem)
+        |> AsyncSeq.map (fun o -> o :> IBclDeviantArtFeedItem)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
@@ -35,5 +35,5 @@ module ProfileFeed =
         cursor
         |> Option.ofObj
         |> AsyncExecute token
-        |> AsyncThen.mapCursorResult (fun o -> o :> IBclDeviantArtProfileFeedItem)
+        |> AsyncThen.mapCursorResult (fun o -> o :> IBclDeviantArtFeedItem)
         |> Async.StartAsTask

@@ -319,16 +319,16 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 * ToArrayAsync (IDeviantArtAccessToken) (Guid) (int) (int) -> `Task<IBclDeviation[]>`
 
 ### DeviantArtFs.Requests.Feed.FeedNotifications
-* AsyncExecute (IDeviantArtAccessToken) (string option) -> `Async<DeviantArtCursorResult<DeviantArtFeedNotification>>`
-* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtCursorResult<IBclDeviantArtFeedNotification>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (string option) -> `AsyncSeq<DeviantArtFeedNotification>`
-* ToArrayAsync (IDeviantArtAccessToken) (string) (int) -> `Task<IBclDeviantArtFeedNotification[]>`
+* AsyncExecute (IDeviantArtAccessToken) (string option) -> `Async<DeviantArtCursorResult<DeviantArtFeedItem>>`
+* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtCursorResult<IBclDeviantArtFeedItem>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (string option) -> `AsyncSeq<DeviantArtFeedItem>`
+* ToArrayAsync (IDeviantArtAccessToken) (string) (int) -> `Task<IBclDeviantArtFeedItem[]>`
 
 ### DeviantArtFs.Requests.Feed.ProfileFeed
-* AsyncExecute (IDeviantArtAccessToken) (string option) -> `Async<DeviantArtCursorResult<DeviantArtProfileFeedItem>>`
-* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtCursorResult<IBclDeviantArtProfileFeedItem>>`
-* ToAsyncSeq (IDeviantArtAccessToken) (string option) -> `AsyncSeq<DeviantArtProfileFeedItem>`
-* ToArrayAsync (IDeviantArtAccessToken) (string) (int) -> `Task<IBclDeviantArtProfileFeedItem[]>`
+* AsyncExecute (IDeviantArtAccessToken) (string option) -> `Async<DeviantArtCursorResult<DeviantArtFeedItem>>`
+* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtCursorResult<IBclDeviantArtFeedItem>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (string option) -> `AsyncSeq<DeviantArtFeedItem>`
+* ToArrayAsync (IDeviantArtAccessToken) (string) (int) -> `Task<IBclDeviantArtFeedItem[]>`
 
 ### DeviantArtFs.Requests.Gallery.CreateGalleryFolder
 * AsyncExecute (IDeviantArtAccessToken) (string) -> `Async<DeviantArtGalleryFolder>`

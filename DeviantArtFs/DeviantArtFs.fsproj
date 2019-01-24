@@ -60,8 +60,6 @@
     <Compile Include="Types\ResponseTypes\DeviantArtCommentPagedResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtCommentSiblingsPagedResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtFeedItem.fs" />
-    <Compile Include="Types\ResponseTypes\DeviantArtFeedNotification.fs" />
-    <Compile Include="Types\ResponseTypes\DeviantArtProfileFeedItem.fs" />
     <Compile Include="dafs.fs" />
     <Compile Include="fch.fs" />
     <Compile Include="AsyncThen.fs" />

@@ -7,18 +7,18 @@ type IBclDeviantArtFeedItemCollection =
     abstract member Folderid: Guid
     abstract member Name: string
     abstract member Url: string
-    abstract member Size: int
+    abstract member Size: Nullable<int>
 
 type DeviantArtFeedItemCollection = {
     folderid: Guid
     name: string
     url: string
-    size: int
+    size: int option
 } with
     interface IBclDeviantArtFeedItemCollection with
         member this.Folderid = this.folderid
         member this.Name = this.name
-        member this.Size = this.size
+        member this.Size = this.size |> Option.toNullable
         member this.Url = this.url
 
 type IBclDeviantArtFeedItemPollAnswer =
@@ -61,6 +61,7 @@ type IBclDeviantArtFeedItem =
     abstract member CommentParent: IBclDeviantArtComment
     abstract member CommentDeviation: IBclDeviation
     abstract member CommentProfile: IBclDeviantArtProfile
+    abstract member CommentStatus: IBclDeviantArtStatus
     abstract member CritiqueText: string
     abstract member Collection: IBclDeviantArtFeedItemCollection
     abstract member Formerly: string
@@ -79,6 +80,7 @@ type DeviantArtFeedItem = {
     comment_parent: DeviantArtComment option
     comment_deviation: Deviation option
     comment_profile: DeviantArtProfile option
+    comment_status: DeviantArtStatus option
     critique_text: string option
     collection: DeviantArtFeedItemCollection option
     formerly: string option
@@ -95,6 +97,7 @@ type DeviantArtFeedItem = {
         member this.CommentDeviation = this.comment_deviation |> Option.map (fun o -> o :> IBclDeviation) |> Option.toObj
         member this.CommentParent = this.comment_parent |> Option.map (fun o -> o :> IBclDeviantArtComment) |> Option.toObj
         member this.CommentProfile = this.comment_profile |> Option.map (fun o -> o :> IBclDeviantArtProfile) |> Option.toObj
+        member this.CommentStatus = this.comment_status |> Option.map (fun o -> o :> IBclDeviantArtStatus) |> Option.toObj
         member this.CritiqueText = this.critique_text |> Option.toObj
         member this.Deviations = this.deviations |> Option.map Seq.ofArray |> Option.defaultValue Seq.empty |> Seq.map (fun o -> o :> IBclDeviation)
         member this.Formerly = this.formerly |> Option.toObj
