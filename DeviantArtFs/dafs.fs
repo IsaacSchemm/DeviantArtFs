@@ -16,7 +16,32 @@ module internal dafs =
     let userAgent = "DeviantArtFs/0.6 (https://github.com/libertyernie/DeviantArtFs)"
 
     let createRequest (token: IDeviantArtAccessToken) (url: string) =
-        let req = WebRequest.CreateHttp url
+        let full_url =
+            match token with
+            | :? IDeviantArtCommonParameters as p ->
+                let expand = seq {
+                    if p.Expand.HasFlag(DeviantArtObjectExpansion.UserDetails) then
+                        yield sprintf "user.details"
+                    if p.Expand.HasFlag(DeviantArtObjectExpansion.UserGeo) then
+                        yield sprintf "user.geo"
+                    if p.Expand.HasFlag(DeviantArtObjectExpansion.UserProfile) then
+                        yield sprintf "user.profile"
+                    if p.Expand.HasFlag(DeviantArtObjectExpansion.UserStats) then
+                        yield sprintf "user.stats"
+                }
+                let query = seq {
+                    yield sprintf "mature_content=%b" p.MatureContent
+                    if p.Expand <> DeviantArtObjectExpansion.None then
+                        yield expand |> String.concat "," |> sprintf "expand=%s"
+                }
+                String.concat "" (seq {
+                    yield url
+                    if not (url.Contains("?")) then
+                        yield "?"
+                    yield query |> String.concat "&"
+                })
+            | _ -> url
+        let req = WebRequest.CreateHttp full_url
         req.UserAgent <- userAgent
         req.Headers.["Authorization"] <- sprintf "Bearer %s" token.AccessToken
         req

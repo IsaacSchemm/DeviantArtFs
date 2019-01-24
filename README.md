@@ -25,12 +25,12 @@ endpoints under /browse/ might consist of many, many pages...)
 * The following groups of endpoints are not currently implemented:
   * Messages
   * Notes
-* The "expand" parameter (user.details, user.geo, etc) is not currently supported.
-* The "mature_content" parameter is not currently supported.
 * The following fields in the deviation object are not supported:
   * challenge
   * challenge_entry
   * motion_book
+* Not all object expansion parameters are supported yet.
+* The profile_pic field in the user.profile expansion is not supported due to circular type definitions (use GET /user/profile/{username} instead.)
 
 ## Supported endpoints
 
@@ -143,7 +143,6 @@ endpoints under /browse/ might consist of many, many pages...)
 
 Example (C#):
 
-    var list = new List<IBclDeviation>();
     int offset = 0;
     while (true) {
         var req = new DeviantArtFs.Requests.Gallery.GalleryAllViewRequest();
@@ -153,28 +152,46 @@ Example (C#):
         };
         IBclDeviantArtPagedResult<IBclDeviation> resp =
             await DeviantArtFs.Requests.Gallery.GalleryAllView.ExecuteAsync(token, paging, req);
-        list.AddRange(resp.Results);
+        foreach (var d in resp.Results) {
+            Console.WriteLine($"{d.Author.Username}: ${d.Title}");
+        }
         offset = resp.NextOffset ?? 0;
         if (!resp.HasMore) break;
     }
 
 Example (F#):
 
-    let list = new ResizeArray<Deviation>()
     let mutable offset = 0
     let mutable more = true
     while more do
         let req = new DeviantArtFs.Requests.Gallery.GalleryAllViewRequest()
         let paging = new PagingParams(Offset = 0, Limit = Nullable 24)
         let! (resp: DeviantArtPagedResult<Deviation>) = DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token paging req
-        list.AddRange(resp.results)
+        for d in resp.Results do
+            printf "%s: %s" d.author.username d.title
         offset <- resp.next_offset |> Option.defaultValue 0
         more <- resp.has_more
 
-Note how the result from AsyncExecute is `DeviantArtPagedResult`, which has a next_offset field of `int option`,
-while the result from ExecuteAsync is `IBclDeviantArtPagedResult`, which has a NextOffset field of `int?`.
-
 See ENDPOINTS.md for more information.
+
+## Common parameters
+
+Several endpoints support common object expansion (e.g. user.details, user.geo)
+and/or [mature content filtering](https://www.deviantart.com/developers/http/v1/20160316/object/deviation).
+To use these features of the DeviantArt API, pass a special token parameter of the type IDeviantArtCommonParameters.
+
+The IDeviantArtCommonParameters interface exposes three properties:
+
+* AccessToken (string)
+* MatureContent (boolean)
+* Expand (DeviantArtObjectExpansion)
+
+DeviantArtObjectExpansion is an enumeration that defines a set of flags; for example:
+
+    var exp = DeviantArtObjectExpansion.UserDetails | DeviantArtObjectExpansion.UserGeo;
+
+DeviantArtFs does not currently define a class or record that implements IDeviantArtCommonParameters,
+but you can implement this interface yourself.
 
 ## Examples
 

@@ -5,19 +5,13 @@ open FSharp.Json
 
 [<AllowNullLiteral>]
 type IBclDeviantArtProfile =
+    inherit IBclDeviantArtUserProfile
     abstract member User: IBclDeviantArtUser
     abstract member IsWatching: bool
     abstract member ProfileUrl: string
-    abstract member UserIsArtist: bool
-    abstract member ArtistLevel: string
-    abstract member ArtistSpecialty: string
-    abstract member RealName: string
-    abstract member Tagline: string
     abstract member Countryid: int
     abstract member Country: string
-    abstract member Website: string
     abstract member Bio: string
-    abstract member CoverPhoto: string
     abstract member ProfilePic: IBclDeviation
     abstract member LastStatus: IBclDeviantArtStatus
     abstract member Stats: IBclDeviantArtProfileStats
