@@ -19,7 +19,7 @@ module DailyDeviations =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/dailydeviations?%s"
             |> dafs.createRequest token
         let! json = dafs.asyncRead req
-        return ListOnlyResponse<Deviation>.Parse json
+        return DeviantArtListOnlyResponse.Parse json
     }
 
     let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapSeq (fun o -> o :> IBclDeviation) |> Async.StartAsTask

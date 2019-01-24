@@ -25,8 +25,8 @@
     <Compile Include="Types\AccessTokens.fs" />
     <Compile Include="Types\Exceptions.fs" />
     <Compile Include="Types\SharedRequestTypes.fs" />
-    <Compile Include="Types\ResponseTypes\TextOnlyResponse.fs" />
-    <Compile Include="Types\ResponseTypes\ListOnlyResponse.fs" />
+    <Compile Include="Types\ResponseTypes\DeviantArtTextOnlyResponse.fs" />
+    <Compile Include="Types\ResponseTypes\DeviantArtListOnlyResponse.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtPagedResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtCursorResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtUser.fs" />

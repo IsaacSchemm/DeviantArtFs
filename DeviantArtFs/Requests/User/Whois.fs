@@ -18,7 +18,7 @@ module Whois =
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
         let! json = dafs.asyncRead req
-        return ListOnlyResponse<DeviantArtUser>.Parse json
+        return DeviantArtListOnlyResponse.Parse json
     }
 
     let ExecuteAsync token usernames = AsyncExecute token usernames |> AsyncThen.mapSeq dafs.asBclUser |> Async.StartAsTask

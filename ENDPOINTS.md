@@ -51,7 +51,7 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 * ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IEnumerable<IBclDeviantArtCategory>>`
 
 ### DeviantArtFs.Requests.Browse.DailyDeviations
-* AsyncExecute (IDeviantArtAccessToken) (DailyDeviationsRequest) -> `Async<ListOnlyResponse<Deviation>>`
+* AsyncExecute (IDeviantArtAccessToken) (DailyDeviationsRequest) -> `Async<DeviantArtListOnlyResponse<a>>`
 * ExecuteAsync (IDeviantArtAccessToken) (DailyDeviationsRequest) -> `Task<IEnumerable<IBclDeviation>>`
 
 **DailyDeviationsRequest:**
@@ -515,8 +515,8 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 * Username: `string`
 
 ### DeviantArtFs.Requests.User.FriendsSearch
-* AsyncExecute (IDeviantArtAccessToken) (FriendsSearchRequest) -> `Async<ListOnlyResponse<DeviantArtUser>>`
-* ExecuteAsync (IDeviantArtAccessToken) (FriendsSearchRequest) -> `Task<ListOnlyResponse<DeviantArtUser>>`
+* AsyncExecute (IDeviantArtAccessToken) (FriendsSearchRequest) -> `Async<DeviantArtListOnlyResponse<a>>`
+* ExecuteAsync (IDeviantArtAccessToken) (FriendsSearchRequest) -> `Task<DeviantArtListOnlyResponse<a>>`
 
 **FriendsSearchRequest:**
 
@@ -608,7 +608,7 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 * ExecuteAsync (IDeviantArtAccessToken) -> `Task<IBclDeviantArtUser>`
 
 ### DeviantArtFs.Requests.User.Whois
-* AsyncExecute (IDeviantArtAccessToken) (IEnumerable<string>) -> `Async<ListOnlyResponse<DeviantArtUser>>`
+* AsyncExecute (IDeviantArtAccessToken) (IEnumerable<string>) -> `Async<DeviantArtListOnlyResponse<a>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IEnumerable<string>) -> `Task<IEnumerable<IBclDeviantArtUser>>`
 
 ### DeviantArtFs.Requests.Util.Placebo
