@@ -515,8 +515,8 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 * Username: `string`
 
 ### DeviantArtFs.Requests.User.FriendsSearch
-* AsyncExecute (IDeviantArtAccessToken) (FriendsSearchRequest) -> `Async<DeviantArtListOnlyResponse<a>>`
-* ExecuteAsync (IDeviantArtAccessToken) (FriendsSearchRequest) -> `Task<DeviantArtListOnlyResponse<a>>`
+* AsyncExecute (IDeviantArtAccessToken) (FriendsSearchRequest) -> `Async<DeviantArtListOnlyResponse<DeviantArtUser>>`
+* ExecuteAsync (IDeviantArtAccessToken) (FriendsSearchRequest) -> `Task<IEnumerable<IBclDeviantArtUser>>`
 
 **FriendsSearchRequest:**
 
@@ -608,7 +608,7 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 * ExecuteAsync (IDeviantArtAccessToken) -> `Task<IBclDeviantArtUser>`
 
 ### DeviantArtFs.Requests.User.Whois
-* AsyncExecute (IDeviantArtAccessToken) (IEnumerable<string>) -> `Async<DeviantArtListOnlyResponse<a>>`
+* AsyncExecute (IDeviantArtAccessToken) (IEnumerable<string>) -> `Async<DeviantArtListOnlyResponse<DeviantArtUser>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IEnumerable<string>) -> `Task<IEnumerable<IBclDeviantArtUser>>`
 
 ### DeviantArtFs.Requests.Util.Placebo

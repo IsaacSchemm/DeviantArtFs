@@ -93,7 +93,7 @@ namespace DeviantArtFs.Tests
                 var f = t.GetMethod("ExecuteAsync");
                 if (f != null)
                 {
-                    Assert.IsTrue(f.ReturnType.FullName.StartsWith("System.Threading.Tasks.Task"), $"Failure in type {t.Name}");
+                    Assert.IsTrue(f.ReturnType.FullName?.StartsWith("System.Threading.Tasks.Task") == true, $"Failure in type {t.Name}");
                     AssertOkForCSharp(f.ReturnType, f.Name, t.Name);
 
                     foreach (var p in f.GetParameters())
