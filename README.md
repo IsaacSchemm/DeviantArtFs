@@ -177,20 +177,14 @@ See ENDPOINTS.md for more information.
 
 Several endpoints support common object expansion (e.g. user.details, user.geo)
 and/or [mature content filtering](https://www.deviantart.com/developers/http/v1/20160316/object/deviation).
-To use these features of the DeviantArt API, pass a special token parameter of the type IDeviantArtCommonParameters.
+To use these features of the DeviantArt API, wrap the token using DeviantArtCommonParameters.Wrap. For example:
 
-The IDeviantArtCommonParameters interface exposes three properties:
-
-* AccessToken (string)
-* MatureContent (boolean)
-* Expand (DeviantArtObjectExpansion)
-
-DeviantArtObjectExpansion is an enumeration that defines a set of flags; for example:
-
-    var exp = DeviantArtObjectExpansion.UserDetails | DeviantArtObjectExpansion.UserGeo;
-
-DeviantArtFs does not currently define a class or record that implements IDeviantArtCommonParameters,
-but you can implement this interface yourself.
+    var commonParameters = new DeviantArtCommonParameters {
+        Expand = DeviantArtObjectExpansion.UserDetails | DeviantArtObjectExpansion.UserGeo,
+        MatureContent = true
+    };
+    var new_token = commonParameters.WrapToken(token);
+    var me = await Requests.User.Whoami.ExecuteAsync(new_token);
 
 ## Examples
 
@@ -218,3 +212,5 @@ Both Authorization Code (recommended) and Implicit grant types are supported.
 If you are writing a Windows desktop application, you can use the forms in the DeviantArtFs.WinForms package to get a code or token from the user using either grant type.
 
 The DeviantArtAuth class provides methods to support the Authorization Code grant type (getting tokens from an authorization code and refreshing tokens).
+
+If you need to store the access token somewhere (such as in a database or file), create your own class that implements the IDeviantArtAccessToken or IDeviantArtRefreshToken interface.

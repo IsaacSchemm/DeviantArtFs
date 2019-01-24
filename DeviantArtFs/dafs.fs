@@ -18,7 +18,7 @@ module internal dafs =
     let createRequest (token: IDeviantArtAccessToken) (url: string) =
         let full_url =
             match token with
-            | :? IDeviantArtCommonParameters as p ->
+            | :? IDeviantArtAccessTokenWithCommonParameters as p ->
                 let expand = seq {
                     if p.Expand.HasFlag(DeviantArtObjectExpansion.UserDetails) then
                         yield sprintf "user.details"
