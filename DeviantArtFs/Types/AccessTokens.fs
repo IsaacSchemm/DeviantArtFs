@@ -17,6 +17,7 @@ type DeviantArtObjectExpansion =
 | UserGeo = 2
 | UserProfile = 4
 | UserStats = 8
+| UserWatch = 16
 
 type IDeviantArtCommonParameters =
     inherit IDeviantArtAccessToken

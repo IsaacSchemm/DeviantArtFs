@@ -28,6 +28,8 @@ module internal dafs =
                         yield sprintf "user.profile"
                     if p.Expand.HasFlag(DeviantArtObjectExpansion.UserStats) then
                         yield sprintf "user.stats"
+                    if p.Expand.HasFlag(DeviantArtObjectExpansion.UserWatch) then
+                        yield sprintf "user.watch"
                 }
                 let query = seq {
                     yield sprintf "mature_content=%b" p.MatureContent

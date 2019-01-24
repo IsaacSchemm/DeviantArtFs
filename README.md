@@ -29,8 +29,7 @@ endpoints under /browse/ might consist of many, many pages...)
   * challenge
   * challenge_entry
   * motion_book
-* Not all object expansion parameters are supported yet.
-* The profile_pic field in the user.profile expansion is not supported due to circular type definitions (use GET /user/profile/{username} instead.)
+* The profile_pic field in the user.profile expansion is not supported due to circular type definitions. Get it from the full profile object instead.
 
 ## Supported endpoints
 
