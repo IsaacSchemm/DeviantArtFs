@@ -23,12 +23,11 @@ endpoints under /browse/ might consist of many, many pages...)
 ## Currently unsupported features
 
 * The following groups of endpoints are not currently implemented:
-  * Feed
   * Messages
   * Notes
-* The "expand" parameter (user.details, user.geo, etc) is not supported.
+* The "expand" parameter (user.details, user.geo, etc) is not currently supported.
 * The "mature_content" parameter is not currently supported.
-* The following fields in the deviation object are not currently supported:
+* The following fields in the deviation object are not supported:
   * challenge
   * challenge_entry
   * motion_book
@@ -90,6 +89,8 @@ endpoints under /browse/ might consist of many, many pages...)
 * GET /feed/home/{bucketid}
 * GET /feed/notifications
 * GET /feed/profile
+* GET /feed/settings
+* POST /feed/settings/update
 
 ### Gallery
 

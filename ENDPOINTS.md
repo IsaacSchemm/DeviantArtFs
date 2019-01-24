@@ -324,6 +324,23 @@ The value of "IExtParams" determines what extra data (if any) is included with d
 * ToAsyncSeq (IDeviantArtAccessToken) (string option) -> `AsyncSeq<DeviantArtFeedItem>`
 * ToArrayAsync (IDeviantArtAccessToken) (string) (int) -> `Task<IBclDeviantArtFeedItem[]>`
 
+### DeviantArtFs.Requests.Feed.FeedSettings
+* AsyncExecute (IDeviantArtAccessToken) -> `Async<DeviantArtFeedSettings>`
+* ExecuteAsync (IDeviantArtAccessToken) -> `Task<IBclDeviantArtFeedSettings>`
+
+### DeviantArtFs.Requests.Feed.FeedSettingsUpdate
+* AsyncExecute (IDeviantArtAccessToken) (FeedSettingsUpdateRequest) -> `Async<unit>`
+* ExecuteAsync (IDeviantArtAccessToken) (FeedSettingsUpdateRequest) -> `Task`
+
+**FeedSettingsUpdateRequest:**
+
+* Statuses: `bool?`
+* Deviations: `bool?`
+* Journals: `bool?`
+* GroupDeviations: `bool?`
+* Collections: `bool?`
+* Misc: `bool?`
+
 ### DeviantArtFs.Requests.Feed.ProfileFeed
 * AsyncExecute (IDeviantArtAccessToken) (string option) -> `Async<DeviantArtCursorResult<DeviantArtFeedItem>>`
 * ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtCursorResult<IBclDeviantArtFeedItem>>`

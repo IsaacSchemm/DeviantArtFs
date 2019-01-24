@@ -60,6 +60,7 @@
     <Compile Include="Types\ResponseTypes\DeviantArtCommentPagedResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtCommentSiblingsPagedResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtFeedItem.fs" />
+    <Compile Include="Types\ResponseTypes\DeviantArtFeedSettings.fs" />
     <Compile Include="dafs.fs" />
     <Compile Include="fch.fs" />
     <Compile Include="AsyncThen.fs" />
@@ -102,6 +103,8 @@
     <Compile Include="Requests\Feed\FeedHomeBucket.fs" />
     <Compile Include="Requests\Feed\FeedNotifications.fs" />
     <Compile Include="Requests\Feed\ProfileFeed.fs" />
+    <Compile Include="Requests\Feed\FeedSettings.fs" />
+    <Compile Include="Requests\Feed\FeedSettingsUpdate.fs" />
     <Compile Include="Requests\Gallery\GalleryAllView.fs" />
     <Compile Include="Requests\Gallery\GalleryById.fs" />
     <Compile Include="Requests\Gallery\GalleryFolders.fs" />
