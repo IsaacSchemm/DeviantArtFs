@@ -175,8 +175,7 @@ See ENDPOINTS.md for more information.
 
 ## Common parameters
 
-Several endpoints support common object expansion (e.g. user.details, user.geo)
-and/or [mature content filtering](https://www.deviantart.com/developers/http/v1/20160316/object/deviation).
+Several endpoints support common object expansion (e.g. user.details, user.geo) and/or mature content filtering.
 To use these features of the DeviantArt API, wrap the token using DeviantArtCommonParameters.Wrap. For example:
 
     var commonParameters = new DeviantArtCommonParameters {
