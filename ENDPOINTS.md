@@ -38,6 +38,16 @@ The value of "IExtParams" determines what extra data (if any) is included with d
     // C#
     PagingParams x1 = new PagingParams { Offset = 0, Limit = 24 };
 
+### DeviantArtFs.DeleteMessage
+* AsyncExecute (IDeviantArtAccessToken) (DeleteMessageRequest) -> `Async<unit>`
+* ExecuteAsync (IDeviantArtAccessToken) (DeleteMessageRequest) -> `Task`
+
+**DeleteMessageRequest:**
+
+* Folderid: `Guid?`
+* Messageid: `string`
+* Stackid: `string`
+
 ### DeviantArtFs.DeviantArtAuth
 * AsyncGetToken (string) (Uri) -> `Async<IDeviantArtRefreshToken>`
 * AsyncRefresh (string) -> `Async<IDeviantArtRefreshToken>`

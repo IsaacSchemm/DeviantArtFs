@@ -99,6 +99,10 @@ endpoints under /browse/ might consist of many, many pages...)
 * POST /gallery/folders/create
 * GET /gallery/folders/remove/{folderid}
 
+### Messages
+
+* POST /messages/delete
+
 ### Stash
 
 * GET /stash/{stackid}
