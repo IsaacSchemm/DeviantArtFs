@@ -82,8 +82,9 @@ The value of ""IDeviantArtExtParams"" determines what extra data (if any) is inc
                         .Select(x => x as MethodInfo)
                         .Where(x => x != null)
                         .Where(x => x.ReturnType.Name.StartsWith("Task") || x.ReturnType.Name.StartsWith("FSharpAsync") || x.ReturnType.Name.StartsWith("IAsyncEnumerable"))
-                        .OrderByDescending(x => x.Name.Contains("Execute"))
-                        .ThenBy(x => x.Name.EndsWith("ListAsync"));
+                        .OrderBy(x => x.Name.Contains("Execute") ? 0 : 1)
+                        .ThenBy(x => x.Name.Contains("GetMax") ? 0 : 1)
+                        .ThenBy(x => x.ReturnType.FullName);
                     if (ae.Any())
                     {
                         sw.WriteLine($"### {t.FullName}");
