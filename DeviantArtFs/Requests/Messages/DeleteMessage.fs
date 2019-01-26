@@ -4,9 +4,9 @@ open System
 open DeviantArtFs
 
 type DeleteMessageRequest() =
-    member val Folderid = Nullable<Guid>()
-    member val Messageid = null
-    member val Stackid = null
+    member val Folderid = Nullable<Guid>() with get, set
+    member val Messageid = null with get, set
+    member val Stackid = null with get, set
 
 module DeleteMessage =
     open System.IO

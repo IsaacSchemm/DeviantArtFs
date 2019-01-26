@@ -2,22 +2,21 @@
 
 open System
 open DeviantArtFs
+open FSharp.Control
 
 type MessagesFeedRequest() =
-    member val Folderid = Nullable<Guid>()
-    member val Stack = true
-    member val Cursor = null
+    member val Folderid = Nullable<Guid>() with get, set
+    member val Stack = true with get, set
 
 module MessagesFeed =
-    open System.IO
-
-    let AsyncExecute token (req: MessagesFeedRequest) = async {
+    let AsyncExecute token (cursor: string option) (req: MessagesFeedRequest) = async {
         let query = seq {
             if req.Folderid.HasValue then
                 yield sprintf "folderid=%O" req.Folderid
             yield sprintf "stack=%b" req.Stack
-            if req.Cursor <> null then
-                yield sprintf "cursor=%s" req.Cursor
+            match cursor with
+            | Some c -> yield sprintf "cursor=%s" c
+            | None -> ()
         }
 
         let req =
@@ -30,4 +29,17 @@ module MessagesFeed =
         return DeviantArtFeedCursorResult<DeviantArtMessage>.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapFeedCursorResult (fun o -> o :> IBclDeviantArtMessage) |> Async.StartAsTask
+    let ToAsyncSeq token req cursor =
+        let curried c = AsyncExecute token c req
+        curried |> dafs.cursorToAsyncSeq cursor
+
+    let ToArrayAsync token req cursor limit =
+        cursor
+        |> Option.ofObj
+        |> ToAsyncSeq token req
+        |> AsyncSeq.take limit
+        |> AsyncSeq.map (fun o -> o :> IBclDeviantArtMessage)
+        |> AsyncSeq.toArrayAsync
+        |> Async.StartAsTask
+
+    let ExecuteAsync token cursor req = AsyncExecute token (Option.ofObj cursor) req |> AsyncThen.mapFeedCursorResult (fun o -> o :> IBclDeviantArtMessage) |> Async.StartAsTask

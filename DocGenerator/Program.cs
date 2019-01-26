@@ -45,33 +45,33 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 
 An interface that provides an ""AccessToken"" string property. You can get one from DeviantArtFs.DeviantArtAuth or implement the interface yourself.
 
-**IExtParams:**
+**IDeviantArtExtParams:**
 
-The value of ""IExtParams"" determines what extra data (if any) is included with deviations and Sta.sh metadata.
+The value of ""IDeviantArtExtParams"" determines what extra data (if any) is included with deviations and Sta.sh metadata.
 
     // C#
-    IExtParams e1 = new ExtParams { ExtSubmission = true, ExtCamera = false, ExtStats = false };
-    IExtParams e2 = ExtParams.None;
-    IExtParams e3 = ExtParams.All;
+    IDeviantArtExtParams e1 = new DeviantArtExtParams { ExtSubmission = true, ExtCamera = false, ExtStats = false };
+    IDeviantArtExtParams e2 = ExtParams.None;
+    IDeviantArtExtParams e3 = ExtParams.All;
 
-**FieldChange:**
+**DeviantArtFieldChange:**
 
-""FieldChange"" is a discriminated union used in update operations. FieldChange.NoChange means the parameter will not be included; for parameters you want to include, wrap it in FieldChange.UpdateToValue, like so:
+""DeviantArtFieldChange"" is a discriminated union used in update operations. DeviantArtFieldChange.NoChange means the parameter will not be included; for parameters you want to include, wrap it in DeviantArtFieldChange.UpdateToValue, like so:
 
     // C#
     new DeviantArtFs.Requests.Stash.UpdateRequest(4567890123456789L) {
-        Title = FieldChange<string>.NewUpdateToValue(""new title""),
-        Description = FieldChange<string>.NoChange
+        Title = DeviantArtFieldChange<string>.NewUpdateToValue(""new title""),
+        Description = DeviantArtFieldChange<string>.NoChange
     }
 
 > Note: Some fields can be null, and some cannot. For example, DeviantArt allows a null description for a Sta.sh stack, but not a null title.
 
-**PagingParams:**
+**IDeviantArtPagingParams:**
 
-""PagingParams"" is used when the common ""offset"" and ""limit"" parameters are included in a request.
+""IDeviantArtPagingParams"" is used when the common ""offset"" and ""limit"" parameters are included in a request.
 
     // C#
-    PagingParams x1 = new PagingParams { Offset = 0, Limit = 24 };
+    IDeviantArtPagingParams x1 = new DeviantArtPagingParams { Offset = 0, Limit = 24 };
 ");
 
                 var a = Assembly.GetAssembly(typeof(DeviantArtFs.Requests.Browse.CategoryTree));

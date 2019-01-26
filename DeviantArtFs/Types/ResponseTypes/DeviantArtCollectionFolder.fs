@@ -3,6 +3,7 @@
 open System
 open FSharp.Json
 
+[<AllowNullLiteral>]
 type IBclDeviantArtCollectionFolder =
     abstract member Folderid: Guid
     abstract member Name: string
