@@ -21,9 +21,9 @@
   <ItemGroup>
     <Compile Include="DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Types\AccessTokens.fs" />
-    <Compile Include="Types\SharedRequestTypes\PagingParams.fs" />
-    <Compile Include="Types\SharedRequestTypes\ExtParams.fs" />
-    <Compile Include="Types\SharedRequestTypes\FieldChange.fs" />
+    <Compile Include="Types\RequestTypes\DeviantArtPagingParams.fs" />
+    <Compile Include="Types\RequestTypes\DeviantArtExtParams.fs" />
+    <Compile Include="Types\RequestTypes\DeviantArtFieldChange.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtSuccessOrErrorResponse.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtTextOnlyResponse.fs" />

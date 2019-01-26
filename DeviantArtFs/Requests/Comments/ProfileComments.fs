@@ -10,7 +10,7 @@ type ProfileCommentsRequest(username: string) =
     member val Maxdepth = 0 with get, set
 
 module ProfileComments =
-    let AsyncExecute token (paging: IPagingParams) (req: ProfileCommentsRequest) = async {
+    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: ProfileCommentsRequest) = async {
         let query = seq {
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s

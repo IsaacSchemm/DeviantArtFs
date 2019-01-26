@@ -36,7 +36,7 @@ let get_token =
             File.WriteAllText(token_file, form.AccessToken)
             form.AccessToken
 
-let page offset limit = new PagingParams(Offset = offset, Limit = Nullable limit)
+let page offset limit = new DeviantArtPagingParams(Offset = offset, Limit = Nullable limit)
 
 let sandbox token_string = async {
     let token = create_token_obj token_string
@@ -71,7 +71,7 @@ let sandbox token_string = async {
         printfn "Most recent deviation: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
 
         let! metadata =
-            new DeviantArtFs.Requests.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = ExtParams.All)
+            new DeviantArtFs.Requests.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = DeviantArtExtParams.All)
             |> DeviantArtFs.Requests.Deviation.MetadataById.AsyncExecute token
         for m in metadata do
             m.tags |> Seq.map (fun t -> sprintf "#%s" t.tag_name) |> String.concat " " |> printfn "%s"

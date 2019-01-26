@@ -8,7 +8,7 @@ type WatchersRequest() =
 module Watchers =
     open FSharp.Control
 
-    let AsyncExecute token (paging: IPagingParams) (req: WatchersRequest) = async {
+    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: WatchersRequest) = async {
         let query = seq {
             yield! queryFor.paging paging
         }

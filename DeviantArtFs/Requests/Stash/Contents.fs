@@ -7,7 +7,7 @@ module Contents =
 
     let RootStack = 0L
 
-    let AsyncExecute token (paging: IPagingParams) (stackid: int64) = async {
+    let AsyncExecute token (paging: IDeviantArtPagingParams) (stackid: int64) = async {
         let query = seq {
             yield! queryFor.paging paging
         }

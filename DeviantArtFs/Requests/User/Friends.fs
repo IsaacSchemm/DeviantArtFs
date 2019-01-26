@@ -8,7 +8,7 @@ type FriendsRequest() =
 module Friends =
     open FSharp.Control
 
-    let AsyncExecute token (paging: IPagingParams) (req: FriendsRequest) = async {
+    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: FriendsRequest) = async {
         let query = seq {
             yield! queryFor.paging paging
         }

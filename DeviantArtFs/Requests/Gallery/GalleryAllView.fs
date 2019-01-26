@@ -8,7 +8,7 @@ type GalleryAllViewRequest() =
 module GalleryAllView =
     open FSharp.Control
 
-    let AsyncExecute token (paging: IPagingParams) (req: GalleryAllViewRequest) = async {
+    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: GalleryAllViewRequest) = async {
         let query = seq {
             match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)

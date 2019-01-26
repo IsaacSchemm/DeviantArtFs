@@ -18,14 +18,14 @@ type ArtistSpecialty =
     | Varied = 9
 
 type ProfileUpdateRequest() =
-    member val UserIsArtist = FieldChange<bool>.NoChange with get, set
-    member val ArtistLevel = FieldChange<ArtistLevel>.NoChange with get, set
-    member val ArtistSpecialty = FieldChange<ArtistSpecialty>.NoChange with get, set
-    member val RealName = FieldChange<string>.NoChange with get, set
-    member val Tagline = FieldChange<string>.NoChange with get, set
-    member val Countryid = FieldChange<int>.NoChange with get, set
-    member val Website = FieldChange<string>.NoChange with get, set
-    member val Bio = FieldChange<string>.NoChange with get, set
+    member val UserIsArtist = DeviantArtFieldChange<bool>.NoChange with get, set
+    member val ArtistLevel = DeviantArtFieldChange<ArtistLevel>.NoChange with get, set
+    member val ArtistSpecialty = DeviantArtFieldChange<ArtistSpecialty>.NoChange with get, set
+    member val RealName = DeviantArtFieldChange<string>.NoChange with get, set
+    member val Tagline = DeviantArtFieldChange<string>.NoChange with get, set
+    member val Countryid = DeviantArtFieldChange<int>.NoChange with get, set
+    member val Website = DeviantArtFieldChange<string>.NoChange with get, set
+    member val Bio = DeviantArtFieldChange<string>.NoChange with get, set
 
 module ProfileUpdate =
     open System.IO

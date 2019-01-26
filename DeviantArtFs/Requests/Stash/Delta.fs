@@ -4,12 +4,12 @@ open DeviantArtFs
 
 type DeltaRequest() = 
     member val Cursor = null with get, set
-    member val ExtParams = ExtParams.None with get, set
+    member val ExtParams = DeviantArtExtParams.None with get, set
 
 module Delta =
     open FSharp.Control
 
-    let AsyncExecute token (paging: IPagingParams) (req: DeltaRequest) = async {
+    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: DeltaRequest) = async {
         let query = seq {
             match Option.ofObj req.Cursor with
             | Some s -> yield sprintf "cursor=%s" (dafs.urlEncode s)

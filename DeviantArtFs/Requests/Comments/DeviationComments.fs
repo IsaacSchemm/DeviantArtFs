@@ -10,7 +10,7 @@ type DeviationCommentsRequest(deviationid: Guid) =
     member val Maxdepth = 0 with get, set
 
 module DeviationComments =
-    let AsyncExecute token (paging: IPagingParams) (req: DeviationCommentsRequest) = async {
+    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: DeviationCommentsRequest) = async {
         let query = seq {
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s

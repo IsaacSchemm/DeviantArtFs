@@ -10,7 +10,7 @@ type EmbeddedContentRequest(deviationid: Guid) =
 module EmbeddedContent =
     open FSharp.Control
 
-    let AsyncExecute token (paging: IPagingParams) (req: EmbeddedContentRequest) = async {
+    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: EmbeddedContentRequest) = async {
         let query = seq {
             yield sprintf "deviationid=%O" req.Deviationid
             match Option.ofNullable req.OffsetDeviationid with

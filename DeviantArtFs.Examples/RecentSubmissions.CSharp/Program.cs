@@ -57,7 +57,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
             }
         }
 
-        static PagingParams Page(int offset, int limit) => new PagingParams { Offset = offset, Limit = limit };
+        static IDeviantArtPagingParams Page(int offset, int limit) => new DeviantArtPagingParams { Offset = offset, Limit = limit };
 
         static async Task Sandbox(string token_string)
         {

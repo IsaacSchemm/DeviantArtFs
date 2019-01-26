@@ -62,8 +62,8 @@ namespace DeviantArtFs.Tests
 
                     foreach (var p in f.GetParameters())
                     {
-                        if (p.Name == "paging") Assert.AreEqual("PagingParams", p.ParameterType.Name, "Parameter \"paging\" is not of type PagingParams");
-                        if (p.Name != "paging") Assert.AreNotEqual("PagingParams", p.ParameterType.Name, "Parameter of type PagingParams is not named \"paging\"");
+                        if (p.Name == "paging") Assert.AreEqual("IDeviantArtPagingParams", p.ParameterType.Name, "Parameter \"paging\" is not of type IDeviantArt");
+                        if (p.Name != "paging") Assert.AreNotEqual("IDeviantArtPagingParams", p.ParameterType.Name, "Parameter of type IDeviantArt is not named \"paging\"");
                     }
                 }
             }
@@ -99,8 +99,8 @@ namespace DeviantArtFs.Tests
 
                     foreach (var p in f.GetParameters())
                     {
-                        if (p.Name == "paging") Assert.AreEqual("PagingParams", p.ParameterType.Name, $"Parameter {p.Name}, function {f.Name} on {t.Name}");
-                        if (p.Name != "paging") Assert.AreNotEqual("PagingParams", p.ParameterType.Name, $"Parameter {p.Name}, function {f.Name} on {t.Name}");
+                        if (p.Name == "paging") Assert.AreEqual("IDeviantArtPagingParams", p.ParameterType.Name, $"Parameter {p.Name}, function {f.Name} on {t.Name}");
+                        if (p.Name != "paging") Assert.AreNotEqual("IDeviantArtPagingParams", p.ParameterType.Name, $"Parameter {p.Name}, function {f.Name} on {t.Name}");
                     }
                 }
             }
@@ -126,17 +126,19 @@ namespace DeviantArtFs.Tests
         [TestMethod]
         public void TestTypesInDeviantArtFsNamespace()
         {
-            // All types in the DeviantArtFs root namespace should start with DeviantArt, Stash, or Deviation (with IBcl prefix for .NET-friendly interfaces)
+            // All visible type names in the DeviantArtFs root namespace should contain DeviantArt, Stash, or Deviation (with IBcl prefix for .NET-friendly interfaces)
             var a = Assembly.GetAssembly(typeof(Deviation));
             foreach (var t in a.GetTypes())
             {
+                if (t.DeclaringType != null) continue;
+                if (!t.IsVisible) continue;
+
                 if (t.Namespace != "DeviantArtFs") continue;
                 Assert.AreEqual(t.IsInterface, t.Name.StartsWith("I"), $"The name of type {t.Name} does not indicate whether it is a class/record or interface");
 
-                string basename = Regex.Replace(t.Name, "^I(Bcl)?", "");
-                if (basename.StartsWith("DeviantArt")) continue;
-                if (basename.StartsWith("Stash")) continue;
-                if (basename.StartsWith("Deviation")) continue;
+                if (t.Name.Contains("DeviantArt")) continue;
+                if (t.Name.Contains("Stash")) continue;
+                if (t.Name.Contains("Deviation")) continue;
                 Assert.Fail($"Type {t.Name} in namespace {t.Namespace} does not have an appropriate name");
             }
         }

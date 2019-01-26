@@ -4,7 +4,7 @@ open DeviantArtFs
 open FSharp.Control
 
 module Tags =
-    let AsyncExecute token (paging: IPagingParams) (tag: string) = async {
+    let AsyncExecute token (paging: IDeviantArtPagingParams) (tag: string) = async {
         let query = seq {
             yield sprintf "tag=%s" (dafs.urlEncode tag)
             yield! queryFor.paging paging

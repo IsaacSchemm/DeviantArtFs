@@ -10,7 +10,7 @@ type CollectionFoldersRequest() =
 module CollectionFolders =
     open FSharp.Control
 
-    let AsyncExecute token (paging: IPagingParams) (ps: CollectionFoldersRequest) = async {
+    let AsyncExecute token (paging: IDeviantArtPagingParams) (ps: CollectionFoldersRequest) = async {
         let query = seq {
             match Option.ofObj ps.Username with
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)

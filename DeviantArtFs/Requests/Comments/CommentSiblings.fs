@@ -9,7 +9,7 @@ type CommentSiblingsRequest(commentid: Guid) =
     member val ExtItem = false with get, set
 
 module CommentSiblings =
-    let AsyncExecute token (paging: IPagingParams) (req: CommentSiblingsRequest) = async {
+    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: CommentSiblingsRequest) = async {
         let query = seq {
             yield sprintf "ext_item=%b" req.ExtItem
             yield! queryFor.paging paging

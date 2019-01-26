@@ -5,8 +5,8 @@ open System.IO
 
 type UpdateRequest(stackid: int64) =
     member __.Stackid = stackid
-    member val Title = FieldChange<string>.NoChange with get, set
-    member val Description = FieldChange<string>.NoChange with get, set
+    member val Title = DeviantArtFieldChange<string>.NoChange with get, set
+    member val Description = DeviantArtFieldChange<string>.NoChange with get, set
 
 module Update =
     let AsyncExecute token (req: UpdateRequest) = async {

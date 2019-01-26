@@ -7,7 +7,7 @@ open System.Collections.Generic
 open System
 open FSharp.Json
 
-type TokenResponse = {
+type DeviantArtTokenResponse = {
   expires_in: int
   status: string
   access_token: string
@@ -68,7 +68,7 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
         use! resp = req.GetResponseAsync() |> Async.AwaitTask
         use sr = new StreamReader(resp.GetResponseStream())
         let! json = sr.ReadToEndAsync() |> Async.AwaitTask
-        let obj = Json.deserialize<TokenResponse> json
+        let obj = Json.deserialize<DeviantArtTokenResponse> json
         if obj.status <> "success" then
             failwithf "An unknown error occured"
         if obj.token_type <> "Bearer" then
@@ -104,7 +104,7 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
         use! resp = req.GetResponseAsync() |> Async.AwaitTask
         use sr = new StreamReader(resp.GetResponseStream())
         let! json = sr.ReadToEndAsync() |> Async.AwaitTask
-        let obj = Json.deserialize<TokenResponse> json
+        let obj = Json.deserialize<DeviantArtTokenResponse> json
         if obj.status <> "success" then
             failwithf "An unknown error occured"
         if obj.token_type <> "Bearer" then

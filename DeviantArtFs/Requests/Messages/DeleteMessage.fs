@@ -1,6 +1,7 @@
-﻿namespace DeviantArtFs
+﻿namespace DeviantArtFs.Requests.Messages
 
 open System
+open DeviantArtFs
 
 type DeleteMessageRequest() =
     member val Folderid = Nullable<Guid>()
