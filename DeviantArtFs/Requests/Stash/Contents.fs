@@ -21,7 +21,13 @@ module Contents =
         return DeviantArtPagedResult<StashMetadata>.Parse json
     }
 
-    let ToAsyncSeq token offset stackid = AsyncExecute token |> Dafs.toAsyncSeq offset 50 stackid
+    let AsyncGetMax token offset stackid =
+        let paging = Dafs.page offset 50
+        AsyncExecute token paging stackid
+
+    let ToAsyncSeq token offset stackid =
+        AsyncGetMax token
+        |> Dafs.toAsyncSeq offset stackid
 
     let ToArrayAsync token offset limit req =
         ToAsyncSeq token offset req
@@ -32,5 +38,10 @@ module Contents =
 
     let ExecuteAsync token paging stackid =
         AsyncExecute token paging stackid
+        |> AsyncThen.mapPagedResult (fun i -> i :> IBclStashMetadata)
+        |> Async.StartAsTask
+
+    let GetMaxAsync token paging stackid =
+        AsyncGetMax token paging stackid
         |> AsyncThen.mapPagedResult (fun i -> i :> IBclStashMetadata)
         |> Async.StartAsTask

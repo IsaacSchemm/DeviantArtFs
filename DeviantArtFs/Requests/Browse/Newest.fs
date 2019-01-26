@@ -27,7 +27,13 @@ module Newest =
         return DeviantArtPagedResult<Deviation>.Parse json
     }
 
-    let ToAsyncSeq token offset req = AsyncExecute token |> Dafs.toAsyncSeq offset 120 req
+    let AsyncGetMax token offset req =
+        let paging = Dafs.page offset 120
+        AsyncExecute token paging req
+
+    let ToAsyncSeq token offset req =
+        AsyncGetMax token
+        |> Dafs.toAsyncSeq offset req
 
     let ToArrayAsync token offset limit req =
         ToAsyncSeq token offset req
@@ -36,4 +42,12 @@ module Newest =
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging req = AsyncExecute token paging req |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation) |> Async.StartAsTask
+    let ExecuteAsync token paging req =
+        AsyncExecute token paging req
+        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
+        |> Async.StartAsTask
+
+    let GetMaxAsync token paging req =
+        AsyncGetMax token paging req
+        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
+        |> Async.StartAsTask

@@ -24,8 +24,7 @@ type StashDeltaResult = {
         member this.NextOffset = this.next_offset |> Option.toNullable
         member this.Reset = this.reset
         member this.Entries = this.entries |> Seq.map (fun e -> e :> IBclStashDeltaEntry)
-
-    interface IDeviantArtConvertiblePagedResult<StashDeltaEntry> with
-        member this.has_more = this.has_more
-        member this.next_offset = this.next_offset
-        member this.enumerable = this.entries |> Seq.ofArray
+    interface IResultPage<int, StashDeltaEntry> with
+        member this.HasMore = this.has_more
+        member this.Cursor = this.next_offset |> Option.defaultValue 0
+        member this.Items = this.entries |> Seq.ofArray

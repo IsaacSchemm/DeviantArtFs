@@ -3,11 +3,6 @@
 open System
 open FSharp.Json
 
-type internal IDeviantArtConvertiblePagedResult<'a> =
-    abstract member has_more: bool
-    abstract member next_offset: int option
-    abstract member enumerable: seq<'a>
-
 type IBclDeviantArtPagedResult<'a> =
     abstract member HasMore: bool
     abstract member NextOffset: Nullable<int>
@@ -35,7 +30,7 @@ type DeviantArtPagedResult<'a> = {
         member this.EstimatedTotal = this.estimated_total |> Option.toNullable
         member this.Name = this.name |> Option.toObj
         member this.Results = this.results |> Seq.ofArray
-    interface IDeviantArtConvertiblePagedResult<'a> with
-        member this.has_more = this.has_more
-        member this.next_offset = this.next_offset
-        member this.enumerable = this.results |> Seq.ofArray
+    interface IResultPage<int, 'a> with
+        member this.HasMore = this.has_more
+        member this.Cursor = this.next_offset |> Option.defaultValue 0
+        member this.Items = this.results |> Seq.ofArray

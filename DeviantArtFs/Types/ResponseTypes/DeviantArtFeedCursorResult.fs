@@ -2,11 +2,6 @@
 
 open FSharp.Json
 
-type internal IDeviantArtConvertibleCursorResult<'cursor, 'item> =
-    abstract member cursor: 'cursor
-    abstract member has_more: bool
-    abstract member enumerable: seq<'item>
-
 type IBclDeviantArtFeedCursorResult<'a> =
     abstract member Cursor: string
     abstract member HasMore: bool
@@ -22,7 +17,7 @@ type DeviantArtFeedCursorResult<'a> = {
         member this.Cursor = this.cursor
         member this.HasMore = this.has_more
         member this.Items = this.items |> Seq.ofArray
-    interface IDeviantArtConvertibleCursorResult<string, 'a> with
-        member this.cursor = this.cursor
-        member this.has_more = this.has_more
-        member this.enumerable = this.items |> Seq.ofArray
+    interface IResultPage<string option, 'a> with
+        member this.HasMore = this.has_more
+        member this.Cursor = Option.ofObj this.cursor
+        member this.Items = this.items |> Seq.ofArray

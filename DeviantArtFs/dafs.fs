@@ -77,31 +77,21 @@ module internal Dafs =
                     return raise (new DeviantArtException(resp, error_obj))
     }
 
+    let page offset limit = new DeviantArtPagingParams(Offset = offset, Limit = Nullable limit)
+
     let parseUser (json: string) = DeviantArtUser.Parse json
 
     let toPlainTask (t: Task<unit>) = t :> Task
 
-    let toAsyncSeq (offset: int) (limit: int) (req: 'a) (f: IDeviantArtPagingParams -> 'a -> Async<'b> when 'b :> IDeviantArtConvertiblePagedResult<'c>) = asyncSeq {
-        let mutable cursor = offset
-        let mutable has_more = true
-        while has_more do
-            let paging = new DeviantArtPagingParams(Offset = cursor, Limit = Nullable limit)
-            let! resp = f paging req
-            for r in resp.enumerable do
-                yield r
-            cursor <- resp.next_offset |> Option.defaultValue 0
-            has_more <- resp.has_more
-    }
-
-    let cursorToAsyncSeq (initial_cursor: 'cursor option) (f: 'cursor option -> Async<'b> when 'b :> IDeviantArtConvertibleCursorResult<'cursor, 'item>) = asyncSeq {
+    let toAsyncSeq (initial_cursor: 'cursor) (req: 'req) (f: 'cursor -> 'req -> Async<'b> when 'b :> IResultPage<'cursor, 'item>) = asyncSeq {
         let mutable cursor = initial_cursor
         let mutable has_more = true
         while has_more do
-            let! resp = f cursor
-            for r in resp.enumerable do
+            let! resp = f cursor req
+            for r in resp.Items do
                 yield r
-            cursor <- Some resp.cursor
-            has_more <- resp.has_more
+            cursor <- resp.Cursor
+            has_more <- resp.HasMore
     }
 
     let asBclUser u = u :> IBclDeviantArtUser

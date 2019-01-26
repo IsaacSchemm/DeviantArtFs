@@ -27,8 +27,7 @@ type DeviantArtCommentPagedResult = {
         member this.PrevOffset = this.prev_offset |> Option.toNullable
         member this.Total = this.total |> Option.toNullable
         member this.Thread = this.thread |> Seq.map (fun c -> c :> IBclDeviantArtComment)
-        
-    interface IDeviantArtConvertiblePagedResult<DeviantArtComment> with
-        member this.has_more = this.has_more
-        member this.next_offset = this.next_offset
-        member this.enumerable = this.thread |> Seq.ofArray
+    interface IResultPage<int, DeviantArtComment> with
+        member this.HasMore = this.has_more
+        member this.Cursor = this.next_offset |> Option.defaultValue 0
+        member this.Items = this.thread |> Seq.ofArray

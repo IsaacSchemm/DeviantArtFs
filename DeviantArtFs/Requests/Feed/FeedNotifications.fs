@@ -21,7 +21,9 @@ module FeedNotifications =
         return DeviantArtFeedCursorResult<DeviantArtFeedItem>.Parse json
     }
 
-    let ToAsyncSeq token cursor = AsyncExecute token |> Dafs.cursorToAsyncSeq cursor
+    let ToAsyncSeq token cursor =
+        let f c () = AsyncExecute token c
+        Dafs.toAsyncSeq cursor () f
 
     let ToArrayAsync token cursor limit =
         cursor

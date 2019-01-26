@@ -17,7 +17,7 @@ type DeviantArtMessageCursorResult<'a> = {
         member this.Cursor = this.cursor
         member this.HasMore = this.has_more
         member this.Results = this.results |> Seq.ofArray
-    interface IDeviantArtConvertibleCursorResult<string, 'a> with
-        member this.cursor = this.cursor
-        member this.has_more = this.has_more
-        member this.enumerable = this.results |> Seq.ofArray
+    interface IResultPage<string option, 'a> with
+        member this.HasMore = this.has_more
+        member this.Cursor = Option.ofObj this.cursor
+        member this.Items = this.results |> Seq.ofArray

@@ -28,12 +28,27 @@ module Delta =
         return StashDeltaResult.Parse json
     }
 
-    let GetAll token req offset = AsyncExecute token |> Dafs.toAsyncSeq offset 120 req
+    let AsyncGetMax token offset req =
+        let paging = Dafs.page offset 120
+        AsyncExecute token paging req
 
-    let GetAllAsArrayAsync token extParams =
-        GetAll token (new DeltaRequest(ExtParams = extParams)) 0
-        |> AsyncSeq.map (fun x -> x :> IBclStashDeltaEntry)
+    let ToAsyncSeq token offset req =
+        AsyncGetMax token
+        |> Dafs.toAsyncSeq offset req
+
+    let ToArrayAsync token offset limit req =
+        ToAsyncSeq token offset req
+        |> AsyncSeq.take limit
+        |> AsyncSeq.map (fun f -> f :> IBclStashDeltaEntry)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging req = AsyncExecute token paging req |> AsyncThen.map (fun x -> x :> IBclStashDeltaResult) |> Async.StartAsTask
+    let ExecuteAsync token paging req =
+        AsyncExecute token paging req
+        |> AsyncThen.map (fun x -> x :> IBclStashDeltaResult)
+        |> Async.StartAsTask
+
+    let GetMaxAsync token paging req =
+        AsyncGetMax token paging req
+        |> AsyncThen.map (fun x -> x :> IBclStashDeltaResult)
+        |> Async.StartAsTask
