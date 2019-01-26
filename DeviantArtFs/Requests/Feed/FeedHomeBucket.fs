@@ -19,10 +19,10 @@ module FeedHomeBucket =
         return DeviantArtPagedResult<Deviation>.Parse json
     }
 
-    let ToAsyncSeq token bucketid offset = AsyncExecute token |> Dafs.toAsyncSeq offset 50 bucketid
+    let ToAsyncSeq token offset bucketid = AsyncExecute token |> Dafs.toAsyncSeq offset 50 bucketid
 
-    let ToArrayAsync token bucketid offset limit =
-        ToAsyncSeq token bucketid offset
+    let ToArrayAsync token offset limit bucketid =
+        ToAsyncSeq token offset bucketid
         |> AsyncSeq.take limit
         |> AsyncSeq.map (fun o -> o :> IBclDeviation)
         |> AsyncSeq.toArrayAsync

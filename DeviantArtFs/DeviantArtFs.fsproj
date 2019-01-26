@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.7.3</Version>
+    <Version>0.8.0</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>libertyernie</Authors>
     <Company></Company>
@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/libertyernie/DeviantArtFs</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Description>An F# library (.NET Standard 2.0) to interact with the DeviantArt / Sta.sh API</Description>
-    <PackageReleaseNotes>0.7.3: Other bugfixes</PackageReleaseNotes>
+    <PackageReleaseNotes>0.8.0: Several changes in parameter and type names; added support for remaining endpints</PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
   </PropertyGroup>
 

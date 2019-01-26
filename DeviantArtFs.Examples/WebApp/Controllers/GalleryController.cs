@@ -38,7 +38,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             var token = await GetAccessTokenAsync();
             if (token == null) return Forbid();
 
-            var list = await Requests.Gallery.GalleryFolders.ToArrayAsync(token, new Requests.Gallery.GalleryFoldersRequest { CalculateSize = true, Username = username }, 0, 100);
+            var list = await Requests.Gallery.GalleryFolders.ToArrayAsync(token, 0, 100, new Requests.Gallery.GalleryFoldersRequest { CalculateSize = true, Username = username });
 
             ViewBag.Username = username;
             return View(list);

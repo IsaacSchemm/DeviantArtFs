@@ -28,10 +28,10 @@ module CollectionFolders =
         return DeviantArtPagedResult<DeviantArtCollectionFolder>.Parse json
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token |> Dafs.toAsyncSeq offset 50 req
+    let ToAsyncSeq token offset req = AsyncExecute token |> Dafs.toAsyncSeq offset 50 req
 
-    let ToArrayAsync token req offset limit =
-        ToAsyncSeq token req offset
+    let ToArrayAsync token offset limit req =
+        ToAsyncSeq token offset req
         |> AsyncSeq.take limit
         |> AsyncSeq.map (fun f -> f :> IBclDeviantArtCollectionFolder)
         |> AsyncSeq.toArrayAsync

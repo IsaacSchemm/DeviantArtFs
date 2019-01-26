@@ -103,9 +103,9 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
 
                 var favorites = await Requests.Deviation.WhoFaved.ToArrayAsync(
                     token,
-                    deviation.Deviationid,
                     0,
-                    int.MaxValue);
+                    int.MaxValue,
+                    deviation.Deviationid);
                 if (favorites.Any())
                 {
                     Console.WriteLine("Favorited by:");
@@ -118,9 +118,9 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 var comments_req = new Requests.Comments.DeviationCommentsRequest(deviation.Deviationid) { Maxdepth = 5 };
                 var comments = await Requests.Comments.DeviationComments.ToArrayAsync(
                     token,
-                    comments_req,
                     0,
-                    int.MaxValue);
+                    int.MaxValue,
+                    comments_req);
                 if (comments.Any())
                 {
                     Console.WriteLine("Comments by:");
@@ -152,9 +152,9 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
 
                 var favorites = await Requests.Deviation.WhoFaved.ToArrayAsync(
                     token,
-                    journal.Deviationid,
                     0,
-                    int.MaxValue);
+                    int.MaxValue,
+                    journal.Deviationid);
                 if (favorites.Any())
                 {
                     Console.WriteLine("Favorited by:");
@@ -167,9 +167,9 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 var comments_req = new Requests.Comments.DeviationCommentsRequest(journal.Deviationid) { Maxdepth = 5 };
                 var comments = await Requests.Comments.DeviationComments.ToArrayAsync(
                     token,
-                    comments_req,
                     0,
-                    int.MaxValue);
+                    int.MaxValue,
+                    comments_req);
                 if (comments.Any())
                 {
                     Console.WriteLine("Comments by:");
@@ -194,9 +194,9 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 var comments_req = new Requests.Comments.StatusCommentsRequest(status.Statusid) { Maxdepth = 5 };
                 var comments = await Requests.Comments.StatusComments.ToArrayAsync(
                     token,
-                    comments_req,
                     0,
-                    int.MaxValue);
+                    int.MaxValue,
+                    comments_req);
                 if (comments.Any())
                 {
                     Console.WriteLine("Comments:");

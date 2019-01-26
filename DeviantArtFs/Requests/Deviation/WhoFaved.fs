@@ -23,10 +23,10 @@ module WhoFaved =
         return json |> DeviantArtPagedResult<DeviantArtWhoFavedUser>.Parse
     }
 
-    let ToAsyncSeq token deviationid offset = AsyncExecute token |> Dafs.toAsyncSeq offset 50 deviationid
+    let ToAsyncSeq token offset deviationid = AsyncExecute token |> Dafs.toAsyncSeq offset 50 deviationid
 
-    let ToArrayAsync token deviationid offset limit =
-        ToAsyncSeq token deviationid offset
+    let ToArrayAsync token offset limit deviationid =
+        ToAsyncSeq token offset deviationid
         |> AsyncSeq.take limit
         |> AsyncSeq.map (fun w -> w :> IBclDeviantArtWhoFavedUser)
         |> AsyncSeq.toArrayAsync

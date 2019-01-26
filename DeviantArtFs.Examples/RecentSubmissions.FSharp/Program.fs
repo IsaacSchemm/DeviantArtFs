@@ -77,15 +77,17 @@ let sandbox token_string = async {
             m.tags |> Seq.map (fun t -> sprintf "#%s" t.tag_name) |> String.concat " " |> printfn "%s"
 
         let! favorites =
-            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.deviationid 0
+            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token 0 s.deviationid
             |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) favorites then
             printfn "Favorited by:"
             for f in favorites do
                 printfn "    %s (%A)" f.user.username f.time
 
-        let comments_req = new DeviantArtFs.Requests.Comments.DeviationCommentsRequest(s.deviationid, Maxdepth = 5)
-        let! comments = DeviantArtFs.Requests.Comments.DeviationComments.ToAsyncSeq token comments_req 0 |> AsyncSeq.toArrayAsync
+        let! comments =
+            new DeviantArtFs.Requests.Comments.DeviationCommentsRequest(s.deviationid, Maxdepth = 5)
+            |> DeviantArtFs.Requests.Comments.DeviationComments.ToAsyncSeq token 0
+            |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) comments then
             printfn "Comments:"
         for c in comments do
@@ -103,15 +105,17 @@ let sandbox token_string = async {
         printfn "Most recent journal: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
 
         let! favorites =
-            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token s.deviationid 0
+            DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token 0 s.deviationid
             |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) favorites then
             printfn "Favorited by:"
             for f in favorites do
                 printfn "%s (%A)" f.user.username f.time
 
-        let comments_req = new DeviantArtFs.Requests.Comments.DeviationCommentsRequest(s.deviationid, Maxdepth = 5)
-        let! comments = DeviantArtFs.Requests.Comments.DeviationComments.ToAsyncSeq token comments_req 0 |> AsyncSeq.toArrayAsync
+        let! comments =
+            new DeviantArtFs.Requests.Comments.DeviationCommentsRequest(s.deviationid, Maxdepth = 5)
+            |> DeviantArtFs.Requests.Comments.DeviationComments.ToAsyncSeq token 0
+            |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) comments then
             printfn "Comments:"
         for c in comments do
@@ -126,8 +130,10 @@ let sandbox token_string = async {
     | Some s -> 
         printfn "Most recent status: %s (%A)" s.body s.ts
 
-        let comments_req = new DeviantArtFs.Requests.Comments.StatusCommentsRequest(s.statusid, Maxdepth = 5)
-        let! comments = DeviantArtFs.Requests.Comments.StatusComments.ToAsyncSeq token comments_req 0 |> AsyncSeq.toArrayAsync
+        let! comments =
+            new DeviantArtFs.Requests.Comments.StatusCommentsRequest(s.statusid, Maxdepth = 5)
+            |> DeviantArtFs.Requests.Comments.StatusComments.ToAsyncSeq token 0
+            |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) comments then
             printfn "Comments:"
         for c in comments do
