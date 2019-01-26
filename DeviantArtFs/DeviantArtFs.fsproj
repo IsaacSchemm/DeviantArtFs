@@ -28,7 +28,7 @@
     <Compile Include="Types\ResponseTypes\DeviantArtTextOnlyResponse.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtListOnlyResponse.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtPagedResult.fs" />
-    <Compile Include="Types\ResponseTypes\DeviantArtCursorResult.fs" />
+    <Compile Include="Types\ResponseTypes\DeviantArtFeedCursorResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtMessageCursorResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtUser.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtWhoFavedUser.fs" />

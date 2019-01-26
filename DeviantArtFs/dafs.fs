@@ -81,24 +81,24 @@ module internal dafs =
 
     let toPlainTask (t: Task<unit>) = t :> Task
 
-    let toAsyncSeq (offset: int) (limit: int) (req: 'a) (f: PagingParams -> 'a -> Async<'b> when 'b :> IDeviantArtConvertibleToAsyncSeq<'c>) = asyncSeq {
+    let toAsyncSeq (offset: int) (limit: int) (req: 'a) (f: PagingParams -> 'a -> Async<'b> when 'b :> IDeviantArtConvertiblePagedResult<'c>) = asyncSeq {
         let mutable cursor = offset
         let mutable has_more = true
         while has_more do
             let paging = new PagingParams(Offset = cursor, Limit = Nullable limit)
             let! resp = f paging req
-            for r in resp.Results do
+            for r in resp.enumerable do
                 yield r
-            cursor <- resp.NextOffset |> Option.defaultValue 0
-            has_more <- resp.HasMore
+            cursor <- resp.next_offset |> Option.defaultValue 0
+            has_more <- resp.has_more
     }
 
-    let cursorToAsyncSeq (initial_cursor: string option) (f: string option -> Async<DeviantArtCursorResult<'c>>) = asyncSeq {
+    let cursorToAsyncSeq (initial_cursor: string option) (f: string option -> Async<'b> when 'b :> IDeviantArtConvertibleCursorResult<'c>) = asyncSeq {
         let mutable cursor = initial_cursor
         let mutable has_more = true
         while has_more do
             let! resp = f cursor
-            for r in resp.items do
+            for r in resp.enumerable do
                 yield r
             cursor <- Some resp.cursor
             has_more <- resp.has_more

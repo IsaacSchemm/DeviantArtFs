@@ -26,7 +26,7 @@ module MessagesFeed =
             |> dafs.createRequest token
 
         let! json = dafs.asyncRead req
-        return DeviantArtMessageCursorResult<DeviantArtMessage>.Parse json
+        return DeviantArtFeedCursorResult<DeviantArtMessage>.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapCursorResult (fun o -> o :> IBclDeviantArtMessage) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapFeedCursorResult (fun o -> o :> IBclDeviantArtMessage) |> Async.StartAsTask

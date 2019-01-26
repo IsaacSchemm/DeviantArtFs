@@ -25,7 +25,7 @@ type StashDeltaResult = {
         member this.Reset = this.reset
         member this.Entries = this.entries |> Seq.map (fun e -> e :> IBclStashDeltaEntry)
 
-    interface IDeviantArtConvertibleToAsyncSeq<StashDeltaEntry> with
-        member this.HasMore = this.has_more
-        member this.NextOffset = this.next_offset
-        member this.Results = this.entries |> Seq.ofArray
+    interface IDeviantArtConvertiblePagedResult<StashDeltaEntry> with
+        member this.has_more = this.has_more
+        member this.next_offset = this.next_offset
+        member this.enumerable = this.entries |> Seq.ofArray
