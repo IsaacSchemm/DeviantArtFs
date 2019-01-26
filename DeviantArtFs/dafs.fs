@@ -7,7 +7,7 @@ open System.Threading.Tasks
 open FSharp.Control
 
 module internal dafs =
-    let assertSuccess (resp: SuccessOrErrorResponse) =
+    let assertSuccess (resp: DeviantArtSuccessOrErrorResponse) =
         match (resp.success, resp.error_description) with
         | (true, None) -> ()
         | _ -> failwithf "%s" (resp.error_description |> Option.defaultValue "An unknown error occurred.")

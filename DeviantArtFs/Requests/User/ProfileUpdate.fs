@@ -51,7 +51,7 @@ module ProfileUpdate =
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
         let! json = dafs.asyncRead req
-        SuccessOrErrorResponse.Parse json |> dafs.assertSuccess
+        DeviantArtSuccessOrErrorResponse.Parse json |> dafs.assertSuccess
     }
 
     let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask |> dafs.toPlainTask

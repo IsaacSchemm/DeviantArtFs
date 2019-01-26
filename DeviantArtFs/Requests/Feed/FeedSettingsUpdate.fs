@@ -47,7 +47,7 @@ module FeedSettingsUpdate =
         }
 
         let! json = dafs.asyncRead req
-        let resp = SuccessOrErrorResponse.Parse json
+        let resp = DeviantArtSuccessOrErrorResponse.Parse json
         dafs.assertSuccess resp
     }
 

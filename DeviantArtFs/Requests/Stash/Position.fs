@@ -21,7 +21,7 @@ module Position =
         }
 
         let! json = dafs.asyncRead req
-        SuccessOrErrorResponse.Parse json |> dafs.assertSuccess
+        DeviantArtSuccessOrErrorResponse.Parse json |> dafs.assertSuccess
     }
 
     let ExecuteAsync token stackid position = AsyncExecute token stackid position |> Async.StartAsTask |> dafs.toPlainTask

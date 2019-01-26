@@ -24,9 +24,8 @@
     <Compile Include="Types\SharedRequestTypes\PagingParams.fs" />
     <Compile Include="Types\SharedRequestTypes\ExtParams.fs" />
     <Compile Include="Types\SharedRequestTypes\FieldChange.fs" />
-    <Compile Include="Types\BasicResponseTypes\DeviantArtBaseResponse.fs" />
-    <Compile Include="Types\BasicResponseTypes\SuccessOrErrorResponse.fs" />
-    <Compile Include="Types\Exceptions.fs" />
+    <Compile Include="Types\ResponseTypes\DeviantArtBaseResponse.fs" />
+    <Compile Include="Types\ResponseTypes\DeviantArtSuccessOrErrorResponse.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtTextOnlyResponse.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtListOnlyResponse.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtPagedResult.fs" />
@@ -65,6 +64,7 @@
     <Compile Include="Types\ResponseTypes\DeviantArtFeedItem.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtFeedSettings.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtMessage.fs" />
+    <Compile Include="Types\Exceptions.fs" />
     <Compile Include="dafs.fs" />
     <Compile Include="queryFor.fs" />
     <Compile Include="AsyncThen.fs" />
