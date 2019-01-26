@@ -24,4 +24,4 @@ module Position =
         DeviantArtSuccessOrErrorResponse.Parse json |> Dafs.assertSuccess
     }
 
-    let ExecuteAsync token stackid position = AsyncExecute token stackid position |> Async.StartAsTask |> Dafs.toPlainTask
+    let ExecuteAsync token stackid position = AsyncExecute token stackid position |> Async.StartAsTask :> System.Threading.Tasks.Task

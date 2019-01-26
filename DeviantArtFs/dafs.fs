@@ -79,10 +79,6 @@ module internal Dafs =
 
     let page offset limit = new DeviantArtPagingParams(Offset = offset, Limit = Nullable limit)
 
-    let parseUser (json: string) = DeviantArtUser.Parse json
-
-    let toPlainTask (t: Task<unit>) = t :> Task
-
     let toAsyncSeq (initial_cursor: 'cursor) (req: 'req) (f: 'cursor -> 'req -> Async<'b> when 'b :> IResultPage<'cursor, 'item>) = asyncSeq {
         let mutable cursor = initial_cursor
         let mutable has_more = true
@@ -93,5 +89,3 @@ module internal Dafs =
             cursor <- resp.Cursor
             has_more <- resp.HasMore
     }
-
-    let asBclUser u = u :> IBclDeviantArtUser

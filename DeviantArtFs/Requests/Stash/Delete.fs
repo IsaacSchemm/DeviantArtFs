@@ -20,4 +20,4 @@ module Delete =
         return ignore json
     }
 
-    let ExecuteAsync token itemid = AsyncExecute token itemid |> Async.StartAsTask |> Dafs.toPlainTask
+    let ExecuteAsync token itemid = AsyncExecute token itemid |> Async.StartAsTask :> System.Threading.Tasks.Task

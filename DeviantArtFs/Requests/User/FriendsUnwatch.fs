@@ -14,4 +14,4 @@ module FriendsUnwatch =
         DeviantArtSuccessOrErrorResponse.Parse json |> Dafs.assertSuccess
     }
 
-    let ExecuteAsync token username = AsyncExecute token username |> Async.StartAsTask |> Dafs.toPlainTask
+    let ExecuteAsync token username = AsyncExecute token username |> Async.StartAsTask :> System.Threading.Tasks.Task

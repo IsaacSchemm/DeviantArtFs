@@ -12,4 +12,4 @@ module RemoveCollectionFolder =
         Dafs.assertSuccess resp
     }
 
-    let ExecuteAsync token folderid = AsyncExecute token folderid |> Async.StartAsTask |> Dafs.toPlainTask
+    let ExecuteAsync token folderid = AsyncExecute token folderid |> Async.StartAsTask :> System.Threading.Tasks.Task

@@ -32,4 +32,4 @@ module Update =
     let ExecuteAsync token req =
         AsyncExecute token req
         |> Async.StartAsTask
-        |> Dafs.toPlainTask
+        :> System.Threading.Tasks.Task

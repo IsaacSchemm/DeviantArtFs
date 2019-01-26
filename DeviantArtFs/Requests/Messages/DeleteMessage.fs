@@ -35,4 +35,4 @@ module DeleteMessage =
         return ignore json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask |> Dafs.toPlainTask
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask :> System.Threading.Tasks.Task
