@@ -3,13 +3,12 @@
 open DeviantArtFs
 
 module StatusesList =
-    open System.Runtime.InteropServices
     open FSharp.Control
 
-    let AsyncExecute token (paging: PagingParams) (username: string) = async {
+    let AsyncExecute token (paging: IPagingParams) (username: string) = async {
         let query = seq {
             yield sprintf "username=%s" (dafs.urlEncode username)
-            yield! paging.GetQuery()
+            yield! queryFor.paging paging
         }
         let req =
             query

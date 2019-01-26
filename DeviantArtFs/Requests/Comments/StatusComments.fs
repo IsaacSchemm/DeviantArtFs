@@ -10,13 +10,13 @@ type StatusCommentsRequest(statusid: Guid) =
     member val Maxdepth = 0 with get, set
 
 module StatusComments =
-    let AsyncExecute token (paging: PagingParams) (req: StatusCommentsRequest) = async {
+    let AsyncExecute token (paging: IPagingParams) (req: StatusCommentsRequest) = async {
         let query = seq {
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s
             | None -> ()
             yield sprintf "maxdepth=%d" req.Maxdepth
-            yield! paging.GetQuery()
+            yield! queryFor.paging paging
         }
         let req =
             query

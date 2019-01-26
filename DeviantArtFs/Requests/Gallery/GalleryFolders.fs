@@ -10,14 +10,14 @@ type GalleryFoldersRequest() =
 module GalleryFolders =
     open FSharp.Control
 
-    let AsyncExecute token (paging: PagingParams) (req: GalleryFoldersRequest) = async {
+    let AsyncExecute token (paging: IPagingParams) (req: GalleryFoldersRequest) = async {
         let query = seq {
             match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
             | None -> ()
             yield sprintf "calculate_size=%b" req.CalculateSize
             yield sprintf "ext_preload=%b" req.ExtPreload
-            yield! paging.GetQuery()
+            yield! queryFor.paging paging
         }
         let req =
             query

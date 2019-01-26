@@ -6,15 +6,14 @@ type GalleryAllViewRequest() =
     member val Username = null with get, set
 
 module GalleryAllView =
-    open System.Runtime.InteropServices
     open FSharp.Control
 
-    let AsyncExecute token (paging: PagingParams) (req: GalleryAllViewRequest) = async {
+    let AsyncExecute token (paging: IPagingParams) (req: GalleryAllViewRequest) = async {
         let query = seq {
             match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
             | None -> ()
-            yield! paging.GetQuery()
+            yield! queryFor.paging paging
         }
         let req =
             query

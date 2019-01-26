@@ -10,14 +10,14 @@ type CollectionFoldersRequest() =
 module CollectionFolders =
     open FSharp.Control
 
-    let AsyncExecute token (paging: PagingParams) (ps: CollectionFoldersRequest) = async {
+    let AsyncExecute token (paging: IPagingParams) (ps: CollectionFoldersRequest) = async {
         let query = seq {
             match Option.ofObj ps.Username with
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
             | None -> ()
             yield sprintf "calculate_size=%b" ps.CalculateSize
             yield sprintf "ext_preload=%b" ps.ExtPreload
-            yield! paging.GetQuery()
+            yield! queryFor.paging paging
         }
         let req =
             query

@@ -5,15 +5,14 @@ open FSharp.Data
 open System
 
 module WhoFaved =
-    open System.Runtime.InteropServices
     open FSharp.Control
 
     let internal epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)
 
-    let AsyncExecute token (paging: PagingParams) (deviationid: Guid) = async {
+    let AsyncExecute token (paging: IPagingParams) (deviationid: Guid) = async {
         let query = seq {
             yield sprintf "deviationid=%O" deviationid
-            yield! paging.GetQuery()
+            yield! queryFor.paging paging
         }
         let req =
             query

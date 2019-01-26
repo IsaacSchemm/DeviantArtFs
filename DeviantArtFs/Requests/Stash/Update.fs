@@ -11,8 +11,8 @@ type UpdateRequest(stackid: int64) =
 module Update =
     let AsyncExecute token (req: UpdateRequest) = async {
         let query = seq {
-            yield! req.Title |> fch.toQuery "title"
-            yield! req.Description |> fch.allowNull |> fch.toQuery "description"
+            yield! req.Title |> queryFor.fieldChange "title"
+            yield! req.Description |> fch.allowNull |> queryFor.fieldChange "description"
         }
 
         let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/update/%d" req.Stackid |> dafs.createRequest token

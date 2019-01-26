@@ -32,14 +32,14 @@ module ProfileUpdate =
 
     let AsyncExecute token (ps: ProfileUpdateRequest) = async {
         let query = seq {
-            yield! ps.UserIsArtist |> fch.toQuery "user_is_artist"
-            yield! ps.ArtistLevel |> fch.map (fun s -> s.ToString("d")) |> fch.toQuery "artist_level"
-            yield! ps.ArtistSpecialty |> fch.map (fun s -> s.ToString("d")) |> fch.toQuery "artist_specialty"
-            yield! ps.RealName |> fch.toQuery "real_name"
-            yield! ps.Tagline |> fch.toQuery "tagline"
-            yield! ps.Countryid |> fch.toQuery "countryid"
-            yield! ps.Website |> fch.toQuery "website"
-            yield! ps.Bio |> fch.toQuery "bio"
+            yield! ps.UserIsArtist |> queryFor.fieldChange "user_is_artist"
+            yield! ps.ArtistLevel |> fch.map (fun s -> s.ToString("d")) |> queryFor.fieldChange "artist_level"
+            yield! ps.ArtistSpecialty |> fch.map (fun s -> s.ToString("d")) |> queryFor.fieldChange "artist_specialty"
+            yield! ps.RealName |> queryFor.fieldChange "real_name"
+            yield! ps.Tagline |> queryFor.fieldChange "tagline"
+            yield! ps.Countryid |> queryFor.fieldChange "countryid"
+            yield! ps.Website |> queryFor.fieldChange "website"
+            yield! ps.Bio |> queryFor.fieldChange "bio"
         }
         let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/profile/update"
         req.Method <- "POST"

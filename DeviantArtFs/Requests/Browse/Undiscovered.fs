@@ -7,12 +7,12 @@ type UndiscoveredRequest() =
     member val CategoryPath = null with get, set
 
 module Undiscovered =
-    let AsyncExecute token (paging: PagingParams) (req: UndiscoveredRequest) = async {
+    let AsyncExecute token (paging: IPagingParams) (req: UndiscoveredRequest) = async {
         let query = seq {
             match Option.ofObj req.CategoryPath with
             | Some s -> yield sprintf "category_path=%s" (dafs.urlEncode s)
             | None -> ()
-            yield! paging.GetQuery()
+            yield! queryFor.paging paging
         }
         let req =
             query

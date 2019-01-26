@@ -11,16 +11,15 @@ type GalleryByIdRequest(folderid: Guid) =
     member val Mode = GalleryRequestMode.Popular with get, set
 
 module GalleryById =
-    open System.Runtime.InteropServices
     open FSharp.Control
 
-    let AsyncExecute token (paging: PagingParams) (req: GalleryByIdRequest) = async {
+    let AsyncExecute token (paging: IPagingParams) (req: GalleryByIdRequest) = async {
         let query = seq {
             match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
             | None -> ()
             yield sprintf "mode=%s" (if req.Mode = GalleryRequestMode.Newest then "newest" else "popular")
-            yield! paging.GetQuery()
+            yield! queryFor.paging paging
         }
         let req =
             query

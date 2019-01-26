@@ -8,16 +8,15 @@ type EmbeddedContentRequest(deviationid: Guid) =
     member val OffsetDeviationid = Nullable<Guid>() with get, set
 
 module EmbeddedContent =
-    open System.Runtime.InteropServices
     open FSharp.Control
 
-    let AsyncExecute token (paging: PagingParams) (req: EmbeddedContentRequest) = async {
+    let AsyncExecute token (paging: IPagingParams) (req: EmbeddedContentRequest) = async {
         let query = seq {
             yield sprintf "deviationid=%O" req.Deviationid
             match Option.ofNullable req.OffsetDeviationid with
             | Some s -> yield sprintf "offset_deviationid=%O" s
             | None -> ()
-            yield! paging.GetQuery()
+            yield! queryFor.paging paging
         }
         let req =
             query

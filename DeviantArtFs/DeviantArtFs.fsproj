@@ -19,12 +19,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Types\DateTimeOffsetEpochAsString.fs" />
+    <Compile Include="DateTimeOffsetEpochAsString.fs" />
+    <Compile Include="Types\AccessTokens.fs" />
+    <Compile Include="Types\SharedRequestTypes\PagingParams.fs" />
+    <Compile Include="Types\SharedRequestTypes\ExtParams.fs" />
+    <Compile Include="Types\SharedRequestTypes\FieldChange.fs" />
     <Compile Include="Types\BasicResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="Types\BasicResponseTypes\SuccessOrErrorResponse.fs" />
-    <Compile Include="Types\AccessTokens.fs" />
     <Compile Include="Types\Exceptions.fs" />
-    <Compile Include="Types\SharedRequestTypes.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtTextOnlyResponse.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtListOnlyResponse.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtPagedResult.fs" />
@@ -64,7 +66,7 @@
     <Compile Include="Types\ResponseTypes\DeviantArtFeedSettings.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtMessage.fs" />
     <Compile Include="dafs.fs" />
-    <Compile Include="fch.fs" />
+    <Compile Include="queryFor.fs" />
     <Compile Include="AsyncThen.fs" />
     <Compile Include="DeviantArtAuth.fs" />
     <Compile Include="Requests\Browse\CategoryTree.fs" />

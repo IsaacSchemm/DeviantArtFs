@@ -3,14 +3,13 @@
 open DeviantArtFs
 
 module Contents =
-    open System.Runtime.InteropServices
     open FSharp.Control
 
     let RootStack = 0L
 
-    let AsyncExecute token (paging: PagingParams) (stackid: int64) = async {
+    let AsyncExecute token (paging: IPagingParams) (stackid: int64) = async {
         let query = seq {
-            yield! paging.GetQuery()
+            yield! queryFor.paging paging
         }
         let req =
             query

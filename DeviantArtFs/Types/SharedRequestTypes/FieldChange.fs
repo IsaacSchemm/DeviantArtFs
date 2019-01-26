@@ -1,5 +1,10 @@
 ﻿namespace DeviantArtFs
 
+[<RequireQualifiedAccess>]
+type FieldChange<'a> =
+    | UpdateToValue of 'a
+    | NoChange
+
 module internal fch =
     let map f o =
         match o with
@@ -11,14 +16,3 @@ module internal fch =
         | FieldChange.UpdateToValue "null" -> failwithf "The string \"null\" is not allowed here"
         | FieldChange.UpdateToValue null -> FieldChange.UpdateToValue "null"
         | _ -> value
-
-    let toQuery (name: string) (value: FieldChange<'a>) = seq {
-        match value with
-        | FieldChange.UpdateToValue s ->
-            if obj.ReferenceEquals(s, null) then
-                failwithf "Null is not allowed (parameter: %s)" name
-            else
-                let str = s.ToString()
-                yield sprintf "%s=%s" (dafs.urlEncode name) (dafs.urlEncode str)
-        | FieldChange.NoChange -> ()
-    }

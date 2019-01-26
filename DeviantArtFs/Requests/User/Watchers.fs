@@ -6,12 +6,11 @@ type WatchersRequest() =
     member val Username: string = null with get, set
 
 module Watchers =
-    open System.Runtime.InteropServices
     open FSharp.Control
 
-    let AsyncExecute token (paging: PagingParams) (req: WatchersRequest) = async {
+    let AsyncExecute token (paging: IPagingParams) (req: WatchersRequest) = async {
         let query = seq {
-            yield! paging.GetQuery()
+            yield! queryFor.paging paging
         }
         let req =
             query

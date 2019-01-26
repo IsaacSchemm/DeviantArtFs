@@ -9,12 +9,12 @@ type DeltaRequest() =
 module Delta =
     open FSharp.Control
 
-    let AsyncExecute token (paging: PagingParams) (req: DeltaRequest) = async {
+    let AsyncExecute token (paging: IPagingParams) (req: DeltaRequest) = async {
         let query = seq {
             match Option.ofObj req.Cursor with
             | Some s -> yield sprintf "cursor=%s" (dafs.urlEncode s)
             | None -> ()
-            yield! paging.GetQuery()
+            yield! queryFor.paging paging
             yield sprintf "ext_submission=%b" req.ExtParams.ExtSubmission
             yield sprintf "ext_camera=%b" req.ExtParams.ExtCamera
             yield sprintf "ext_stats=%b" req.ExtParams.ExtStats

@@ -6,9 +6,9 @@ module FeedHomeBucket =
     open FSharp.Control
     open System
 
-    let AsyncExecute token (paging: PagingParams) (bucketid: Guid) = async {
+    let AsyncExecute token (paging: IPagingParams) (bucketid: Guid) = async {
         let query = seq {
-            yield! paging.GetQuery()
+            yield! queryFor.paging paging
         }
         let req =
             query
