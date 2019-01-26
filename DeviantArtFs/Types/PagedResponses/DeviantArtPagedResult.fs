@@ -22,6 +22,16 @@ type DeviantArtPagedResult<'a> = {
     results: 'a[]
 } with
     static member Parse json = Json.deserialize<DeviantArtPagedResult<'a>> json
+    static member Map (f: 'a -> 'b) (r: IBclDeviantArtPagedResult<'a>) = {
+        new IBclDeviantArtPagedResult<'b> with
+            member __.HasMore = r.HasMore
+            member __.NextOffset = r.NextOffset
+            member __.HasLess = r.HasLess
+            member __.PrevOffset = r.PrevOffset
+            member __.EstimatedTotal = r.EstimatedTotal
+            member __.Name = r.Name
+            member __.Results = Seq.map f r.Results
+    }
     interface IBclDeviantArtPagedResult<'a> with
         member this.HasMore = this.has_more
         member this.NextOffset = this.next_offset |> Option.toNullable
