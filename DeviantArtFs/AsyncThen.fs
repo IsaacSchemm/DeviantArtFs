@@ -33,7 +33,7 @@ module internal AsyncThen =
             new IBclDeviantArtFeedCursorResult<'b> with
                 member __.HasMore = r.HasMore
                 member __.Cursor = r.Cursor
-                member __.Results = Seq.map f r.Results
+                member __.Items = Seq.map f r.Items
         }
     }
 

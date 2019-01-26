@@ -93,7 +93,7 @@ module internal Dafs =
             has_more <- resp.has_more
     }
 
-    let cursorToAsyncSeq (initial_cursor: string option) (f: string option -> Async<'b> when 'b :> IDeviantArtConvertibleCursorResult<'c>) = asyncSeq {
+    let cursorToAsyncSeq (initial_cursor: 'cursor option) (f: 'cursor option -> Async<'b> when 'b :> IDeviantArtConvertibleCursorResult<'cursor, 'item>) = asyncSeq {
         let mutable cursor = initial_cursor
         let mutable has_more = true
         while has_more do
