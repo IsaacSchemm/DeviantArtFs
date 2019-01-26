@@ -26,7 +26,7 @@ module MessagesFeed =
             |> Dafs.createRequest token
 
         let! json = Dafs.asyncRead req
-        return DeviantArtMessageCursorResult<DeviantArtMessage>.Parse json
+        return DeviantArtMessageCursorResult.Parse json
     }
 
     let ToAsyncSeq token cursor req =
@@ -34,11 +34,13 @@ module MessagesFeed =
         |> Dafs.toAsyncSeq cursor req
 
     let ToArrayAsync token req cursor limit =
-        (Option.ofObj cursor, req)
-        ||> ToAsyncSeq token
+        ToAsyncSeq token (Option.ofObj cursor) req
         |> AsyncSeq.take limit
         |> AsyncSeq.map (fun o -> o :> IBclDeviantArtMessage)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token cursor req = AsyncExecute token (Option.ofObj cursor) req |> AsyncThen.mapMessageCursorResult (fun o -> o :> IBclDeviantArtMessage) |> Async.StartAsTask
+    let ExecuteAsync token cursor req =
+        AsyncExecute token (Option.ofObj cursor) req
+        |> AsyncThen.map (fun o -> o :> IBclDeviantArtMessageCursorResult)
+        |> Async.StartAsTask

@@ -410,8 +410,8 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 * Limit: `int?`
 
 ### DeviantArtFs.Requests.Feed.FeedHome
-* AsyncExecute (IDeviantArtAccessToken) (string option) -> `Async<DeviantArtFeedCursorResult<DeviantArtFeedItem>>`
-* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtFeedCursorResult<IBclDeviantArtFeedItem>>`
+* AsyncExecute (IDeviantArtAccessToken) (string option) -> `Async<DeviantArtFeedCursorResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtFeedCursorResult>`
 * ToAsyncSeq (IDeviantArtAccessToken) (string option) -> `AsyncSeq<DeviantArtFeedItem>`
 * ToArrayAsync (IDeviantArtAccessToken) (string) (int) -> `Task<IBclDeviantArtFeedItem[]>`
 
@@ -429,8 +429,8 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 * Limit: `int?`
 
 ### DeviantArtFs.Requests.Feed.FeedNotifications
-* AsyncExecute (IDeviantArtAccessToken) (string option) -> `Async<DeviantArtFeedCursorResult<DeviantArtFeedItem>>`
-* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtFeedCursorResult<IBclDeviantArtFeedItem>>`
+* AsyncExecute (IDeviantArtAccessToken) (string option) -> `Async<DeviantArtFeedCursorResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtFeedCursorResult>`
 * ToAsyncSeq (IDeviantArtAccessToken) (string option) -> `AsyncSeq<DeviantArtFeedItem>`
 * ToArrayAsync (IDeviantArtAccessToken) (string) (int) -> `Task<IBclDeviantArtFeedItem[]>`
 
@@ -452,8 +452,8 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 * Misc: `bool?`
 
 ### DeviantArtFs.Requests.Feed.ProfileFeed
-* AsyncExecute (IDeviantArtAccessToken) (string option) -> `Async<DeviantArtFeedCursorResult<DeviantArtFeedItem>>`
-* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtFeedCursorResult<IBclDeviantArtFeedItem>>`
+* AsyncExecute (IDeviantArtAccessToken) (string option) -> `Async<DeviantArtFeedCursorResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (string) -> `Task<IBclDeviantArtFeedCursorResult>`
 * ToAsyncSeq (IDeviantArtAccessToken) (string option) -> `AsyncSeq<DeviantArtFeedItem>`
 * ToArrayAsync (IDeviantArtAccessToken) (string) (int) -> `Task<IBclDeviantArtFeedItem[]>`
 
@@ -531,8 +531,8 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 * Stackid: `string`
 
 ### DeviantArtFs.Requests.Messages.MessagesFeed
-* AsyncExecute (IDeviantArtAccessToken) (string option) (MessagesFeedRequest) -> `Async<DeviantArtMessageCursorResult<DeviantArtMessage>>`
-* ExecuteAsync (IDeviantArtAccessToken) (string) (MessagesFeedRequest) -> `Task<IBclDeviantArtMessageCursorResult<IBclDeviantArtMessage>>`
+* AsyncExecute (IDeviantArtAccessToken) (string option) (MessagesFeedRequest) -> `Async<DeviantArtMessageCursorResult>`
+* ExecuteAsync (IDeviantArtAccessToken) (string) (MessagesFeedRequest) -> `Task<IBclDeviantArtMessageCursorResult>`
 * ToAsyncSeq (IDeviantArtAccessToken) (string option) (MessagesFeedRequest) -> `AsyncSeq<DeviantArtMessage>`
 * ToArrayAsync (IDeviantArtAccessToken) (MessagesFeedRequest) (string) (int) -> `Task<IBclDeviantArtMessage[]>`
 

@@ -17,7 +17,7 @@ module FeedHome =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/feed/home?%s"
             |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
-        return DeviantArtFeedCursorResult<DeviantArtFeedItem>.Parse json
+        return DeviantArtFeedCursorResult.Parse json
     }
 
     let ToAsyncSeq token cursor =
@@ -37,5 +37,5 @@ module FeedHome =
         cursor
         |> Option.ofObj
         |> AsyncExecute token
-        |> AsyncThen.mapFeedCursorResult (fun o -> o :> IBclDeviantArtFeedItem)
+        |> AsyncThen.map (fun o -> o :> IBclDeviantArtFeedCursorResult)
         |> Async.StartAsTask
