@@ -31,7 +31,7 @@ module FriendsWatch =
             ps.Username
             |> WebUtility.UrlEncode
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/watch/%s"
-            |> dafs.createRequest token
+            |> Dafs.createRequest token
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
         do! async {
@@ -39,8 +39,8 @@ module FriendsWatch =
             use sw = new StreamWriter(stream)
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
-        let! json = dafs.asyncRead req
-        DeviantArtSuccessOrErrorResponse.Parse json |> dafs.assertSuccess
+        let! json = Dafs.asyncRead req
+        DeviantArtSuccessOrErrorResponse.Parse json |> Dafs.assertSuccess
     }
 
-    let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask |> dafs.toPlainTask
+    let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask |> Dafs.toPlainTask

@@ -32,16 +32,16 @@ module ProfileUpdate =
 
     let AsyncExecute token (ps: ProfileUpdateRequest) = async {
         let query = seq {
-            yield! ps.UserIsArtist |> queryFor.fieldChange "user_is_artist"
-            yield! ps.ArtistLevel |> fch.map (fun s -> s.ToString("d")) |> queryFor.fieldChange "artist_level"
-            yield! ps.ArtistSpecialty |> fch.map (fun s -> s.ToString("d")) |> queryFor.fieldChange "artist_specialty"
-            yield! ps.RealName |> queryFor.fieldChange "real_name"
-            yield! ps.Tagline |> queryFor.fieldChange "tagline"
-            yield! ps.Countryid |> queryFor.fieldChange "countryid"
-            yield! ps.Website |> queryFor.fieldChange "website"
-            yield! ps.Bio |> queryFor.fieldChange "bio"
+            yield! ps.UserIsArtist |> QueryFor.fieldChange "user_is_artist"
+            yield! ps.ArtistLevel |> fch.map (fun s -> s.ToString("d")) |> QueryFor.fieldChange "artist_level"
+            yield! ps.ArtistSpecialty |> fch.map (fun s -> s.ToString("d")) |> QueryFor.fieldChange "artist_specialty"
+            yield! ps.RealName |> QueryFor.fieldChange "real_name"
+            yield! ps.Tagline |> QueryFor.fieldChange "tagline"
+            yield! ps.Countryid |> QueryFor.fieldChange "countryid"
+            yield! ps.Website |> QueryFor.fieldChange "website"
+            yield! ps.Bio |> QueryFor.fieldChange "bio"
         }
-        let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/profile/update"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/profile/update"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
         do! async {
@@ -50,8 +50,8 @@ module ProfileUpdate =
             String.concat "&" query |> printf "%s"
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
-        let! json = dafs.asyncRead req
-        DeviantArtSuccessOrErrorResponse.Parse json |> dafs.assertSuccess
+        let! json = Dafs.asyncRead req
+        DeviantArtSuccessOrErrorResponse.Parse json |> Dafs.assertSuccess
     }
 
-    let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask |> dafs.toPlainTask
+    let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask |> Dafs.toPlainTask

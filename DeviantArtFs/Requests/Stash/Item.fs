@@ -17,8 +17,8 @@ module Item =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/item/%d?%s" req.Itemid
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return StashMetadata.Parse json
     }
 

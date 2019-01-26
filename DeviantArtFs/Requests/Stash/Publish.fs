@@ -59,7 +59,7 @@ module Publish =
                 yield "mature_classification[]=ideology"
             yield sprintf "agree_submission=%b" req.AgreeSubmission
             yield sprintf "agree_tos=%b" req.AgreeTos
-            yield sprintf "catpath=%s" (dafs.urlEncode req.Catpath)
+            yield sprintf "catpath=%s" (Dafs.urlEncode req.Catpath)
             yield sprintf "feature=%b" req.Feature
             yield sprintf "allow_comments=%b" req.AllowComments
             yield sprintf "request_critique=%b" req.RequestCritique
@@ -83,7 +83,7 @@ module Publish =
             yield sprintf "itemid=%d" req.Itemid
         }
 
-        let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/publish"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/publish"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
@@ -93,7 +93,7 @@ module Publish =
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
 
-        let! json = dafs.asyncRead req
+        let! json = Dafs.asyncRead req
         return StashPublishResponse.Parse json
     }
 

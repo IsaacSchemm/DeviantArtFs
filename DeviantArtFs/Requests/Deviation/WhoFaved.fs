@@ -12,18 +12,18 @@ module WhoFaved =
     let AsyncExecute token (paging: IDeviantArtPagingParams) (deviationid: Guid) = async {
         let query = seq {
             yield sprintf "deviationid=%O" deviationid
-            yield! queryFor.paging paging
+            yield! QueryFor.paging paging
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/whofaved?%s"
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return json |> DeviantArtPagedResult<DeviantArtWhoFavedUser>.Parse
     }
 
-    let ToAsyncSeq token deviationid offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 deviationid
+    let ToAsyncSeq token deviationid offset = AsyncExecute token |> Dafs.toAsyncSeq offset 50 deviationid
 
     let ToArrayAsync token deviationid offset limit =
         ToAsyncSeq token deviationid offset

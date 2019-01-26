@@ -9,9 +9,9 @@ module FriendsUnwatch =
             username
             |> WebUtility.UrlEncode
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/unwatch/%s"
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
-        DeviantArtSuccessOrErrorResponse.Parse json |> dafs.assertSuccess
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
+        DeviantArtSuccessOrErrorResponse.Parse json |> Dafs.assertSuccess
     }
 
-    let ExecuteAsync token username = AsyncExecute token username |> Async.StartAsTask |> dafs.toPlainTask
+    let ExecuteAsync token username = AsyncExecute token username |> Async.StartAsTask |> Dafs.toPlainTask

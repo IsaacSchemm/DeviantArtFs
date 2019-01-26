@@ -7,10 +7,10 @@ open FSharp.Data
 
 module RemoveGalleryFolder =
     let AsyncExecute token (folderid: Guid) = async {
-        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/folders/remove/%A" folderid |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/folders/remove/%A" folderid |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         let resp = DeviantArtSuccessOrErrorResponse.Parse json
-        dafs.assertSuccess resp
+        Dafs.assertSuccess resp
     }
 
-    let ExecuteAsync token folderid = AsyncExecute token folderid |> Async.StartAsTask |> dafs.toPlainTask
+    let ExecuteAsync token folderid = AsyncExecute token folderid |> Async.StartAsTask |> Dafs.toPlainTask

@@ -10,7 +10,7 @@ module Position =
             yield sprintf "position=%d" position
         }
 
-        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/position/%d" stackid |> dafs.createRequest token
+        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/position/%d" stackid |> Dafs.createRequest token
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
@@ -20,8 +20,8 @@ module Position =
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
 
-        let! json = dafs.asyncRead req
-        DeviantArtSuccessOrErrorResponse.Parse json |> dafs.assertSuccess
+        let! json = Dafs.asyncRead req
+        DeviantArtSuccessOrErrorResponse.Parse json |> Dafs.assertSuccess
     }
 
-    let ExecuteAsync token stackid position = AsyncExecute token stackid position |> Async.StartAsTask |> dafs.toPlainTask
+    let ExecuteAsync token stackid position = AsyncExecute token stackid position |> Async.StartAsTask |> Dafs.toPlainTask

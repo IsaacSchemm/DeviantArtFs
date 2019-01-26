@@ -8,18 +8,18 @@ module FeedHomeBucket =
 
     let AsyncExecute token (paging: IDeviantArtPagingParams) (bucketid: Guid) = async {
         let query = seq {
-            yield! queryFor.paging paging
+            yield! QueryFor.paging paging
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/feed/home/%O?%s" bucketid
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return DeviantArtPagedResult<Deviation>.Parse json
     }
 
-    let ToAsyncSeq token bucketid offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 bucketid
+    let ToAsyncSeq token bucketid offset = AsyncExecute token |> Dafs.toAsyncSeq offset 50 bucketid
 
     let ToArrayAsync token bucketid offset limit =
         ToAsyncSeq token bucketid offset

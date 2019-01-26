@@ -6,14 +6,14 @@ module CategoryTree =
     let AsyncExecute token (catpath: string) = async {
         let query = seq {
             if not (isNull catpath) then
-                yield sprintf "catpath=%s" (dafs.urlEncode catpath)
+                yield sprintf "catpath=%s" (Dafs.urlEncode catpath)
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/categorytree?%s"
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return DeviantArtCategoryList.ParseSeq json
     }
 

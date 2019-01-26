@@ -65,8 +65,8 @@
     <Compile Include="Types\ResponseTypes\DeviantArtFeedSettings.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtMessage.fs" />
     <Compile Include="Types\Exceptions.fs" />
-    <Compile Include="dafs.fs" />
-    <Compile Include="queryFor.fs" />
+    <Compile Include="Dafs.fs" />
+    <Compile Include="QueryFor.fs" />
     <Compile Include="AsyncThen.fs" />
     <Compile Include="DeviantArtAuth.fs" />
     <Compile Include="Requests\Browse\CategoryTree.fs" />

@@ -10,17 +10,17 @@ type PublishCategoryTreeRequest(catpath: string) =
 module PublishCategoryTree =
     let AsyncExecute token (req: PublishCategoryTreeRequest) = async {
         let query = seq {
-            yield sprintf "catpath=%s" (dafs.urlEncode req.Catpath)
+            yield sprintf "catpath=%s" (Dafs.urlEncode req.Catpath)
             if not (isNull req.Filetype) then
-                yield sprintf "filetype=%s" (dafs.urlEncode req.Filetype)
+                yield sprintf "filetype=%s" (Dafs.urlEncode req.Filetype)
             yield sprintf "frequent=%b" req.Frequent
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/publish/categorytree?%s"
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return DeviantArtCategoryList.ParseSeq json
     }
 

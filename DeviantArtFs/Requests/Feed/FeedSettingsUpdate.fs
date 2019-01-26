@@ -36,7 +36,7 @@ module FeedSettingsUpdate =
             if req.Misc.HasValue then yield sprintf "include[misc]=%b" req.Misc.Value
         }
 
-        let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/feed/settings/update"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/feed/settings/update"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
@@ -46,9 +46,9 @@ module FeedSettingsUpdate =
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
 
-        let! json = dafs.asyncRead req
+        let! json = Dafs.asyncRead req
         let resp = DeviantArtSuccessOrErrorResponse.Parse json
-        dafs.assertSuccess resp
+        Dafs.assertSuccess resp
     }
 
     let ExecuteAsync token req =

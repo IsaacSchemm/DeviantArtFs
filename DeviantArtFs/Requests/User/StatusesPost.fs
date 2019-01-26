@@ -20,7 +20,7 @@ module StatusPost =
     let AsyncExecute token (ps: StatusPostRequest) = async {
         let query = seq {
             match Option.ofObj ps.Body with
-            | Some s -> yield sprintf "body=%s" (dafs.urlEncode s)
+            | Some s -> yield sprintf "body=%s" (Dafs.urlEncode s)
             | None -> ()
             match Option.ofNullable ps.Parentid with
             | Some s -> yield sprintf "parentid=%O" s
@@ -32,7 +32,7 @@ module StatusPost =
             | Some s -> yield sprintf "stashid=%O" s
             | None -> ()
         }
-        let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/statuses/post"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/statuses/post"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
         do! async {
@@ -40,7 +40,7 @@ module StatusPost =
             use sw = new StreamWriter(stream)
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
-        let! json = dafs.asyncRead req
+        let! json = Dafs.asyncRead req
         let result = Json.deserialize<StatusPostResponse> json
         return result.statusid
     }

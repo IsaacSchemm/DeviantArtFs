@@ -16,18 +16,18 @@ module EmbeddedContent =
             match Option.ofNullable req.OffsetDeviationid with
             | Some s -> yield sprintf "offset_deviationid=%O" s
             | None -> ()
-            yield! queryFor.paging paging
+            yield! QueryFor.paging paging
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/embeddedcontent?%s"
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return DeviantArtPagedResult<Deviation>.Parse json
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
+    let ToAsyncSeq token req offset = AsyncExecute token |> Dafs.toAsyncSeq offset 50 req
 
     let ToArrayAsync token req offset limit =
         ToAsyncSeq token req offset

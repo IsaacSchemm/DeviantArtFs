@@ -6,7 +6,7 @@ open System.IO
 open System.Threading.Tasks
 open FSharp.Control
 
-module internal dafs =
+module internal Dafs =
     let assertSuccess (resp: DeviantArtSuccessOrErrorResponse) =
         match (resp.success, resp.error_description) with
         | (true, None) -> ()

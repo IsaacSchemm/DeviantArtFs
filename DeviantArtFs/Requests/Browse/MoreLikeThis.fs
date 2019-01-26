@@ -13,20 +13,20 @@ module MoreLikeThis =
         let query = seq {
             yield sprintf "seed=%O" req.Seed
             match Option.ofObj req.Category with
-            | Some s -> yield sprintf "category=%s" (dafs.urlEncode s)
+            | Some s -> yield sprintf "category=%s" (Dafs.urlEncode s)
             | None -> ()
-            yield! queryFor.paging paging
+            yield! QueryFor.paging paging
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/morelikethis?%s"
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return json |> DeviantArtPagedResult<Deviation>.Parse
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
+    let ToAsyncSeq token req offset = AsyncExecute token |> Dafs.toAsyncSeq offset 50 req
 
     let ToArrayAsync token req offset limit =
         ToAsyncSeq token req offset

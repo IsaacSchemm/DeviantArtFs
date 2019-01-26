@@ -23,15 +23,15 @@ module MessagesFeed =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/messages/feed?%s"
-            |> dafs.createRequest token
+            |> Dafs.createRequest token
 
-        let! json = dafs.asyncRead req
+        let! json = Dafs.asyncRead req
         return DeviantArtFeedCursorResult<DeviantArtMessage>.Parse json
     }
 
     let ToAsyncSeq token req cursor =
         let curried c = AsyncExecute token c req
-        curried |> dafs.cursorToAsyncSeq cursor
+        curried |> Dafs.cursorToAsyncSeq cursor
 
     let ToArrayAsync token req cursor limit =
         cursor

@@ -12,9 +12,9 @@ module Delta =
     let AsyncExecute token (paging: IDeviantArtPagingParams) (req: DeltaRequest) = async {
         let query = seq {
             match Option.ofObj req.Cursor with
-            | Some s -> yield sprintf "cursor=%s" (dafs.urlEncode s)
+            | Some s -> yield sprintf "cursor=%s" (Dafs.urlEncode s)
             | None -> ()
-            yield! queryFor.paging paging
+            yield! QueryFor.paging paging
             yield sprintf "ext_submission=%b" req.ExtParams.ExtSubmission
             yield sprintf "ext_camera=%b" req.ExtParams.ExtCamera
             yield sprintf "ext_stats=%b" req.ExtParams.ExtStats
@@ -23,12 +23,12 @@ module Delta =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/delta?%s"
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return StashDeltaResult.Parse json
     }
 
-    let GetAll token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 120 req
+    let GetAll token req offset = AsyncExecute token |> Dafs.toAsyncSeq offset 120 req
 
     let GetAllAsArrayAsync token extParams =
         GetAll token (new DeltaRequest(ExtParams = extParams)) 0

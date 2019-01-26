@@ -9,9 +9,9 @@ type TagsElement = {
 module TagsSearch =
     let AsyncExecute token (tag_name: string) = async {
         let req =
-            sprintf "https://www.deviantart.com/api/v1/oauth2/browse/tags/search?tag_name=%s" (dafs.urlEncode tag_name)
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            sprintf "https://www.deviantart.com/api/v1/oauth2/browse/tags/search?tag_name=%s" (Dafs.urlEncode tag_name)
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return DeviantArtListOnlyResponse.Parse json |> Seq.map (fun t -> t.tag_name)
     }
 

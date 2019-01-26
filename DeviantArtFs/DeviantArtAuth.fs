@@ -21,15 +21,15 @@ type DeviantArtTokenResponse = {
         member this.RefreshToken = this.refresh_token
 
 type DeviantArtAuth(client_id: int, client_secret: string) =
-    let UserAgent = dafs.userAgent
+    let UserAgent = Dafs.userAgent
 
     let BuildForm (dict: IDictionary<string, string>) =
         let parameters = seq {
             for p in dict do
                 if isNull p.Value then
                     failwithf "Null values in form not allowed"
-                let key = dafs.urlEncode p.Key
-                let value = dafs.urlEncode (p.Value.ToString())
+                let key = Dafs.urlEncode p.Key
+                let value = Dafs.urlEncode (p.Value.ToString())
                 yield sprintf "%s=%s" key value
         }
         String.concat "&" parameters
@@ -117,12 +117,12 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
             nullArg "token"
 
         let req = WebRequest.CreateHttp "https://www.deviantart.com/oauth2/revoke"
-        req.UserAgent <- dafs.userAgent
+        req.UserAgent <- Dafs.userAgent
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
         let query = seq {
-            yield token |> dafs.urlEncode |> sprintf "token=%s"
+            yield token |> Dafs.urlEncode |> sprintf "token=%s"
             if revoke_refresh_only then
                 yield "revoke_refresh_only=true"
         }
@@ -133,7 +133,7 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
 
-        let! json = dafs.asyncRead req
+        let! json = Dafs.asyncRead req
         ignore json
     }
 

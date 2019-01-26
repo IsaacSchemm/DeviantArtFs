@@ -9,17 +9,17 @@ type FriendsSearchRequest(query: string) =
 module FriendsSearch =
     let AsyncExecute token (req: FriendsSearchRequest) = async {
         let query = seq {
-            yield req.Query |> dafs.urlEncode |> sprintf "query=%s"
+            yield req.Query |> Dafs.urlEncode |> sprintf "query=%s"
             if req.Username |> isNull |> not then
-                yield req.Username |> dafs.urlEncode |> sprintf "username=%s"
+                yield req.Username |> Dafs.urlEncode |> sprintf "username=%s"
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/search?%s"
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return DeviantArtListOnlyResponse<DeviantArtUser>.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapSeq dafs.asBclUser |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapSeq Dafs.asBclUser |> Async.StartAsTask

@@ -14,8 +14,8 @@ module FriendsWatching =
             username
             |> WebUtility.UrlEncode
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/watching/%s"
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         let o = Json.deserialize<FriendsWatchingResponse> json
         return o.watching
     }

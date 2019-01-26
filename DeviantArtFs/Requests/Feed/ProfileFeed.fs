@@ -8,19 +8,19 @@ module ProfileFeed =
     let AsyncExecute token cursor = async {
         let query = seq {
             match cursor with
-            | Some s -> yield sprintf "cursor=%s" (dafs.urlEncode s)
+            | Some s -> yield sprintf "cursor=%s" (Dafs.urlEncode s)
             | None -> ()
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/feed/profile?%s"
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return DeviantArtFeedCursorResult<DeviantArtFeedItem>.Parse json
     }
 
-    let ToAsyncSeq token cursor = AsyncExecute token |> dafs.cursorToAsyncSeq cursor
+    let ToAsyncSeq token cursor = AsyncExecute token |> Dafs.cursorToAsyncSeq cursor
 
     let ToArrayAsync token cursor limit =
         cursor

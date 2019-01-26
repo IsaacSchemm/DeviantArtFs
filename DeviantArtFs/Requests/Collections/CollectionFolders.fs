@@ -13,22 +13,22 @@ module CollectionFolders =
     let AsyncExecute token (paging: IDeviantArtPagingParams) (ps: CollectionFoldersRequest) = async {
         let query = seq {
             match Option.ofObj ps.Username with
-            | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
+            | Some s -> yield sprintf "username=%s" (Dafs.urlEncode s)
             | None -> ()
             yield sprintf "calculate_size=%b" ps.CalculateSize
             yield sprintf "ext_preload=%b" ps.ExtPreload
-            yield! queryFor.paging paging
+            yield! QueryFor.paging paging
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/collections/folders?%s"
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return DeviantArtPagedResult<DeviantArtCollectionFolder>.Parse json
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
+    let ToAsyncSeq token req offset = AsyncExecute token |> Dafs.toAsyncSeq offset 50 req
 
     let ToArrayAsync token req offset limit =
         ToAsyncSeq token req offset

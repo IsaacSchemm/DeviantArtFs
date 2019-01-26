@@ -5,8 +5,8 @@ open System
 
 module Download =
     let AsyncExecute token (deviationid: Guid) = async {
-        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/download/%O" deviationid |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/download/%O" deviationid |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return DeviationDownload.Parse json
     }
 

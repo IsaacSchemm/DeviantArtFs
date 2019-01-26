@@ -16,11 +16,11 @@ module PostStatusComment =
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s
             | None -> ()
-            yield sprintf "body=%s" (dafs.urlEncode req.Body)
+            yield sprintf "body=%s" (Dafs.urlEncode req.Body)
         }
         let req =
             sprintf "https://www.deviantart.com/api/v1/oauth2/comments/post/status/%O" req.Statusid
-            |> dafs.createRequest token
+            |> Dafs.createRequest token
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
         do! async {
@@ -28,7 +28,7 @@ module PostStatusComment =
             use sw = new StreamWriter(stream)
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
-        let! json = dafs.asyncRead req
+        let! json = Dafs.asyncRead req
         return json |> DeviantArtComment.Parse
     }
 

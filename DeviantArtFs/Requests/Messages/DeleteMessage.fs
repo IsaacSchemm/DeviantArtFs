@@ -21,7 +21,7 @@ module DeleteMessage =
                 yield sprintf "stackid=%s" req.Stackid
         }
 
-        let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/messages/delete"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/messages/delete"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
@@ -31,8 +31,8 @@ module DeleteMessage =
             do! query |> String.concat "&" |> sw.WriteAsync |> Async.AwaitTask
         }
 
-        let! json = dafs.asyncRead req
+        let! json = Dafs.asyncRead req
         return ignore json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask |> dafs.toPlainTask
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask |> Dafs.toPlainTask

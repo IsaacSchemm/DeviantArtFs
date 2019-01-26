@@ -32,7 +32,7 @@ module Submit =
         let h2 = sprintf "--%s" h1
         let h3 = sprintf "--%s--" h1
 
-        let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/submit"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/submit"
         req.Method <- "POST"
         req.ContentType <- sprintf "multipart/form-data; boundary=%s" h1
 
@@ -124,7 +124,7 @@ module Submit =
             do! ms.CopyToAsync(reqStream) |> Async.AwaitTask
         }
 
-        let! json = dafs.asyncRead req
+        let! json = Dafs.asyncRead req
         let o = Json.deserialize<SubmitResponse> json
         return o.itemid
     }

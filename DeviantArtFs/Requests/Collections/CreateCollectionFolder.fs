@@ -6,10 +6,10 @@ open DeviantArtFs
 module CreateCollectionFolder =
     let AsyncExecute token (folder: string) = async {
         let query = seq {
-            yield sprintf "folder=%s" (dafs.urlEncode folder)
+            yield sprintf "folder=%s" (Dafs.urlEncode folder)
         }
 
-        let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/collections/folders/create"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/collections/folders/create"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
@@ -19,7 +19,7 @@ module CreateCollectionFolder =
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
 
-        let! json = dafs.asyncRead req
+        let! json = Dafs.asyncRead req
         return DeviantArtCollectionFolder.Parse json
     }
 

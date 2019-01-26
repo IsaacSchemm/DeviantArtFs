@@ -6,7 +6,7 @@ module Delete =
     open System.IO
 
     let AsyncExecute token (itemid: int64) = async {
-        let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/delete"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/delete"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
@@ -16,8 +16,8 @@ module Delete =
             do! sprintf "itemid=%d" itemid |> sw.WriteAsync |> Async.AwaitTask
         }
 
-        let! json = dafs.asyncRead req
+        let! json = Dafs.asyncRead req
         return ignore json
     }
 
-    let ExecuteAsync token itemid = AsyncExecute token itemid |> Async.StartAsTask |> dafs.toPlainTask
+    let ExecuteAsync token itemid = AsyncExecute token itemid |> Async.StartAsTask |> Dafs.toPlainTask

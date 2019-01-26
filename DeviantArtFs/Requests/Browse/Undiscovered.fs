@@ -10,20 +10,20 @@ module Undiscovered =
     let AsyncExecute token (paging: IDeviantArtPagingParams) (req: UndiscoveredRequest) = async {
         let query = seq {
             match Option.ofObj req.CategoryPath with
-            | Some s -> yield sprintf "category_path=%s" (dafs.urlEncode s)
+            | Some s -> yield sprintf "category_path=%s" (Dafs.urlEncode s)
             | None -> ()
-            yield! queryFor.paging paging
+            yield! QueryFor.paging paging
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/undiscovered?%s"
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return DeviantArtPagedResult<Deviation>.Parse json
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 120 req
+    let ToAsyncSeq token req offset = AsyncExecute token |> Dafs.toAsyncSeq offset 120 req
 
     let ToArrayAsync token req offset limit =
         ToAsyncSeq token req offset

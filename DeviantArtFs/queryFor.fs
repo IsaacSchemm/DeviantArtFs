@@ -1,6 +1,6 @@
 ﻿namespace DeviantArtFs
 
-module internal queryFor =
+module internal QueryFor =
     let paging (paging: IDeviantArtPagingParams) = seq {
         yield sprintf "offset=%d" paging.Offset
         if paging.Limit.HasValue then
@@ -20,6 +20,6 @@ module internal queryFor =
                 failwithf "Null is not allowed (parameter: %s)" name
             else
                 let str = s.ToString()
-                yield sprintf "%s=%s" (dafs.urlEncode name) (dafs.urlEncode str)
+                yield sprintf "%s=%s" (Dafs.urlEncode name) (Dafs.urlEncode str)
         | DeviantArtFieldChange.NoChange -> ()
     }

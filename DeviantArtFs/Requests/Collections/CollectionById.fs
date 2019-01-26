@@ -13,20 +13,20 @@ module CollectionById =
     let AsyncExecute token (paging: IDeviantArtPagingParams) (req: CollectionByIdRequest) = async {
         let query = seq {
             match Option.ofObj req.Username with
-            | Some s -> yield sprintf "username=%s" (dafs.urlEncode s)
+            | Some s -> yield sprintf "username=%s" (Dafs.urlEncode s)
             | None -> ()
-            yield! queryFor.paging paging
+            yield! QueryFor.paging paging
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/collections/%A?%s" req.Folderid
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return DeviantArtPagedResult<Deviation>.Parse json
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 24 req
+    let ToAsyncSeq token req offset = AsyncExecute token |> Dafs.toAsyncSeq offset 24 req
 
     let ToArrayAsync token req offset limit =
         ToAsyncSeq token req offset

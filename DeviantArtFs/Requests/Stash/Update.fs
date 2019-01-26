@@ -11,11 +11,11 @@ type UpdateRequest(stackid: int64) =
 module Update =
     let AsyncExecute token (req: UpdateRequest) = async {
         let query = seq {
-            yield! req.Title |> queryFor.fieldChange "title"
-            yield! req.Description |> fch.allowNull |> queryFor.fieldChange "description"
+            yield! req.Title |> QueryFor.fieldChange "title"
+            yield! req.Description |> fch.allowNull |> QueryFor.fieldChange "description"
         }
 
-        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/update/%d" req.Stackid |> dafs.createRequest token
+        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/update/%d" req.Stackid |> Dafs.createRequest token
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
@@ -25,11 +25,11 @@ module Update =
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
 
-        let! json = dafs.asyncRead req
-        DeviantArtSuccessOrErrorResponse.Parse json |> dafs.assertSuccess
+        let! json = Dafs.asyncRead req
+        DeviantArtSuccessOrErrorResponse.Parse json |> Dafs.assertSuccess
     }
 
     let ExecuteAsync token req =
         AsyncExecute token req
         |> Async.StartAsTask
-        |> dafs.toPlainTask
+        |> Dafs.toPlainTask

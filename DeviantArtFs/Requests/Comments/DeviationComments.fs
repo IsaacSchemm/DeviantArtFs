@@ -16,18 +16,18 @@ module DeviationComments =
             | Some s -> yield sprintf "commentid=%O" s
             | None -> ()
             yield sprintf "maxdepth=%d" req.Maxdepth
-            yield! queryFor.paging paging
+            yield! QueryFor.paging paging
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/comments/deviation/%O?%s" req.Deviationid
-            |> dafs.createRequest token
-        let! json = dafs.asyncRead req
+            |> Dafs.createRequest token
+        let! json = Dafs.asyncRead req
         return json |> DeviantArtCommentPagedResult.Parse
     }
 
-    let ToAsyncSeq token req offset = AsyncExecute token |> dafs.toAsyncSeq offset 50 req
+    let ToAsyncSeq token req offset = AsyncExecute token |> Dafs.toAsyncSeq offset 50 req
 
     let ToArrayAsync token req offset limit =
         ToAsyncSeq token req offset

@@ -21,7 +21,7 @@ module Unfave =
                 index <- index + 1
         }
 
-        let req = dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/collections/unfave"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/collections/unfave"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
@@ -31,9 +31,9 @@ module Unfave =
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
 
-        let! json = dafs.asyncRead req
+        let! json = Dafs.asyncRead req
         let resp = DeviantArtSuccessOrErrorResponse.Parse json
-        dafs.assertSuccess resp
+        Dafs.assertSuccess resp
 
         let o = Json.deserialize<UnfaveResponse> json
         return o.favourites
