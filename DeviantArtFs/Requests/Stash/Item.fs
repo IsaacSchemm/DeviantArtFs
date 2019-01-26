@@ -9,9 +9,7 @@ type ItemRequest(itemid: int64) =
 module Item =
     let AsyncExecute token (req: ItemRequest) = async {
         let query = seq {
-            yield sprintf "ext_submission=%b" req.ExtParams.ExtSubmission
-            yield sprintf "ext_camera=%b" req.ExtParams.ExtCamera
-            yield sprintf "ext_stats=%b" req.ExtParams.ExtStats
+            yield! QueryFor.extParams req.ExtParams
         }
         let req =
             query

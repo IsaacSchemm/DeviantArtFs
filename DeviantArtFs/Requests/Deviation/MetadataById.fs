@@ -11,9 +11,7 @@ type MetadataRequest(deviationids: seq<Guid>) =
 module MetadataById =
     let AsyncExecute token (req: MetadataRequest) = async {
         let query = seq {
-            yield sprintf "ext_submission=%b" req.ExtParams.ExtSubmission
-            yield sprintf "ext_camera=%b" req.ExtParams.ExtCamera
-            yield sprintf "ext_stats=%b" req.ExtParams.ExtStats
+            yield! QueryFor.extParams req.ExtParams
             yield sprintf "ext_collection=%b" req.ExtCollection
             yield req.Deviationids
                 |> Seq.map (fun o -> o.ToString())
