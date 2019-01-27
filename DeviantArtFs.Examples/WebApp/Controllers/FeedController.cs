@@ -12,13 +12,18 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
     {
         public FeedController(ExampleDbContext context, DeviantArtAuth appReg) : base(context, appReg) { }
 
-        public async Task<IActionResult> Index(string cursor = null)
+        public IActionResult Index(string cursor = null)
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Pull(string cursor = null)
         {
             var token = await GetAccessTokenAsync();
             if (token == null) return Forbid();
 
             var feed = await Requests.Feed.FeedHome.ExecuteAsync(token, cursor);
-                return View(new FeedModel(feed));
+            return Json(new FeedModel(feed));
         }
     }
 }

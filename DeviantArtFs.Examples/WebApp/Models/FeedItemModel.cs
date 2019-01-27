@@ -20,8 +20,7 @@ namespace DeviantArtFs.Examples.WebApp.Models
             ?? _item.Status?.Url
             ?? _item.Collection.Url;
         public string ThumbnailUrl =>
-            _item.Deviations.FirstOrDefault()?.Thumbs?.FirstOrDefault()?.Src
-            ?? _item.Status?.EmbeddedDeviations?.FirstOrDefault()?.Thumbs?.FirstOrDefault()?.Src;
+            _item.Deviations.FirstOrDefault()?.Thumbs?.FirstOrDefault()?.Src;
         public string Title =>
             _item.Deviations.FirstOrDefault()?.Title;
         public string Username => _item.ByUser.Username;
@@ -30,5 +29,15 @@ namespace DeviantArtFs.Examples.WebApp.Models
             _item.Type == "collection_update" ? $"Updated collection <a href='{_item.Collection.Url}'>{WebUtility.HtmlEncode(_item.Collection.Name)}</a>"
             : _item.Type == "status" ? _item.Status?.Body
             : _item.Deviations?.FirstOrDefault()?.Excerpt;
+        public string TimeAgo {
+            get {
+                TimeSpan ts = DateTimeOffset.UtcNow - _item.Ts.ToUniversalTime();
+                if (ts.TotalMinutes < 1) return $"{(int)ts.TotalSeconds}s";
+                if (ts.TotalHours < 1) return $"{(int)ts.TotalMinutes}m";
+                if (ts.TotalDays < 1) return $"{(int)ts.TotalHours}h";
+                if (ts.TotalDays < 30) return $"{(int)ts.TotalDays}d";
+                return _item.Ts.ToString();
+            }
+        }
     }
 }

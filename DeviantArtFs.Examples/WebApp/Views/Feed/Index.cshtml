@@ -5,44 +5,85 @@
 
 <h2>Feed</h2>
 
-@foreach (var f in Model.Items)
-{
-<div style="border: 1px solid black; border-radius: 2px; margin-bottom: 8px">
-    @if (f.ThumbnailUrl != null)
-    {
-        <a href="@f.Url">
-            <img src="@f.ThumbnailUrl" style="float: left; width: 150px; min-height: 100px; max-height: 150px; object-fit: contain; margin-right: 8px" />
-        </a>
-    }
+<!-- ko foreach: items -->
+<div style="border: 1px solid black; border-radius: 2px; margin-bottom: 8px" class="item">
+    <div style="float: right; margin: 4px;">
+        <small data-bind="text: timeAgo">
+            Ts
+        </small>
+    </div>
 
-    @if (f.Title != null)
-    {
-        <b>
-            <big>
-                <a href="@f.Url">@f.Title</a>
-            </big>
-        </b>
-        <br />
-        <br />
-    }
+    <!-- ko if: thumbnailUrl -->
+    <a href="#" data-bind="attr: { href: url }">
+        <img data-bind="attr: { src: thumbnailUrl }" alt="" style="float: left; width: 150px; min-height: 100px; max-height: 150px; object-fit: contain; margin-right: 8px" />
+    </a>
+    <!-- /ko -->
 
-    <a href="https://deviantart.com/@f.Username"><img align="top" src="@f.Usericon" alt="" /></a>
-    <b>@f.Username</b>
+    <a href="#" data-bind="attr: { href: 'https://deviantart.com/' + username }"><img align="top" data-bind="attr: { src: usericon }" alt="" /></a>
+    <b data-bind="text: username">Username</b>
+
+    <!-- ko if: title -->
+    &middot;
+    <b>
+        <a href="#" data-bind="attr: { href: url }, text: title">Title</a>
+    </b>
+    <!-- /ko -->
+
+    <!-- ko if: htmlDescription -->
+    <br />
+    <br />
+    <span data-bind="html: htmlDescription"></span>
+    <!-- /ko -->
 
     <div style="clear: both"></div>
-
-    @if (f.HTMLDescription != null)
-    {
-        <br />
-        @Html.Raw(f.HTMLDescription)
-    }
 </div>
-}
+<!-- /ko -->
 
-@if (Model.HasMore)
-{
+<div id="endOfItems"></div>
+
+<!-- ko if: hasMore() -->
 <hr />
 <p align="center">
-    <a href="/Feed?cursor=@Model.Cursor">Next</a>
+    <!-- ko if: gettingMore -->
+    Loading...
+    <!-- /ko -->
+    <!-- ko if: !gettingMore() -->
+    <a href="#" data-bind="click: getMore">Next</a>
+    <!-- /ko -->
 </p>
-}
+<!-- /ko -->
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+<script type="text/javascript">
+    var model = {
+        cursor: ko.observable(null),
+        items: ko.observableArray(),
+        hasMore: ko.observable(true),
+        gettingMore: ko.observable(false),
+        getMore: async () => {
+            if (model.gettingMore()) return;
+            model.gettingMore(true);
+            const url = model.cursor()
+                ? `/Feed/Pull?cursor=${model.cursor()}`
+                : `/Feed/Pull`;
+            const page = await fetch(url, { credentials: "include" }).then(r => r.json());
+            model.hasMore(page.hasMore);
+            model.cursor(page.cursor);
+            for (let item of page.items) {
+                model.items.push(item);
+            }
+            model.gettingMore(false);
+            checkScroll();
+        }
+    };
+    ko.applyBindings(model, document.body);
+
+    function checkScroll() {
+        if (window.scrollY + window.innerHeight > document.body.clientHeight - 500) {
+            model.getMore();
+        }
+    }
+
+    window.addEventListener("scroll", checkScroll);
+    window.addEventListener("load", checkScroll);
+</script>
