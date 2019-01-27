@@ -8,28 +8,45 @@
 @foreach (var f in Model.Items)
 {
 <div style="border: 1px solid black; border-radius: 2px; margin-bottom: 8px">
-    @if (f.Type == "deviation")
+    @if (f.Type == "deviation_submitted")
     {
         <a href="@f.Deviations.First().Url">
-            <img src="@f.Deviations.First().Thumbs.First().Src" align="left" />
+            <img src="@f.Deviations.First().Thumbs.First().Src" style="float: left; width: 150px; max-height: 150px; object-fit: contain; margin-right: 8px" />
         </a>
 
         foreach (var d in f.Deviations)
         {
-            <b><a href="@d.Url">@d.Title</a></b>
+            <b>
+                <big>
+                    <a href="@d.Url">@d.Title</a>
+                </big>
+            </b>
             <br />
-            @d.Author.Username
             <br />
+            <img align="top" src="@f.ByUser.Usericon" alt="" />
+            @f.ByUser.Username
         }
+        <div style="clear: both"></div>
+    }
+    else if (f.Type == "status")
+    {
+        <img align="top" src="@f.Status.Author.Usericon" />
+        <b>@f.Status.Author.Username</b>
+        <div style="clear: both"></div>
+        <br />
+        @Html.Raw(f.Status.Body)
+    }
+    else if (f.Type == "collection_update")
+    {
+        <text><b>@f.ByUser.Username</b> updated collection <b><a href="@f.Collection.Url">@f.Collection.Name</a></b></text>
     }
     else
     {
         <pre>
-@Newtonsoft.Json.JsonConvert.SerializeObject(f)
+@Newtonsoft.Json.JsonConvert.SerializeObject(f, Newtonsoft.Json.Formatting.Indented)
         </pre>
     }
 </div>
-<div style="clear: both"></div>
 }
 
 @if (Model.HasMore)
