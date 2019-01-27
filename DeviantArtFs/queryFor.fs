@@ -4,7 +4,7 @@ module internal QueryFor =
     let paging (paging: IDeviantArtPagingParams) (maximum: int) = seq {
         yield sprintf "offset=%d" paging.Offset
         if paging.Limit.HasValue then
-            yield sprintf "limit=%d" (max paging.Limit.Value maximum)
+            yield sprintf "limit=%d" (min paging.Limit.Value maximum)
     }
 
     let extParams (extParams: IDeviantArtExtParams) = seq {
