@@ -15,7 +15,7 @@ module MoreLikeThis =
             match Option.ofObj req.Category with
             | Some s -> yield sprintf "category=%s" (Dafs.urlEncode s)
             | None -> ()
-            yield! QueryFor.paging paging
+            yield! QueryFor.paging paging 50
         }
         let req =
             query
@@ -26,12 +26,8 @@ module MoreLikeThis =
         return json |> DeviantArtPagedResult<Deviation>.Parse
     }
 
-    let AsyncGetMax token offset req =
-        let paging = Dafs.page offset 50
-        AsyncExecute token paging req
-
     let ToAsyncSeq token offset req =
-        AsyncGetMax token
+        Dafs.getMax AsyncExecute token
         |> Dafs.toAsyncSeq offset req
 
     let ToArrayAsync token offset limit req =
@@ -43,10 +39,5 @@ module MoreLikeThis =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
-        |> Async.StartAsTask
-
-    let GetMaxAsync token paging req =
-        AsyncGetMax token paging req
         |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
         |> Async.StartAsTask

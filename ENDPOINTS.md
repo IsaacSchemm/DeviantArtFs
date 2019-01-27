@@ -33,10 +33,11 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 
 **IDeviantArtPagingParams:**
 
-"IDeviantArtPagingParams" is used when the common "offset" and "limit" parameters are included in a request.
+"IDeviantArtPagingParams" is used when the common "offset" and "limit" parameters are included in a request. (For the maximum batch size allowed by DeviantArt, use Int32.MaxValue.)
 
     // C#
-    IDeviantArtPagingParams x1 = new DeviantArtPagingParams { Offset = 0, Limit = 24 };
+    IDeviantArtPagingParams x1 = new DeviantArtPagingParams { Offset = 0, Limit = 5 };
+    IDeviantArtPagingParams x2 = new DeviantArtPagingParams { Offset = 0, Limit = int.MaxValue };
 
 ### DeviantArtFs.DeviantArtAuth
 * AsyncGetToken (string) (Uri) -> `Async<IDeviantArtRefreshToken>`
@@ -61,8 +62,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Browse.Hot
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (HotRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (HotRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (HotRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (HotRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (HotRequest) -> `AsyncSeq<Deviation>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (HotRequest) -> `Task<IBclDeviation[]>`
 
@@ -78,8 +77,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Browse.MoreLikeThis
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (MoreLikeThisRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (MoreLikeThisRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (MoreLikeThisRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (MoreLikeThisRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (MoreLikeThisRequest) -> `AsyncSeq<Deviation>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (MoreLikeThisRequest) -> `Task<IBclDeviation[]>`
 
@@ -100,8 +97,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Browse.Newest
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (NewestRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (NewestRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (NewestRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (NewestRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (NewestRequest) -> `AsyncSeq<Deviation>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (NewestRequest) -> `Task<IBclDeviation[]>`
 
@@ -118,8 +113,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Browse.Popular
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (PopularRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (PopularRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (PopularRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (PopularRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (PopularRequest) -> `AsyncSeq<Deviation>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (PopularRequest) -> `Task<IBclDeviation[]>`
 
@@ -137,8 +130,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Browse.Tags
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (string) -> `Async<DeviantArtPagedResult<Deviation>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (string) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (string) -> `Async<DeviantArtPagedResult<Deviation>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (string) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (string) -> `AsyncSeq<Deviation>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (string) -> `Task<IBclDeviation[]>`
 
@@ -154,8 +145,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Browse.Undiscovered
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (UndiscoveredRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (UndiscoveredRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (UndiscoveredRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (UndiscoveredRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (UndiscoveredRequest) -> `AsyncSeq<Deviation>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (UndiscoveredRequest) -> `Task<IBclDeviation[]>`
 
@@ -171,8 +160,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Browse.UserJournals
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (UserJournalsRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (UserJournalsRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (UserJournalsRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (UserJournalsRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (UserJournalsRequest) -> `AsyncSeq<Deviation>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (UserJournalsRequest) -> `Task<IBclDeviation[]>`
 
@@ -189,8 +176,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Collections.CollectionById
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (CollectionByIdRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (CollectionByIdRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (CollectionByIdRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (CollectionByIdRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (CollectionByIdRequest) -> `AsyncSeq<Deviation>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (CollectionByIdRequest) -> `Task<IBclDeviation[]>`
 
@@ -207,8 +192,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Collections.CollectionFolders
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (CollectionFoldersRequest) -> `Async<DeviantArtPagedResult<DeviantArtCollectionFolder>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (CollectionFoldersRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtCollectionFolder>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (CollectionFoldersRequest) -> `Async<DeviantArtPagedResult<DeviantArtCollectionFolder>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (CollectionFoldersRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtCollectionFolder>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (CollectionFoldersRequest) -> `AsyncSeq<DeviantArtCollectionFolder>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (CollectionFoldersRequest) -> `Task<IBclDeviantArtCollectionFolder[]>`
 
@@ -256,8 +239,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Comments.DeviationComments
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (DeviationCommentsRequest) -> `Async<DeviantArtCommentPagedResult>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (DeviationCommentsRequest) -> `Task<IBclDeviantArtCommentPagedResult>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (DeviationCommentsRequest) -> `Async<DeviantArtCommentPagedResult>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (DeviationCommentsRequest) -> `Task<IBclDeviantArtCommentPagedResult>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (DeviationCommentsRequest) -> `AsyncSeq<DeviantArtComment>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (DeviationCommentsRequest) -> `Task<IBclDeviantArtComment[]>`
 
@@ -305,8 +286,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Comments.ProfileComments
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (ProfileCommentsRequest) -> `Async<DeviantArtCommentPagedResult>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (ProfileCommentsRequest) -> `Task<IBclDeviantArtCommentPagedResult>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (ProfileCommentsRequest) -> `Async<DeviantArtCommentPagedResult>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (ProfileCommentsRequest) -> `Task<IBclDeviantArtCommentPagedResult>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (ProfileCommentsRequest) -> `AsyncSeq<DeviantArtComment>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (ProfileCommentsRequest) -> `Task<IBclDeviantArtComment[]>`
 
@@ -324,8 +303,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Comments.StatusComments
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (StatusCommentsRequest) -> `Async<DeviantArtCommentPagedResult>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (StatusCommentsRequest) -> `Task<IBclDeviantArtCommentPagedResult>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (StatusCommentsRequest) -> `Async<DeviantArtCommentPagedResult>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (StatusCommentsRequest) -> `Task<IBclDeviantArtCommentPagedResult>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (StatusCommentsRequest) -> `AsyncSeq<DeviantArtComment>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (StatusCommentsRequest) -> `Task<IBclDeviantArtComment[]>`
 
@@ -371,8 +348,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Deviation.EmbeddedContent
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (EmbeddedContentRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (EmbeddedContentRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (EmbeddedContentRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (EmbeddedContentRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (EmbeddedContentRequest) -> `AsyncSeq<Deviation>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (EmbeddedContentRequest) -> `Task<IBclDeviation[]>`
 
@@ -399,8 +374,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Deviation.WhoFaved
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (Guid) -> `Async<DeviantArtPagedResult<DeviantArtWhoFavedUser>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (Guid) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtWhoFavedUser>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (Guid) -> `Async<DeviantArtPagedResult<DeviantArtWhoFavedUser>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (Guid) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtWhoFavedUser>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (Guid) -> `AsyncSeq<DeviantArtWhoFavedUser>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (Guid) -> `Task<IBclDeviantArtWhoFavedUser[]>`
 
@@ -418,8 +391,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Feed.FeedHomeBucket
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (Guid) -> `Async<DeviantArtPagedResult<Deviation>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (Guid) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (Guid) -> `Async<DeviantArtPagedResult<Deviation>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (Guid) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (Guid) -> `AsyncSeq<Deviation>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (Guid) -> `Task<IBclDeviation[]>`
 
@@ -464,8 +435,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Gallery.GalleryAllView
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (GalleryAllViewRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (GalleryAllViewRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (GalleryAllViewRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (GalleryAllViewRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (GalleryAllViewRequest) -> `AsyncSeq<Deviation>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (GalleryAllViewRequest) -> `Task<IBclDeviation[]>`
 
@@ -481,8 +450,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Gallery.GalleryById
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (GalleryByIdRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (GalleryByIdRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (GalleryByIdRequest) -> `Async<DeviantArtPagedResult<Deviation>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (GalleryByIdRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (GalleryByIdRequest) -> `AsyncSeq<Deviation>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (GalleryByIdRequest) -> `Task<IBclDeviation[]>`
 
@@ -500,8 +467,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Gallery.GalleryFolders
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (GalleryFoldersRequest) -> `Async<DeviantArtPagedResult<DeviantArtGalleryFolder>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (GalleryFoldersRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtGalleryFolder>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (GalleryFoldersRequest) -> `Async<DeviantArtPagedResult<DeviantArtGalleryFolder>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (GalleryFoldersRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtGalleryFolder>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (GalleryFoldersRequest) -> `AsyncSeq<DeviantArtGalleryFolder>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (GalleryFoldersRequest) -> `Task<IBclDeviantArtGalleryFolder[]>`
 
@@ -544,8 +509,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Stash.Contents
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (long) -> `Async<DeviantArtPagedResult<StashMetadata>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (long) -> `Task<IBclDeviantArtPagedResult<IBclStashMetadata>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (long) -> `Async<DeviantArtPagedResult<StashMetadata>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (long) -> `Task<IBclDeviantArtPagedResult<IBclStashMetadata>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (long) -> `AsyncSeq<StashMetadata>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (long) -> `Task<IBclStashMetadata[]>`
 
@@ -561,8 +524,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.Stash.Delta
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (DeltaRequest) -> `Async<StashDeltaResult>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (DeltaRequest) -> `Task<IBclStashDeltaResult>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (DeltaRequest) -> `Async<StashDeltaResult>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (DeltaRequest) -> `Task<IBclStashDeltaResult>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (DeltaRequest) -> `AsyncSeq<StashDeltaEntry>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (DeltaRequest) -> `Task<IBclStashDeltaEntry[]>`
 
@@ -673,8 +634,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.User.Friends
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (FriendsRequest) -> `Async<DeviantArtPagedResult<DeviantArtFriendRecord>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (FriendsRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtFriendRecord>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (FriendsRequest) -> `Async<DeviantArtPagedResult<DeviantArtFriendRecord>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (FriendsRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtFriendRecord>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (FriendsRequest) -> `AsyncSeq<DeviantArtFriendRecord>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (FriendsRequest) -> `Task<IBclDeviantArtFriendRecord[]>`
 
@@ -752,8 +711,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.User.StatusesList
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (string) -> `Async<DeviantArtPagedResult<DeviantArtStatus>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (string) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtStatus>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (string) -> `Async<DeviantArtPagedResult<DeviantArtStatus>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (string) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtStatus>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (string) -> `AsyncSeq<DeviantArtStatus>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (string) -> `Task<IBclDeviantArtStatus[]>`
 
@@ -776,8 +733,6 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 ### DeviantArtFs.Requests.User.Watchers
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (WatchersRequest) -> `Async<DeviantArtPagedResult<DeviantArtWatcherRecord>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (WatchersRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtWatcherRecord>>`
-* AsyncGetMax (IDeviantArtAccessToken) (int) (WatchersRequest) -> `Async<DeviantArtPagedResult<DeviantArtWatcherRecord>>`
-* GetMaxAsync (IDeviantArtAccessToken) (int) (WatchersRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtWatcherRecord>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (WatchersRequest) -> `AsyncSeq<DeviantArtWatcherRecord>`
 * ToArrayAsync (IDeviantArtAccessToken) (int) (int) (WatchersRequest) -> `Task<IBclDeviantArtWatcherRecord[]>`
 

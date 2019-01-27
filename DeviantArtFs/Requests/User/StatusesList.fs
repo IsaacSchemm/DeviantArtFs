@@ -8,7 +8,7 @@ module StatusesList =
     let AsyncExecute token (paging: IDeviantArtPagingParams) (username: string) = async {
         let query = seq {
             yield sprintf "username=%s" (Dafs.urlEncode username)
-            yield! QueryFor.paging paging
+            yield! QueryFor.paging paging 50
         }
         let req =
             query
@@ -19,12 +19,8 @@ module StatusesList =
         return DeviantArtPagedResult<DeviantArtStatus>.Parse json
     }
 
-    let AsyncGetMax token offset req =
-        let paging = Dafs.page offset 50
-        AsyncExecute token paging req
-
     let ToAsyncSeq token offset req =
-        AsyncGetMax token
+        Dafs.getMax AsyncExecute token
         |> Dafs.toAsyncSeq offset req
 
     let ToArrayAsync token offset limit req =
@@ -36,10 +32,5 @@ module StatusesList =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtStatus)
-        |> Async.StartAsTask
-
-    let GetMaxAsync token paging req =
-        AsyncGetMax token paging req
         |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtStatus)
         |> Async.StartAsTask

@@ -16,7 +16,7 @@ module Newest =
             match Option.ofObj req.Q with
             | Some s -> yield sprintf "q=%s" (Dafs.urlEncode s)
             | None -> ()
-            yield! QueryFor.paging paging
+            yield! QueryFor.paging paging 120
         }
         let req =
             query
@@ -27,12 +27,8 @@ module Newest =
         return DeviantArtPagedResult<Deviation>.Parse json
     }
 
-    let AsyncGetMax token offset req =
-        let paging = Dafs.page offset 120
-        AsyncExecute token paging req
-
     let ToAsyncSeq token offset req =
-        AsyncGetMax token
+        Dafs.getMax AsyncExecute token
         |> Dafs.toAsyncSeq offset req
 
     let ToArrayAsync token offset limit req =
@@ -44,10 +40,5 @@ module Newest =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
-        |> Async.StartAsTask
-
-    let GetMaxAsync token paging req =
-        AsyncGetMax token paging req
         |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
         |> Async.StartAsTask

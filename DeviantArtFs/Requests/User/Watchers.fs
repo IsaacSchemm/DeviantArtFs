@@ -10,7 +10,7 @@ module Watchers =
 
     let AsyncExecute token (paging: IDeviantArtPagingParams) (req: WatchersRequest) = async {
         let query = seq {
-            yield! QueryFor.paging paging
+            yield! QueryFor.paging paging 50
         }
         let req =
             query
@@ -21,12 +21,8 @@ module Watchers =
         return json |> DeviantArtPagedResult<DeviantArtWatcherRecord>.Parse
     }
 
-    let AsyncGetMax token offset req =
-        let paging = Dafs.page offset 50
-        AsyncExecute token paging req
-
     let ToAsyncSeq token offset req =
-        AsyncGetMax token
+        Dafs.getMax AsyncExecute token
         |> Dafs.toAsyncSeq offset req
 
     let ToArrayAsync token offset limit req =
@@ -38,10 +34,5 @@ module Watchers =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtWatcherRecord)
-        |> Async.StartAsTask
-
-    let GetMaxAsync token paging req =
-        AsyncGetMax token paging req
         |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtWatcherRecord)
         |> Async.StartAsTask

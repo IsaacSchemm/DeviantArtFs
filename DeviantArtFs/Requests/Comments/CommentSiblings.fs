@@ -12,7 +12,7 @@ module CommentSiblings =
     let AsyncExecute token (paging: IDeviantArtPagingParams) (req: CommentSiblingsRequest) = async {
         let query = seq {
             yield sprintf "ext_item=%b" req.ExtItem
-            yield! QueryFor.paging paging
+            yield! QueryFor.paging paging 50
         }
         let req =
             query

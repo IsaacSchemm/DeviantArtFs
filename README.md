@@ -16,10 +16,9 @@ async and use F# features such as records and option types, while the other
 will return a Task<T> and use interfaces and null values for interoperability
 with C# and VB.NET.
 
-Some modules also have AsyncGetMax and GetMaxAsync methods, which retrieve the
-largest possible page size for the request, and ToAsyncSeq and ToArrayAsync
-methods, which can be used to fetch an arbitary amount of data as needed.
-(Keep in mind that some of the endpoints might consist of many, many pages...)
+Some modules also have ToAsyncSeq and ToArrayAsync methods, which can be used
+to fetch an arbitary amount of data as needed. (Keep in mind that some of the
+endpoints might consist of many, many pages...)
 
 ## Currently unsupported features
 
@@ -103,6 +102,7 @@ methods, which can be used to fetch an arbitary amount of data as needed.
 ### Messages
 
 * POST /messages/delete
+* GET /messages/feed
 
 ### Stash
 

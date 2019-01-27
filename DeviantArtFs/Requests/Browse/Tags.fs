@@ -7,7 +7,7 @@ module Tags =
     let AsyncExecute token (paging: IDeviantArtPagingParams) (tag: string) = async {
         let query = seq {
             yield sprintf "tag=%s" (Dafs.urlEncode tag)
-            yield! QueryFor.paging paging
+            yield! QueryFor.paging paging 50
         }
         let req =
             query
@@ -18,12 +18,8 @@ module Tags =
         return DeviantArtPagedResult<Deviation>.Parse json
     }
 
-    let AsyncGetMax token offset tag =
-        let paging = Dafs.page offset 50
-        AsyncExecute token paging tag
-
     let ToAsyncSeq token offset tag =
-        AsyncGetMax token
+        Dafs.getMax AsyncExecute token
         |> Dafs.toAsyncSeq offset tag
 
     let ToArrayAsync token offset limit tag =
@@ -35,10 +31,5 @@ module Tags =
 
     let ExecuteAsync token paging tag =
         AsyncExecute token paging tag
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
-        |> Async.StartAsTask
-
-    let GetMaxAsync token paging tag =
-        AsyncGetMax token paging tag
         |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
         |> Async.StartAsTask

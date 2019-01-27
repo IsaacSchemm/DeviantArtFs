@@ -68,10 +68,11 @@ The value of ""IDeviantArtExtParams"" determines what extra data (if any) is inc
 
 **IDeviantArtPagingParams:**
 
-""IDeviantArtPagingParams"" is used when the common ""offset"" and ""limit"" parameters are included in a request.
+""IDeviantArtPagingParams"" is used when the common ""offset"" and ""limit"" parameters are included in a request. (For the maximum batch size allowed by DeviantArt, use Int32.MaxValue.)
 
     // C#
-    IDeviantArtPagingParams x1 = new DeviantArtPagingParams { Offset = 0, Limit = 24 };
+    IDeviantArtPagingParams x1 = new DeviantArtPagingParams { Offset = 0, Limit = 5 };
+    IDeviantArtPagingParams x2 = new DeviantArtPagingParams { Offset = 0, Limit = int.MaxValue };
 ");
 
                 var a = Assembly.GetAssembly(typeof(DeviantArtFs.Requests.Browse.CategoryTree));

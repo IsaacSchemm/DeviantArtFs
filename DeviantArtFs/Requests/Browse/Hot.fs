@@ -12,7 +12,7 @@ module Hot =
             match Option.ofObj req.CategoryPath with
             | Some s -> yield sprintf "category_path=%s" (Dafs.urlEncode s)
             | None -> ()
-            yield! QueryFor.paging paging
+            yield! QueryFor.paging paging 120
         }
         let req =
             query
@@ -23,12 +23,8 @@ module Hot =
         return json |> DeviantArtPagedResult<Deviation>.Parse
     }
 
-    let AsyncGetMax token offset req =
-        let paging = Dafs.page offset 120
-        AsyncExecute token paging req
-
     let ToAsyncSeq token offset req =
-        AsyncGetMax token
+        Dafs.getMax AsyncExecute token
         |> Dafs.toAsyncSeq offset req
 
     let ToArrayAsync token offset limit req =
@@ -40,10 +36,5 @@ module Hot =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
-        |> Async.StartAsTask
-
-    let GetMaxAsync token paging req =
-        AsyncGetMax token paging req
         |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
         |> Async.StartAsTask

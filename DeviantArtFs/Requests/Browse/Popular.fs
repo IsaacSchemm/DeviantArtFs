@@ -33,7 +33,7 @@ module Popular =
             | PopularTimeRange.OneMonth -> yield "timerange=1month"
             | PopularTimeRange.AllTime -> yield "timerange=alltime"
             | _ -> ()
-            yield! QueryFor.paging paging
+            yield! QueryFor.paging paging 120
         }
         let req =
             query
@@ -44,12 +44,8 @@ module Popular =
         return DeviantArtPagedResult<Deviation>.Parse json
     }
 
-    let AsyncGetMax token offset req =
-        let paging = Dafs.page offset 120
-        AsyncExecute token paging req
-
     let ToAsyncSeq token offset req =
-        AsyncGetMax token
+        Dafs.getMax AsyncExecute token
         |> Dafs.toAsyncSeq offset req
 
     let ToArrayAsync token offset limit req =
@@ -61,10 +57,5 @@ module Popular =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
-        |> Async.StartAsTask
-
-    let GetMaxAsync token paging req =
-        AsyncGetMax token paging req
         |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
         |> Async.StartAsTask

@@ -17,7 +17,7 @@ module GalleryFolders =
             | None -> ()
             yield sprintf "calculate_size=%b" req.CalculateSize
             yield sprintf "ext_preload=%b" req.ExtPreload
-            yield! QueryFor.paging paging
+            yield! QueryFor.paging paging 50
         }
         let req =
             query
@@ -28,12 +28,8 @@ module GalleryFolders =
         return DeviantArtPagedResult<DeviantArtGalleryFolder>.Parse json
     }
 
-    let AsyncGetMax token offset req =
-        let paging = Dafs.page offset 50
-        AsyncExecute token paging req
-
     let ToAsyncSeq token offset req =
-        AsyncGetMax token
+        Dafs.getMax AsyncExecute token
         |> Dafs.toAsyncSeq offset req
 
     let ToArrayAsync token offset limit req =
@@ -45,10 +41,5 @@ module GalleryFolders =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtGalleryFolder)
-        |> Async.StartAsTask
-
-    let GetMaxAsync token paging req =
-        AsyncGetMax token paging req
         |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtGalleryFolder)
         |> Async.StartAsTask

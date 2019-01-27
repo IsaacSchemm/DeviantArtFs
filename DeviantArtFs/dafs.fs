@@ -77,7 +77,9 @@ module internal Dafs =
                     return raise (new DeviantArtException(resp, error_obj))
     }
 
-    let page offset limit = new DeviantArtPagingParams(Offset = offset, Limit = Nullable limit)
+    let getMax (f: IDeviantArtAccessToken -> IDeviantArtPagingParams -> 'a) (token: IDeviantArtAccessToken) (offset: int) =
+        new DeviantArtPagingParams(Offset = offset, Limit = Nullable Int32.MaxValue)
+        |> f token
 
     let toAsyncSeq (initial_cursor: 'cursor) (req: 'req) (f: 'cursor -> 'req -> Async<'b> when 'b :> IResultPage<'cursor, 'item>) = asyncSeq {
         let mutable cursor = initial_cursor

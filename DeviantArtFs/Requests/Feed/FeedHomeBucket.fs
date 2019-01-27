@@ -8,7 +8,7 @@ module FeedHomeBucket =
 
     let AsyncExecute token (paging: IDeviantArtPagingParams) (bucketid: Guid) = async {
         let query = seq {
-            yield! QueryFor.paging paging
+            yield! QueryFor.paging paging 50
         }
         let req =
             query
@@ -19,12 +19,8 @@ module FeedHomeBucket =
         return DeviantArtPagedResult<Deviation>.Parse json
     }
 
-    let AsyncGetMax token offset bucketid =
-        let paging = Dafs.page offset 50
-        AsyncExecute token paging bucketid
-
     let ToAsyncSeq token offset bucketid =
-        AsyncGetMax token
+        Dafs.getMax AsyncExecute token
         |> Dafs.toAsyncSeq offset bucketid
 
     let ToArrayAsync token offset limit bucketid =
@@ -36,10 +32,5 @@ module FeedHomeBucket =
 
     let ExecuteAsync token paging bucketid =
         AsyncExecute token paging bucketid
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
-        |> Async.StartAsTask
-
-    let GetMaxAsync token paging bucketid =
-        AsyncGetMax token paging bucketid
         |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
         |> Async.StartAsTask

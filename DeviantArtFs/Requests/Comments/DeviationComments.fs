@@ -16,7 +16,7 @@ module DeviationComments =
             | Some s -> yield sprintf "commentid=%O" s
             | None -> ()
             yield sprintf "maxdepth=%d" req.Maxdepth
-            yield! QueryFor.paging paging
+            yield! QueryFor.paging paging 50
         }
         let req =
             query
@@ -27,12 +27,8 @@ module DeviationComments =
         return json |> DeviantArtCommentPagedResult.Parse
     }
 
-    let AsyncGetMax token offset req =
-        let paging = Dafs.page offset 50
-        AsyncExecute token paging req
-
     let ToAsyncSeq token offset req =
-        AsyncGetMax token
+        Dafs.getMax AsyncExecute token
         |> Dafs.toAsyncSeq offset req
 
     let ToArrayAsync token offset limit req =
@@ -44,10 +40,5 @@ module DeviationComments =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.map (fun o -> o :> IBclDeviantArtCommentPagedResult)
-        |> Async.StartAsTask
-
-    let GetMaxAsync token paging req =
-        AsyncGetMax token paging req
         |> AsyncThen.map (fun o -> o :> IBclDeviantArtCommentPagedResult)
         |> Async.StartAsTask
