@@ -27,7 +27,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             {
                 return RedirectToAction("Index");
             }
-            return Redirect($"https://www.deviantart.com/oauth2/authorize?response_type=code&client_id={_appReg.ClientId}&redirect_uri=https://{HttpContext.Request.Host}/Home/Callback&scope=browse");
+            return Redirect($"https://www.deviantart.com/oauth2/authorize?response_type=code&client_id={_appReg.ClientId}&redirect_uri=https://{HttpContext.Request.Host}/Home/Callback&scope=browse+feed+user");
         }
 
         public async Task<IActionResult> Callback(string code, string state = null)

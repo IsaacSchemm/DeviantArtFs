@@ -1,0 +1,41 @@
+﻿@model DeviantArtFs.IBclDeviantArtFeedCursorResult
+@{
+    ViewData["Title"] = "Feed";
+}
+
+<h2>Feed</h2>
+
+@foreach (var f in Model.Items)
+{
+<div style="border: 1px solid black; border-radius: 2px; margin-bottom: 8px">
+    @if (f.Type == "deviation")
+    {
+        <a href="@f.Deviations.First().Url">
+            <img src="@f.Deviations.First().Thumbs.First().Src" align="left" />
+        </a>
+
+        foreach (var d in f.Deviations)
+        {
+            <b><a href="@d.Url">@d.Title</a></b>
+            <br />
+            @d.Author.Username
+            <br />
+        }
+    }
+    else
+    {
+        <pre>
+@Newtonsoft.Json.JsonConvert.SerializeObject(f)
+        </pre>
+    }
+</div>
+<div style="clear: both"></div>
+}
+
+@if (Model.HasMore)
+{
+<hr />
+<p align="center">
+    <a href="/Feed?cursor=@Model.Cursor">Next</a>
+</p>
+}
