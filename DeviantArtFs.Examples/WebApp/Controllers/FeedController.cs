@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DeviantArtFs.Examples.WebApp.Data;
+using DeviantArtFs.Examples.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeviantArtFs.Examples.WebApp.Controllers
@@ -17,7 +18,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             if (token == null) return Forbid();
 
             var feed = await Requests.Feed.FeedHome.ExecuteAsync(token, cursor);
-            return View(feed);
+                return View(new FeedModel(feed));
         }
     }
 }
