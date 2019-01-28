@@ -57,8 +57,6 @@ Note that DeviantArt allows a null value for some fields, but not others.
 
 ## Currently unsupported features
 
-* The following groups of endpoints are not currently implemented:
-  * Notes
 * The following fields in the deviation object are not supported:
   * challenge
   * challenge_entry

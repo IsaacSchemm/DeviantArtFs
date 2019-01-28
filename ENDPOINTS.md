@@ -422,7 +422,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Title: `string`
 * Parentid: `Guid?`
 
-### DeviantArtFs.Requests.Notes.DeleteNote
+### DeviantArtFs.Requests.Notes.DeleteNotes
 * AsyncExecute (IDeviantArtAccessToken) (IEnumerable<Guid>) -> `Async<unit>`
 * ExecuteAsync (IDeviantArtAccessToken) (IEnumerable<Guid>) -> `Task`
 
@@ -435,6 +435,24 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (Guid?) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtNote>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (Guid option) -> `AsyncSeq<DeviantArtNote>`
 * ToArrayAsync (IDeviantArtAccessToken) (Guid?) (int) (int) -> `Task<IBclDeviantArtNote[]>`
+
+### DeviantArtFs.Requests.Notes.MarkNotes
+* AsyncExecute (IDeviantArtAccessToken) (MarkNotesRequest) -> `Async<unit>`
+* ExecuteAsync (IDeviantArtAccessToken) (MarkNotesRequest) -> `Task`
+
+**MarkNotesRequest:**
+
+* Noteids: `IEnumerable<Guid>`
+* MarkAs: `MarkAs` (Read, Unread, Starred, NotStarred, Spam)
+
+### DeviantArtFs.Requests.Notes.MoveNotes
+* AsyncExecute (IDeviantArtAccessToken) (MoveNotesRequest) -> `Async<unit>`
+* ExecuteAsync (IDeviantArtAccessToken) (MoveNotesRequest) -> `Task`
+
+**MoveNotesRequest:**
+
+* Noteids: `IEnumerable<Guid>`
+* Folderid: `Guid`
 
 ### DeviantArtFs.Requests.Notes.NotesFolders
 * AsyncExecute (IDeviantArtAccessToken) -> `Async<DeviantArtListOnlyResponse<DeviantArtNotesFolder>>`
@@ -452,6 +470,17 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 
 * Folderid: `Guid`
 * Title: `string`
+
+### DeviantArtFs.Requests.Notes.SendNote
+* AsyncExecute (IDeviantArtAccessToken) (SendNoteRequest) -> `Async<DeviantArtListOnlyResponse<DeviantArtSendNoteResult>>`
+* ExecuteAsync (IDeviantArtAccessToken) (SendNoteRequest) -> `Task<IEnumerable<IBclDeviantArtSendNoteResult>>`
+
+**SendNoteRequest:**
+
+* To: `IEnumerable<string>`
+* Subject: `string`
+* Body: `string`
+* Noteid: `Guid?`
 
 ### DeviantArtFs.Requests.Stash.Contents
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (long) -> `Async<DeviantArtPagedResult<StashMetadata>>`

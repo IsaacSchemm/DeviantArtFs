@@ -3,7 +3,7 @@
 open System
 open DeviantArtFs
 
-module DeleteNote =
+module DeleteNotes =
     open System.IO
 
     let AsyncExecute token (noteids: seq<Guid>) = async {
