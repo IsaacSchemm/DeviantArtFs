@@ -6,7 +6,7 @@ open FSharp.Control
 module MentionsStack =
     let AsyncExecute token (paging: IDeviantArtPagingParams) (stackid: string) = async {
         let query = seq {
-            yield! QueryFor.paging paging 10
+            yield! QueryFor.paging paging 50
         }
 
         let req =

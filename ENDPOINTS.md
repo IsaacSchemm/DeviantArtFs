@@ -413,6 +413,12 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Folderid: `Guid?`
 * Stack: `bool`
 
+### DeviantArtFs.Requests.Notes.GetNotes
+* AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (Guid option) -> `Async<DeviantArtPagedResult<DeviantArtNote>>`
+* ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (Guid option) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtNote>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (int) (Guid option) -> `AsyncSeq<DeviantArtNote>`
+* ToArrayAsync (IDeviantArtAccessToken) (Guid option) (int) (int) -> `Task<IBclDeviantArtNote[]>`
+
 ### DeviantArtFs.Requests.Stash.Contents
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (long) -> `Async<DeviantArtPagedResult<StashMetadata>>`
 * ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (long) -> `Task<IBclDeviantArtPagedResult<IBclStashMetadata>>`

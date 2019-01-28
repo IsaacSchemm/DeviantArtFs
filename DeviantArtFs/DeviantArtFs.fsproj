@@ -61,6 +61,7 @@
     <Compile Include="Types\ResponseTypes\DeviantArtFeedItem.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtFeedSettings.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtMessage.fs" />
+    <Compile Include="Types\ResponseTypes\DeviantArtNote.fs" />
     <Compile Include="Types\PagedResponses\DeviantArtPagedResult.fs" />
     <Compile Include="Types\PagedResponses\DeviantArtCommentPagedResult.fs" />
     <Compile Include="Types\PagedResponses\DeviantArtFeedCursorResult.fs" />
@@ -115,12 +116,13 @@
     <Compile Include="Requests\Gallery\GalleryFolders.fs" />
     <Compile Include="Requests\Gallery\CreateGalleryFolder.fs" />
     <Compile Include="Requests\Gallery\RemoveGalleryFolder.fs" />
-    <Compile Include="Requests\Messages\DeleteMessage.fs" />
     <Compile Include="Requests\Messages\MessagesFeed.fs" />
+    <Compile Include="Requests\Messages\DeleteMessage.fs" />
     <Compile Include="Requests\Messages\FeedbackMessages.fs" />
     <Compile Include="Requests\Messages\FeedbackStack.fs" />
     <Compile Include="Requests\Messages\MentionsMessages.fs" />
     <Compile Include="Requests\Messages\MentionsStack.fs" />
+    <Compile Include="Requests\Notes\GetNotes.fs" />
     <Compile Include="Requests\Stash\Stack.fs" />
     <Compile Include="Requests\Stash\Contents.fs" />
     <Compile Include="Requests\Stash\Delete.fs" />
