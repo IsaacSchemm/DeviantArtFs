@@ -127,6 +127,9 @@
     <Compile Include="Requests\Notes\GetNote.fs" />
     <Compile Include="Requests\Notes\DeleteNote.fs" />
     <Compile Include="Requests\Notes\NotesFolders.fs" />
+    <Compile Include="Requests\Notes\CreateNotesFolder.fs" />
+    <Compile Include="Requests\Notes\RemoveNotesFolder.fs" />
+    <Compile Include="Requests\Notes\RenameNotesFolder.fs" />
     <Compile Include="Requests\Stash\Stack.fs" />
     <Compile Include="Requests\Stash\Contents.fs" />
     <Compile Include="Requests\Stash\Delete.fs" />

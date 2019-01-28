@@ -413,6 +413,15 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Folderid: `Guid?`
 * Stack: `bool`
 
+### DeviantArtFs.Requests.Notes.CreateNotesFolder
+* AsyncExecute (IDeviantArtAccessToken) (CreateNotesFolderRequest) -> `Async<DeviantArtNewNotesFolder>`
+* ExecuteAsync (IDeviantArtAccessToken) (CreateNotesFolderRequest) -> `Task<IBclDeviantArtNewNotesFolder>`
+
+**CreateNotesFolderRequest:**
+
+* Title: `string`
+* Parentid: `Guid?`
+
 ### DeviantArtFs.Requests.Notes.DeleteNote
 * AsyncExecute (IDeviantArtAccessToken) (IEnumerable<Guid>) -> `Async<unit>`
 * ExecuteAsync (IDeviantArtAccessToken) (IEnumerable<Guid>) -> `Task`
@@ -430,6 +439,19 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 ### DeviantArtFs.Requests.Notes.NotesFolders
 * AsyncExecute (IDeviantArtAccessToken) -> `Async<DeviantArtListOnlyResponse<DeviantArtNotesFolder>>`
 * ExecuteAsync (IDeviantArtAccessToken) -> `Task<IEnumerable<IBclDeviantArtNotesFolder>>`
+
+### DeviantArtFs.Requests.Notes.RemoveNotesFolder
+* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<unit>`
+* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task`
+
+### DeviantArtFs.Requests.Notes.RenameNotesFolder
+* AsyncExecute (IDeviantArtAccessToken) (RenameNotesFolderRequest) -> `Async<unit>`
+* ExecuteAsync (IDeviantArtAccessToken) (RenameNotesFolderRequest) -> `Task`
+
+**RenameNotesFolderRequest:**
+
+* Folderid: `Guid`
+* Title: `string`
 
 ### DeviantArtFs.Requests.Stash.Contents
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (long) -> `Async<DeviantArtPagedResult<StashMetadata>>`
