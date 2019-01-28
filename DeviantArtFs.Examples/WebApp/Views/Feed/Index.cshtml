@@ -5,7 +5,24 @@
 
 <h2>Feed</h2>
 
-<!-- ko foreach: items -->
+<label>
+    <input type="checkbox" data-bind="checked: showDeviations" />
+    Deviations
+</label>
+<label>
+    <input type="checkbox" data-bind="checked: showJournals" />
+    Journals
+</label>
+<label>
+    <input type="checkbox" data-bind="checked: showStatuses" />
+    Statuses
+</label>
+<label>
+    <input type="checkbox" data-bind="checked: showCollectionUpdates" />
+    Collection updates
+</label>
+
+<!-- ko foreach: toShow -->
 <div style="border: 1px solid black; border-radius: 2px; margin-bottom: 8px" class="item">
     <div style="float: right; margin: 4px;">
         <small data-bind="text: timeAgo">
@@ -28,7 +45,6 @@
         <a href="#" data-bind="attr: { href: url }, text: title">Title</a>
     </b>
     <!-- /ko -->
-
     <!-- ko if: htmlDescription -->
     <br />
     <br />
@@ -55,6 +71,14 @@
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
 <script type="text/javascript">
+    function shouldShow(f) {
+        if (f.type == "deviation_submitted" && !model.showDeviations()) return false;
+        if (f.type == "journal_submitted" && !model.showJournals()) return false;
+        if (f.type == "status" && !model.showStatuses()) return false;
+        if (f.type == "collection_update" && !model.showCollectionUpdates()) return false;
+        return true;
+    }
+
     var model = {
         cursor: ko.observable(null),
         items: ko.observableArray(),
@@ -73,8 +97,15 @@
                 model.items.push(item);
             }
             model.gettingMore(false);
-            checkScroll();
-        }
+            if (page.items.some(shouldShow)) {
+                checkScroll();
+            }
+        },
+        toShow: ko.pureComputed(() => model.items().filter(shouldShow)),
+        showDeviations: ko.observable(true),
+        showJournals: ko.observable(true),
+        showStatuses: ko.observable(true),
+        showCollectionUpdates: ko.observable(false),
     };
     ko.applyBindings(model, document.body);
 
