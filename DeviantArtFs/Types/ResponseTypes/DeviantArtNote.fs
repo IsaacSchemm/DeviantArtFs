@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs
 
 open System
+open FSharp.Json
 
 type IBclDeviantArtNote =
     abstract member Noteid: Guid
@@ -10,6 +11,7 @@ type IBclDeviantArtNote =
     abstract member Sent: bool
     abstract member Subject: string
     abstract member Preview: string
+    abstract member RawBody: string
     abstract member Body: string
     abstract member User: IBclDeviantArtUser
     abstract member Recipients: seq<IBclDeviantArtUser>
@@ -22,14 +24,17 @@ type DeviantArtNote = {
     sent: bool
     subject: string
     preview: string
+    raw_body: string option
     body: string
     user: DeviantArtUser
     recipients: DeviantArtUser[]
 } with
+    static member Parse json = Json.deserialize<DeviantArtNote> json
     interface IBclDeviantArtNote with
         member this.Body = this.body
         member this.Noteid = this.noteid
         member this.Preview = this.preview
+        member this.RawBody = this.raw_body |> Option.toObj
         member this.Recipients = this.recipients |> Seq.map (fun o -> o :> IBclDeviantArtUser)
         member this.Sent = this.sent
         member this.Starred = this.starred

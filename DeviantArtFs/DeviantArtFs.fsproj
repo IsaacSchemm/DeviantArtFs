@@ -123,6 +123,7 @@
     <Compile Include="Requests\Messages\MentionsMessages.fs" />
     <Compile Include="Requests\Messages\MentionsStack.fs" />
     <Compile Include="Requests\Notes\GetNotes.fs" />
+    <Compile Include="Requests\Notes\GetNote.fs" />
     <Compile Include="Requests\Stash\Stack.fs" />
     <Compile Include="Requests\Stash\Contents.fs" />
     <Compile Include="Requests\Stash\Delete.fs" />
