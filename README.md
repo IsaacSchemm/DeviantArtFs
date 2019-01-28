@@ -103,6 +103,7 @@ endpoints might consist of many, many pages...)
 
 * POST /messages/delete
 * GET /messages/feed
+* GET /messages/feedback
 
 ### Stash
 

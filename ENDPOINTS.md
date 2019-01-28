@@ -495,6 +495,23 @@ The value of "IDeviantArtExtParams" determines what extra data (if any) is inclu
 * Messageid: `string`
 * Stackid: `string`
 
+### DeviantArtFs.Requests.Messages.FeedbackMessages
+* AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (FeedbackMessagesRequest) -> `Async<DeviantArtPagedResult<DeviantArtMessage>>`
+* ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (FeedbackMessagesRequest) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtMessage>>`
+* ToAsyncSeq (IDeviantArtAccessToken) (int) (FeedbackMessagesRequest) -> `AsyncSeq<DeviantArtMessage>`
+* ToArrayAsync (IDeviantArtAccessToken) (FeedbackMessagesRequest) (int) (int) -> `Task<IBclDeviantArtMessage[]>`
+
+**IDeviantArtPagingParams:**
+
+* Offset: `int`
+* Limit: `int?`
+
+**FeedbackMessagesRequest:**
+
+* Type: `FeedbackMessageType` (Comments, Replies, Activity)
+* Folderid: `Guid?`
+* Stack: `bool`
+
 ### DeviantArtFs.Requests.Messages.MessagesFeed
 * AsyncExecute (IDeviantArtAccessToken) (string option) (MessagesFeedRequest) -> `Async<DeviantArtMessageCursorResult>`
 * ExecuteAsync (IDeviantArtAccessToken) (string) (MessagesFeedRequest) -> `Task<IBclDeviantArtMessageCursorResult>`
