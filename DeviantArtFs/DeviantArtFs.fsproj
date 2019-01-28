@@ -118,6 +118,9 @@
     <Compile Include="Requests\Messages\DeleteMessage.fs" />
     <Compile Include="Requests\Messages\MessagesFeed.fs" />
     <Compile Include="Requests\Messages\FeedbackMessages.fs" />
+    <Compile Include="Requests\Messages\FeedbackStack.fs" />
+    <Compile Include="Requests\Messages\MentionsMessages.fs" />
+    <Compile Include="Requests\Messages\MentionsStack.fs" />
     <Compile Include="Requests\Stash\Stack.fs" />
     <Compile Include="Requests\Stash\Contents.fs" />
     <Compile Include="Requests\Stash\Delete.fs" />

@@ -16,14 +16,48 @@ async and use F# features such as records and option types, while the other
 will return a Task<T> and use interfaces and null values for interoperability
 with C# and VB.NET.
 
-Some modules also have ToAsyncSeq and ToArrayAsync methods, which can be used
-to fetch an arbitary amount of data as needed. (Keep in mind that some of the
-endpoints might consist of many, many pages...)
+## Pagination
+
+Some of the DeviantArt endpoints support [pagination](https://www.deviantart.com/developers/pagination).
+For endpoints that use offset-based pagination, the AsyncExecute and
+ExecuteAsync methods take a parameter of the type `IDeviantArtPagingParams`:
+
+    public interface IDeviantArtPagingParams
+    {
+        int Offset { get; }
+        int? Limit { get; }
+    }
+
+(The type `DeviantArtPagingParams` implements this interface.)
+
+To request the maximum page size for a particular request, use int.MaxValue as
+the Limit property. (The limits for each request are hardcoded into
+DeviantArtFs, so it will never request more data than DeviantArt allows.	)
+
+Methods that use cursor-based pagination will take a `string` or
+`string option` parameter instead.
+
+Modules for endpoints that support pagination also have ToAsyncSeq and
+ToArrayAsync methods, which can be used to fetch an arbitary amount of data as
+needed. (Keep in mind that some of the endpoints, like /browse/newest, might
+return a theoretically unlimited amount of data!)
+
+## Partial updates
+
+`Stash.Update` and `User.ProfileUpdate` allow you to choose which fields to
+update on the object. DeviantArtFs uses a discriminated union
+(`DeviantArtFieldChange<T>`) to represent these updates:
+
+    new DeviantArtFs.Requests.Stash.UpdateRequest(4567890123456789L) {
+        Title = DeviantArtFieldChange<string>.NewUpdateToValue("new title"),
+        Description = DeviantArtFieldChange<string>.NoChange
+    }
+
+Note that DeviantArt allows a null value for some fields, but not others.
 
 ## Currently unsupported features
 
 * The following groups of endpoints are not currently implemented:
-  * Messages
   * Notes
 * The following fields in the deviation object are not supported:
   * challenge
@@ -104,6 +138,9 @@ endpoints might consist of many, many pages...)
 * POST /messages/delete
 * GET /messages/feed
 * GET /messages/feedback
+* GET /messages/feedback/{stackid}
+* GET /messages/mentions
+* GET /messages/mentions/{stackid}
 
 ### Stash
 
