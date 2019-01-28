@@ -413,11 +413,23 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Folderid: `Guid?`
 * Stack: `bool`
 
+### DeviantArtFs.Requests.Notes.DeleteNote
+* AsyncExecute (IDeviantArtAccessToken) (IEnumerable<Guid>) -> `Async<unit>`
+* ExecuteAsync (IDeviantArtAccessToken) (IEnumerable<Guid>) -> `Task`
+
+### DeviantArtFs.Requests.Notes.GetNote
+* AsyncExecute (IDeviantArtAccessToken) (Guid) -> `Async<DeviantArtNote>`
+* ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task<IBclDeviantArtNote>`
+
 ### DeviantArtFs.Requests.Notes.GetNotes
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (Guid option) -> `Async<DeviantArtPagedResult<DeviantArtNote>>`
-* ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (Guid option) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtNote>>`
+* ExecuteAsync (IDeviantArtAccessToken) (IDeviantArtPagingParams) (Guid?) -> `Task<IBclDeviantArtPagedResult<IBclDeviantArtNote>>`
 * ToAsyncSeq (IDeviantArtAccessToken) (int) (Guid option) -> `AsyncSeq<DeviantArtNote>`
-* ToArrayAsync (IDeviantArtAccessToken) (Guid option) (int) (int) -> `Task<IBclDeviantArtNote[]>`
+* ToArrayAsync (IDeviantArtAccessToken) (Guid?) (int) (int) -> `Task<IBclDeviantArtNote[]>`
+
+### DeviantArtFs.Requests.Notes.NotesFolders
+* AsyncExecute (IDeviantArtAccessToken) -> `Async<DeviantArtListOnlyResponse<DeviantArtNotesFolder>>`
+* ExecuteAsync (IDeviantArtAccessToken) -> `Task<IEnumerable<IBclDeviantArtNotesFolder>>`
 
 ### DeviantArtFs.Requests.Stash.Contents
 * AsyncExecute (IDeviantArtAccessToken) (IDeviantArtPagingParams) (long) -> `Async<DeviantArtPagedResult<StashMetadata>>`
