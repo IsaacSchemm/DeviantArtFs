@@ -16,7 +16,7 @@ type DeviantArtGalleryFolder = {
     parent: Guid option
     name: string
     size: int option
-    deviations: Deviation[] option
+    deviations: Deviation list option
 } with
     static member Parse json = Json.deserialize<DeviantArtGalleryFolder> json
     interface IBclDeviantArtGalleryFolder with
@@ -24,4 +24,4 @@ type DeviantArtGalleryFolder = {
         member this.Parent = this.parent |> Option.toNullable
         member this.Name = this.name
         member this.Size = this.size |> Option.toNullable
-        member this.Deviations = this.deviations |> Option.map Seq.ofArray |> Option.defaultValue Seq.empty |> Seq.map (fun d -> d :> IBclDeviation)
+        member this.Deviations = this.deviations |> Option.map Seq.ofList |> Option.defaultValue Seq.empty |> Seq.map (fun d -> d :> IBclDeviation)

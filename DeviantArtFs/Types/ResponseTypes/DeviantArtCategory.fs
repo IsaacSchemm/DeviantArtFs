@@ -21,7 +21,7 @@ type DeviantArtCategory = {
         member this.ParentCatpath = this.parent_catpath
 
 type DeviantArtCategoryList = {
-    categories: DeviantArtCategory[]
+    categories: DeviantArtCategory list
 } with
     static member ParseSeq json =
         let o = Json.deserialize<DeviantArtCategoryList> json

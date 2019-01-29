@@ -10,10 +10,10 @@ type IBclDeviationTextContent =
 type DeviationTextContent = {
     html: string option
     css: string option
-    css_fonts: string[] option
+    css_fonts: string list option
 } with
     static member Parse json = Json.deserialize<DeviationTextContent> json
     interface IBclDeviationTextContent with
         member this.Html = this.html |> Option.toObj
         member this.Css = this.css |> Option.toObj
-        member this.CssFonts = this.css_fonts |> Option.map Seq.ofArray |> Option.defaultValue Seq.empty
+        member this.CssFonts = this.css_fonts |> Option.map Seq.ofList |> Option.defaultValue Seq.empty

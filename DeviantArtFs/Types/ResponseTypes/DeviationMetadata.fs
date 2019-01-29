@@ -29,13 +29,13 @@ type DeviationMetadata = {
     description: string
     license: string
     allows_comments: bool
-    tags: DeviationTag[]
+    tags: DeviationTag list
     is_favourited: bool
     is_mature: bool
     submission: DeviationMetadataSubmission option
     stats: DeviationMetadataStats option
     camera: Map<string, string> option
-    collections: DeviantArtCollectionFolder[] option
+    collections: DeviantArtCollectionFolder list option
 } with
     interface IBclDeviationMetadata with
         member this.AllowsComments = this.allows_comments
@@ -55,7 +55,7 @@ type DeviationMetadata = {
         member this.Title = this.title
 
 type DeviationMetadataResponse = {
-    metadata: DeviationMetadata[]
+    metadata: DeviationMetadata list
 } with
     static member ParseSeq json =
         let o = Json.deserialize<DeviationMetadataResponse> json

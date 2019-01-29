@@ -110,8 +110,8 @@ type Deviation = {
     allows_comments: bool option
     preview: DeviationPreview option
     content: DeviationContent option
-    thumbs: DeviationPreview[]
-    videos: DeviationVideo[] option
+    thumbs: DeviationPreview list
+    videos: DeviationVideo list option
     flash: DeviationFlash option
     daily_deviation: DailyDeviation option
     excerpt: string option
@@ -140,4 +140,4 @@ type Deviation = {
         member this.Thumbs = this.thumbs |> Seq.map (fun u -> u :> IBclDeviationPreview)
         member this.Title = this.title |> Option.toObj
         member this.Url = this.url |> Option.toObj
-        member this.Videos = this.videos |> Option.map Seq.ofArray |> Option.defaultValue Seq.empty |> Seq.map (fun o -> o :> IBclDeviationVideo)
+        member this.Videos = this.videos |> Option.map Seq.ofList |> Option.defaultValue Seq.empty |> Seq.map (fun o -> o :> IBclDeviationVideo)

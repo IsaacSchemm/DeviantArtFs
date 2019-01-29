@@ -7,10 +7,10 @@ type IBclStashPublishUserdataResult =
     abstract member Agreements: seq<string>
 
 type StashPublishUserdataResult = {
-    features: string[]
-    agreements: string[]
+    features: string list
+    agreements: string list
 } with
     static member Parse json = Json.deserialize<StashPublishUserdataResult> json
     interface IBclStashPublishUserdataResult with
-        member this.Features = this.features |> Seq.ofArray
-        member this.Agreements = this.agreements |> Seq.ofArray
+        member this.Features = this.features |> Seq.ofList
+        member this.Agreements = this.agreements |> Seq.ofList

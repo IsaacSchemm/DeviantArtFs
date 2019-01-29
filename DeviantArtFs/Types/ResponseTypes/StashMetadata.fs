@@ -37,13 +37,13 @@ type StashMetadata = {
     category: string option
     [<JsonField(Transform=typeof<Transforms.DateTimeOffsetEpoch>)>]
     creation_time: DateTimeOffset option
-    files: DeviationPreview[] option
+    files: DeviationPreview list option
     submission: StashSubmission option
     stats: StashStats option
     camera: Map<string, string> option
     stackid: int64 option
     itemid: int64 option
-    tags: string[] option
+    tags: string list option
     html: string option
 } with
     static member Parse json = Json.deserialize<StashMetadata> json
@@ -55,7 +55,7 @@ type StashMetadata = {
         member this.Category = this.category |> Option.toObj
         member this.CreationTime = this.creation_time |> Option.toNullable
         member this.Description = this.description |> Option.toObj
-        member this.Files = this.files |> Option.map Seq.ofArray |> Option.defaultValue Seq.empty |> Seq.map (fun o -> o :> IBclDeviationPreview)
+        member this.Files = this.files |> Option.map Seq.ofList |> Option.defaultValue Seq.empty |> Seq.map (fun o -> o :> IBclDeviationPreview)
         member this.Html = this.html |> Option.toObj
         member this.Itemid = this.itemid |> Option.toNullable
         member this.OriginalUrl = this.original_url |> Option.toObj
@@ -65,6 +65,6 @@ type StashMetadata = {
         member this.Stackid = this.stackid |> Option.toNullable
         member this.Stats = this.stats |> Option.map (fun o -> o :> IBclStashStats) |> Option.toObj
         member this.Submission = this.submission |> Option.map (fun o -> o :> IBclStashSubmission) |> Option.toObj
-        member this.Tags = this.tags |> Option.map Seq.ofArray |> Option.defaultValue Seq.empty
+        member this.Tags = this.tags |> Option.map Seq.ofList |> Option.defaultValue Seq.empty
         member this.Thumb = this.thumb |> Option.map (fun o -> o :> IBclDeviationPreview) |> Option.toObj
         member this.Title = this.title

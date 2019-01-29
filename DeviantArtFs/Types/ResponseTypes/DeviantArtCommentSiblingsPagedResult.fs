@@ -35,11 +35,11 @@ type DeviantArtCommentSiblingsPagedResult = {
     next_offset: int option
     has_less: bool
     prev_offset: int option
-    thread: DeviantArtComment[]
+    thread: DeviantArtComment list
     context: DeviantArtCommentSiblingsContext
 } with
     static member Parse (json: string) =
-        json.Replace(""""context":[]""", """"context":{}""")
+        json.Replace(""""context": list""", """"context":{}""")
         |> Json.deserialize<DeviantArtCommentSiblingsPagedResult>
     interface IBclDeviantArtCommentSiblingsPagedResult with
         member this.HasMore = this.has_more

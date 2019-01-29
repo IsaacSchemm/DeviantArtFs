@@ -27,7 +27,7 @@ type DeviantArtNote = {
     raw_body: string option
     body: string
     user: DeviantArtUser
-    recipients: DeviantArtUser[]
+    recipients: DeviantArtUser list
 } with
     static member Parse json = Json.deserialize<DeviantArtNote> json
     interface IBclDeviantArtNote with

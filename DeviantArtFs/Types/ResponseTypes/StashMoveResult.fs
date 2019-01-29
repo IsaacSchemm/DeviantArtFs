@@ -8,7 +8,7 @@ type IBclStashMoveResult =
 
 type StashMoveResult = {
     target: StashMetadata
-    changes: StashMetadata[]
+    changes: StashMetadata list
 } with
     static member Parse json = Json.deserialize<StashMoveResult> json
     interface IBclStashMoveResult with

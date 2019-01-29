@@ -35,8 +35,8 @@ type DeviantArtProfile = {
     profile_pic: Deviation option
     last_status: DeviantArtStatus option
     stats: DeviantArtProfileStats
-    collections: DeviantArtCollectionFolder[] option
-    galleries: DeviantArtGalleryFolder[] option
+    collections: DeviantArtCollectionFolder list option
+    galleries: DeviantArtGalleryFolder list option
 } with
     static member Parse json = Json.deserialize<DeviantArtProfile> json
     interface IBclDeviantArtProfile with
@@ -45,7 +45,7 @@ type DeviantArtProfile = {
         member this.Bio = this.bio
         member this.Collections =
             this.collections
-            |> Option.map Seq.ofArray
+            |> Option.map Seq.ofList
             |> Option.defaultValue Seq.empty
             |> Seq.map (fun d -> d :> IBclDeviantArtCollectionFolder)
         member this.Country = this.country
@@ -53,7 +53,7 @@ type DeviantArtProfile = {
         member this.CoverPhoto = this.cover_photo |> Option.toObj
         member this.Galleries =
             this.galleries
-            |> Option.map Seq.ofArray
+            |> Option.map Seq.ofList
             |> Option.defaultValue Seq.empty
             |> Seq.map (fun d -> d :> IBclDeviantArtGalleryFolder)
         member this.IsWatching = this.is_watching

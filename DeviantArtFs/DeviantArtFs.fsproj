@@ -2,15 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.8.0</Version>
+    <Version>0.9.0</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>libertyernie</Authors>
     <Company></Company>
     <PackageLicenseUrl>https://raw.githubusercontent.com/libertyernie/DeviantArtFs/master/LICENSE.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/libertyernie/DeviantArtFs</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
-    <Description>An F# library (.NET Standard 2.0) to interact with the DeviantArt / Sta.sh API</Description>
-    <PackageReleaseNotes>0.8.0: Several changes in parameter and type names; added support for remaining endpints</PackageReleaseNotes>
+    <Description>An F#/.NET library to interact with the DeviantArt / Sta.sh API (.NET Standard 2.0)</Description>
+    <PackageReleaseNotes>0.9.0: Some changes to return types; F# lists used instead of arrays in AsyncExecute results</PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
   </PropertyGroup>
 

@@ -42,7 +42,7 @@ type IBclDeviantArtFeedItemPoll =
 type DeviantArtFeedItemPoll = {
     question: string
     total_votes: int
-    answers: DeviantArtFeedItemPollAnswer[]
+    answers: DeviantArtFeedItemPollAnswer list
 } with
     interface IBclDeviantArtFeedItemPoll with
         member this.Answers = this.answers |> Seq.map (fun o -> o :> IBclDeviantArtFeedItemPollAnswer)
@@ -72,7 +72,7 @@ type DeviantArtFeedItem = {
     ts: DateTimeOffset
     ``type``: string
     by_user: DeviantArtUser
-    deviations: Deviation[] option
+    deviations: Deviation list option
     bucketid: Guid option
     bucket_total: int option
     status: DeviantArtStatus option
@@ -99,7 +99,7 @@ type DeviantArtFeedItem = {
         member this.CommentProfile = this.comment_profile |> Option.map (fun o -> o :> IBclDeviantArtProfile) |> Option.toObj
         member this.CommentStatus = this.comment_status |> Option.map (fun o -> o :> IBclDeviantArtStatus) |> Option.toObj
         member this.CritiqueText = this.critique_text |> Option.toObj
-        member this.Deviations = this.deviations |> Option.map Seq.ofArray |> Option.defaultValue Seq.empty |> Seq.map (fun o -> o :> IBclDeviation)
+        member this.Deviations = this.deviations |> Option.map Seq.ofList |> Option.defaultValue Seq.empty |> Seq.map (fun o -> o :> IBclDeviation)
         member this.Formerly = this.formerly |> Option.toObj
         member this.Poll = this.poll |> Option.map (fun o -> o :> IBclDeviantArtFeedItemPoll) |> Option.toObj
         member this.Status = this.status |> Option.map (fun o -> o :> IBclDeviantArtStatus) |> Option.toObj

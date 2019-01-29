@@ -35,7 +35,7 @@ and DeviantArtStatus = {
     is_share: bool
     is_deleted: bool
     author: DeviantArtUser
-    items: DeviantArtStatusItem[]
+    items: DeviantArtStatusItem list
 } with
     static member internal Parse json = Json.deserialize<DeviantArtStatus> json
 
