@@ -8,7 +8,7 @@ module NotesFolders =
         let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/notes/folders"
 
         let! json = Dafs.asyncRead req
-        return DeviantArtListOnlyResponse<DeviantArtNotesFolder>.Parse json
+        return DeviantArtListOnlyResponse<DeviantArtNotesFolder>.ParseSeq json
     }
 
     let ExecuteAsync token =

@@ -37,7 +37,7 @@ module SendNote =
         }
 
         let! json = Dafs.asyncRead req
-        return DeviantArtListOnlyResponse<DeviantArtSendNoteResult>.Parse json
+        return DeviantArtListOnlyResponse<DeviantArtSendNoteResult>.ParseSeq json
     }
 
     let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapSeq (fun o -> o :> IBclDeviantArtSendNoteResult) |> Async.StartAsTask
