@@ -2,7 +2,7 @@
 
 open FSharp.Json
 
-type internal DeviantArtListOnlyResponse<'a> = {
+type DeviantArtListOnlyResponse<'a> = {
     results: 'a[]
 } with
     static member ParseSeq json =

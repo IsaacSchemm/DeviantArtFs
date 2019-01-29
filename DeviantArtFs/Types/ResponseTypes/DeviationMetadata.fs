@@ -54,7 +54,7 @@ type DeviationMetadata = {
         member this.Tags = this.tags |> Seq.map (fun t -> t :> IBclDeviationTag)
         member this.Title = this.title
 
-type internal DeviationMetadataResponse = {
+type DeviationMetadataResponse = {
     metadata: DeviationMetadata[]
 } with
     static member ParseSeq json =
