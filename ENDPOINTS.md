@@ -259,7 +259,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * OffsetDeviationid: `Guid?`
 
 ### DeviantArtFs.Requests.Deviation.MetadataById
-* AsyncExecute (IDeviantArtAccessToken) (MetadataRequest) -> `Async<DeviationMetadataResponse>`
+* AsyncExecute (IDeviantArtAccessToken) (MetadataRequest) -> `Async<IEnumerable<DeviationMetadata>>`
 * ExecuteAsync (IDeviantArtAccessToken) (MetadataRequest) -> `Task<IEnumerable<IBclDeviationMetadata>>`
 
 **MetadataRequest:**

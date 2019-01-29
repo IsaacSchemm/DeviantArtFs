@@ -26,6 +26,3 @@ type DeviantArtCategoryList = {
     static member ParseSeq json =
         let o = Json.deserialize<DeviantArtCategoryList> json
         o.categories :> seq<DeviantArtCategory>
-    interface seq<DeviantArtCategory> with
-        member this.GetEnumerator() = (this.categories :> seq<DeviantArtCategory>).GetEnumerator()
-        member this.GetEnumerator() = this.categories.GetEnumerator()

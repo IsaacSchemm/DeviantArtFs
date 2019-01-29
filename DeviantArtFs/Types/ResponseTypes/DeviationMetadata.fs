@@ -54,10 +54,9 @@ type DeviationMetadata = {
         member this.Tags = this.tags |> Seq.map (fun t -> t :> IBclDeviationTag)
         member this.Title = this.title
 
-type DeviationMetadataResponse = {
+type internal DeviationMetadataResponse = {
     metadata: DeviationMetadata[]
 } with
-    static member Parse json = Json.deserialize<DeviationMetadataResponse> json
-    interface System.Collections.Generic.IEnumerable<DeviationMetadata> with
-        member this.GetEnumerator() = this.metadata.GetEnumerator()
-        member this.GetEnumerator() = (this.metadata :> seq<DeviationMetadata>).GetEnumerator()
+    static member ParseSeq json =
+        let o = Json.deserialize<DeviationMetadataResponse> json
+        o.metadata :> seq<DeviationMetadata>
