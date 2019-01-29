@@ -463,8 +463,8 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * ExecuteAsync (IDeviantArtAccessToken) (Guid) -> `Task`
 
 ### DeviantArtFs.Requests.Notes.RenameNotesFolder
-* AsyncExecute (IDeviantArtAccessToken) (RenameNotesFolderRequest) -> `Async<unit>`
-* ExecuteAsync (IDeviantArtAccessToken) (RenameNotesFolderRequest) -> `Task`
+* AsyncExecute (IDeviantArtAccessToken) (RenameNotesFolderRequest) -> `Async<DeviantArtRenamedNotesFolder>`
+* ExecuteAsync (IDeviantArtAccessToken) (RenameNotesFolderRequest) -> `Task<IBclDeviantArtRenamedNotesFolder>`
 
 **RenameNotesFolderRequest:**
 

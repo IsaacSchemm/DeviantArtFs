@@ -30,7 +30,7 @@ module RenameNotesFolder =
         }
 
         let! json = Dafs.asyncRead req
-        ignore json
+        return DeviantArtRenamedNotesFolder.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask :> System.Threading.Tasks.Task
+    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.map (fun o -> o :> IBclDeviantArtRenamedNotesFolder) |> Async.StartAsTask

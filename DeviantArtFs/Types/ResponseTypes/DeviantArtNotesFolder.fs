@@ -3,15 +3,15 @@
 open System
 open FSharp.Json
 
-//type IBclDeviantArtRenamedNotesFolder =
-//    abstract member Title: string
+type IBclDeviantArtRenamedNotesFolder =
+    abstract member Title: string
 
-//type DeviantArtRenamedNotesFolder = {
-//    title: string
-//} with
-//    static member Parse json = Json.deserialize<DeviantArtRenamedNotesFolder> json
-//    interface IBclDeviantArtRenamedNotesFolder with
-//        member this.Title = this.title
+type DeviantArtRenamedNotesFolder = {
+    title: string
+} with
+    static member Parse json = Json.deserialize<DeviantArtRenamedNotesFolder> json
+    interface IBclDeviantArtRenamedNotesFolder with
+        member this.Title = this.title
 
 type IBclDeviantArtNewNotesFolder =
     abstract member Folder: Guid
