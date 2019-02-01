@@ -63,7 +63,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
                             sw.Write($"* {x.Name}");
                             foreach (var p in x.GetParameters())
                             {
-                                sw.Write($" ({PrintTypeName(p.ParameterType)})");
+                                sw.Write($" `{PrintTypeName(p.ParameterType)}`");
                                 if (p.ParameterType.FullName.StartsWith("DeviantArtFs.") && !new[] { "IDeviantArtAccessToken", "IDeviantArtExtParams", "IDeviantArtPagingParams" }.Contains(p.ParameterType.Name))
                                 {
                                     typesToDescribe.Add(p.ParameterType);

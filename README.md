@@ -32,7 +32,7 @@ ExecuteAsync methods take a parameter of the type `IDeviantArtPagingParams`:
 
 To request the maximum page size for a particular request, use int.MaxValue as
 the Limit property. (The limits for each request are hardcoded into
-DeviantArtFs, so it will never request more data than DeviantArt allows.	)
+DeviantArtFs, so it will never request more data than DeviantArt allows.)
 
 Methods that use cursor-based pagination will take a `string` or
 `string option` parameter instead.
@@ -70,7 +70,7 @@ Example (C#):
     int offset = 0;
     while (true) {
         var req = new DeviantArtFs.Requests.Gallery.GalleryAllViewRequest();
-        var paging = new PagingParams {
+        var paging = new DeviantArtPagingParams {
             Offset = offset,
             Limit = 24
         };
@@ -89,7 +89,7 @@ Example (F#):
     let mutable more = true
     while more do
         let req = new DeviantArtFs.Requests.Gallery.GalleryAllViewRequest()
-        let paging = new PagingParams(Offset = 0, Limit = Nullable 24)
+        let paging = new DeviantArtPagingParams(Offset = 0, Limit = Nullable 24)
         let! (resp: DeviantArtPagedResult<Deviation>) = DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token paging req
         for d in resp.Results do
             printf "%s: %s" d.author.username d.title
