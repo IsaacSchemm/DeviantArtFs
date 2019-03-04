@@ -2,12 +2,15 @@
 
 open System.Net
 open System.IO
+open System
 
 type DeviantArtRequest(token: IDeviantArtAccessToken, url: string) =
-    let is401 (response: WebResponse) =
+    let isStatus (code: int) (response: WebResponse) =
         match response with
-        | :? HttpWebResponse as h -> h.StatusCode = HttpStatusCode.Unauthorized
+        | :? HttpWebResponse as h -> int h.StatusCode = code
         | _ -> false
+
+    let mutable retry429 = 500
 
     static member UserAgent = "DeviantArtFs/1.1 (https://github.com/libertyernie/DeviantArtFs)"
 
@@ -26,21 +29,45 @@ type DeviantArtRequest(token: IDeviantArtAccessToken, url: string) =
                 use ms = new MemoryStream(this.RequestBody, false)
                 do! ms.CopyToAsync(stream) |> Async.AwaitTask
             }
+        req.Headers.["Authorization"] <- sprintf "Bearer %s" token.AccessToken
         return req
     }
 
     member this.AsyncGetResponse() = async {
         let! req = this.AsyncToWebRequest()
         try
-            req.Headers.["Authorization"] <- sprintf "Bearer %s" token.AccessToken
             return! req.AsyncGetResponse()
         with
-            | :? WebException as ex when (is401 ex.Response) && (token :? IDeviantArtAutomaticRefreshToken) ->
+            | :? WebException as ex when isStatus 401 ex.Response && (token :? IDeviantArtAutomaticRefreshToken) ->
                 let auto = token :?> IDeviantArtAutomaticRefreshToken
                 let! newRefreshToken = auto.DeviantArtAuth.RefreshAsync auto.RefreshToken |> Async.AwaitTask
                 do! auto.UpdateTokenAsync newRefreshToken |> Async.AwaitTask
 
                 let! req2 = this.AsyncToWebRequest()
-                req2.Headers.["Authorization"] <- sprintf "Bearer %s" auto.AccessToken
                 return! req2.AsyncGetResponse()
+            | :? WebException as ex when isStatus 429 ex.Response ->
+                retry429 <- Math.Max(retry429 * 2, 60000)
+                if retry429 >= 60000 then
+                    return failwithf "Client is rate-limited (too many 429 responses)"
+                do! Async.Sleep retry429
+
+                let! req2 = this.AsyncToWebRequest()
+                return! req2.AsyncGetResponse()
+            | :? WebException as ex ->
+                use resp = ex.Response
+                use sr = new StreamReader(resp.GetResponseStream())
+                let! json = sr.ReadToEndAsync() |> Async.AwaitTask
+                let error_obj = DeviantArtBaseResponse.Parse json
+                return raise (new DeviantArtException(resp, error_obj))
+    }
+
+    member this.AsyncReadJson() = async {
+        use! resp = this.AsyncGetResponse()
+        use sr = new StreamReader(resp.GetResponseStream())
+        let! json = sr.ReadToEndAsync() |> Async.AwaitTask
+        let obj = DeviantArtBaseResponse.Parse json
+        if obj.status = Some "error" then
+            return raise (new DeviantArtException(resp, obj))
+        else
+            return json
     }

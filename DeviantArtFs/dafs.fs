@@ -47,34 +47,7 @@ module internal Dafs =
             | _ -> url
         new DeviantArtRequest(token, full_url)
 
-    let mutable retry429 = 500
-
-    let rec asyncRead (req: DeviantArtRequest) = async {
-        try
-            use! resp = req.AsyncGetResponse()
-            use sr = new StreamReader(resp.GetResponseStream())
-            let! json = sr.ReadToEndAsync() |> Async.AwaitTask
-            let obj = DeviantArtBaseResponse.Parse json
-            if obj.status = Some "error" then
-                return raise (new DeviantArtException(resp, obj))
-            else
-                retry429 <- 500
-                return json
-        with
-            | :? WebException as ex ->
-                use resp = ex.Response :?> HttpWebResponse
-                if int resp.StatusCode = 429 then
-                    retry429 <- Math.Max(retry429 * 2, 60000)
-                    if retry429 >= 60000 then
-                        return failwithf "Client is rate-limited (too many 429 responses)"
-                    do! Async.Sleep retry429
-                    return! asyncRead req
-                else
-                    use sr = new StreamReader(resp.GetResponseStream())
-                    let! json = sr.ReadToEndAsync() |> Async.AwaitTask
-                    let error_obj = DeviantArtBaseResponse.Parse json
-                    return raise (new DeviantArtException(resp, error_obj))
-    }
+    let asyncRead (req: DeviantArtRequest) = req.AsyncReadJson()
 
     let getMax (f: IDeviantArtAccessToken -> IDeviantArtPagingParams -> 'a) (token: IDeviantArtAccessToken) (offset: int) =
         new DeviantArtPagingParams(Offset = offset, Limit = Nullable Int32.MaxValue)
