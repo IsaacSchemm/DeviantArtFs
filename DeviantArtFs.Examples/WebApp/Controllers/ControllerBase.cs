@@ -31,15 +31,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
                 var token = await _context.Tokens.SingleOrDefaultAsync(t => t.Id == tokenId);
                 if (token != null)
                 {
-                    if (token.ExpiresAt < DateTimeOffset.UtcNow.AddMinutes(5))
-                    {
-                        var result = await _appReg.RefreshAsync(token.RefreshToken);
-                        token.AccessToken = result.AccessToken;
-                        token.RefreshToken = result.RefreshToken;
-                        token.ExpiresAt = result.ExpiresAt;
-                        await _context.SaveChangesAsync();
-                    }
-                    return token;
+                    return new TokenWrapper(token, _appReg, _context);
                 }
             }
             return null;

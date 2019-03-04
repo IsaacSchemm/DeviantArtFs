@@ -138,3 +138,14 @@ If you are writing a Windows desktop application, you can use the forms in the D
 The DeviantArtAuth class provides methods to support the Authorization Code grant type (getting tokens from an authorization code and refreshing tokens).
 
 If you need to store the access token somewhere (such as in a database or file), create your own class that implements the IDeviantArtAccessToken or IDeviantArtRefreshToken interface.
+
+Since version 1.1, DeviantArtFs supports automatic refreshing of tokens when it recieves an HTTP 401 response. If you'd like to take advantage of it, implement the interface IDeviantArtAutomaticRefreshToken:
+
+    public interface IDeviantArtAutomaticRefreshToken : IDeviantArtRefreshToken
+    {
+        IDeviantArtAuth DeviantArtAuth { get; }
+        Task UpdateTokenAsync(IDeviantArtRefreshToken value);
+    }
+
+The method UpdateTokenAsync should update the tokens both in the object itself and in the backing store.
+You can find an example implementation in WebApp (TokenWrapper.cs).

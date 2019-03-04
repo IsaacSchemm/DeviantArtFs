@@ -66,6 +66,23 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             return Json(me);
         }
 
+        public async Task S()
+        {
+            string str = User.Claims
+                .Where(c => c.Type == "token-id")
+                .Select(c => c.Value)
+                .FirstOrDefault();
+            if (str != null && Guid.TryParse(str, out Guid tokenId))
+            {
+                var token = await _context.Tokens.SingleOrDefaultAsync(t => t.Id == tokenId);
+                if (token != null)
+                {
+                    token.AccessToken = "test";
+                    await _context.SaveChangesAsync();
+                }
+            }
+        }
+
         public async Task<IActionResult> Logout()
         {
             var t = await GetAccessTokenAsync();
