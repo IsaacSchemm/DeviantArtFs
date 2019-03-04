@@ -18,11 +18,7 @@ module DeleteNotes =
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
-        do! async {
-            use! stream = req.GetRequestStreamAsync() |> Async.AwaitTask
-            use sw = new StreamWriter(stream)
-            do! query |> String.concat "&" |> sw.WriteAsync |> Async.AwaitTask
-        }
+        req.RequestBody <- String.concat "&" query |> Dafs.stringToBytes
 
         let! json = Dafs.asyncRead req
         return ignore json

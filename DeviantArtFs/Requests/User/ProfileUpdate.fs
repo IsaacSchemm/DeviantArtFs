@@ -44,12 +44,7 @@ module ProfileUpdate =
         let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/profile/update"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
-        do! async {
-            use! stream = req.GetRequestStreamAsync() |> Async.AwaitTask
-            use sw = new StreamWriter(stream)
-            String.concat "&" query |> printf "%s"
-            do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
-        }
+        req.RequestBody <- String.concat "&" query |> Dafs.stringToBytes
         let! json = Dafs.asyncRead req
         DeviantArtSuccessOrErrorResponse.Parse json |> Dafs.assertSuccess
     }

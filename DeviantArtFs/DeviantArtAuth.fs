@@ -21,7 +21,7 @@ type DeviantArtTokenResponse = {
         member this.RefreshToken = this.refresh_token
 
 type DeviantArtAuth(client_id: int, client_secret: string) =
-    let UserAgent = Dafs.userAgent
+    let UserAgent = DeviantArtRequest.UserAgent
 
     let BuildForm (dict: IDictionary<string, string>) =
         let parameters = seq {
@@ -117,7 +117,7 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
             nullArg "token"
 
         let req = WebRequest.CreateHttp "https://www.deviantart.com/oauth2/revoke"
-        req.UserAgent <- Dafs.userAgent
+        req.UserAgent <- DeviantArtRequest.UserAgent
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
@@ -133,7 +133,9 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
             do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
         }
 
-        let! json = Dafs.asyncRead req
+        use! resp = req.AsyncGetResponse()
+        use sr = new StreamReader(resp.GetResponseStream())
+        let! json = sr.ReadToEndAsync() |> Async.AwaitTask
         ignore json
     }
 
@@ -143,3 +145,6 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
         this.AsyncRefresh refresh_token |> Async.StartAsTask
     static member RevokeAsync token revoke_refresh_only =
         DeviantArtAuth.AsyncRevoke token revoke_refresh_only |> Async.StartAsTask :> System.Threading.Tasks.Task
+
+    interface IDeviantArtAuth with
+        member this.RefreshAsync refresh_token = this.RefreshAsync refresh_token

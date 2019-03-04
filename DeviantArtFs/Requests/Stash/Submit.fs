@@ -119,9 +119,7 @@ module Submit =
             w ""
             w h3
 
-            use! reqStream = req.GetRequestStreamAsync() |> Async.AwaitTask
-            ms.Position <- 0L
-            do! ms.CopyToAsync(reqStream) |> Async.AwaitTask
+            req.RequestBody <- ms.ToArray()
         }
 
         let! json = Dafs.asyncRead req

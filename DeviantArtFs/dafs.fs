@@ -7,13 +7,15 @@ open System.Threading.Tasks
 open FSharp.Control
 
 module internal Dafs =
+    open System.Text
+
     let assertSuccess (resp: DeviantArtSuccessOrErrorResponse) =
         match (resp.success, resp.error_description) with
         | (true, None) -> ()
         | _ -> failwithf "%s" (resp.error_description |> Option.defaultValue "An unknown error occurred.")
 
     let urlEncode = WebUtility.UrlEncode
-    let userAgent = "DeviantArtFs/0.6 (https://github.com/libertyernie/DeviantArtFs)"
+    let stringToBytes (s: string) = Encoding.UTF8.GetBytes s
 
     let createRequest (token: IDeviantArtAccessToken) (url: string) =
         let full_url =
@@ -43,14 +45,11 @@ module internal Dafs =
                     yield query |> String.concat "&"
                 })
             | _ -> url
-        let req = WebRequest.CreateHttp full_url
-        req.UserAgent <- userAgent
-        req.Headers.["Authorization"] <- sprintf "Bearer %s" token.AccessToken
-        req
+        new DeviantArtRequest(token, full_url)
 
     let mutable retry429 = 500
 
-    let rec asyncRead (req: WebRequest) = async {
+    let rec asyncRead (req: DeviantArtRequest) = async {
         try
             use! resp = req.AsyncGetResponse()
             use sr = new StreamReader(resp.GetResponseStream())

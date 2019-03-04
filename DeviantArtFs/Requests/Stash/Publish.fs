@@ -86,12 +86,7 @@ module Publish =
         let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/publish"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
-
-        do! async {
-            use! stream = req.GetRequestStreamAsync() |> Async.AwaitTask
-            use sw = new StreamWriter(stream)
-            do! String.concat "&" query |> sw.WriteAsync |> Async.AwaitTask
-        }
+        req.RequestBody <- String.concat "&" query |> Dafs.stringToBytes
 
         let! json = Dafs.asyncRead req
         return StashPublishResponse.Parse json
