@@ -1,48 +1,30 @@
 ﻿Imports System.IO
+Imports DeviantArtFs
 
 Public Class AccessToken
-    Implements IDeviantArtRefreshToken
+    Implements IDeviantArtAutomaticRefreshToken
 
-    Public Property A As String
+    Private ReadOnly Property Path As String
 
-    Public Property R As String
+    Public Property A As String Implements IDeviantArtAccessToken.AccessToken
 
-    Public Property E As DateTimeOffset
+    Public Property R As String Implements IDeviantArtAutomaticRefreshToken.RefreshToken
 
-    Private ReadOnly Property IDeviantArtAccessToken_AccessToken As String Implements IDeviantArtAccessToken.AccessToken
+    Public ReadOnly Property DeviantArtAuth As IDeviantArtAuth Implements IDeviantArtAutomaticRefreshToken.DeviantArtAuth
         Get
-            Return A
+            Return New DeviantArtAuth(DeviantArtClientId, DeviantArtClientSecret)
         End Get
     End Property
 
-    Private ReadOnly Property IDeviantArtRefreshToken_RefreshToken As String Implements IDeviantArtRefreshToken.RefreshToken
-        Get
-            Return R
-        End Get
-    End Property
-
-    Private ReadOnly Property IDeviantArtRefreshToken_ExpiresAt As DateTimeOffset Implements IDeviantArtRefreshToken.ExpiresAt
-        Get
-            Return E
-        End Get
-    End Property
-
-    Public Sub New()
-
+    Public Sub New(path As String)
+        Me.Path = path
     End Sub
 
-    Public Sub New(copyFrom As IDeviantArtRefreshToken)
-        A = copyFrom.AccessToken
-        R = copyFrom.RefreshToken
-        E = copyFrom.ExpiresAt
-    End Sub
-
-    Public Shared Sub WriteTo(path As String, token As IDeviantArtRefreshToken)
-        Using fs As New FileStream(path, FileMode.Create, FileAccess.Write)
+    Public Sub Write()
+        Using fs As New FileStream(Path, FileMode.Create, FileAccess.Write)
             Using sw As New StreamWriter(fs)
-                sw.WriteLine(token.AccessToken)
-                sw.WriteLine(token.RefreshToken)
-                sw.WriteLine(token.ExpiresAt.UtcTicks)
+                sw.WriteLine(A)
+                sw.WriteLine(R)
             End Using
         End Using
     End Sub
@@ -52,9 +34,15 @@ Public Class AccessToken
             Using sr As New StreamReader(fs)
                 Dim a = sr.ReadLine()
                 Dim r = sr.ReadLine()
-                Dim e = New Date(Long.Parse(sr.ReadLine()), DateTimeKind.Utc)
-                Return New AccessToken With {.A = a, .R = r, .E = e}
+                Return New AccessToken(path) With {.A = a, .R = r}
             End Using
         End Using
+    End Function
+
+    Public Function UpdateTokenAsync(newToken As IDeviantArtRefreshToken) As Task Implements IDeviantArtAutomaticRefreshToken.UpdateTokenAsync
+        A = newToken.AccessToken
+        R = newToken.RefreshToken
+        Write()
+        Return Task.CompletedTask
     End Function
 End Class

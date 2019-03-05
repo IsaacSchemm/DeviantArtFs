@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs
 
 open System
+open System.Threading.Tasks
 
 type IDeviantArtAccessToken =
     abstract member AccessToken: string with get
@@ -9,6 +10,15 @@ type IDeviantArtRefreshToken =
     inherit IDeviantArtAccessToken
     abstract member ExpiresAt: DateTimeOffset with get
     abstract member RefreshToken: string with get
+
+type IDeviantArtAuth =
+    abstract member RefreshAsync: string -> Task<IDeviantArtRefreshToken>
+
+type IDeviantArtAutomaticRefreshToken =
+    inherit IDeviantArtAccessToken
+    abstract member RefreshToken: string with get
+    abstract member DeviantArtAuth: IDeviantArtAuth with get
+    abstract member UpdateTokenAsync: IDeviantArtRefreshToken -> Task
 
 [<Flags>]
 type DeviantArtObjectExpansion =

@@ -2,7 +2,7 @@
 Imports DeviantArtFs.WinForms
 
 Public Class Form1
-    Private Token As IDeviantArtRefreshToken = Nothing
+    Private Token As AccessToken = Nothing
 
     Private CurrentUsername As String = Nothing
     Private NextOffset As Integer? = Nothing
@@ -26,24 +26,13 @@ Public Class Form1
     Private Async Function CheckToken() As Task
         Dim auth = New DeviantArtAuth(DeviantArtClientId, DeviantArtClientSecret)
 
-        If Token IsNot Nothing Then
-            If Token.ExpiresAt < DateTimeOffset.UtcNow.AddMinutes(5) Then
-                Token = Await auth.RefreshAsync(Token.RefreshToken)
-                AccessToken.WriteTo("refresh_token.txt", Token)
-            End If
-
-            If Not Await Requests.Util.Placebo.IsValidAsync(Token) Then
-                Token = Nothing
-            End If
-        End If
-
         If Token Is Nothing Then
             Dim url As New Uri(DeviantArtRedirectUrl)
 
             Using form = New DeviantArtAuthorizationCodeForm(DeviantArtClientId, url, {"stash"})
                 If form.ShowDialog() = DialogResult.OK Then
                     Token = Await auth.GetTokenAsync(form.Code, url)
-                    AccessToken.WriteTo("refresh_token.txt", Token)
+                    Token.Write()
                 End If
             End Using
         End If

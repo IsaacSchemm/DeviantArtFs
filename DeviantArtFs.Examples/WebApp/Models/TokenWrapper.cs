@@ -9,24 +9,22 @@ namespace DeviantArtFs.Examples.WebApp.Models
     public class TokenWrapper : IDeviantArtAutomaticRefreshToken
     {
         public IDeviantArtRefreshToken CurrentToken { get; private set; }
+        public IDeviantArtAuth DeviantArtAuth { get; private set; }
 
         private readonly Token _originalToken;
-        private readonly IDeviantArtAuth _auth;
         private readonly ExampleDbContext _context;
 
         public TokenWrapper(Token originalToken, IDeviantArtAuth auth, ExampleDbContext context)
         {
             _originalToken = originalToken;
-            _auth = auth;
             _context = context;
 
             CurrentToken = originalToken;
+            DeviantArtAuth = auth;
         }
 
-        IDeviantArtAuth IDeviantArtAutomaticRefreshToken.DeviantArtAuth => _auth;
-        DateTimeOffset IDeviantArtRefreshToken.ExpiresAt => CurrentToken.ExpiresAt;
-        string IDeviantArtRefreshToken.RefreshToken => CurrentToken.RefreshToken;
-        string IDeviantArtAccessToken.AccessToken => CurrentToken.AccessToken;
+        public string AccessToken => CurrentToken.AccessToken;
+        public string RefreshToken => CurrentToken.RefreshToken;
 
         public async Task UpdateTokenAsync(IDeviantArtRefreshToken value)
         {

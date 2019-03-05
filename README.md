@@ -141,11 +141,13 @@ If you need to store the access token somewhere (such as in a database or file),
 
 Since version 1.1, DeviantArtFs supports automatic refreshing of tokens when it recieves an HTTP 401 response. If you'd like to take advantage of it, implement the interface IDeviantArtAutomaticRefreshToken:
 
-    public interface IDeviantArtAutomaticRefreshToken : IDeviantArtRefreshToken
+    public interface IDeviantArtAutomaticRefreshToken : IDeviantArtAccessToken
     {
+        string RefreshToken { get; }
         IDeviantArtAuth DeviantArtAuth { get; }
+
         Task UpdateTokenAsync(IDeviantArtRefreshToken value);
     }
 
 The method UpdateTokenAsync should update the tokens both in the object itself and in the backing store.
-You can find an example implementation in WebApp (TokenWrapper.cs).
+You can find example implementations in WebApp (TokenWrapper.cs) and GalleryViewer (AccessToken.vb).
