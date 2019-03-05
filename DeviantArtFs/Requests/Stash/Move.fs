@@ -14,7 +14,7 @@ module Move =
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
-        req.RequestBody <- String.concat "&" query |> Dafs.stringToBytes
+        req.RequestBodyText <- String.concat "&" query
 
         let! json = Dafs.asyncRead req
         return StashMoveResult.Parse json

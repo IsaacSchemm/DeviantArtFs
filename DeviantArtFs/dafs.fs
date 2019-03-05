@@ -15,7 +15,6 @@ module internal Dafs =
         | _ -> failwithf "%s" (resp.error_description |> Option.defaultValue "An unknown error occurred.")
 
     let urlEncode = WebUtility.UrlEncode
-    let stringToBytes (s: string) = Encoding.UTF8.GetBytes s
 
     let createRequest (token: IDeviantArtAccessToken) (url: string) =
         let full_url =

@@ -3,6 +3,7 @@
 open System.Net
 open System.IO
 open System
+open System.Text
 
 type DeviantArtRequest(token: IDeviantArtAccessToken, url: string) =
     let isStatus (code: int) (response: WebResponse) =
@@ -17,6 +18,9 @@ type DeviantArtRequest(token: IDeviantArtAccessToken, url: string) =
     member val Method: string = "GET" with get, set
     member val ContentType: string = null with get, set
     member val RequestBody: byte[] = null with get, set
+
+    member this.RequestBodyText
+        with set(value: string) = this.RequestBody <- Encoding.UTF8.GetBytes value
 
     member private this.AsyncToWebRequest() = async {
         let req = WebRequest.CreateHttp url
