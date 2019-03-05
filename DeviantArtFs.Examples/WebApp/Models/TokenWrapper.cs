@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DeviantArtFs.Examples.WebApp.Models
 {
-    public class TokenWrapper : IDeviantArtAutomaticRefreshToken
+    public class TokenWrapper : IDeviantArtRefreshToken, IDeviantArtAutomaticRefreshToken
     {
         public IDeviantArtRefreshToken CurrentToken { get; private set; }
         public IDeviantArtAuth DeviantArtAuth { get; private set; }
@@ -25,6 +25,7 @@ namespace DeviantArtFs.Examples.WebApp.Models
 
         public string AccessToken => CurrentToken.AccessToken;
         public string RefreshToken => CurrentToken.RefreshToken;
+        public DateTimeOffset ExpiresAt => CurrentToken.ExpiresAt;
 
         public async Task UpdateTokenAsync(IDeviantArtRefreshToken value)
         {
