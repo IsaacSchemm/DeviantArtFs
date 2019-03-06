@@ -46,6 +46,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
                 foreach (var t in a.GetTypes().OrderBy(x => x.FullName))
                 {
                     if (t.Name.Contains("@")) continue;
+                    if (t.IsInterface) continue;
                     var ae = t.GetMembers()
                         .Select(x => x as MethodInfo)
                         .Where(x => x != null)
@@ -64,7 +65,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
                             foreach (var p in x.GetParameters())
                             {
                                 sw.Write($" `{PrintTypeName(p.ParameterType)}`");
-                                if (p.ParameterType.FullName.StartsWith("DeviantArtFs.") && !new[] { "IDeviantArtAccessToken", "IDeviantArtExtParams", "IDeviantArtPagingParams" }.Contains(p.ParameterType.Name))
+                                if (p.ParameterType.FullName.StartsWith("DeviantArtFs.") && !new[] { "IDeviantArtAccessToken", "IDeviantArtAccessToken", "IDeviantArtExtParams", "IDeviantArtPagingParams" }.Contains(p.ParameterType.Name))
                                 {
                                     typesToDescribe.Add(p.ParameterType);
                                 }

@@ -7,12 +7,12 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 "long" indicates a 64-bit integer, and a question mark (?) following a type name indicates a Nullable<T>, as in C#.
 
 ### DeviantArtFs.DeviantArtAuth
-* AsyncGetToken `string` `Uri` -> `Async<IDeviantArtRefreshToken>`
-* AsyncRefresh `string` -> `Async<IDeviantArtRefreshToken>`
+* AsyncGetToken `string` `Uri` -> `Async<IDeviantArtRefreshTokenFull>`
+* AsyncRefresh `string` -> `Async<IDeviantArtRefreshTokenFull>`
 * AsyncRevoke `string` `bool` -> `Async<unit>`
 * RevokeAsync `string` `bool` -> `Task`
-* GetTokenAsync `string` `Uri` -> `Task<IDeviantArtRefreshToken>`
-* RefreshAsync `string` -> `Task<IDeviantArtRefreshToken>`
+* GetTokenAsync `string` `Uri` -> `Task<IDeviantArtRefreshTokenFull>`
+* RefreshAsync `string` -> `Task<IDeviantArtRefreshTokenFull>`
 
 ### DeviantArtFs.Requests.Browse.CategoryTree
 * AsyncExecute `IDeviantArtAccessToken` `string` -> `Async<IEnumerable<DeviantArtCategory>>`

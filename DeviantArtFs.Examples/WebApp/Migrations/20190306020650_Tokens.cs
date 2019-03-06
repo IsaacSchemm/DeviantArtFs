@@ -13,8 +13,7 @@ namespace DeviantArtFs.Examples.WebApp.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     AccessToken = table.Column<string>(nullable: false),
-                    RefreshToken = table.Column<string>(nullable: false),
-                    ExpiresAt = table.Column<DateTimeOffset>(nullable: false)
+                    RefreshToken = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {

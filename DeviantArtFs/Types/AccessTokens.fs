@@ -8,15 +8,18 @@ type IDeviantArtAccessToken =
 
 type IDeviantArtRefreshToken =
     inherit IDeviantArtAccessToken
-    abstract member ExpiresAt: DateTimeOffset with get
     abstract member RefreshToken: string with get
+
+type IDeviantArtRefreshTokenFull =
+    inherit IDeviantArtRefreshToken
+    abstract member ExpiresAt: DateTimeOffset with get
+    abstract member Scopes: seq<string> with get
 
 type IDeviantArtAuth =
-    abstract member RefreshAsync: string -> Task<IDeviantArtRefreshToken>
+    abstract member RefreshAsync: string -> Task<IDeviantArtRefreshTokenFull>
 
 type IDeviantArtAutomaticRefreshToken =
-    inherit IDeviantArtAccessToken
-    abstract member RefreshToken: string with get
+    inherit IDeviantArtRefreshToken
     abstract member DeviantArtAuth: IDeviantArtAuth with get
     abstract member UpdateTokenAsync: IDeviantArtRefreshToken -> Task
 

@@ -18,7 +18,5 @@ namespace DeviantArtFs.Examples.WebApp.Models
 
         [Required]
         public string RefreshToken { get; set; }
-
-        public DateTimeOffset ExpiresAt { get; set; }
     }
 }

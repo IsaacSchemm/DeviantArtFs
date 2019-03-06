@@ -25,7 +25,6 @@ namespace DeviantArtFs.Examples.WebApp.Models
 
         public string AccessToken => CurrentToken.AccessToken;
         public string RefreshToken => CurrentToken.RefreshToken;
-        public DateTimeOffset ExpiresAt => CurrentToken.ExpiresAt;
 
         public async Task UpdateTokenAsync(IDeviantArtRefreshToken value)
         {
@@ -36,7 +35,6 @@ namespace DeviantArtFs.Examples.WebApp.Models
             {
                 t.AccessToken = value.AccessToken;
                 t.RefreshToken = value.RefreshToken;
-                t.ExpiresAt = value.ExpiresAt;
                 await _context.SaveChangesAsync();
             }
         }

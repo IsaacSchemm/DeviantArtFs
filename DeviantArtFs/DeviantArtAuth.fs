@@ -1,6 +1,5 @@
 ﻿namespace DeviantArtFs
 
-open FSharp.Data
 open System.Net
 open System.IO
 open System.Collections.Generic
@@ -15,10 +14,11 @@ type DeviantArtTokenResponse = {
   refresh_token: string
   scope: string
 } with
-    interface IDeviantArtRefreshToken with
+    interface IDeviantArtRefreshTokenFull with
         member this.AccessToken = this.access_token
         member this.ExpiresAt = DateTimeOffset.UtcNow.AddSeconds (float this.expires_in)
         member this.RefreshToken = this.refresh_token
+        member this.Scopes = this.scope.Split(' ') :> seq<string>
 
 type DeviantArtAuth(client_id: int, client_secret: string) =
     let UserAgent = DeviantArtRequest.UserAgent
@@ -73,7 +73,7 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
             failwithf "An unknown error occured"
         if obj.token_type <> "Bearer" then
             failwithf "token_type was not Bearer"
-        return obj :> IDeviantArtRefreshToken
+        return obj :> IDeviantArtRefreshTokenFull
     }
 
     member __.AsyncRefresh (refresh_token: string) = async {
@@ -109,7 +109,7 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
             failwithf "An unknown error occured"
         if obj.token_type <> "Bearer" then
             failwithf "token_type was not Bearer"
-        return obj :> IDeviantArtRefreshToken
+        return obj :> IDeviantArtRefreshTokenFull
     }
 
     static member AsyncRevoke (token: string) (revoke_refresh_only: bool) = async {

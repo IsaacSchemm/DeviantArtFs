@@ -39,8 +39,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
                 Id = Guid.NewGuid(),
                 UserId = me.Userid,
                 AccessToken = result.AccessToken,
-                RefreshToken = result.RefreshToken,
-                ExpiresAt = result.ExpiresAt
+                RefreshToken = result.RefreshToken
             };
             _context.Tokens.Add(token);
             await _context.SaveChangesAsync();
