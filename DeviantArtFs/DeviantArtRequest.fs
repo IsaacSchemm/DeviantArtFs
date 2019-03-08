@@ -4,6 +4,10 @@ open System.Net
 open System.IO
 open System
 open System.Text
+open System.Threading
+
+module internal RefreshLock =
+    let Semaphore = new SemaphoreSlim(1, 1)
 
 type internal DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: string) =
     let isStatus (code: int) (response: WebResponse) =
@@ -44,9 +48,10 @@ type internal DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: stri
     }
 
     member private this.AsyncGetResponse (token: IDeviantArtAccessToken) = async {
+        let accessToken = token.AccessToken
         try
             let! req = this.AsyncToWebRequest()
-            req.Headers.["Authorization"] <- sprintf "Bearer %s" token.AccessToken
+            req.Headers.["Authorization"] <- sprintf "Bearer %s" accessToken
             return! req.AsyncGetResponse()
         with
             | :? WebException as ex when isStatus 429 ex.Response ->
@@ -63,9 +68,14 @@ type internal DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: stri
 
                 match (token, obj.error) with
                 | (:? IDeviantArtAutomaticRefreshToken as auto, Some "invalid_token") ->
-                    let! newToken = auto.DeviantArtAuth.RefreshAsync auto.RefreshToken |> Async.AwaitTask
-                    do! auto.UpdateTokenAsync newToken |> Async.AwaitTask
-                    return! this.AsyncGetResponse newToken
+                    do! RefreshLock.Semaphore.WaitAsync() |> Async.AwaitTask
+                    try
+                        if accessToken = token.AccessToken then
+                            let! newToken = auto.DeviantArtAuth.RefreshAsync auto.RefreshToken |> Async.AwaitTask
+                            do! auto.UpdateTokenAsync newToken |> Async.AwaitTask
+                    finally
+                        RefreshLock.Semaphore.Release() |> ignore
+                    return! this.AsyncGetResponse auto
                 | _ ->
                     return raise (new DeviantArtException(resp, obj))
     }
