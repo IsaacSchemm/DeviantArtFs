@@ -1,12 +1,15 @@
 ﻿namespace DeviantArtFs.Requests.Util
 
 open DeviantArtFs
-open System.Threading.Tasks
 
 module Placebo =
-    let AsyncIsValid token = async {
+    let AsyncIsValid (token: IDeviantArtAccessToken) = async {
         try
-            let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/placebo"
+            let no_auto_refresh = {
+                new IDeviantArtAccessToken with
+                    member __.AccessToken = token.AccessToken
+            }
+            let req = Dafs.createRequest no_auto_refresh "https://www.deviantart.com/api/v1/oauth2/placebo"
             let! json = Dafs.asyncRead req
             ignore json
             return true

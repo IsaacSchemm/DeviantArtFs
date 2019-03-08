@@ -139,20 +139,9 @@ The DeviantArtAuth class provides methods to support the Authorization Code gran
 
 If you need to store the access token somewhere (such as in a database or file), create your own class that implements the IDeviantArtAccessToken or IDeviantArtRefreshToken interface.
 
-Since version 1.1, DeviantArtFs supports automatic refreshing of tokens when it recieves an HTTP 401 response. If you'd like to take advantage of it, implement the interface IDeviantArtAutomaticRefreshToken:
-
-    public interface IDeviantArtAccessToken {
-        string AccessToken { get; }
-    }
-
-	public interface IDeviantArtRefreshToken : IDeviantArtAccessToken {
-        string RefreshToken { get; }
-    }
-
-	public interface IDeviantArtAutomaticRefreshToken : IDeviantArtRefreshToken {
-        IDeviantArtAuth DeviantArtAuth { get; }
-        Task UpdateTokenAsync(IDeviantArtRefreshToken value);
-    }
+Since version 1.1, DeviantArtFs supports automatic refreshing of tokens when it recieves an HTTP 401 response.
+If you'd like to take advantage of it, implement the interface IDeviantArtAutomaticRefreshToken.
+Note that DeviantArtFs does not handle thread safety, so you might want to make sure you aren't using the token in simultaneous operations.
 
 The method UpdateTokenAsync should update the tokens both in the object itself and in the backing store.
 You can find example implementations in WebApp (TokenWrapper.cs) and GalleryViewer (AccessToken.vb).
