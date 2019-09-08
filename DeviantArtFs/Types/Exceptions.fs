@@ -11,3 +11,6 @@ type DeviantArtException(resp: WebResponse, body: DeviantArtBaseResponse) =
         match resp with
         | :? HttpWebResponse as h -> Nullable h.StatusCode
         | _ -> Nullable()
+
+type InvalidRefreshTokenException(ex: Exception) =
+    inherit Exception("The refresh token is invalid.", ex)

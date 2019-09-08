@@ -23,6 +23,11 @@ type DeviantArtTokenResponse = {
 type DeviantArtAuth(client_id: int, client_secret: string) =
     let UserAgent = DeviantArtRequest.UserAgent
 
+    let isStatus (code: int) (response: WebResponse) =
+        match response with
+        | :? HttpWebResponse as h -> int h.StatusCode = code
+        | _ -> false
+
     let BuildForm (dict: IDictionary<string, string>) =
         let parameters = seq {
             for p in dict do
@@ -101,15 +106,19 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
                 |> Async.AwaitTask
         }
 
-        use! resp = req.GetResponseAsync() |> Async.AwaitTask
-        use sr = new StreamReader(resp.GetResponseStream())
-        let! json = sr.ReadToEndAsync() |> Async.AwaitTask
-        let obj = Json.deserialize<DeviantArtTokenResponse> json
-        if obj.status <> "success" then
-            failwithf "An unknown error occured"
-        if obj.token_type <> "Bearer" then
-            failwithf "token_type was not Bearer"
-        return obj :> IDeviantArtRefreshTokenFull
+        try
+            use! resp = req.AsyncGetResponse()
+            use sr = new StreamReader(resp.GetResponseStream())
+            let! json = sr.ReadToEndAsync() |> Async.AwaitTask
+            let obj = Json.deserialize<DeviantArtTokenResponse> json
+            if obj.status <> "success" then
+                failwithf "An unknown error occured"
+            if obj.token_type <> "Bearer" then
+                failwithf "token_type was not Bearer"
+            return obj :> IDeviantArtRefreshTokenFull
+        with
+        | :? WebException as ex when isStatus 400 ex.Response ->
+            return raise (new InvalidRefreshTokenException(ex))
     }
 
     static member AsyncRevoke (token: string) (revoke_refresh_only: bool) = async {
