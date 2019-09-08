@@ -16,7 +16,7 @@ type IDeviantArtRefreshTokenFull =
     abstract member Scopes: seq<string> with get
 
 type IDeviantArtAuth =
-    abstract member RefreshAsync: string -> Task<IDeviantArtRefreshTokenFull>
+    abstract member AsyncRefresh: string -> Async<IDeviantArtRefreshTokenFull>
 
 type IDeviantArtAutomaticRefreshToken =
     inherit IDeviantArtRefreshToken

@@ -71,7 +71,7 @@ type internal DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: stri
                     do! RefreshLock.Semaphore.WaitAsync() |> Async.AwaitTask
                     try
                         if accessToken = token.AccessToken then
-                            let! newToken = auto.DeviantArtAuth.RefreshAsync auto.RefreshToken |> Async.AwaitTask
+                            let! newToken = auto.DeviantArtAuth.AsyncRefresh auto.RefreshToken
                             do! auto.UpdateTokenAsync newToken |> Async.AwaitTask
                     finally
                         RefreshLock.Semaphore.Release() |> ignore

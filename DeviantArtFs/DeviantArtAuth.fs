@@ -156,4 +156,4 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
         DeviantArtAuth.AsyncRevoke token revoke_refresh_only |> Async.StartAsTask :> System.Threading.Tasks.Task
 
     interface IDeviantArtAuth with
-        member this.RefreshAsync refresh_token = this.RefreshAsync refresh_token
+        member this.AsyncRefresh refresh_token = this.AsyncRefresh refresh_token
