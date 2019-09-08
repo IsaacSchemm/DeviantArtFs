@@ -26,15 +26,18 @@ namespace DeviantArtFs.WinForms {
 			};
 			this.Controls.Add(webBrowser1);
 
-			this.Shown += (o, e) => {
-				StringBuilder sb = new StringBuilder();
-				sb.Append($"response_type=code&");
-				sb.Append($"client_id={clientId}&");
-				sb.Append($"redirect_uri={callbackUrl}");
-				if (scopes != null) {
-					sb.Append($"&scope={WebUtility.UrlEncode(string.Join(" ", scopes))}");
-				}
-				webBrowser1.Navigate("https://www.deviantart.com/oauth2/authorize?" + sb);
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"response_type=code&");
+            sb.Append($"client_id={clientId}&");
+            sb.Append($"redirect_uri={callbackUrl}");
+            if (scopes != null)
+            {
+                sb.Append($"&scope={WebUtility.UrlEncode(string.Join(" ", scopes))}");
+            }
+            string startUrl = "https://www.deviantart.com/oauth2/authorize?" + sb;
+
+            this.Shown += (o, e) => {
+				webBrowser1.Navigate(startUrl);
 			};
 
 			webBrowser1.Navigated += (o, e) => {
@@ -46,8 +49,11 @@ namespace DeviantArtFs.WinForms {
 						Code = code;
 						DialogResult = DialogResult.OK;
 					}
-				}
-			};
+                } else if (e.Url.AbsolutePath == "/") {
+                    // oauth flow bug workaround
+                    webBrowser1.Navigate(startUrl);
+                }
+            };
 
 			webBrowser1.DocumentTitleChanged += (o, e) => {
 				this.Text = webBrowser1.DocumentTitle;
