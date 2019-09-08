@@ -8,30 +8,26 @@ Public Class Form1
     Private NextOffset As Integer? = Nothing
 
     Private Async Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        If Token Is Nothing Then
-            If File.Exists("refresh_token.txt") Then
-                Token = AccessToken.ReadFrom("refresh_token.txt")
-            End If
+        If Token Is Nothing And File.Exists("refresh_token.txt") Then
+            Dim t = AccessToken.ReadFrom("refresh_token.txt")
+
+            Try
+                Dim user = Await Requests.User.Whoami.ExecuteAsync(t)
+                If MsgBox($"Log in as {user.Username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
+                    Token = t
+                End If
+            Catch ex As InvalidRefreshTokenException
+                MsgBox("Your credentials have expired.")
+            End Try
         End If
-
-        Await CheckToken()
-
-        If Token IsNot Nothing Then
-            CurrentUsername = TextBox1.Text
-            NextOffset = 0
-            Await LoadNextPage()
-        End If
-    End Sub
-
-    Private Async Function CheckToken() As Task
-        Dim auth = New DeviantArtAuth(DeviantArtClientId, DeviantArtClientSecret)
 
         If Token Is Nothing Then
             Dim url As New Uri(DeviantArtRedirectUrl)
 
-            Using form = New DeviantArtAuthorizationCodeForm(DeviantArtClientId, url, {"stash"})
+            Using form = New DeviantArtAuthorizationCodeForm(DeviantArtClientId, url, {"browse", "user"})
                 If form.ShowDialog() = DialogResult.OK Then
-                    Token = Await auth.GetTokenAsync(form.Code, url)
+                    Dim auth = New DeviantArtAuth(DeviantArtClientId, DeviantArtClientSecret)
+                    Token = New AccessToken("refresh_token.txt", Await auth.GetTokenAsync(form.Code, url))
                     Token.Write()
                 End If
             End Using
@@ -40,22 +36,16 @@ Public Class Form1
         If Token IsNot Nothing Then
             Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
             ToolStripStatusLabel1.Text = $"Logged in as {user.Username}"
+
+            CurrentUsername = TextBox1.Text
+            NextOffset = 0
+            Await LoadNextPage()
         End If
-    End Function
+    End Sub
 
     Private Async Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
         Await LoadNextPage()
     End Sub
-
-    Private Shared Async Function GetImage(url As String) As Task(Of Image)
-        Dim req = Net.WebRequest.CreateHttp(url)
-        req.UserAgent = "DeviantArtFs/0.0 GalleryViewer"
-        Using resp = Await req.GetResponseAsync()
-            Using s = resp.GetResponseStream()
-                Return Image.FromStream(s)
-            End Using
-        End Using
-    End Function
 
     Private Async Function LoadNextPage() As Task
         If Token Is Nothing Then

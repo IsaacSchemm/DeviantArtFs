@@ -16,8 +16,12 @@ Public Class AccessToken
         End Get
     End Property
 
-    Public Sub New(path As String)
+    Public Sub New(path As String, Optional token As IDeviantArtRefreshToken = Nothing)
         Me.Path = path
+        If token IsNot Nothing Then
+            A = token.AccessToken
+            R = token.RefreshToken
+        End If
     End Sub
 
     Public Sub Write()
