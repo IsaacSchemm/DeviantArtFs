@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>DeviantArtFs.WinForms</id>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <title>DeviantArtFs.WinForms</title>
     <authors>libertyernie</authors>
     <owners>libertyernie</owners>
@@ -10,8 +10,8 @@
     <projectUrl>https://github.com/libertyernie/DeviantArtFs</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A set of Windows Forms dialogs for obtaining a DeviantArt access token</description>
-    <releaseNotes>Supports the authorization code and implicit grant types</releaseNotes>
-    <copyright>Copyright 2018</copyright>
+    <releaseNotes>1.1.0: Added a workaround for redirect to home page after OAuth flow</releaseNotes>
+    <copyright>Copyright 2019</copyright>
     <tags>deviantart winforms</tags>
   </metadata>
 </package>

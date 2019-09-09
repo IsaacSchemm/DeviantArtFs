@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.0.0</Version>
+    <Version>2.1.0</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>libertyernie</Authors>
     <Company></Company>
@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/libertyernie/DeviantArtFs</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Description>An F#/.NET library to interact with the DeviantArt / Sta.sh API (.NET Standard 2.0)</Description>
-    <PackageReleaseNotes>2.0.0: Added automatic token refreshing support and modified the token interface definitions</PackageReleaseNotes>
+    <PackageReleaseNotes>2.1.0: Added a new exception type for invalid refresh token errors</PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
   </PropertyGroup>
 
