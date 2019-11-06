@@ -2,7 +2,13 @@
 
 open FSharp.Json
 
+/// A DeviantArt response that contains only a "text" field. The library will
+/// make things simpler for these calls by returning the string directly.
 type DeviantArtTextOnlyResponse = {
     text: string
-} with  
-    static member Parse json = Json.deserialize<DeviantArtTextOnlyResponse> json
+} with
+    /// Parse a DeviantArt "text" response from JSON and return the text as
+    /// a string.
+    static member ParseString json =
+        let obj = Json.deserialize<DeviantArtTextOnlyResponse> json
+        obj.text

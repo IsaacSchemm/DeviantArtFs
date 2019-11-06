@@ -37,12 +37,19 @@ type DeviantArtUserGeo = {
 
 [<AllowNullLiteral>]
 type IBclDeviantArtUserProfile =
+    /// Whether the user is an artist.
     abstract member UserIsArtist: bool
+    /// The user's artist level, as displayed on their profile page.
     abstract member ArtistLevel: string
+    /// The user's specialty, as displayed on their profile page.
     abstract member ArtistSpecialty: string
+    /// The user's real name, as displayed on their profile page.
     abstract member RealName: string
+    /// The user's tagline, as displayed on their profile page.
     abstract member Tagline: string
+    /// The user's website URL.
     abstract member Website: string
+    /// The user's cover photo URL. May be null.
     abstract member CoverPhoto: string
 
 type DeviantArtUserProfile = {
@@ -53,7 +60,6 @@ type DeviantArtUserProfile = {
     tagline: string
     website: string
     cover_photo: string
-    //profile_pic: Deviation
 } with
     interface IBclDeviantArtUserProfile with
         member this.ArtistLevel = this.artist_level |> Option.toObj
@@ -67,7 +73,7 @@ type DeviantArtUserProfile = {
 [<AllowNullLiteral>]
 type IBclDeviantArtUserStats =
     abstract member Watchers: int
-    abstract memberFriends: int
+    abstract member Friends: int
 
 type DeviantArtUserStats = {
     watchers: int
@@ -75,18 +81,28 @@ type DeviantArtUserStats = {
 } with
     interface IBclDeviantArtUserStats with
         member this.Watchers = this.watchers
-        member this.memberFriends = this.friends
+        member this.Friends = this.friends
 
 [<AllowNullLiteral>]
 type IBclDeviantArtUser =
+    /// The user's ID in the DeviantArt API.
     abstract member Userid: Guid
+    /// The username.
     abstract member Username: string
+    /// A URL to the user's avatar.
     abstract member Usericon: string
+    /// The type of user (e.g. "regular", "premium", "admin")
     abstract member Type: string
+
+    /// Whether this user is watching the logged-in user. Not available in all requests.
     abstract member IsWatching: Nullable<bool>
+    /// User details. May be null.
     abstract member Details: IBclDeviantArtUserDetails
+    /// User location. May be null.
     abstract member Geo: IBclDeviantArtUserGeo
+    // User profile info. May be null.
     abstract member Profile: IBclDeviantArtUserProfile
+    // User statistics. May be null.
     abstract member Stats: IBclDeviantArtUserStats
 
 type DeviantArtUser = {

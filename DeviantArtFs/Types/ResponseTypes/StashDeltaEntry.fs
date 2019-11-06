@@ -3,13 +3,20 @@
 open System
 
 type IStashDelta =
-    abstract member Itemid: Nullable<int64>
-    abstract member Stackid: Nullable<int64>
+    [<Obsolete>]
     abstract member MetadataJson: string
+
+    /// The item ID, if this object represents an item.
+    abstract member Itemid: Nullable<int64>
+    /// The ID of this stack, or - if this object represents an item - the item's parent stack.
+    abstract member Stackid: Nullable<int64>
+    /// The difference in position between the object's previous position (within its stack) and its new one.
     abstract member Position: Nullable<int>
 
+/// A Sta.sh delta entry.
 type IBclStashDeltaEntry =
     inherit IStashDelta
+    /// Metadata about the stack or item.
     abstract member Metadata: IBclStashMetadata
 
 type StashDeltaEntry = {

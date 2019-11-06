@@ -146,5 +146,19 @@ namespace DeviantArtFs.Tests
                 Assert.Fail($"Type {t.Name} in namespace {t.Namespace} does not have an appropriate name");
             }
         }
+
+        [TestMethod]
+        public void TestFlags() {
+            Assert.IsFalse(DeviantArtObjectExpansion.None.HasFlag(DeviantArtObjectExpansion.UserDetails));
+            Assert.IsFalse(DeviantArtObjectExpansion.None.HasFlag(DeviantArtObjectExpansion.UserGeo));
+            Assert.IsFalse(DeviantArtObjectExpansion.None.HasFlag(DeviantArtObjectExpansion.UserProfile));
+            Assert.IsFalse(DeviantArtObjectExpansion.None.HasFlag(DeviantArtObjectExpansion.UserStats));
+            Assert.IsFalse(DeviantArtObjectExpansion.None.HasFlag(DeviantArtObjectExpansion.UserWatch));
+            Assert.IsTrue(DeviantArtObjectExpansion.All.HasFlag(DeviantArtObjectExpansion.UserDetails));
+            Assert.IsTrue(DeviantArtObjectExpansion.All.HasFlag(DeviantArtObjectExpansion.UserGeo));
+            Assert.IsTrue(DeviantArtObjectExpansion.All.HasFlag(DeviantArtObjectExpansion.UserProfile));
+            Assert.IsTrue(DeviantArtObjectExpansion.All.HasFlag(DeviantArtObjectExpansion.UserStats));
+            Assert.IsTrue(DeviantArtObjectExpansion.All.HasFlag(DeviantArtObjectExpansion.UserWatch));
+        }
     }
 }

@@ -2,11 +2,15 @@
 
 open FSharp.Json
 
+/// A single page of results from a DeviantArt API endpoint that uses a string
+/// cursor for pagination. Uses .NET types.
 type IBclDeviantArtFeedCursorResult =
     abstract member Cursor: string
     abstract member HasMore: bool
     abstract member Items: seq<IBclDeviantArtFeedItem>
 
+/// A single page of results from a DeviantArt API endpoint that uses a string
+/// cursor for pagination.
 type DeviantArtFeedCursorResult = {
     cursor: string
     has_more: bool

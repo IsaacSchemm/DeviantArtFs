@@ -2,11 +2,15 @@
 
 open FSharp.Json
 
+/// A single page of results from a DeviantArt API endpoint that returns a
+/// list of messages. Uses .NET types.
 type IBclDeviantArtMessageCursorResult =
     abstract member Cursor: string
     abstract member HasMore: bool
     abstract member Results: seq<IBclDeviantArtMessage>
 
+/// A single page of results from a DeviantArt API endpoint that returns a
+/// list of messages.
 type DeviantArtMessageCursorResult = {
     cursor: string
     has_more: bool

@@ -3,6 +3,8 @@
 open System
 open FSharp.Json
 
+/// A single page of results from a DeviantArt API endpoint that fetches
+/// comments. Uses .NET types.
 type IBclDeviantArtCommentPagedResult =
     abstract member HasMore: bool
     abstract member NextOffset: Nullable<int>
@@ -11,6 +13,8 @@ type IBclDeviantArtCommentPagedResult =
     abstract member Total: Nullable<int>
     abstract member Thread: seq<IBclDeviantArtComment>
 
+/// A single page of results from a DeviantArt API endpoint that fetches
+/// comments.
 type DeviantArtCommentPagedResult = {
     has_more: bool
     next_offset: int option
