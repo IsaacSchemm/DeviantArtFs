@@ -138,6 +138,7 @@ namespace DeviantArtFs.Tests
                 if (!t.IsVisible) continue;
 
                 if (t.Namespace != "DeviantArtFs") continue;
+                if (typeof(Exception).IsAssignableFrom(t)) continue;
                 Assert.AreEqual(t.IsInterface, t.Name.StartsWith("I"), $"The name of type {t.Name} does not indicate whether it is a class/record or interface");
 
                 if (t.Name.Contains("DeviantArt")) continue;
