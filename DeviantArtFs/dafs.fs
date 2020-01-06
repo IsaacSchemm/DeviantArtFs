@@ -2,20 +2,20 @@
 
 open System
 open System.Net
-open System.IO
-open System.Threading.Tasks
 open FSharp.Control
 
 module internal Dafs =
-    open System.Text
-
+    /// Throws an exception if there was an error, or does nothing if there was not.
+    /// This is used to catch errors that come back with an HTTP 2xx status code (if there even are any).
     let assertSuccess (resp: DeviantArtSuccessOrErrorResponse) =
         match (resp.success, resp.error_description) with
         | (true, None) -> ()
         | _ -> failwithf "%s" (resp.error_description |> Option.defaultValue "An unknown error occurred.")
 
+    /// URL-encodes a string.
     let urlEncode = WebUtility.UrlEncode
 
+    /// Creates a DeviantArtRequest object, given a token object (possibly with common parameters such as user expansion parameters) and a URL.
     let createRequest (token: IDeviantArtAccessToken) (url: string) =
         let full_url =
             match token with
@@ -46,12 +46,15 @@ module internal Dafs =
             | _ -> url
         new DeviantArtRequest(token, full_url)
 
+    /// Executes a DeviantArtRequest and gets the response body.
     let asyncRead (req: DeviantArtRequest) = req.AsyncReadJson()
-
+    
+    /// Converts a paged function with offset and limit parameters to one that requests the maximum page size each time.
     let getMax (f: IDeviantArtAccessToken -> IDeviantArtPagingParams -> 'a) (token: IDeviantArtAccessToken) (offset: int) =
         new DeviantArtPagingParams(Offset = offset, Limit = Nullable Int32.MaxValue)
         |> f token
 
+    /// Converts a paged function that takes a "cursor" as one of its parameters into an AsyncSeq.
     let toAsyncSeq (initial_cursor: 'cursor) (req: 'req) (f: 'cursor -> 'req -> Async<'b> when 'b :> IResultPage<'cursor, 'item>) = asyncSeq {
         let mutable cursor = initial_cursor
         let mutable has_more = true
