@@ -22,8 +22,8 @@ namespace DeviantArtFs.WinForms {
 		public DeviantArtImplicitGrantForm(int clientId, Uri callbackUrl, IEnumerable<string> scopes = null) {
 			_state = Guid.NewGuid().ToString();
 
-			this.Width = 322;
-			this.Height = 573;
+			this.Width = 435;
+			this.Height = 750;
 
 			InternetSetOption(IntPtr.Zero, 42, IntPtr.Zero, 0);
 

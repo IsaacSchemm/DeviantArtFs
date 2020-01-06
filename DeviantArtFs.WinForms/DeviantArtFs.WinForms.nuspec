@@ -2,16 +2,16 @@
 <package >
   <metadata>
     <id>DeviantArtFs.WinForms</id>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <title>DeviantArtFs.WinForms</title>
-    <authors>libertyernie</authors>
-    <owners>libertyernie</owners>
+    <authors>Isaac Schemm</authors>
+    <owners>Isaac Schemm</owners>
     <license type="expression">MIT</license>
-    <projectUrl>https://github.com/libertyernie/DeviantArtFs</projectUrl>
+    <projectUrl>https://github.com/IsaacSchemm/DeviantArtFs</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A set of Windows Forms dialogs for obtaining a DeviantArt access token</description>
-    <releaseNotes>1.1.0: Added a workaround for redirect to home page after OAuth flow</releaseNotes>
-    <copyright>Copyright 2019</copyright>
+    <description>A set of Windows Forms dialogs for DeviantArt OAuth2 flow (.NET Framework)</description>
+    <releaseNotes>1.2.0: Tweaked default window sizes</releaseNotes>
+    <copyright>Copyright 2020</copyright>
     <tags>deviantart winforms</tags>
   </metadata>
 </package>
