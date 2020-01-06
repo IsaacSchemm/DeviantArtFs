@@ -46,7 +46,7 @@ module ProfileUpdate =
         req.ContentType <- "application/x-www-form-urlencoded"
         req.RequestBodyText <- String.concat "&" query
         let! json = Dafs.asyncRead req
-        DeviantArtSuccessOrErrorResponse.Parse json |> Dafs.assertSuccess
+        ignore json
     }
 
     let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask :> System.Threading.Tasks.Task

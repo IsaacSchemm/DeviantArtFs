@@ -77,7 +77,7 @@ type internal DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: stri
                         RefreshLock.Semaphore.Release() |> ignore
                     return! this.AsyncGetResponse auto
                 | _ ->
-                    return raise (new DeviantArtException(resp, obj))
+                    return raise (new DeviantArtException(resp, obj, json))
     }
 
     member this.AsyncReadJson() = async {
@@ -86,7 +86,7 @@ type internal DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: stri
         let! json = sr.ReadToEndAsync() |> Async.AwaitTask
         let obj = DeviantArtBaseResponse.Parse json
         if obj.status = Some "error" then
-            return raise (new DeviantArtException(resp, obj))
+            return raise (new DeviantArtException(resp, obj, json))
         else
             return json
     }

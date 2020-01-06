@@ -22,7 +22,7 @@ module Update =
         req.RequestBodyText <- String.concat "&" query
 
         let! json = Dafs.asyncRead req
-        DeviantArtSuccessOrErrorResponse.Parse json |> Dafs.assertSuccess
+        ignore json
     }
 
     let ExecuteAsync token req =

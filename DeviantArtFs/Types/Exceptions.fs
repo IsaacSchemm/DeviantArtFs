@@ -3,10 +3,11 @@
 open System
 open System.Net
 
-type DeviantArtException(resp: WebResponse, body: DeviantArtBaseResponse) =
+type DeviantArtException(resp: WebResponse, body: DeviantArtBaseResponse, body_raw: string) =
     inherit Exception(body.error_description |> Option.defaultValue "An unknown DeviantArt error occurred.")
 
     member __.ResponseBody = body
+    member __.ResponseBodyRaw = body_raw
     member __.StatusCode =
         match resp with
         | :? HttpWebResponse as h -> Nullable h.StatusCode

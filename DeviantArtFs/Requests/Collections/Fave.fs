@@ -28,9 +28,6 @@ module Fave =
         req.RequestBodyText <- String.concat "&" query
 
         let! json = Dafs.asyncRead req
-        let resp = DeviantArtSuccessOrErrorResponse.Parse json
-        Dafs.assertSuccess resp
-
         let o = Json.deserialize<FaveResponse> json
         return o.favourites
     }

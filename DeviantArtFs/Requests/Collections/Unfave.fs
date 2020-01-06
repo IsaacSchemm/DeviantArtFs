@@ -29,8 +29,6 @@ module Unfave =
 
         let! json = Dafs.asyncRead req
         let resp = DeviantArtSuccessOrErrorResponse.Parse json
-        Dafs.assertSuccess resp
-
         let o = Json.deserialize<UnfaveResponse> json
         return o.favourites
     }

@@ -17,7 +17,7 @@ module Position =
         req.RequestBodyText <- String.concat "&" query
 
         let! json = Dafs.asyncRead req
-        DeviantArtSuccessOrErrorResponse.Parse json |> Dafs.assertSuccess
+        ignore json
     }
 
     let ExecuteAsync token stackid position = AsyncExecute token stackid position |> Async.StartAsTask :> System.Threading.Tasks.Task

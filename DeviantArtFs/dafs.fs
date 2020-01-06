@@ -5,13 +5,6 @@ open System.Net
 open FSharp.Control
 
 module internal Dafs =
-    /// Throws an exception if there was an error, or does nothing if there was not.
-    /// This is used to catch errors that come back with an HTTP 2xx status code (if there even are any).
-    let assertSuccess (resp: DeviantArtSuccessOrErrorResponse) =
-        match (resp.success, resp.error_description) with
-        | (true, None) -> ()
-        | _ -> failwithf "%s" (resp.error_description |> Option.defaultValue "An unknown error occurred.")
-
     /// URL-encodes a string.
     let urlEncode = WebUtility.UrlEncode
 
