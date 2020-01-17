@@ -127,17 +127,22 @@ let sandbox token_string = async {
     let! statuses = DeviantArtFs.Requests.User.StatusesList.AsyncExecute token (page 0 1) username
     let status = Seq.tryHead statuses.results
     match status with
-    | Some s -> 
-        printfn "Most recent status: %s (%A)" s.body s.ts
+    | Some s ->
+        match (s.body, s.ts) with
+        | (Some body, Some ts) -> printfn "Most recent status: %s (%O)" body ts
+        | _ -> ()
 
-        let! comments =
-            new DeviantArtFs.Requests.Comments.StatusCommentsRequest(s.statusid, Maxdepth = 5)
-            |> DeviantArtFs.Requests.Comments.StatusComments.ToAsyncSeq token 0
-            |> AsyncSeq.toArrayAsync
-        if (not << Seq.isEmpty) comments then
-            printfn "Comments:"
-        for c in comments do
-            printfn "    %s: %s" c.user.username c.body
+        match s.statusid with
+        | Some statusid ->
+            let! comments =
+                new DeviantArtFs.Requests.Comments.StatusCommentsRequest(statusid, Maxdepth = 5)
+                |> DeviantArtFs.Requests.Comments.StatusComments.ToAsyncSeq token 0
+                |> AsyncSeq.toArrayAsync
+            if (not << Seq.isEmpty) comments then
+                printfn "Comments:"
+            for c in comments do
+                printfn "    %s: %s" c.user.username c.body
+        | None -> ()
 
         printfn ""
     | None -> ()

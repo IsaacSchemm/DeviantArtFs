@@ -189,21 +189,25 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
             var status = statuses.Results.FirstOrDefault();
             if (status != null)
             {
-                Console.WriteLine($"Most recent status: {status.Body} ({status.Ts})");
+                if (status.Body != null && status.Ts != null)
+                    Console.WriteLine($"Most recent status: {status.Body} ({status.Ts})");
 
-                var comments_req = new Requests.Comments.StatusCommentsRequest(status.Statusid) { Maxdepth = 5 };
-                var comments = await Requests.Comments.StatusComments.ToArrayAsync(
-                    token,
-                    0,
-                    int.MaxValue,
-                    comments_req);
-                if (comments.Any())
+                if (status.Statusid is Guid statusid)
                 {
-                    Console.WriteLine("Comments:");
-                }
-                foreach (var c in comments)
-                {
-                    Console.WriteLine($"    {c.User.Username}: {c.Body}");
+                    var comments_req = new Requests.Comments.StatusCommentsRequest(statusid) { Maxdepth = 5 };
+                    var comments = await Requests.Comments.StatusComments.ToArrayAsync(
+                        token,
+                        0,
+                        int.MaxValue,
+                        comments_req);
+                    if (comments.Any())
+                    {
+                        Console.WriteLine("Comments:");
+                    }
+                    foreach (var c in comments)
+                    {
+                        Console.WriteLine($"    {c.User.Username}: {c.Body}");
+                    }
                 }
 
                 Console.WriteLine();
