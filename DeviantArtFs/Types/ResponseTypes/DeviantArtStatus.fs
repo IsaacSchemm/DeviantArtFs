@@ -5,16 +5,16 @@ open FSharp.Json
 
 [<AllowNullLiteral>]
 type IBclDeviantArtStatus =
-    abstract member Statusid: Guid
+    abstract member Statusid: Guid Nullable
     abstract member Body: string
-    abstract member Ts: DateTimeOffset
+    abstract member Ts: DateTimeOffset Nullable
     abstract member Url: string
-    abstract member CommentsCount: int
-    abstract member IsShare: bool
+    abstract member CommentsCount: int Nullable
+    abstract member IsShare: bool Nullable
     abstract member IsDeleted: bool
     abstract member Author: IBclDeviantArtUser
-    abstract member EmbeddedDeviations: seq<IBclDeviation>
-    abstract member EmbeddedStatuses: seq<IBclDeviantArtStatus>
+    abstract member EmbeddedDeviations: IBclDeviation seq
+    abstract member EmbeddedStatuses: IBclDeviantArtStatus seq
 
 type PossiblyDeletedDeviantArtStatus = {
     is_deleted: bool
@@ -27,47 +27,43 @@ type DeviantArtStatusItem = {
 }
 
 and DeviantArtStatus = {
-    statusid: Guid
-    body: string
-    ts: DateTimeOffset
-    url: string
-    comments_count: int
-    is_share: bool
+    statusid: Guid option
+    body: string option
+    ts: DateTimeOffset option
+    url: string option
+    comments_count: int option
+    is_share: bool option
     is_deleted: bool
-    author: DeviantArtUser
-    items: DeviantArtStatusItem list
+    author: DeviantArtUser option
+    items: DeviantArtStatusItem list option
 } with
     static member internal Parse json = Json.deserialize<DeviantArtStatus> json
 
-    static member internal ParseOrNone json =
-        let o = Json.deserialize<PossiblyDeletedDeviantArtStatus> json
-        if o.is_deleted then
-            None
-        else
-            Some (Json.deserialize<DeviantArtStatus> json)
-
     member this.EmbeddedDeviations = seq {
-        for i in this.items do
+        for i in this.items |> Option.defaultValue List.empty do
             match i.deviation with
                 | Some s -> yield s
                 | None -> ()
     }
 
     member this.EmbeddedStatuses = seq {
-        for i in this.items do
+        for i in this.items |> Option.defaultValue List.empty do
             match i.status with
                 | Some s -> yield s
                 | None -> ()
     }
 
     interface IBclDeviantArtStatus with
-        member this.Body = this.body
-        member this.CommentsCount = this.comments_count
+        member this.Body = this.body |> Option.defaultValue null
+        member this.CommentsCount = this.comments_count |> Option.toNullable
         member this.EmbeddedDeviations = this.EmbeddedDeviations |> Seq.map (fun s -> s :> IBclDeviation)
         member this.EmbeddedStatuses = this.EmbeddedStatuses |> Seq.map (fun s -> s :> IBclDeviantArtStatus)
         member this.IsDeleted = this.is_deleted
-        member this.IsShare = this.is_share
-        member this.Statusid = this.statusid
-        member this.Ts = this.ts
-        member this.Url = this.url
-        member this.Author = this.author :> IBclDeviantArtUser
+        member this.IsShare = this.is_share |> Option.toNullable
+        member this.Statusid = this.statusid |> Option.toNullable
+        member this.Ts = this.ts |> Option.toNullable
+        member this.Url = this.url |> Option.defaultValue null
+        member this.Author =
+            match this.author with
+            | Some a -> a :> IBclDeviantArtUser
+            | None -> null
