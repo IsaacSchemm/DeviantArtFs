@@ -10,6 +10,10 @@ namespace DeviantArtFs.Examples.WebApp.Models
     {
         private readonly DeviantArtFeedItem _item;
 
+        private ExistingDeviation Deviation => _item.GetDeviations().SelectMany(x => x.SingleIfExists()).DefaultIfEmpty(null).First();
+        private DeviantArtExistingStatus Status => _item.GetStatus().SelectMany(x => x.SingleIfExists()).DefaultIfEmpty(null).First();
+        private DeviantArtFeedItemCollection Collection => _item.GetCollection().DefaultIfEmpty(null).First();
+
         public FeedItemModel(DeviantArtFeedItem item)
         {
             _item = item ?? throw new ArgumentNullException(nameof(item));
@@ -19,17 +23,17 @@ namespace DeviantArtFs.Examples.WebApp.Models
         public string Username => _item.by_user.username;
         public string Usericon => _item.by_user.usericon;
         public string Url =>
-            _item.GetDeviations().SelectMany(x => x.SingleIfExists()).Select(x => x.url).FirstOrDefault()
-            ?? _item.GetStatus().SelectMany(x => x.SingleIfExists()).Select(x => x.url).FirstOrDefault()
-            ?? _item.GetCollection().Select(x => x.url).FirstOrDefault();
+            Deviation?.url
+            ?? Status?.url
+            ?? Collection?.url;
         public string ThumbnailUrl =>
-            _item.GetDeviations().SelectMany(x => x.SingleIfExists()).FirstOrDefault()?.thumbs?.FirstOrDefault()?.src;
+            Deviation?.thumbs?.FirstOrDefault()?.src;
         public string Title =>
-            _item.GetDeviations().SelectMany(x => x.SingleIfExists()).FirstOrDefault()?.title;
+            Deviation?.title;
         public string HTMLDescription =>
-            _item.type == "collection_update" ? $"Updated collection <a href='{_item.GetCollection().First().url}'>{WebUtility.HtmlEncode(_item.GetCollection().First().name)}</a>"
-            : _item.type == "status" ? _item.GetStatus().SelectMany(x => x.SingleIfExists()).First()?.body
-            : _item.GetDeviations().SelectMany(x => x.SingleIfExists()).FirstOrDefault()?.GetExcerpt();
+            _item.type == "collection_update" ? $"Updated collection <a href='{Collection.url}'>{WebUtility.HtmlEncode(Collection.name)}</a>"
+            : _item.type == "status" ? Status?.body
+            : Deviation?.GetExcerpt();
         public string TimeAgo {
             get {
                 TimeSpan ts = DateTimeOffset.UtcNow - _item.ts.ToUniversalTime();

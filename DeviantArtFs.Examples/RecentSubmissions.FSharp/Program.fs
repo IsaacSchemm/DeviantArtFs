@@ -65,10 +65,10 @@ let sandbox token_string = async {
     let! deviations =
         DeviantArtFs.Requests.Gallery.GalleryAllViewRequest(Username = username)
         |> DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token (page 0 1)
-    let deviation = Seq.tryHead deviations.results
+    let deviation = Seq.tryHead deviations.results |> Option.map (fun d -> d.ToUnion())
     match deviation with
-    | Some s -> 
-        printfn "Most recent deviation: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
+    | Some (DeviationUnion.Existing s) -> 
+        printfn "Most recent deviation: %s (%A)" s.title s.published_time
 
         let! metadata =
             new DeviantArtFs.Requests.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = DeviantArtExtParams.All)
@@ -94,15 +94,15 @@ let sandbox token_string = async {
             printfn "    %s: %s" c.user.username c.body
 
         printfn ""
-    | None -> ()
+    | _ -> ()
 
     let! journals =
         DeviantArtFs.Requests.Browse.UserJournalsRequest(username, Featured = false)
         |> DeviantArtFs.Requests.Browse.UserJournals.AsyncExecute token (page 0 1)
-    let journal = Seq.tryHead journals.results
+    let journal = Seq.tryHead journals.results |> Option.map (fun d -> d.ToUnion())
     match journal with
-    | Some s -> 
-        printfn "Most recent journal: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
+    | Some (DeviationUnion.Existing s) -> 
+        printfn "Most recent journal: %s (%A)" s.title s.published_time
 
         let! favorites =
             DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token 0 s.deviationid
@@ -122,30 +122,25 @@ let sandbox token_string = async {
             printfn "    %s: %s" c.user.username c.body
 
         printfn ""
-    | None -> ()
+    | _ -> ()
 
     let! statuses = DeviantArtFs.Requests.User.StatusesList.AsyncExecute token (page 0 1) username
-    let status = Seq.tryHead statuses.results
+    let status = Seq.tryHead statuses.results |> Option.map (fun d -> d.ToUnion())
     match status with
-    | Some s ->
-        match (s.body, s.ts) with
-        | (Some body, Some ts) -> printfn "Most recent status: %s (%O)" body ts
-        | _ -> ()
+    | Some (DeviantArtStatusUnion.Existing s) ->
+        printfn "Most recent status: %s (%O)" s.body s.ts
 
-        match s.statusid with
-        | Some statusid ->
-            let! comments =
-                new DeviantArtFs.Requests.Comments.StatusCommentsRequest(statusid, Maxdepth = 5)
-                |> DeviantArtFs.Requests.Comments.StatusComments.ToAsyncSeq token 0
-                |> AsyncSeq.toArrayAsync
-            if (not << Seq.isEmpty) comments then
-                printfn "Comments:"
-            for c in comments do
-                printfn "    %s: %s" c.user.username c.body
-        | None -> ()
+        let! comments =
+            new DeviantArtFs.Requests.Comments.StatusCommentsRequest(s.statusid, Maxdepth = 5)
+            |> DeviantArtFs.Requests.Comments.StatusComments.ToAsyncSeq token 0
+            |> AsyncSeq.toArrayAsync
+        if (not << Seq.isEmpty) comments then
+            printfn "Comments:"
+        for c in comments do
+            printfn "    %s: %s" c.user.username c.body
 
         printfn ""
-    | None -> ()
+    | _ -> ()
 
     let! messages =
         new DeviantArtFs.Requests.Messages.MessagesFeedRequest()

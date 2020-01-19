@@ -88,8 +88,8 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Gallery.GalleryAllViewRequest { Username = username });
-            var deviation = deviations.results.SelectMany(d => d.SingleIfExists()).FirstOrDefault();
-            if (deviation != null)
+            var deviation_obj = deviations.results.FirstOrDefault();
+            if (deviation_obj?.SingleIfExists()?.SingleOrDefault() is ExistingDeviation deviation)
             {
                 Console.WriteLine($"Most recent deviation: {deviation.title} ({deviation.published_time})");
 
@@ -137,8 +137,8 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Browse.UserJournalsRequest(username) { Featured = false });
-            var journal = journals.results.SelectMany(d => d.SingleIfExists()).FirstOrDefault();
-            if (journal != null)
+            var journal_obj = journals.results.FirstOrDefault();
+            if (journal_obj?.SingleIfExists()?.SingleOrDefault() is ExistingDeviation journal)
             {
                 Console.WriteLine($"Most recent journal: {journal.title} ({journal.published_time})");
 
@@ -186,8 +186,8 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 username);
-            var status = statuses.results.SelectMany(s => s.SingleIfExists()).FirstOrDefault();
-            if (status != null)
+            var status_obj = statuses.results.FirstOrDefault();
+            if (status_obj?.SingleIfExists()?.SingleOrDefault() is DeviantArtExistingStatus status)
             {
                 Console.WriteLine($"Most recent status: {status.body} ({status.ts})");
 
