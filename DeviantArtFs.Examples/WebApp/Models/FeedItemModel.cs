@@ -19,17 +19,17 @@ namespace DeviantArtFs.Examples.WebApp.Models
         public string Username => _item.by_user.username;
         public string Usericon => _item.by_user.usericon;
         public string Url =>
-            _item.GetDeviations().Select(x => x.url).FirstOrDefault()
+            _item.GetDeviations().SelectMany(x => x.ToExistingDeviations()).Select(x => x.url).FirstOrDefault()
             ?? _item.GetStatuses().SelectMany(x => x.ToExistingStatuses()).Select(x => x.url).FirstOrDefault()
             ?? _item.GetCollections().Select(x => x.url).FirstOrDefault();
         public string ThumbnailUrl =>
-            _item.GetDeviations().FirstOrDefault()?.thumbs?.FirstOrDefault()?.Src;
+            _item.GetDeviations().SelectMany(x => x.ToExistingDeviations()).FirstOrDefault()?.thumbs?.FirstOrDefault()?.src;
         public string Title =>
-            _item.GetDeviations().FirstOrDefault()?.title;
+            _item.GetDeviations().SelectMany(x => x.ToExistingDeviations()).FirstOrDefault()?.title;
         public string HTMLDescription =>
             _item.type == "collection_update" ? $"Updated collection <a href='{_item.GetCollections().First().url}'>{WebUtility.HtmlEncode(_item.GetCollections().First().name)}</a>"
-            : _item.type == "status" ? _item.GetStatuses().First()?.body
-            : _item.GetDeviations()?.FirstOrDefault()?.excerpt;
+            : _item.type == "status" ? _item.GetStatuses().SelectMany(x => x.ToExistingStatuses()).First()?.body
+            : _item.GetDeviations().SelectMany(x => x.ToExistingDeviations()).FirstOrDefault()?.GetExcerpt();
         public string TimeAgo {
             get {
                 TimeSpan ts = DateTimeOffset.UtcNow - _item.ts.ToUniversalTime();
