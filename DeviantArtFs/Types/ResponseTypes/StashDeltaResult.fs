@@ -11,7 +11,7 @@ type StashDeltaResult = {
     entries: StashDeltaEntry list
 } with
     static member Parse json = Json.deserialize<StashDeltaResult> json
-    member this.GetNextOffsetOrNull() = Option.toNullable this.next_offset
+    member this.GetNextOffset() = OptUtils.toNullable this.next_offset
     interface IResultPage<int, StashDeltaEntry> with
         member this.HasMore = this.has_more
         member this.Cursor = this.next_offset |> Option.defaultValue 0

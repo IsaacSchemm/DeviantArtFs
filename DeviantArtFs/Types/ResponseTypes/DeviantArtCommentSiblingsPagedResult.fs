@@ -26,5 +26,5 @@ type DeviantArtCommentSiblingsPagedResult = {
     static member Parse (json: string) =
         json.Replace(""""context": list""", """"context":{}""")
         |> Json.deserialize<DeviantArtCommentSiblingsPagedResult>
-    member this.GetNextOffsetOrNull() = Option.toNullable this.next_offset
-    member this.GetPrevOffsetOrNull() = Option.toNullable this.prev_offset
+    member this.GetNextOffset() = OptUtils.toNullable this.next_offset
+    member this.GetPrevOffset() = OptUtils.toNullable this.prev_offset

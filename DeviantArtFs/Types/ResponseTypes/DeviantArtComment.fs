@@ -20,5 +20,5 @@ type DeviantArtComment = {
     user: DeviantArtUser
 } with
     static member Parse json = Json.deserialize<DeviantArtComment> json
-    member this.GetParentIdOrNull() = Option.toNullable this.parentid
-    member this.GetHideTypeOrNull() = Option.toNullable this.hidden
+    member this.GetParentId() = OptUtils.toNullable this.parentid
+    member this.GetHideType() = OptUtils.toNullable this.hidden

@@ -6,7 +6,7 @@ type StashDeltaEntry = {
     metadata: StashMetadata option
     position: int option
 } with
-    member this.GetItemIdOrNull() = Option.toNullable this.itemid
-    member this.GetStackIdOrNull() = Option.toNullable this.stackid
-    member this.GetPositionOrNull() = Option.toNullable this.position
+    member this.GetItemId() = OptUtils.toNullable this.itemid
+    member this.GetStackId() = OptUtils.toNullable this.stackid
+    member this.GetPosition() = OptUtils.toNullable this.position
     member this.GetMetadata() = OptUtils.toSeq this.metadata

@@ -6,7 +6,7 @@ type StashStats = {
     downloads: int option
     downloads_today: int option
 } with
-    member this.GetViewsOrNull() = this.views |> Option.toNullable
-    member this.GetViewsTodayOrNull() = this.views_today |> Option.toNullable
-    member this.GetDownloadsOrNull() = this.downloads |> Option.toNullable
-    member this.GetDownloadsTodayOrNull() = this.downloads_today |> Option.toNullable
+    member this.GetViews() = this.views |> OptUtils.toNullable
+    member this.GetViewsToday() = this.views_today |> OptUtils.toNullable
+    member this.GetDownloads() = this.downloads |> OptUtils.toNullable
+    member this.GetDownloadsToday() = this.downloads_today |> OptUtils.toNullable

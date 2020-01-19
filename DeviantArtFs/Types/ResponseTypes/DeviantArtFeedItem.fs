@@ -8,7 +8,7 @@ type DeviantArtFeedItemCollection = {
     url: string
     size: int option
 } with
-    member this.GetSizeOrNull() = Option.toNullable this.size 
+    member this.GetSize() = OptUtils.toNullable this.size 
 
 type DeviantArtFeedItemPollAnswer = {
     answer: string
@@ -40,10 +40,10 @@ type DeviantArtFeedItem = {
     added_count: int option
     poll: DeviantArtFeedItemPoll option
 } with
-    member this.GetAddedCountOrNull() = Option.toNullable this.added_count
-    member this.GetBucketTotalOrNull() = Option.toNullable this.bucket_total
-    member this.GetBucketIdOrNull() = Option.toNullable this.bucketid
-    member this.GetDeviations() = OptUtils.emptyIfNone this.deviations
+    member this.GetAddedCount() = OptUtils.toNullable this.added_count
+    member this.GetBucketTotal() = OptUtils.toNullable this.bucket_total
+    member this.GetBucketId() = OptUtils.toNullable this.bucketid
+    member this.GetDeviations() = OptUtils.listDefault this.deviations
     member this.GetCollections() = OptUtils.toSeq this.collection
     member this.GetComments() = OptUtils.toSeq this.comment
     member this.GetCommentDeviations() = OptUtils.toSeq this.comment_deviation

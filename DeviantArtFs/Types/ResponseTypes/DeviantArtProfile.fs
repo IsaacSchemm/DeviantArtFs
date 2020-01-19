@@ -24,10 +24,10 @@ type DeviantArtProfile = {
     galleries: DeviantArtGalleryFolder list option
 } with
     static member Parse json = Json.deserialize<DeviantArtProfile> json
-    member this.GetArtistLevelOrNull() = Option.toObj this.artist_level
-    member this.GetArtistSpecialtyOrNull() = Option.toObj this.artist_specialty
-    member this.CoverPhoto() = Option.toObj this.cover_photo
+    member this.GetArtistLevel() = OptUtils.stringDefault this.artist_level
+    member this.GetArtistSpecialty() = OptUtils.stringDefault this.artist_specialty
+    member this.CoverPhoto() = OptUtils.stringDefault this.cover_photo
     member this.GetProfilePic() = OptUtils.toSeq this.profile_pic
     member this.GetLastStatus() = OptUtils.toSeq this.last_status
-    member this.GetCollections() = OptUtils.emptyIfNone this.collections
-    member this.GetGalleries() = OptUtils.emptyIfNone this.galleries
+    member this.GetCollections() = OptUtils.listDefault this.collections
+    member this.GetGalleries() = OptUtils.listDefault this.galleries

@@ -17,4 +17,4 @@ type DeviantArtNote = {
     recipients: DeviantArtUser list
 } with
     static member Parse json = Json.deserialize<DeviantArtNote> json
-    member this.RawBodyOrNull = this.raw_body |> Option.toObj
+    member this.GetRawBody() = OptUtils.stringDefault this.raw_body
