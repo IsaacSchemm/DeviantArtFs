@@ -34,7 +34,7 @@ and DeviantArtStatus = {
             author = this.author.Value
             items = this.items.Value
         }
-    member this.ToExistingStatuses() =
+    member this.SingleIfExists() =
         match this.ToUnion() with
         | Deleted -> Seq.empty
         | Existing e -> Seq.singleton e

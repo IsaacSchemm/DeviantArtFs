@@ -88,7 +88,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Gallery.GalleryAllViewRequest { Username = username });
-            var deviation = deviations.results.FirstOrDefault()?.ToExistingDeviations()?.FirstOrDefault();
+            var deviation = deviations.results.SelectMany(d => d.SingleIfExists()).FirstOrDefault();
             if (deviation != null)
             {
                 Console.WriteLine($"Most recent deviation: {deviation.title} ({deviation.published_time})");
@@ -137,7 +137,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Browse.UserJournalsRequest(username) { Featured = false });
-            var journal = journals.results.FirstOrDefault()?.ToExistingDeviations()?.FirstOrDefault();
+            var journal = journals.results.SelectMany(d => d.SingleIfExists()).FirstOrDefault();
             if (journal != null)
             {
                 Console.WriteLine($"Most recent journal: {journal.title} ({journal.published_time})");
@@ -186,7 +186,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 username);
-            var status = statuses.results.FirstOrDefault()?.ToExistingStatuses()?.FirstOrDefault();
+            var status = statuses.results.SelectMany(s => s.SingleIfExists()).FirstOrDefault();
             if (status != null)
             {
                 Console.WriteLine($"Most recent status: {status.body} ({status.ts})");
@@ -215,10 +215,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 null,
                 5);
             foreach (var m in messages) {
-                string originator = m.GetOriginators()
-                    .Select(u => u.username)
-                    .DefaultIfEmpty("???")
-                    .Single();
+                string originator = m.GetOriginator().SingleOrDefault()?.username ?? "???";
                 object subject = m.GetSubjects()
                     .DefaultIfEmpty(null)
                     .Single();

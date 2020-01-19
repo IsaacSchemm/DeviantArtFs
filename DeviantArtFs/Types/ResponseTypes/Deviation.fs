@@ -82,7 +82,7 @@ type Deviation = {
             is_downloadable = this.is_downloadable.Value
             download_filesize = this.download_filesize
         }
-    member this.ToExistingDeviations() =
+    member this.SingleIfExists() =
         match this.ToUnion() with
         | Deleted -> Seq.empty
         | Existing e -> Seq.singleton e
