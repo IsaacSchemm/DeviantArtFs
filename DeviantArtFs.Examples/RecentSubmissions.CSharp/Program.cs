@@ -76,12 +76,12 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
             var profile = await Requests.User.ProfileByName.ExecuteAsync(
                 token,
                 new Requests.User.ProfileByNameRequest(username));
-            Console.WriteLine(profile.RealName);
-            if (!string.IsNullOrEmpty(profile.Tagline))
+            Console.WriteLine(profile.real_name);
+            if (!string.IsNullOrEmpty(profile.tagline))
             {
-                Console.WriteLine(profile.Tagline);
+                Console.WriteLine(profile.tagline);
             }
-            Console.WriteLine($"{profile.Stats.UserDeviations} deviations");
+            Console.WriteLine($"{profile.stats.user_deviations} deviations");
             Console.WriteLine();
 
             var deviations = await Requests.Gallery.GalleryAllView.ExecuteAsync(
@@ -126,7 +126,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                     Console.WriteLine("Comments by:");
                     foreach (var c in comments)
                     {
-                        Console.WriteLine($"    {c.User.Username} {c.Body}");
+                        Console.WriteLine($"    {c.user.username} {c.body}");
                     }
                 }
 
@@ -175,7 +175,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                     Console.WriteLine("Comments by:");
                     foreach (var c in comments)
                     {
-                        Console.WriteLine($"    {c.User.Username} {c.Body}");
+                        Console.WriteLine($"    {c.user.username} {c.body}");
                     }
                 }
 
@@ -186,28 +186,24 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 username);
-            var status = statuses.Results.FirstOrDefault();
+            var status = statuses.results.FirstOrDefault()?.ToExistingStatusOrEmptySeq()?.FirstOrDefault();
             if (status != null)
             {
-                if (status.Body != null && status.Ts != null)
-                    Console.WriteLine($"Most recent status: {status.Body} ({status.Ts})");
+                Console.WriteLine($"Most recent status: {status.body} ({status.ts})");
 
-                if (status.Statusid is Guid statusid)
+                var comments_req = new Requests.Comments.StatusCommentsRequest(status.statusid) { Maxdepth = 5 };
+                var comments = await Requests.Comments.StatusComments.ToArrayAsync(
+                    token,
+                    0,
+                    int.MaxValue,
+                    comments_req);
+                if (comments.Any())
                 {
-                    var comments_req = new Requests.Comments.StatusCommentsRequest(statusid) { Maxdepth = 5 };
-                    var comments = await Requests.Comments.StatusComments.ToArrayAsync(
-                        token,
-                        0,
-                        int.MaxValue,
-                        comments_req);
-                    if (comments.Any())
-                    {
-                        Console.WriteLine("Comments:");
-                    }
-                    foreach (var c in comments)
-                    {
-                        Console.WriteLine($"    {c.User.Username}: {c.Body}");
-                    }
+                    Console.WriteLine("Comments:");
+                }
+                foreach (var c in comments)
+                {
+                    Console.WriteLine($"    {c.user.username}: {c.body}");
                 }
 
                 Console.WriteLine();

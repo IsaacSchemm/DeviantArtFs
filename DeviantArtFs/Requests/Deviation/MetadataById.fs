@@ -27,4 +27,4 @@ module MetadataById =
         return DeviationMetadataResponse.ParseSeq json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapSeq (fun m -> m :> IBclDeviationMetadata) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

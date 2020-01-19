@@ -12,4 +12,4 @@ module DeviationById =
         return json |> Deviation.Parse
     }
 
-    let ExecuteAsync token id = AsyncExecute token id |> AsyncThen.map (fun o -> o :> IBclDeviation) |> Async.StartAsTask
+    let ExecuteAsync token id = AsyncExecute token id |> Async.StartAsTask

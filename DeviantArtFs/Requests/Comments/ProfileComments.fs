@@ -39,5 +39,4 @@ module ProfileComments =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.map (fun o -> o :> IBclDeviantArtCommentPagedResult)
         |> Async.StartAsTask

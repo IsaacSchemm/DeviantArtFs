@@ -10,8 +10,3 @@ module internal AsyncThen =
         let! o = a
         return Seq.map f o
     }
-
-    let mapPagedResult f a = async {
-        let! o = a
-        return DeviantArtPagedResult.Map f o
-    }

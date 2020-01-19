@@ -7,15 +7,15 @@ namespace DeviantArtFs.Examples.WebApp.Models
 {
     public class FeedModel
     {
-        private IBclDeviantArtFeedCursorResult _result;
+        private DeviantArtFeedCursorResult _result;
 
-        public FeedModel(IBclDeviantArtFeedCursorResult result)
+        public FeedModel(DeviantArtFeedCursorResult result)
         {
             _result = result ?? throw new ArgumentNullException(nameof(result));
         }
 
-        public string Cursor => _result.Cursor;
-        public bool HasMore => _result.HasMore;
-        public IEnumerable<FeedItemModel> Items => _result.Items.Select(x => new FeedItemModel(x));
+        public string Cursor => _result.cursor;
+        public bool HasMore => _result.has_more;
+        public IEnumerable<FeedItemModel> Items => _result.items.Select(x => new FeedItemModel(x));
     }
 }

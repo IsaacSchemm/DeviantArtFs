@@ -26,11 +26,9 @@ module FeedHomeBucket =
     let ToArrayAsync token offset limit bucketid =
         ToAsyncSeq token offset bucketid
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun o -> o :> IBclDeviation)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
     let ExecuteAsync token paging bucketid =
         AsyncExecute token paging bucketid
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
         |> Async.StartAsTask

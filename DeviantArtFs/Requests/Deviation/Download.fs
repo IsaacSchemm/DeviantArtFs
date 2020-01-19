@@ -10,4 +10,4 @@ module Download =
         return DeviationDownload.Parse json
     }
 
-    let ExecuteAsync token deviationid = AsyncExecute token deviationid |> AsyncThen.map (fun d -> d :> IBclDeviationDownload) |> Async.StartAsTask
+    let ExecuteAsync token deviationid = AsyncExecute token deviationid |> Async.StartAsTask

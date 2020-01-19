@@ -9,4 +9,4 @@ module Whoami =
         return DeviantArtUser.Parse json
     }
 
-    let ExecuteAsync token = AsyncExecute token |> AsyncThen.map (fun o -> o :> IBclDeviantArtUser) |> Async.StartAsTask
+    let ExecuteAsync token = AsyncExecute token |> Async.StartAsTask

@@ -41,5 +41,4 @@ module MessagesFeed =
 
     let ExecuteAsync token cursor req =
         AsyncExecute token (Option.ofObj cursor) req
-        |> AsyncThen.map (fun o -> o :> IBclDeviantArtMessageCursorResult)
         |> Async.StartAsTask
