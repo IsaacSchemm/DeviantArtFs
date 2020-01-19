@@ -9,7 +9,7 @@
 
 @foreach (var o in Model.results)
 {
-    var d = o.ToExistingDeviations().SingleOrDefault();
+    var d = o.SingleIfExists().SingleOrDefault();
     if (d == null) { continue; }
 
     if (d.is_mature)
