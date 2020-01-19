@@ -2,28 +2,6 @@
 
 open System
 
-[<RequireQualifiedAccess>]
-type DeviantArtMessageSubject =
-| Profile of DeviantArtUser
-| Deviation of Deviation
-| Status of DeviantArtStatus
-| Comment of DeviantArtComment
-| Collection of DeviantArtCollectionFolder
-| Gallery of DeviantArtGalleryFolder
-| Other of obj
-| None
-with
-    member this.GetUnderlyingObject(): obj =
-        match this with
-        | Profile x -> x :> obj
-        | Deviation x -> x :> obj
-        | Status x -> x :> obj
-        | Comment x -> x :> obj
-        | Collection x -> x :> obj
-        | Gallery x -> x :> obj
-        | Other x -> x
-        | None -> null
-
 type DeviantArtMessageSubjectObject = {
     profile: DeviantArtUser option
     deviation: Deviation option
@@ -32,16 +10,14 @@ type DeviantArtMessageSubjectObject = {
     collection: DeviantArtCollectionFolder option
     gallery: DeviantArtGalleryFolder option
 } with
-    member this.Discrimate() =
-        match (this.profile, this.deviation, this.status, this.comment, this.collection, this.gallery) with
-        | (Some x, None, None, None, None, None) -> DeviantArtMessageSubject.Profile x
-        | (None, Some x, None, None, None, None) -> DeviantArtMessageSubject.Deviation x
-        | (None, None, Some x, None, None, None) -> DeviantArtMessageSubject.Status x
-        | (None, None, None, Some x, None, None) -> DeviantArtMessageSubject.Comment x
-        | (None, None, None, None, Some x, None) -> DeviantArtMessageSubject.Collection x
-        | (None, None, None, None, None, Some x) -> DeviantArtMessageSubject.Gallery x
-        | (None, None, None, None, None, None) -> DeviantArtMessageSubject.None
-        | _ -> DeviantArtMessageSubject.Other this
+    member this.Enumerate() = seq {
+        match this.profile with | Some s -> s :> obj | None -> ()
+        match this.deviation with | Some s -> s :> obj | None -> ()
+        match this.status with | Some s -> s :> obj | None -> ()
+        match this.comment with | Some s -> s :> obj | None -> ()
+        match this.collection with | Some s -> s :> obj | None -> ()
+        match this.gallery with | Some s -> s :> obj | None -> ()
+    }
 
 type DeviantArtMessage = {
     messageid: string
@@ -63,5 +39,15 @@ type DeviantArtMessage = {
     collection: DeviantArtCollectionFolder option
 } with
     member this.GetTimestampOrNull() = this.ts |> Option.toNullable
-    member this.GetOriginatorOrEmpty() = this.originator |> Seq.singleton |> Seq.choose id
-    member this.GetSubjectOrEmpty() = this.subject |> Seq.singleton |> Seq.choose id
+    member this.GetOriginators() = this.originator |> Seq.singleton |> Seq.choose id
+    member this.GetSubjects() = this.subject |> Option.map (fun s -> s.Enumerate()) |> Option.defaultValue Seq.empty
+
+    member this.GetStackIdOrNull() = this.stackid |> Option.toObj
+    member this.GetStackCountOrNull() = this.stack_count |> Option.toNullable
+
+    member this.GetHtmlOrNull() = this.html |> Option.toObj
+    member this.GetProfiles() = this.profile |> Seq.singleton |> Seq.choose id
+    member this.GetDeviations() = this.deviation |> Seq.singleton |> Seq.choose id
+    member this.GetStatuses() = this.status |> Seq.singleton |> Seq.choose id
+    member this.GetComments() = this.comment |> Seq.singleton |> Seq.choose id
+    member this.GetCollections() = this.collection |> Seq.singleton |> Seq.choose id

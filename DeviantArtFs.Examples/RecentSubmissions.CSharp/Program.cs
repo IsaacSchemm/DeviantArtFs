@@ -219,18 +219,19 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 null,
                 5);
             foreach (var m in messages) {
-                var s = m.GetSubjectOrEmpty()
+                string originator = m.GetOriginators()
+                    .Select(u => u.username)
+                    .DefaultIfEmpty("???")
+                    .Single();
+                object subject = m.GetSubjects()
                     .DefaultIfEmpty(null)
                     .Single();
-                if (s == null) {
-                    Console.WriteLine($"New message with no subject");
+                if (subject == null) {
+                    Console.WriteLine($"New message, originator {originator}, no subject");
+                } else if (subject is DeviantArtUser u) {
+                    Console.WriteLine($"New message, originator {originator}, subject is user with ID {u.userid} and name {u.username}");
                 } else {
-                    var o = s.Discrimate().GetUnderlyingObject();
-                    if (o is DeviantArtUser u) {
-                        Console.WriteLine($"New message, subject is user with ID {u.userid} and name {u.username}");
-                    } else {
-                        Console.WriteLine($"New message, subject = {o}");
-                    }
+                    Console.WriteLine($"New message, originator {originator}, subject = {subject}");
                 }
             }
         }

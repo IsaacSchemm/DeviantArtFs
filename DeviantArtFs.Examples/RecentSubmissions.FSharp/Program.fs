@@ -146,6 +146,25 @@ let sandbox token_string = async {
 
         printfn ""
     | None -> ()
+
+    let! messages =
+        new DeviantArtFs.Requests.Messages.MessagesFeedRequest()
+        |> DeviantArtFs.Requests.Messages.MessagesFeed.ToAsyncSeq token None
+        |> AsyncSeq.take 5
+        |> AsyncSeq.toListAsync
+    for m in messages do
+        printfn "%A" m
+        let originator =
+            m.originator
+            |> Option.map (fun u -> u.username)
+            |> Option.defaultValue "???"
+        let subject =
+            m.GetSubjects()
+            |> Seq.tryHead
+        match subject with
+        | None -> printfn "New message, originator %s, no subject" originator
+        | Some (:? DeviantArtUser as u) -> printfn "New message, originator %s, subject is user with ID %O and name %s" originator u.userid u.username
+        | Some o -> printfn "New message, originator %s, subject = %A" originator o
 }
 
 [<EntryPoint>]
