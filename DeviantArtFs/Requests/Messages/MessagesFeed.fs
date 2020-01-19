@@ -36,7 +36,6 @@ module MessagesFeed =
     let ToArrayAsync token req cursor limit =
         ToAsyncSeq token (Option.ofObj cursor) req
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun o -> o :> IBclDeviantArtMessage)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 

@@ -42,7 +42,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                     ? "https://www.example.com"
                     : url1;
 
-                using (var form = new WinForms.DeviantArtImplicitGrantForm(client_id, new Uri(url2), new[] { "browse", "user", "stash", "publish", "user.manage" }))
+                using (var form = new WinForms.DeviantArtImplicitGrantForm(client_id, new Uri(url2), new[] { "browse", "user", "stash", "publish", "user.manage", "message" }))
                 {
                     if (form.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                     {
@@ -211,6 +211,27 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 }
 
                 Console.WriteLine();
+            }
+
+            var messages = await Requests.Messages.MessagesFeed.ToArrayAsync(
+                token,
+                new Requests.Messages.MessagesFeedRequest(),
+                null,
+                5);
+            foreach (var m in messages) {
+                var s = m.GetSubjectOrEmpty()
+                    .DefaultIfEmpty(null)
+                    .Single();
+                if (s == null) {
+                    Console.WriteLine($"New message with no subject");
+                } else {
+                    var o = s.Discrimate().GetUnderlyingObject();
+                    if (o is DeviantArtUser u) {
+                        Console.WriteLine($"New message, subject is user with ID {u.userid} and name {u.username}");
+                    } else {
+                        Console.WriteLine($"New message, subject = {o}");
+                    }
+                }
             }
         }
 

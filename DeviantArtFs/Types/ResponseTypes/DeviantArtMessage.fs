@@ -2,16 +2,29 @@
 
 open System
 
-[<AllowNullLiteral>]
-type IBclDeviantArtMessageSubject =
-    abstract member Profile: IBclDeviantArtUser
-    abstract member Deviation: IBclDeviation
-    abstract member Status: IBclDeviantArtStatus
-    abstract member Comment: IBclDeviantArtComment
-    abstract member Collection: IBclDeviantArtCollectionFolder
-    abstract member Gallery: IBclDeviantArtGalleryFolder
+[<RequireQualifiedAccess>]
+type DeviantArtMessageSubject =
+| Profile of DeviantArtUser
+| Deviation of Deviation
+| Status of DeviantArtStatus
+| Comment of DeviantArtComment
+| Collection of DeviantArtCollectionFolder
+| Gallery of DeviantArtGalleryFolder
+| Other of obj
+| None
+with
+    member this.GetUnderlyingObject(): obj =
+        match this with
+        | Profile x -> x :> obj
+        | Deviation x -> x :> obj
+        | Status x -> x :> obj
+        | Comment x -> x :> obj
+        | Collection x -> x :> obj
+        | Gallery x -> x :> obj
+        | Other x -> x
+        | None -> null
 
-type DeviantArtMessageSubject = {
+type DeviantArtMessageSubjectObject = {
     profile: DeviantArtUser option
     deviation: Deviation option
     status: DeviantArtStatus option
@@ -19,40 +32,29 @@ type DeviantArtMessageSubject = {
     collection: DeviantArtCollectionFolder option
     gallery: DeviantArtGalleryFolder option
 } with
-    interface IBclDeviantArtMessageSubject with
-        member this.Collection = this.collection |> Option.map (fun o -> o :> IBclDeviantArtCollectionFolder) |> Option.toObj
-        member this.Comment = this.comment |> Option.map (fun o -> o :> IBclDeviantArtComment) |> Option.toObj
-        member this.Deviation = this.deviation |> Option.map (fun o -> o :> IBclDeviation) |> Option.toObj
-        member this.Gallery = this.gallery |> Option.map (fun o -> o :> IBclDeviantArtGalleryFolder) |> Option.toObj
-        member this.Profile = this.profile |> Option.map (fun o -> o :> IBclDeviantArtUser) |> Option.toObj
-        member this.Status = this.status |> Option.map (fun o -> o :> IBclDeviantArtStatus) |> Option.toObj
+    member this.Discrimate() =
+        match (this.profile, this.deviation, this.status, this.comment, this.collection, this.gallery) with
+        | (Some x, None, None, None, None, None) -> DeviantArtMessageSubject.Profile x
+        | (None, Some x, None, None, None, None) -> DeviantArtMessageSubject.Deviation x
+        | (None, None, Some x, None, None, None) -> DeviantArtMessageSubject.Status x
+        | (None, None, None, Some x, None, None) -> DeviantArtMessageSubject.Comment x
+        | (None, None, None, None, Some x, None) -> DeviantArtMessageSubject.Collection x
+        | (None, None, None, None, None, Some x) -> DeviantArtMessageSubject.Gallery x
+        | (None, None, None, None, None, None) -> DeviantArtMessageSubject.None
+        | _ -> DeviantArtMessageSubject.Other this
 
-type IBclDeviantArtMessage =
-    abstract member Messageid: string
-    abstract member Type: string
-    abstract member Orphaned: bool
-    abstract member Ts: Nullable<DateTimeOffset>
-    abstract member Stackid: string
-    abstract member StackCount: Nullable<int>
-    abstract member Originator: IBclDeviantArtUser
-    abstract member Subject: IBclDeviantArtMessageSubject
-    abstract member Html: string
-    abstract member Profile: IBclDeviantArtUser
-    abstract member Deviation: IBclDeviation
-    abstract member Status: IBclDeviantArtStatus
-    abstract member Comment: IBclDeviantArtComment
-    abstract member Collection: IBclDeviantArtCollectionFolder
-
-// https://www.deviantart.com/developers/http/v1/20160316/object/message
 type DeviantArtMessage = {
     messageid: string
     ``type``: string
     orphaned: bool
+
     ts: DateTimeOffset option
+    originator: DeviantArtUser option
+    subject: DeviantArtMessageSubjectObject option
+    
     stackid: string option
     stack_count: int option
-    originator: DeviantArtUser option
-    subject: DeviantArtMessageSubject option
+
     html: string option
     profile: DeviantArtUser option
     deviation: Deviation option
@@ -60,18 +62,6 @@ type DeviantArtMessage = {
     comment: DeviantArtComment option
     collection: DeviantArtCollectionFolder option
 } with
-    interface IBclDeviantArtMessage with
-        member this.Html = this.html |> Option.toObj
-        member this.Messageid = this.messageid
-        member this.Originator = this.originator |> Option.map (fun o -> o :> IBclDeviantArtUser) |> Option.toObj
-        member this.Orphaned = this.orphaned
-        member this.StackCount = this.stack_count |> Option.toNullable
-        member this.Stackid = this.stackid |> Option.toObj
-        member this.Subject = this.subject |> Option.map (fun o -> o :> IBclDeviantArtMessageSubject) |> Option.toObj
-        member this.Ts = this.ts |> Option.toNullable
-        member this.Type = this.``type``
-        member this.Collection = this.collection |> Option.map (fun o -> o :> IBclDeviantArtCollectionFolder) |> Option.toObj
-        member this.Comment = this.comment |> Option.map (fun o -> o :> IBclDeviantArtComment) |> Option.toObj
-        member this.Deviation = this.deviation |> Option.map (fun o -> o :> IBclDeviation) |> Option.toObj
-        member this.Profile = this.profile |> Option.map (fun o -> o :> IBclDeviantArtUser) |> Option.toObj
-        member this.Status = this.status |> Option.map (fun o -> o :> IBclDeviantArtStatus) |> Option.toObj
+    member this.GetTimestampOrNull() = this.ts |> Option.toNullable
+    member this.GetOriginatorOrEmpty() = this.originator |> Seq.singleton |> Seq.choose id
+    member this.GetSubjectOrEmpty() = this.subject |> Seq.singleton |> Seq.choose id
