@@ -13,5 +13,4 @@ module FeedSettings =
 
     let ExecuteAsync token =
         AsyncExecute token
-        |> AsyncThen.map (fun o -> o :> IBclDeviantArtFeedSettings)
         |> Async.StartAsTask

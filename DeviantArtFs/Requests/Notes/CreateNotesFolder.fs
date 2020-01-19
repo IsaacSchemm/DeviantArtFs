@@ -27,4 +27,4 @@ module CreateNotesFolder =
         return DeviantArtNewNotesFolder.Parse json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.map (fun o -> o :> IBclDeviantArtNewNotesFolder) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

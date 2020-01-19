@@ -13,5 +13,4 @@ module NotesFolders =
 
     let ExecuteAsync token =
         AsyncExecute token
-        |> AsyncThen.mapSeq (fun o -> o :> IBclDeviantArtNotesFolder)
         |> Async.StartAsTask
