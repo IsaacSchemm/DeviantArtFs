@@ -38,7 +38,7 @@ type DeviantArtMessage = {
     comment: DeviantArtComment option
     collection: DeviantArtCollectionFolder option
 } with
-    member this.GetTimestamp() = OptUtils.toNullable this.ts
+    member this.GetTimestamp() = OptUtils.timeDefault this.ts
     member this.GetOriginator() = OptUtils.recordDefault this.originator
     member this.GetSubjects() =
         this.subject
@@ -46,7 +46,7 @@ type DeviantArtMessage = {
         |> Option.defaultValue Seq.empty
 
     member this.GetStackId() = OptUtils.stringDefault this.stackid
-    member this.GetStackCount() = OptUtils.toNullable this.stack_count
+    member this.GetStackCount() = OptUtils.intDefault this.stack_count
 
     member this.GetHtml() = OptUtils.recordDefault this.html
     member this.GetProfile() = OptUtils.recordDefault this.profile

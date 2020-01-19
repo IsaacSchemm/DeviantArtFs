@@ -20,4 +20,4 @@ type DeviantArtNotesFolder = {
     title: string
     count: string
 } with
-    member this.GetParentId() = OptUtils.toNullable this.parentid
+    member this.GetParentId() = OptUtils.guidDefault this.parentid

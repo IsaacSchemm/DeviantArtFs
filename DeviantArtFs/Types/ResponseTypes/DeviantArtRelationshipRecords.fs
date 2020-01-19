@@ -28,4 +28,4 @@ type DeviantArtWatcherRecord = {
     watch: DeviantArtWatchInfo
 } with
     static member Parse json = Json.deserialize<DeviantArtWatcherRecord> json
-    member this.GetLastVisit() = OptUtils.toNullable this.lastvisit
+    member this.GetLastVisit() = OptUtils.timeDefault this.lastvisit

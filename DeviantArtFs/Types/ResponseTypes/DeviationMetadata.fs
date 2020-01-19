@@ -21,7 +21,7 @@ type DeviationMetadata = {
     camera: Map<string, string> option
     collections: DeviantArtCollectionFolder list option
 } with
-    member this.GetPrintId() = OptUtils.toNullable this.printid
+    member this.GetPrintId() = OptUtils.guidDefault this.printid
     member this.GetSubmission() = OptUtils.recordDefault this.submission
     member this.GetStats() = OptUtils.recordDefault this.stats
     member this.GetCamera() = OptUtils.mapDefault this.camera

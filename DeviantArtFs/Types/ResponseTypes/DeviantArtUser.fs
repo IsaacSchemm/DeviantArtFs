@@ -8,7 +8,7 @@ type DeviantArtUserDetails = {
     age: int option
     joindate: DateTimeOffset
 } with
-    member this.GetAge() = OptUtils.toNullable this.age
+    member this.GetAge() = OptUtils.intDefault this.age
     member this.GetSex() = OptUtils.stringDefault this.sex
 
 type DeviantArtUserGeo = {
@@ -46,7 +46,7 @@ type DeviantArtUser = {
     stats: DeviantArtUserStats option
 } with
     static member Parse json = Json.deserialize<DeviantArtUser> json
-    member this.GetIsWatching() = OptUtils.toNullable this.is_watching
+    member this.GetIsWatching() = OptUtils.boolDefault this.is_watching
     member this.GetDetails() = OptUtils.recordDefault this.details
     member this.GetGeo() = OptUtils.recordDefault this.geo
     member this.GetProfile() = OptUtils.recordDefault this.profile

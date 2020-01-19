@@ -14,9 +14,9 @@ type DeviantArtCommentPagedResult = {
     thread: DeviantArtComment[]
 } with
     static member Parse json = Json.deserialize<DeviantArtCommentPagedResult> json
-    member this.GetNextOffset() = OptUtils.toNullable this.next_offset
-    member this.GetPrevOffset() = OptUtils.toNullable this.prev_offset
-    member this.GetTotal() = OptUtils.toNullable this.total
+    member this.GetNextOffset() = OptUtils.intDefault this.next_offset
+    member this.GetPrevOffset() = OptUtils.intDefault this.prev_offset
+    member this.GetTotal() = OptUtils.intDefault this.total
     interface IResultPage<int, DeviantArtComment> with
         member this.HasMore = this.has_more
         member this.Cursor = this.next_offset |> Option.defaultValue 0

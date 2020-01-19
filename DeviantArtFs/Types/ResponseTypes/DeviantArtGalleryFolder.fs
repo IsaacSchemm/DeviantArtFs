@@ -11,6 +11,6 @@ type DeviantArtGalleryFolder = {
     deviations: Deviation list option
 } with
     static member Parse json = Json.deserialize<DeviantArtGalleryFolder> json
-    member this.GetParent() = OptUtils.toNullable this.parent
-    member this.GetSize() = OptUtils.toNullable this.size
+    member this.GetParent() = OptUtils.guidDefault this.parent
+    member this.GetSize() = OptUtils.intDefault this.size
     member this.GetDeviations() = OptUtils.listDefault this.deviations

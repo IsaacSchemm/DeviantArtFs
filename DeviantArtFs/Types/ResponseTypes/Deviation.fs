@@ -115,11 +115,11 @@ and ExistingDeviation = {
     is_downloadable: bool
     download_filesize: int option
 } with
-    member this.GetPrintId() = OptUtils.toNullable this.printid
+    member this.GetPrintId() = OptUtils.guidDefault this.printid
     member this.GetPreview() = OptUtils.recordDefault this.preview
     member this.GetContent() = OptUtils.recordDefault this.content
     member this.GetVideos() = OptUtils.listDefault this.videos
     member this.GetFlash() = OptUtils.recordDefault this.videos
     member this.GetDailyDeviation() = OptUtils.recordDefault this.daily_deviation
     member this.GetExcerpt() = OptUtils.stringDefault this.excerpt
-    member this.GetDownloadFilesize() = OptUtils.toNullable this.download_filesize
+    member this.GetDownloadFilesize() = OptUtils.intDefault this.download_filesize
