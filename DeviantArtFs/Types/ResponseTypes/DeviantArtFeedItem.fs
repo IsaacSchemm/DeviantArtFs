@@ -2,71 +2,24 @@
 
 open System
 
-[<AllowNullLiteral>]
-type IBclDeviantArtFeedItemCollection =
-    abstract member Folderid: Guid
-    abstract member Name: string
-    abstract member Url: string
-    abstract member Size: Nullable<int>
-
 type DeviantArtFeedItemCollection = {
     folderid: Guid
     name: string
     url: string
     size: int option
 } with
-    interface IBclDeviantArtFeedItemCollection with
-        member this.Folderid = this.folderid
-        member this.Name = this.name
-        member this.Size = this.size |> Option.toNullable
-        member this.Url = this.url
-
-type IBclDeviantArtFeedItemPollAnswer =
-    abstract member Answer: string
-    abstract member Votes: int
+    member this.GetSizeOrNull() = Option.toNullable this.size 
 
 type DeviantArtFeedItemPollAnswer = {
     answer: string
     votes: int
-} with
-    interface IBclDeviantArtFeedItemPollAnswer with
-        member this.Answer = this.answer
-        member this.Votes = this.votes
-        
-[<AllowNullLiteral>]
-type IBclDeviantArtFeedItemPoll =
-    abstract member Question: string
-    abstract member TotalVotes: int
-    abstract member Answers: seq<IBclDeviantArtFeedItemPollAnswer>
+}
 
 type DeviantArtFeedItemPoll = {
     question: string
     total_votes: int
     answers: DeviantArtFeedItemPollAnswer list
-} with
-    interface IBclDeviantArtFeedItemPoll with
-        member this.Answers = this.answers |> Seq.map (fun o -> o :> IBclDeviantArtFeedItemPollAnswer)
-        member this.Question = this.question
-        member this.TotalVotes = this.total_votes
-
-type IBclDeviantArtFeedItem =
-    abstract member Ts: DateTimeOffset
-    abstract member Type: string
-    abstract member ByUser: IBclDeviantArtUser
-    abstract member Deviations: seq<IBclDeviation>
-    abstract member Bucketid: Nullable<Guid>
-    abstract member BucketTotal: Nullable<int>
-    abstract member Status: IBclDeviantArtStatus
-    abstract member Comment: IBclDeviantArtComment
-    abstract member CommentParent: IBclDeviantArtComment
-    abstract member CommentDeviation: IBclDeviation
-    abstract member CommentProfile: IBclDeviantArtProfile
-    abstract member CommentStatus: IBclDeviantArtStatus
-    abstract member CritiqueText: string
-    abstract member Collection: IBclDeviantArtFeedItemCollection
-    abstract member Formerly: string
-    abstract member AddedCount: Nullable<int>
-    abstract member Poll: IBclDeviantArtFeedItemPoll
+}
 
 type DeviantArtFeedItem = {
     ts: DateTimeOffset
@@ -87,21 +40,17 @@ type DeviantArtFeedItem = {
     added_count: int option
     poll: DeviantArtFeedItemPoll option
 } with
-    interface IBclDeviantArtFeedItem with
-        member this.AddedCount = this.added_count |> Option.toNullable
-        member this.BucketTotal = this.bucket_total |> Option.toNullable
-        member this.Bucketid = this.bucketid |> Option.toNullable
-        member this.ByUser = this.by_user :> IBclDeviantArtUser
-        member this.Collection = this.collection |> Option.map (fun o -> o :> IBclDeviantArtFeedItemCollection) |> Option.toObj
-        member this.Comment = this.comment |> Option.map (fun o -> o :> IBclDeviantArtComment) |> Option.toObj
-        member this.CommentDeviation = this.comment_deviation |> Option.map (fun o -> o :> IBclDeviation) |> Option.toObj
-        member this.CommentParent = this.comment_parent |> Option.map (fun o -> o :> IBclDeviantArtComment) |> Option.toObj
-        member this.CommentProfile = this.comment_profile |> Option.map (fun o -> o :> IBclDeviantArtProfile) |> Option.toObj
-        member this.CommentStatus = this.comment_status |> Option.map (fun o -> o :> IBclDeviantArtStatus) |> Option.toObj
-        member this.CritiqueText = this.critique_text |> Option.toObj
-        member this.Deviations = this.deviations |> Option.map Seq.ofList |> Option.defaultValue Seq.empty |> Seq.map (fun o -> o :> IBclDeviation)
-        member this.Formerly = this.formerly |> Option.toObj
-        member this.Poll = this.poll |> Option.map (fun o -> o :> IBclDeviantArtFeedItemPoll) |> Option.toObj
-        member this.Status = this.status |> Option.map (fun o -> o :> IBclDeviantArtStatus) |> Option.toObj
-        member this.Ts = this.ts
-        member this.Type = this.``type``
+    member this.GetAddedCountOrNull() = Option.toNullable this.added_count
+    member this.GetBucketTotalOrNull() = Option.toNullable this.bucket_total
+    member this.GetBucketIdOrNull() = Option.toNullable this.bucketid
+    member this.GetDeviations() = OptUtils.emptyIfNone this.deviations
+    member this.GetCollections() = OptUtils.toSeq this.collection
+    member this.GetComments() = OptUtils.toSeq this.comment
+    member this.GetCommentDeviations() = OptUtils.toSeq this.comment_deviation
+    member this.GetCommentParents() = OptUtils.toSeq this.comment_parent
+    member this.GetCommentProfiles() = OptUtils.toSeq this.comment_profile
+    member this.GetCommentStatuses() = OptUtils.toSeq this.comment_status
+    member this.GetCritiques() = OptUtils.toSeq this.critique_text
+    member this.GetFormerlys() = OptUtils.toSeq this.formerly
+    member this.GetPolls() = OptUtils.toSeq this.poll
+    member this.GetStatuses() = OptUtils.toSeq this.status

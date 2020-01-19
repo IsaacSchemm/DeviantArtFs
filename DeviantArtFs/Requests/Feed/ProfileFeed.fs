@@ -29,7 +29,6 @@ module ProfileFeed =
         |> Option.ofObj
         |> ToAsyncSeq token
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun o -> o :> IBclDeviantArtFeedItem)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
@@ -37,5 +36,4 @@ module ProfileFeed =
         cursor
         |> Option.ofObj
         |> AsyncExecute token
-        |> AsyncThen.map (fun o -> o :> IBclDeviantArtFeedCursorResult)
         |> Async.StartAsTask

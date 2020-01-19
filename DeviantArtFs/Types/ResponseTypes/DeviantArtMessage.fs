@@ -11,12 +11,12 @@ type DeviantArtMessageSubjectObject = {
     gallery: DeviantArtGalleryFolder option
 } with
     member this.Enumerate() = seq {
-        match this.profile with | Some s -> s :> obj | None -> ()
-        match this.deviation with | Some s -> s :> obj | None -> ()
-        match this.status with | Some s -> s :> obj | None -> ()
-        match this.comment with | Some s -> s :> obj | None -> ()
-        match this.collection with | Some s -> s :> obj | None -> ()
-        match this.gallery with | Some s -> s :> obj | None -> ()
+        yield! OptUtils.toObjSeq this.profile
+        yield! OptUtils.toObjSeq this.deviation
+        yield! OptUtils.toObjSeq this.status
+        yield! OptUtils.toObjSeq this.comment
+        yield! OptUtils.toObjSeq this.collection
+        yield! OptUtils.toObjSeq this.gallery
     }
 
 type DeviantArtMessage = {
@@ -38,16 +38,19 @@ type DeviantArtMessage = {
     comment: DeviantArtComment option
     collection: DeviantArtCollectionFolder option
 } with
-    member this.GetTimestampOrNull() = this.ts |> Option.toNullable
-    member this.GetOriginators() = this.originator |> Seq.singleton |> Seq.choose id
-    member this.GetSubjects() = this.subject |> Option.map (fun s -> s.Enumerate()) |> Option.defaultValue Seq.empty
+    member this.GetTimestampOrNull() = Option.toNullable this.ts
+    member this.GetOriginators() = OptUtils.toSeq this.originator
+    member this.GetSubjects() =
+        this.subject
+        |> Option.map (fun s -> s.Enumerate())
+        |> Option.defaultValue Seq.empty
 
-    member this.GetStackIdOrNull() = this.stackid |> Option.toObj
-    member this.GetStackCountOrNull() = this.stack_count |> Option.toNullable
+    member this.GetStackIdOrNull() = Option.toObj this.stackid
+    member this.GetStackCountOrNull() = Option.toNullable this.stack_count
 
-    member this.GetHtmlOrNull() = this.html |> Option.toObj
-    member this.GetProfiles() = this.profile |> Seq.singleton |> Seq.choose id
-    member this.GetDeviations() = this.deviation |> Seq.singleton |> Seq.choose id
-    member this.GetStatuses() = this.status |> Seq.singleton |> Seq.choose id
-    member this.GetComments() = this.comment |> Seq.singleton |> Seq.choose id
-    member this.GetCollections() = this.collection |> Seq.singleton |> Seq.choose id
+    member this.GetHtmls() = OptUtils.toSeq this.html
+    member this.GetProfiles() = OptUtils.toSeq this.profile
+    member this.GetDeviations() = OptUtils.toSeq this.deviation
+    member this.GetStatuses() = OptUtils.toSeq this.status
+    member this.GetComments() = OptUtils.toSeq this.comment
+    member this.GetCollections() = OptUtils.toSeq this.collection

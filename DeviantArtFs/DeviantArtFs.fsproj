@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="OptUtils.fs" />
     <Compile Include="Json\Transforms\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Types\AccessTokens.fs" />
     <Compile Include="Types\IResultPage.fs" />
