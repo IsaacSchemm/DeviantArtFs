@@ -41,6 +41,28 @@ let page offset limit = new DeviantArtPagingParams(Offset = offset, Limit = Null
 let sandbox token_string = async {
     let token = create_token_obj token_string
 
+    let! sample_deviation =
+        "99F2A1D6-AC4C-2D88-6E57-595D6162B4C1"
+        |> Guid.Parse
+        |> DeviantArtFs.Requests.Deviation.DeviationById.AsyncExecute token
+    printfn "is_deleted: %b" sample_deviation.is_deleted
+    match sample_deviation.ToUnion() with
+    | Deleted -> ()
+    | Existing sample_deviation_existing ->
+        printfn "Retrieved deviation: %s" sample_deviation_existing.title
+
+    let! sample_status =
+        "C52B5BC5-4140-1DF1-10C5-8E091098E495"
+        |> Guid.Parse
+        |> DeviantArtFs.Requests.User.StatusById.AsyncExecute token
+    printfn "is_deleted: %b" sample_status.is_deleted
+    match sample_status.ToUnion() with
+    | DeviantArtStatusUnion.Deleted -> ()
+    | DeviantArtStatusUnion.Existing sample_status_existing ->
+        printfn "Retrieved status: %s" sample_status_existing.body
+
+    printfn "----------"
+
     printf "Enter a username (leave blank to see your own submissions): "
     let read = Console.ReadLine()
     printfn ""
@@ -65,9 +87,12 @@ let sandbox token_string = async {
     let! deviations =
         DeviantArtFs.Requests.Gallery.GalleryAllViewRequest(Username = username)
         |> DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token (page 0 1)
-    let deviation = Seq.tryHead deviations.results |> Option.map (fun d -> d.ToUnion())
+    let deviation =
+        deviations.results
+        |> DeviationExtensions.WhereNotDeleted
+        |> Seq.tryHead
     match deviation with
-    | Some (DeviationUnion.Existing s) -> 
+    | Some s -> 
         printfn "Most recent deviation: %s (%A)" s.title s.published_time
 
         let! metadata =
@@ -99,9 +124,12 @@ let sandbox token_string = async {
     let! journals =
         DeviantArtFs.Requests.Browse.UserJournalsRequest(username, Featured = false)
         |> DeviantArtFs.Requests.Browse.UserJournals.AsyncExecute token (page 0 1)
-    let journal = Seq.tryHead journals.results |> Option.map (fun d -> d.ToUnion())
+    let journal =
+        journals.results
+        |> DeviationExtensions.WhereNotDeleted
+        |> Seq.tryHead
     match journal with
-    | Some (DeviationUnion.Existing s) -> 
+    | Some s -> 
         printfn "Most recent journal: %s (%A)" s.title s.published_time
 
         let! favorites =
@@ -125,9 +153,12 @@ let sandbox token_string = async {
     | _ -> ()
 
     let! statuses = DeviantArtFs.Requests.User.StatusesList.AsyncExecute token (page 0 1) username
-    let status = Seq.tryHead statuses.results |> Option.map (fun d -> d.ToUnion())
+    let status =
+        statuses.results
+        |> DeviantArtStatusExtensions.WhereNotDeleted
+        |> Seq.tryHead
     match status with
-    | Some (DeviantArtStatusUnion.Existing s) ->
+    | Some s ->
         printfn "Most recent status: %s (%O)" s.body s.ts
 
         let! comments =

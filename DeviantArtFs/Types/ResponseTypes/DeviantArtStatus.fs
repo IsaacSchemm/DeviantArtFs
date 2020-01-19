@@ -2,6 +2,7 @@
 
 open System
 open FSharp.Json
+open System.Runtime.CompilerServices
 
 type DeviantArtStatusItem = {
     ``type``: string
@@ -34,10 +35,6 @@ and DeviantArtStatus = {
             author = this.author.Value
             items = this.items.Value
         }
-    member this.SingleIfExists() =
-        match this.ToUnion() with
-        | Deleted -> Seq.empty
-        | Existing e -> Seq.singleton e
 
 and DeviantArtStatusUnion =
 | Deleted
@@ -61,3 +58,14 @@ and DeviantArtExistingStatus = {
         this.items
         |> Seq.map (fun i -> i.status)
         |> Seq.choose id
+
+[<Extension>]
+module DeviantArtStatusExtensions =
+    [<Extension>]
+    let WhereNotDeleted (s: DeviantArtStatus seq) = seq {
+        for d in s do
+            if not (isNull (d :> obj)) then
+                match d.ToUnion() with
+                | Deleted -> ()
+                | Existing e -> yield e
+    }

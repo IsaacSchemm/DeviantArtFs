@@ -63,6 +63,28 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
         {
             var token = new Token(token_string);
 
+            var sample_deviation = await Requests.Deviation.DeviationById.ExecuteAsync(token, Guid.Parse("99F2A1D6-AC4C-2D88-6E57-595D6162B4C1"));
+            Console.WriteLine($"is_deleted: {sample_deviation.is_deleted}");
+            var sample_deviation_existing =
+                new[] { sample_deviation }
+                .WhereNotDeleted()
+                .FirstOrDefault();
+            if (sample_deviation_existing != null) {
+                Console.WriteLine($"Retrieved deviation: {sample_deviation_existing.title}");
+            }
+
+            var sample_status = await Requests.User.StatusById.ExecuteAsync(token, Guid.Parse("C52B5BC5-4140-1DF1-10C5-8E091098E495"));
+            Console.WriteLine($"is_deleted: {sample_status.is_deleted}");
+            var sample_status_existing =
+                new[] { sample_status }
+                .WhereNotDeleted()
+                .FirstOrDefault();
+            if (sample_status_existing != null) {
+                Console.WriteLine($"Retrieved status: {sample_status_existing.body}");
+            }
+
+            Console.WriteLine($"----------");
+
             Console.Write("Enter a username (leave blank to see your own submissions): ");
             string read = Console.ReadLine();
             Console.WriteLine();
@@ -88,8 +110,8 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Gallery.GalleryAllViewRequest { Username = username });
-            var deviation_obj = deviations.results.FirstOrDefault();
-            if (deviation_obj?.SingleIfExists()?.SingleOrDefault() is ExistingDeviation deviation)
+            var deviation_obj = deviations.results.WhereNotDeleted().FirstOrDefault();
+            if (deviation_obj is ExistingDeviation deviation)
             {
                 Console.WriteLine($"Most recent deviation: {deviation.title} ({deviation.published_time})");
 
@@ -137,8 +159,8 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Browse.UserJournalsRequest(username) { Featured = false });
-            var journal_obj = journals.results.FirstOrDefault();
-            if (journal_obj?.SingleIfExists()?.SingleOrDefault() is ExistingDeviation journal)
+            var journal_obj = journals.results.WhereNotDeleted().FirstOrDefault();
+            if (journal_obj is ExistingDeviation journal)
             {
                 Console.WriteLine($"Most recent journal: {journal.title} ({journal.published_time})");
 
@@ -186,8 +208,8 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 username);
-            var status_obj = statuses.results.FirstOrDefault();
-            if (status_obj?.SingleIfExists()?.SingleOrDefault() is DeviantArtExistingStatus status)
+            var status_obj = statuses.results.WhereNotDeleted().FirstOrDefault();
+            if (status_obj is DeviantArtExistingStatus status)
             {
                 Console.WriteLine($"Most recent status: {status.body} ({status.ts})");
 
