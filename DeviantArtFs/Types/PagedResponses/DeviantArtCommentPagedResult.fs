@@ -11,7 +11,7 @@ type IBclDeviantArtCommentPagedResult =
     abstract member HasLess: bool
     abstract member PrevOffset: Nullable<int>
     abstract member Total: Nullable<int>
-    abstract member Thread: seq<IBclDeviantArtComment>
+    abstract member Thread: seq<DeviantArtComment>
 
 /// A single page of results from a DeviantArt API endpoint that fetches
 /// comments.
@@ -30,7 +30,7 @@ type DeviantArtCommentPagedResult = {
         member this.HasLess = this.has_less
         member this.PrevOffset = this.prev_offset |> Option.toNullable
         member this.Total = this.total |> Option.toNullable
-        member this.Thread = this.thread |> Seq.map (fun c -> c :> IBclDeviantArtComment)
+        member this.Thread = this.thread |> Seq.map (fun c -> c :> DeviantArtComment)
     interface IResultPage<int, DeviantArtComment> with
         member this.HasMore = this.has_more
         member this.Cursor = this.next_offset |> Option.defaultValue 0

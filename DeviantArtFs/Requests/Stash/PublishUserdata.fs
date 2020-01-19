@@ -10,4 +10,4 @@ module PublishUserdata =
         return StashPublishUserdataResult.Parse json
     }
 
-    let ExecuteAsync token = AsyncExecute token |> AsyncThen.map (fun r -> r :> IBclStashPublishUserdataResult) |> Async.StartAsTask
+    let ExecuteAsync token = AsyncExecute token |> Async.StartAsTask

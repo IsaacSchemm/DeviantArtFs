@@ -34,7 +34,6 @@ module ProfileComments =
     let ToArrayAsync token offset limit req =
         ToAsyncSeq token offset req
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun c -> c :> IBclDeviantArtComment)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 

@@ -3,23 +3,6 @@
 open System
 open FSharp.Json
 
-[<AllowNullLiteral>]
-type IBclDeviantArtStatus =
-    abstract member Statusid: Guid Nullable
-    abstract member Body: string
-    abstract member Ts: DateTimeOffset Nullable
-    abstract member Url: string
-    abstract member CommentsCount: int Nullable
-    abstract member IsShare: bool Nullable
-    abstract member IsDeleted: bool
-    abstract member Author: IBclDeviantArtUser
-    abstract member EmbeddedDeviations: IBclDeviation seq
-    abstract member EmbeddedStatuses: IBclDeviantArtStatus seq
-
-type PossiblyDeletedDeviantArtStatus = {
-    is_deleted: bool
-}
-
 type DeviantArtStatusItem = {
     ``type``: string
     status: DeviantArtStatus option
@@ -38,32 +21,43 @@ and DeviantArtStatus = {
     items: DeviantArtStatusItem list option
 } with
     static member internal Parse json = Json.deserialize<DeviantArtStatus> json
+    member this.ToUnion() =
+        match this.is_deleted with
+        | true -> Deleted
+        | false -> Existing {
+            statusid = this.statusid.Value
+            body = this.body.Value
+            ts = this.ts.Value
+            url = this.url.Value
+            comments_count = this.comments_count.Value
+            is_share = this.is_share.Value
+            author = this.author.Value
+            items = this.items.Value
+        }
+    member this.ToExistingStatuses() =
+        match this.ToUnion() with
+        | Deleted -> Seq.empty
+        | Existing e -> Seq.singleton e
 
-    member this.EmbeddedDeviations = seq {
-        for i in this.items |> Option.defaultValue List.empty do
-            match i.deviation with
-                | Some s -> yield s
-                | None -> ()
-    }
+and DeviantArtStatusUnion =
+| Deleted
+| Existing of DeviantArtExistingStatus
 
-    member this.EmbeddedStatuses = seq {
-        for i in this.items |> Option.defaultValue List.empty do
-            match i.status with
-                | Some s -> yield s
-                | None -> ()
-    }
-
-    interface IBclDeviantArtStatus with
-        member this.Body = this.body |> Option.defaultValue null
-        member this.CommentsCount = this.comments_count |> Option.toNullable
-        member this.EmbeddedDeviations = this.EmbeddedDeviations |> Seq.map (fun s -> s :> IBclDeviation)
-        member this.EmbeddedStatuses = this.EmbeddedStatuses |> Seq.map (fun s -> s :> IBclDeviantArtStatus)
-        member this.IsDeleted = this.is_deleted
-        member this.IsShare = this.is_share |> Option.toNullable
-        member this.Statusid = this.statusid |> Option.toNullable
-        member this.Ts = this.ts |> Option.toNullable
-        member this.Url = this.url |> Option.defaultValue null
-        member this.Author =
-            match this.author with
-            | Some a -> a :> IBclDeviantArtUser
-            | None -> null
+and DeviantArtExistingStatus = {
+    statusid: Guid
+    body: string
+    ts: DateTimeOffset
+    url: string
+    comments_count: int
+    is_share: bool
+    author: DeviantArtUser
+    items: DeviantArtStatusItem list
+} with
+    member this.GetEmbeddedDeviations() =
+        this.items
+        |> Seq.map (fun i -> i.deviation)
+        |> Seq.choose id
+    member this.GetEmbeddedStatuses() =
+        this.items
+        |> Seq.map (fun i -> i.status)
+        |> Seq.choose id
