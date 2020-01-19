@@ -22,8 +22,8 @@ type DeviationMetadata = {
     collections: DeviantArtCollectionFolder list option
 } with
     member this.GetPrintId() = OptUtils.toNullable this.printid
-    member this.GetSubmission() = OptUtils.toSeq this.submission
-    member this.GetStats() = OptUtils.toSeq this.stats
+    member this.GetSubmission() = OptUtils.recordDefault this.submission
+    member this.GetStats() = OptUtils.recordDefault this.stats
     member this.GetCamera() = OptUtils.mapDefault this.camera
     member this.GetCollections() = OptUtils.listDefault this.collections
 

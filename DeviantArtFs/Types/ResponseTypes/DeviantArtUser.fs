@@ -47,7 +47,7 @@ type DeviantArtUser = {
 } with
     static member Parse json = Json.deserialize<DeviantArtUser> json
     member this.GetIsWatching() = OptUtils.toNullable this.is_watching
-    member this.GetDetails() = OptUtils.toSeq this.details
-    member this.GetGeo() = OptUtils.toSeq this.geo
-    member this.GetProfile() = OptUtils.toSeq this.profile
-    member this.GetStats() = OptUtils.toSeq this.stats
+    member this.GetDetails() = OptUtils.recordDefault this.details
+    member this.GetGeo() = OptUtils.recordDefault this.geo
+    member this.GetProfile() = OptUtils.recordDefault this.profile
+    member this.GetStats() = OptUtils.recordDefault this.stats

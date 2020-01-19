@@ -8,7 +8,7 @@ type DeviantArtCommentSiblingsContext = {
     item_deviation: Deviation option
     item_status: DeviantArtStatus option
 } with
-    member this.GetParent() = OptUtils.toSeq this.parent
+    member this.GetParent() = OptUtils.recordDefault this.parent
     member this.GetItems() = seq {
         yield! OptUtils.toObjSeq this.item_profile
         yield! OptUtils.toObjSeq this.item_deviation

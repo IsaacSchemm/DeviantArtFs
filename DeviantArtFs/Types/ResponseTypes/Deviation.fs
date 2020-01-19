@@ -28,7 +28,7 @@ type DailyDeviation = {
     giver: DeviantArtUser
     suggester: DeviantArtUser option
 } with
-    member this.GetSuggester() = OptUtils.toSeq this.suggester
+    member this.GetSuggester() = OptUtils.recordDefault this.suggester
 
 type Deviation = {
     deviationid: Guid
@@ -116,10 +116,10 @@ and ExistingDeviation = {
     download_filesize: int option
 } with
     member this.GetPrintId() = OptUtils.toNullable this.printid
-    member this.GetPreview() = OptUtils.toSeq this.preview
-    member this.GetContent() = OptUtils.toSeq this.content
+    member this.GetPreview() = OptUtils.recordDefault this.preview
+    member this.GetContent() = OptUtils.recordDefault this.content
     member this.GetVideos() = OptUtils.listDefault this.videos
-    member this.GetFlash() = OptUtils.toSeq this.videos
-    member this.GetDailyDeviation() = OptUtils.toSeq this.daily_deviation
+    member this.GetFlash() = OptUtils.recordDefault this.videos
+    member this.GetDailyDeviation() = OptUtils.recordDefault this.daily_deviation
     member this.GetExcerpt() = OptUtils.stringDefault this.excerpt
     member this.GetDownloadFilesize() = OptUtils.toNullable this.download_filesize

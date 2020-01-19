@@ -5,4 +5,4 @@ type StashSubmission = {
     resolution: string option
     submitted_with: DeviantArtSubmittedWith option
 } with
-    member this.GetSubmittedWith() = OptUtils.toSeq this.submitted_with
+    member this.GetSubmittedWith() = OptUtils.recordDefault this.submitted_with

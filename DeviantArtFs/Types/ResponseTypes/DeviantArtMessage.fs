@@ -39,7 +39,7 @@ type DeviantArtMessage = {
     collection: DeviantArtCollectionFolder option
 } with
     member this.GetTimestamp() = OptUtils.toNullable this.ts
-    member this.GetOriginators() = OptUtils.toSeq this.originator
+    member this.GetOriginator() = OptUtils.recordDefault this.originator
     member this.GetSubjects() =
         this.subject
         |> Option.map (fun s -> s.Enumerate())
@@ -48,9 +48,9 @@ type DeviantArtMessage = {
     member this.GetStackId() = OptUtils.stringDefault this.stackid
     member this.GetStackCount() = OptUtils.toNullable this.stack_count
 
-    member this.GetHtmls() = OptUtils.toSeq this.html
-    member this.GetProfiles() = OptUtils.toSeq this.profile
-    member this.GetDeviations() = OptUtils.toSeq this.deviation
-    member this.GetStatuses() = OptUtils.toSeq this.status
-    member this.GetComments() = OptUtils.toSeq this.comment
-    member this.GetCollections() = OptUtils.toSeq this.collection
+    member this.GetHtml() = OptUtils.recordDefault this.html
+    member this.GetProfile() = OptUtils.recordDefault this.profile
+    member this.GetDeviation() = OptUtils.recordDefault this.deviation
+    member this.GetStatus() = OptUtils.recordDefault this.status
+    member this.GetComment() = OptUtils.recordDefault this.comment
+    member this.GetCollection() = OptUtils.recordDefault this.collection
