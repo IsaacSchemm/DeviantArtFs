@@ -3,7 +3,6 @@
 open System
 open FSharp.Json
 open DeviantArtFs.Json.Transforms
-open System.Runtime.CompilerServices
 
 type DeviationStats = {
     comments: int
@@ -28,8 +27,7 @@ type DailyDeviation = {
     time: DateTimeOffset
     giver: DeviantArtUser
     suggester: DeviantArtUser option
-} with
-    member this.GetSuggester() = OptUtils.recordDefault this.suggester
+}
 
 type Deviation = {
     deviationid: Guid
@@ -111,23 +109,4 @@ and ExistingDeviation = {
     is_mature: bool
     is_downloadable: bool
     download_filesize: int option
-} with
-    member this.GetPrintId() = OptUtils.guidDefault this.printid
-    member this.GetPreview() = OptUtils.recordDefault this.preview
-    member this.GetContent() = OptUtils.recordDefault this.content
-    member this.GetVideos() = OptUtils.listDefault this.videos
-    member this.GetFlash() = OptUtils.recordDefault this.videos
-    member this.GetDailyDeviation() = OptUtils.recordDefault this.daily_deviation
-    member this.GetExcerpt() = OptUtils.stringDefault this.excerpt
-    member this.GetDownloadFilesize() = OptUtils.intDefault this.download_filesize
-
-[<Extension>]
-module DeviationExtensions =
-    [<Extension>]
-    let WhereNotDeleted (s: Deviation seq) = seq {
-        for d in s do
-            if not (isNull (d :> obj)) then
-                match d.ToUnion() with
-                | Deleted -> ()
-                | Existing e -> yield e
-    }
+}

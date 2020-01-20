@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports DeviantArtFs.Interop
 Imports DeviantArtFs.WinForms
 
 Public Class Form1
@@ -13,7 +14,7 @@ Public Class Form1
 
             Try
                 Dim user = Await Requests.User.Whoami.ExecuteAsync(t)
-                If MsgBox($"Log in as {user.Username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
+                If MsgBox($"Log in as {user.username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
                     Token = t
                 End If
             Catch ex As InvalidRefreshTokenException
@@ -35,7 +36,7 @@ Public Class Form1
 
         If Token IsNot Nothing Then
             Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
-            ToolStripStatusLabel1.Text = $"Logged in as {user.Username}"
+            ToolStripStatusLabel1.Text = $"Logged in as {user.username}"
 
             CurrentUsername = TextBox1.Text
             NextOffset = 0
@@ -76,7 +77,7 @@ Public Class Form1
         Try
             download = Await Requests.Deviation.Download.ExecuteAsync(Token, deviation.deviationid)
         Catch ex As DeviantArtException
-            download = Enumerable.Empty(Of IDeviationFile).Concat(deviation.GetContent()).Concat(deviation.thumbs).FirstOrDefault()
+            download = Enumerable.Empty(Of IDeviationFile).Concat(DeviationExtensions.GetContent(deviation)).Concat(deviation.thumbs).FirstOrDefault()
         End Try
         PictureBox1.ImageLocation = If(download IsNot Nothing And download.Width * download.Height > 0, download.Src, Nothing)
 

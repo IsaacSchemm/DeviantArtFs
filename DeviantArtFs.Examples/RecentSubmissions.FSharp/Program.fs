@@ -2,6 +2,7 @@
 open System.IO
 open DeviantArtFs
 open FSharp.Control
+open DeviantArtFs.Interop
 
 // Learn more about F# at http://fsharp.org
 // See the 'F# Tutorial' project for more help.
