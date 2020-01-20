@@ -50,3 +50,19 @@ module DeviationExtensions =
     [<Extension>]
     let GetDownloadFilesize (this: ExistingDeviation) =
         OptUtils.intDefault this.download_filesize
+
+    [<Extension>]
+    let GetHtml (this: DeviationTextContent) =
+        OptUtils.stringDefault this.html
+
+    [<Extension>]
+    let GetCss (this: DeviationTextContent) =
+        OptUtils.stringDefault this.css
+
+    [<Extension>]
+    let GetCssFonts (this: DeviationTextContent) =
+        OptUtils.listDefault this.css_fonts
+
+    [<Extension>]
+    let GetSponsor (this: DeviationTag) =
+        OptUtils.stringDefault this.sponsor

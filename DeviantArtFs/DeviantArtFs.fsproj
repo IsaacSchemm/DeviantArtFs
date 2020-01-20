@@ -166,6 +166,8 @@
     <Compile Include="Requests\Util\Placebo.fs" />
     <Compile Include="Interop\DeviantArtUserExtensions.fs" />
     <Compile Include="Interop\DeviationExtensions.fs" />
+    <Compile Include="Interop\DeviationMetadataExtensions.fs" />
+    <Compile Include="Interop\DeviantArtFolderExtensions.fs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,6 @@
 
 open System
 open FSharp.Json
-open System.Collections.Generic
 
 type DeviationMetadata = {
     deviationid: Guid
@@ -20,12 +19,7 @@ type DeviationMetadata = {
     stats: DeviationMetadataStats option
     camera: Map<string, string> option
     collections: DeviantArtFolder list option
-} with
-    member this.GetPrintId() = OptUtils.guidDefault this.printid
-    member this.GetSubmission() = OptUtils.recordDefault this.submission
-    member this.GetStats() = OptUtils.recordDefault this.stats
-    member this.GetCamera() = OptUtils.mapDefault this.camera
-    member this.GetCollections() = OptUtils.listDefault this.collections
+}
 
 type DeviationMetadataResponse = {
     metadata: DeviationMetadata list
