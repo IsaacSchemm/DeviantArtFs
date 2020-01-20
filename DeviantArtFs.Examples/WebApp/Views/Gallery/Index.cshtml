@@ -7,11 +7,8 @@
 
 <h2>@ViewData["Title"]</h2>
 
-@foreach (var o in Model.results)
+@foreach (var d in Model.results.WhereNotDeleted())
 {
-    var d = o.SingleIfExists().SingleOrDefault();
-    if (d == null) { continue; }
-
     if (d.is_mature)
     {
         <div>Mature content hidden - edit Views/Gallery/Index.cshtml to show</div>
