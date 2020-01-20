@@ -16,7 +16,7 @@ module CreateCollectionFolder =
         req.RequestBodyText <- String.concat "&" query
 
         let! json = Dafs.asyncRead req
-        return DeviantArtCollectionFolder.Parse json
+        return DeviantArtFolder.Parse json
     }
 
     let ExecuteAsync token folder =

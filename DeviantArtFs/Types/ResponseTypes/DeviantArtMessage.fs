@@ -7,8 +7,8 @@ type DeviantArtMessageSubjectObject = {
     deviation: Deviation option
     status: DeviantArtStatus option
     comment: DeviantArtComment option
-    collection: DeviantArtCollectionFolder option
-    gallery: DeviantArtGalleryFolder option
+    collection: DeviantArtFolder option
+    gallery: DeviantArtFolder option
 } with
     member this.Enumerate() = seq {
         yield! OptUtils.toObjSeq this.profile
@@ -36,7 +36,7 @@ type DeviantArtMessage = {
     deviation: Deviation option
     status: DeviantArtStatus option
     comment: DeviantArtComment option
-    collection: DeviantArtCollectionFolder option
+    collection: DeviantArtFolder option
 } with
     member this.GetTimestamp() = OptUtils.timeDefault this.ts
     member this.GetOriginator() = OptUtils.recordDefault this.originator

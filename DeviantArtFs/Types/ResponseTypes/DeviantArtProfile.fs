@@ -20,8 +20,8 @@ type DeviantArtProfile = {
     profile_pic: Deviation option
     last_status: DeviantArtStatus option
     stats: DeviantArtProfileStats
-    collections: DeviantArtCollectionFolder list option
-    galleries: DeviantArtGalleryFolder list option
+    collections: DeviantArtFolder list option
+    galleries: DeviantArtFolder list option
 } with
     static member Parse json = Json.deserialize<DeviantArtProfile> json
     member this.GetArtistLevel() = OptUtils.stringDefault this.artist_level

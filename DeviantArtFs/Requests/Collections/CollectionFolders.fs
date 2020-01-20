@@ -25,7 +25,7 @@ module CollectionFolders =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/collections/folders?%s"
             |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
-        return DeviantArtPagedResult<DeviantArtCollectionFolder>.Parse json
+        return DeviantArtPagedResult<DeviantArtFolder>.Parse json
     }
 
     let ToAsyncSeq token offset req =
