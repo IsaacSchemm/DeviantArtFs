@@ -9,6 +9,6 @@ type DeviantArtListOnlyResponse<'a> = {
 } with
     /// Parse a DeviantArt "results" response from JSON and return the list as
     /// an IEnumerable<T>.
-    static member ParseSeq json =
+    static member ParseList json =
         let obj = Json.deserialize<DeviantArtListOnlyResponse<'a>> json
-        obj.results :> seq<'a>
+        obj.results

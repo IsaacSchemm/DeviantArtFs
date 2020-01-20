@@ -33,7 +33,7 @@ module SendNote =
         req.RequestBodyText <- String.concat "&" query
 
         let! json = Dafs.asyncRead req
-        return DeviantArtListOnlyResponse<DeviantArtSendNoteResult>.ParseSeq json
+        return DeviantArtListOnlyResponse<DeviantArtSendNoteResult>.ParseList json
     }
 
     let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
