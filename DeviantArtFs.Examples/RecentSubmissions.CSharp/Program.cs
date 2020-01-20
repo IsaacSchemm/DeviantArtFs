@@ -82,6 +82,12 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 .FirstOrDefault();
             if (sample_status_existing != null) {
                 Console.WriteLine($"Retrieved status: {sample_status_existing.body}");
+                foreach (var d in sample_status_existing.items.GetEmbeddedDeviations().WhereNotDeleted()) {
+                    Console.WriteLine($"    Embedded deviation: {d.title}");
+                }
+                foreach (var d in sample_status_existing.items.GetEmbeddedStatuses().WhereNotDeleted()) {
+                    Console.WriteLine($"    Embedded status: {d.body}");
+                }
             }
 
             Console.WriteLine($"----------");

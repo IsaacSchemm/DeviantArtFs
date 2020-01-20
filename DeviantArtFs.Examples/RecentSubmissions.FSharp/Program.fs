@@ -61,6 +61,10 @@ let sandbox token_string = async {
     | DeviantArtStatusUnion.Deleted -> ()
     | DeviantArtStatusUnion.Existing sample_status_existing ->
         printfn "Retrieved status: %s" sample_status_existing.body
+        for d in sample_status_existing.items |> DeviantArtStatusExtensions.GetEmbeddedDeviations |> DeviationExtensions.WhereNotDeleted do
+            printfn "    Embedded deviation: %s" d.title
+        for d in sample_status_existing.items |> DeviantArtStatusExtensions.GetEmbeddedStatuses |> DeviantArtStatusExtensions.WhereNotDeleted do
+            printfn "    Embedded status: %s" d.body
 
     printfn "----------"
 

@@ -49,23 +49,4 @@ and DeviantArtExistingStatus = {
     is_share: bool
     author: DeviantArtUser
     items: DeviantArtStatusItem list
-} with
-    member this.GetEmbeddedDeviations() =
-        this.items
-        |> Seq.map (fun i -> i.deviation)
-        |> Seq.choose id
-    member this.GetEmbeddedStatuses() =
-        this.items
-        |> Seq.map (fun i -> i.status)
-        |> Seq.choose id
-
-[<Extension>]
-module DeviantArtStatusExtensions =
-    [<Extension>]
-    let WhereNotDeleted (s: DeviantArtStatus seq) = seq {
-        for d in s do
-            if not (isNull (d :> obj)) then
-                match d.ToUnion() with
-                | Deleted -> ()
-                | Existing e -> yield e
-    }
+}

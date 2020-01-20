@@ -168,6 +168,7 @@
     <Compile Include="Interop\DeviationExtensions.fs" />
     <Compile Include="Interop\DeviationMetadataExtensions.fs" />
     <Compile Include="Interop\DeviantArtFolderExtensions.fs" />
+    <Compile Include="Interop\DeviantArtStatusExtensions.fs" />
   </ItemGroup>
 
   <ItemGroup>
