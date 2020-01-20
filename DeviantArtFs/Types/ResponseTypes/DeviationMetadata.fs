@@ -19,7 +19,7 @@ type DeviationMetadata = {
     submission: DeviationMetadataSubmission option
     stats: DeviationMetadataStats option
     camera: Map<string, string> option
-    collections: DeviantArtCollectionFolder list option
+    collections: DeviantArtFolder list option
 } with
     member this.GetPrintId() = OptUtils.guidDefault this.printid
     member this.GetSubmission() = OptUtils.recordDefault this.submission

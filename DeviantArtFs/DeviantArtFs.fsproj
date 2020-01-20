@@ -35,8 +35,7 @@
     <Compile Include="Types\ResponseTypes\DeviantArtWhoFavedUser.fs" />
     <Compile Include="Types\ResponseTypes\DeviationFile.fs" />
     <Compile Include="Types\ResponseTypes\Deviation.fs" />
-    <Compile Include="Types\ResponseTypes\DeviantArtGalleryFolder.fs" />
-    <Compile Include="Types\ResponseTypes\DeviantArtCollectionFolder.fs" />
+    <Compile Include="Types\ResponseTypes\DeviantArtFolder.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtCategory.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtMoreLikeThisPreviewResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviationTextContent.fs" />
