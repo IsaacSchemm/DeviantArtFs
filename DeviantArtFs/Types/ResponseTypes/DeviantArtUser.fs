@@ -7,9 +7,7 @@ type DeviantArtUserDetails = {
     sex: string option
     age: int option
     joindate: DateTimeOffset
-} with
-    member this.GetAge() = OptUtils.intDefault this.age
-    member this.GetSex() = OptUtils.stringDefault this.sex
+}
 
 type DeviantArtUserGeo = {
     country: string
@@ -25,9 +23,7 @@ type DeviantArtUserProfile = {
     tagline: string
     website: string
     cover_photo: string
-} with
-    member this.GetArtistLevel() = OptUtils.stringDefault this.artist_level
-    member this.GetArtistSpecialty() = OptUtils.stringDefault this.artist_specialty
+}
 
 type DeviantArtUserStats = {
     watchers: int
@@ -46,8 +42,3 @@ type DeviantArtUser = {
     stats: DeviantArtUserStats option
 } with
     static member Parse json = Json.deserialize<DeviantArtUser> json
-    member this.GetIsWatching() = OptUtils.boolDefault this.is_watching
-    member this.GetDetails() = OptUtils.recordDefault this.details
-    member this.GetGeo() = OptUtils.recordDefault this.geo
-    member this.GetProfile() = OptUtils.recordDefault this.profile
-    member this.GetStats() = OptUtils.recordDefault this.stats
