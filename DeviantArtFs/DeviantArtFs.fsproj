@@ -169,6 +169,9 @@
     <Compile Include="Interop\DeviationMetadataExtensions.fs" />
     <Compile Include="Interop\DeviantArtFolderExtensions.fs" />
     <Compile Include="Interop\DeviantArtStatusExtensions.fs" />
+    <Compile Include="Interop\DeviantArtProfileExtensions.fs" />
+    <Compile Include="Interop\StashExtensions.fs" />
+    <Compile Include="Interop\StashDeltaExtensions.fs" />
   </ItemGroup>
 
   <ItemGroup>
