@@ -11,10 +11,35 @@ somewhere in the DeviantArtFs.Requests namespace. These modules have static
 methods that take an IDeviantArtAccessToken (see "Authentication" below) and
 usually at least one other parameter.
 
-In most cases, these static methods exist in pairs - one method will use F#
-async and use F# features such as records and option types, while the other
-will return a Task<T> and use interfaces and null values for interoperability
-with C# and VB.NET.
+The DeviantArt API schema has many objects with optional fields, which are
+represented in this library by F# option types. For languages other than F#,
+the library provides `Get[xxx]` methods to retrieve the data in other ways.
+The type mappings are as follows:
+
+| F# type                 | Type returned by `Get[xxx]` methods
+| `bool option`           | `Nullable<bool>`
+| `int option`            | `Nullable<int>`
+| `int64 option`          | `Nullable<long>`
+| `Guid option`           | `Nullable<Guid>`
+| `DateTimeOffset option` | `Nullable<DateTimeOffset>`
+| `string option`         | `string` (default `""`)
+| `T list option`         | `FSharpList<T>` (default empty)
+| `T Map option`          | `FSharpMap<T>` (default empty)
+| record types (`T`)      | `IEnumerable<T>` (one or zero elements)
+
+Also note that `Deviation` and `DeviantArtStatus` objects can represent a
+deleted deviation or status, in which case most of the fields will be set to
+`None`. You can use the extension methods `ToUnion` and `WhereNotDeleted` to
+filter out deleted items from a list or sequence:
+
+    var sample_deviation = await DeviantArtFs.Requests.Deviation.DeviationById.ExecuteAsync(token, Guid.Parse("99F2A1D6-AC4C-2D88-6E57-595D6162B4C1"));
+    var existing_deviation =
+        new[] { sample_deviation }
+        .WhereNotDeleted()
+        .DefaultOrEmpty(null)
+        .First();
+
+(Note that providing an invalid GUID will cause an exception to be thrown.)
 
 ## Pagination
 
@@ -74,13 +99,13 @@ Example (C#):
             Offset = offset,
             Limit = 24
         };
-        IBclDeviantArtPagedResult<IBclDeviation> resp =
+        DeviantArtPagedResult<Deviation> resp =
             await DeviantArtFs.Requests.Gallery.GalleryAllView.ExecuteAsync(token, paging, req);
-        foreach (var d in resp.Results) {
-            Console.WriteLine($"{d.Author.Username}: ${d.Title}");
+        foreach (var d in resp.results.WhereNotDeleted()) {
+            Console.WriteLine($"{d.author.username}: ${d.title}");
         }
-        offset = resp.NextOffset ?? 0;
-        if (!resp.HasMore) break;
+        offset = resp.GetNextOffset() ?? 0;
+        if (!resp.has_more) break;
     }
 
 Example (F#):
@@ -91,7 +116,7 @@ Example (F#):
         let req = new DeviantArtFs.Requests.Gallery.GalleryAllViewRequest()
         let paging = new DeviantArtPagingParams(Offset = 0, Limit = Nullable 24)
         let! (resp: DeviantArtPagedResult<Deviation>) = DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token paging req
-        for d in resp.Results do
+        for d in resp.results |> DeviantArtFs.DeviationExtensions.WhereNotDeleted do
             printf "%s: %s" d.author.username d.title
         offset <- resp.next_offset |> Option.defaultValue 0
         more <- resp.has_more
