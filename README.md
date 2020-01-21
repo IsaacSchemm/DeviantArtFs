@@ -17,6 +17,7 @@ the library provides `Get[xxx]` methods to retrieve the data in other ways.
 The type mappings are as follows:
 
 | F# type                 | Type returned by `Get[xxx]` methods
+| ----------------------- | -----------------------------------
 | `bool option`           | `Nullable<bool>`
 | `int option`            | `Nullable<int>`
 | `int64 option`          | `Nullable<long>`
