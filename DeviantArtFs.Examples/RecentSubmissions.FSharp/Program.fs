@@ -61,9 +61,9 @@ let sandbox token_string = async {
     | DeviantArtStatusUnion.Deleted -> ()
     | DeviantArtStatusUnion.Existing sample_status_existing ->
         printfn "Retrieved status: %s" sample_status_existing.body
-        for d in sample_status_existing.items |> DeviantArtStatusExtensions.GetEmbeddedDeviations |> DeviationExtensions.WhereNotDeleted do
+        for d in sample_status_existing.items |> DeviantArtExtensions.GetEmbeddedDeviations |> DeviantArtExtensions.WhereDeviationNotDeleted do
             printfn "    Embedded deviation: %s" d.title
-        for d in sample_status_existing.items |> DeviantArtStatusExtensions.GetEmbeddedStatuses |> DeviantArtStatusExtensions.WhereNotDeleted do
+        for d in sample_status_existing.items |> DeviantArtExtensions.GetEmbeddedStatuses |> DeviantArtExtensions.WhereStatusNotDeleted do
             printfn "    Embedded status: %s" d.body
 
     printfn "----------"
@@ -94,7 +94,7 @@ let sandbox token_string = async {
         |> DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token (page 0 1)
     let deviation =
         deviations.results
-        |> DeviationExtensions.WhereNotDeleted
+        |> DeviantArtExtensions.WhereDeviationNotDeleted
         |> Seq.tryHead
     match deviation with
     | Some s -> 
@@ -131,7 +131,7 @@ let sandbox token_string = async {
         |> DeviantArtFs.Requests.Browse.UserJournals.AsyncExecute token (page 0 1)
     let journal =
         journals.results
-        |> DeviationExtensions.WhereNotDeleted
+        |> DeviantArtExtensions.WhereDeviationNotDeleted
         |> Seq.tryHead
     match journal with
     | Some s -> 
@@ -160,7 +160,7 @@ let sandbox token_string = async {
     let! statuses = DeviantArtFs.Requests.User.StatusesList.AsyncExecute token (page 0 1) username
     let status =
         statuses.results
-        |> DeviantArtStatusExtensions.WhereNotDeleted
+        |> DeviantArtExtensions.WhereStatusNotDeleted
         |> Seq.tryHead
     match status with
     | Some s ->

@@ -61,7 +61,7 @@ Public Class Form1
         Dim page = Await Requests.Gallery.GalleryAllView.ExecuteAsync(Token, paging, request)
 
         NextOffset = page.GetNextOffset()
-        For Each r In DeviationExtensions.WhereNotDeleted(page.results)
+        For Each r In DeviantArtExtensions.WhereDeviationNotDeleted(page.results)
             Dim thumbUrl = r.thumbs.Select(Function(t) t.src).FirstOrDefault()
             Dim pic As New PictureBox With {.ImageLocation = thumbUrl, .SizeMode = PictureBoxSizeMode.Zoom, .Dock = DockStyle.Fill}
             AddHandler pic.Click, Sub(sender, e)

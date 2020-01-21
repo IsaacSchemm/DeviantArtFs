@@ -68,7 +68,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
             Console.WriteLine($"is_deleted: {sample_deviation.is_deleted}");
             var sample_deviation_existing =
                 new[] { sample_deviation }
-                .WhereNotDeleted()
+                .WhereDeviationNotDeleted()
                 .FirstOrDefault();
             if (sample_deviation_existing != null) {
                 Console.WriteLine($"Retrieved deviation: {sample_deviation_existing.title}");
@@ -78,14 +78,14 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
             Console.WriteLine($"is_deleted: {sample_status.is_deleted}");
             var sample_status_existing =
                 new[] { sample_status }
-                .WhereNotDeleted()
+                .WhereStatusNotDeleted()
                 .FirstOrDefault();
             if (sample_status_existing != null) {
                 Console.WriteLine($"Retrieved status: {sample_status_existing.body}");
-                foreach (var d in sample_status_existing.items.GetEmbeddedDeviations().WhereNotDeleted()) {
+                foreach (var d in sample_status_existing.items.GetEmbeddedDeviations().WhereDeviationNotDeleted()) {
                     Console.WriteLine($"    Embedded deviation: {d.title}");
                 }
-                foreach (var d in sample_status_existing.items.GetEmbeddedStatuses().WhereNotDeleted()) {
+                foreach (var d in sample_status_existing.items.GetEmbeddedStatuses().WhereStatusNotDeleted()) {
                     Console.WriteLine($"    Embedded status: {d.body}");
                 }
             }
@@ -117,7 +117,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Gallery.GalleryAllViewRequest { Username = username });
-            var deviation_obj = deviations.results.WhereNotDeleted().FirstOrDefault();
+            var deviation_obj = deviations.results.WhereDeviationNotDeleted().FirstOrDefault();
             if (deviation_obj is ExistingDeviation deviation)
             {
                 Console.WriteLine($"Most recent deviation: {deviation.title} ({deviation.published_time})");
@@ -166,7 +166,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Browse.UserJournalsRequest(username) { Featured = false });
-            var journal_obj = journals.results.WhereNotDeleted().FirstOrDefault();
+            var journal_obj = journals.results.WhereDeviationNotDeleted().FirstOrDefault();
             if (journal_obj is ExistingDeviation journal)
             {
                 Console.WriteLine($"Most recent journal: {journal.title} ({journal.published_time})");
@@ -215,7 +215,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 username);
-            var status_obj = statuses.results.WhereNotDeleted().FirstOrDefault();
+            var status_obj = statuses.results.WhereStatusNotDeleted().FirstOrDefault();
             if (status_obj is DeviantArtExistingStatus status)
             {
                 Console.WriteLine($"Most recent status: {status.body} ({status.ts})");

@@ -6,16 +6,6 @@ open DeviantArtFs
 [<Extension>]
 module DeviantArtMessageExtensions =
     [<Extension>]
-    let Enumerate (this: DeviantArtMessageSubjectObject) = seq {
-        yield! OptUtils.toObjSeq this.profile
-        yield! OptUtils.toObjSeq this.deviation
-        yield! OptUtils.toObjSeq this.status
-        yield! OptUtils.toObjSeq this.comment
-        yield! OptUtils.toObjSeq this.collection
-        yield! OptUtils.toObjSeq this.gallery
-    }
-
-    [<Extension>]
     let GetTimestamp (this: DeviantArtMessage) =
         OptUtils.timeDefault this.ts
 
@@ -26,7 +16,7 @@ module DeviantArtMessageExtensions =
     [<Extension>]
     let GetSubjects (this: DeviantArtMessage) =
         this.subject
-        |> Option.map Enumerate
+        |> Option.map DeviantArtExtensions.GetMessageSubject
         |> Option.defaultValue Seq.empty
 
     [<Extension>]

@@ -11,8 +11,8 @@ namespace DeviantArtFs.Examples.WebApp.Models
     {
         private readonly DeviantArtFeedItem _item;
 
-        private ExistingDeviation Deviation => _item.GetDeviations().WhereNotDeleted().FirstOrDefault();
-        private DeviantArtExistingStatus Status => _item.GetStatus().WhereNotDeleted().FirstOrDefault();
+        private ExistingDeviation Deviation => _item.GetDeviations().WhereDeviationNotDeleted().FirstOrDefault();
+        private DeviantArtExistingStatus Status => _item.GetStatus().WhereStatusNotDeleted().FirstOrDefault();
         private DeviantArtFeedItemCollection Collection => _item.GetCollection().FirstOrDefault();
 
         public FeedItemModel(DeviantArtFeedItem item)

@@ -8,7 +8,7 @@
 
 <h2>@ViewData["Title"]</h2>
 
-@foreach (var d in Model.results.WhereNotDeleted())
+@foreach (var d in Model.results.WhereDeviationNotDeleted())
 {
     if (d.is_mature)
     {

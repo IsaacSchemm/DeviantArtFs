@@ -164,11 +164,11 @@
     <Compile Include="Requests\User\Whoami.fs" />
     <Compile Include="Requests\User\Whois.fs" />
     <Compile Include="Requests\Util\Placebo.fs" />
+    <Compile Include="Extensions\DeviantArtExtensions.fs" />
     <Compile Include="Interop\DeviantArtUserExtensions.fs" />
     <Compile Include="Interop\DeviationExtensions.fs" />
     <Compile Include="Interop\DeviationMetadataExtensions.fs" />
     <Compile Include="Interop\DeviantArtFolderExtensions.fs" />
-    <Compile Include="Interop\DeviantArtStatusExtensions.fs" />
     <Compile Include="Interop\DeviantArtProfileExtensions.fs" />
     <Compile Include="Interop\StashExtensions.fs" />
     <Compile Include="Interop\StashDeltaExtensions.fs" />

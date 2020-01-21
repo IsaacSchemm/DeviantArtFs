@@ -18,13 +18,6 @@ module DeviantArtCommentExtensions =
         OptUtils.recordDefault this.parent
 
     [<Extension>]
-    let GetItems (this: DeviantArtCommentSiblingsContext) = seq {
-        yield! OptUtils.toObjSeq this.item_profile
-        yield! OptUtils.toObjSeq this.item_deviation
-        yield! OptUtils.toObjSeq this.item_status
-    }
-
-    [<Extension>]
     let GetNextOffset (this: DeviantArtCommentSiblingsPagedResult) =
         OptUtils.intDefault this.next_offset
 
