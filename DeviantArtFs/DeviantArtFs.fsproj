@@ -173,6 +173,8 @@
     <Compile Include="Interop\StashExtensions.fs" />
     <Compile Include="Interop\StashDeltaExtensions.fs" />
     <Compile Include="Interop\DeviantArtCommentExtensions.fs" />
+    <Compile Include="Interop\DeviantArtFeedExtensions.fs" />
+    <Compile Include="Interop\DeviantArtMessageExtensions.fs" />
   </ItemGroup>
 
   <ItemGroup>

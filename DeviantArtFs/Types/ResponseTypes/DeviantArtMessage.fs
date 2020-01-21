@@ -37,20 +37,4 @@ type DeviantArtMessage = {
     status: DeviantArtStatus option
     comment: DeviantArtComment option
     collection: DeviantArtFolder option
-} with
-    member this.GetTimestamp() = OptUtils.timeDefault this.ts
-    member this.GetOriginator() = OptUtils.recordDefault this.originator
-    member this.GetSubjects() =
-        this.subject
-        |> Option.map (fun s -> s.Enumerate())
-        |> Option.defaultValue Seq.empty
-
-    member this.GetStackId() = OptUtils.stringDefault this.stackid
-    member this.GetStackCount() = OptUtils.intDefault this.stack_count
-
-    member this.GetHtml() = OptUtils.recordDefault this.html
-    member this.GetProfile() = OptUtils.recordDefault this.profile
-    member this.GetDeviation() = OptUtils.recordDefault this.deviation
-    member this.GetStatus() = OptUtils.recordDefault this.status
-    member this.GetComment() = OptUtils.recordDefault this.comment
-    member this.GetCollection() = OptUtils.recordDefault this.collection
+}

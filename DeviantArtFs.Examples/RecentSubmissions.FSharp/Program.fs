@@ -190,7 +190,8 @@ let sandbox token_string = async {
             |> Option.map (fun u -> u.username)
             |> Option.defaultValue "???"
         let subject =
-            m.GetSubjects()
+            m
+            |> DeviantArtMessageExtensions.GetSubjects
             |> Seq.tryHead
         match subject with
         | None -> printfn "New message, originator %s, no subject" originator
