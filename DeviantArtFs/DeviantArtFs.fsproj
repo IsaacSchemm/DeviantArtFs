@@ -175,6 +175,7 @@
     <Compile Include="Interop\DeviantArtCommentExtensions.fs" />
     <Compile Include="Interop\DeviantArtFeedExtensions.fs" />
     <Compile Include="Interop\DeviantArtMessageExtensions.fs" />
+    <Compile Include="Interop\DeviantArtNoteExtensions.fs" />
   </ItemGroup>
 
   <ItemGroup>
