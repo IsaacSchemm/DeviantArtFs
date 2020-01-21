@@ -14,5 +14,3 @@ type DeviantArtComment = {
     user: DeviantArtUser
 } with
     static member Parse json = Json.deserialize<DeviantArtComment> json
-    member this.GetParentId() = OptUtils.guidDefault this.parentid
-    member this.GetHideType() = OptUtils.stringDefault this.hidden

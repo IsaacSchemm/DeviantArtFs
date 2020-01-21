@@ -40,3 +40,7 @@ module DeviantArtUserExtensions =
     [<Extension>]
     let GetStats (this: DeviantArtUser) =
         OptUtils.recordDefault this.stats
+
+    [<Extension>]
+    let GetLastVisit (this: DeviantArtWatcherRecord) =
+        OptUtils.timeDefault this.lastvisit

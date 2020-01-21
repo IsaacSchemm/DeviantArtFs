@@ -20,3 +20,7 @@ module StashDeltaExtensions =
     [<Extension>]
     let GetMetadata (this: StashDeltaEntry) =
         OptUtils.recordDefault this.metadata
+
+    [<Extension>]
+    let GetNextOffset (this: StashDeltaResult) =
+        OptUtils.intDefault this.next_offset
