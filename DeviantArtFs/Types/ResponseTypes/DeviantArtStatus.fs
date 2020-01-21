@@ -49,15 +49,7 @@ and DeviantArtExistingStatus = {
     is_share: bool
     author: DeviantArtUser
     items: DeviantArtStatusItem list
-} with
-    member this.GetEmbeddedDeviations() =
-        this.items
-        |> Seq.map (fun i -> i.deviation)
-        |> Seq.choose id
-    member this.GetEmbeddedStatuses() =
-        this.items
-        |> Seq.map (fun i -> i.status)
-        |> Seq.choose id
+}
 
 [<Extension>]
 module DeviantArtStatusExtensions =
@@ -69,3 +61,11 @@ module DeviantArtStatusExtensions =
                 | Deleted -> ()
                 | Existing e -> yield e
     }
+
+    [<Extension>]
+    let GetEmbeddedDeviations (seq: DeviantArtStatusItem seq) =
+        seq |> Seq.choose (fun i -> i.deviation)
+
+    [<Extension>]
+    let GetEmbeddedStatuses (seq: DeviantArtStatusItem seq) =
+        seq |> Seq.choose (fun i -> i.status)

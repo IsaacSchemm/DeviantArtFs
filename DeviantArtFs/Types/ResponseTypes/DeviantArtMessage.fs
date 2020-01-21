@@ -9,15 +9,7 @@ type DeviantArtMessageSubjectObject = {
     comment: DeviantArtComment option
     collection: DeviantArtFolder option
     gallery: DeviantArtFolder option
-} with
-    member this.Enumerate() = seq {
-        yield! OptUtils.toObjSeq this.profile
-        yield! OptUtils.toObjSeq this.deviation
-        yield! OptUtils.toObjSeq this.status
-        yield! OptUtils.toObjSeq this.comment
-        yield! OptUtils.toObjSeq this.collection
-        yield! OptUtils.toObjSeq this.gallery
-    }
+}
 
 type DeviantArtMessage = {
     messageid: string
@@ -40,10 +32,17 @@ type DeviantArtMessage = {
 } with
     member this.GetTimestamp() = OptUtils.timeDefault this.ts
     member this.GetOriginator() = OptUtils.recordDefault this.originator
-    member this.GetSubjects() =
-        this.subject
-        |> Option.map (fun s -> s.Enumerate())
-        |> Option.defaultValue Seq.empty
+    member this.GetSubjects() = seq {
+        match this.subject with
+        | None -> ()
+        | Some s ->
+            yield! OptUtils.toObjSeq s.profile
+            yield! OptUtils.toObjSeq s.deviation
+            yield! OptUtils.toObjSeq s.status
+            yield! OptUtils.toObjSeq s.comment
+            yield! OptUtils.toObjSeq s.collection
+            yield! OptUtils.toObjSeq s.gallery
+    }
 
     member this.GetStackId() = OptUtils.stringDefault this.stackid
     member this.GetStackCount() = OptUtils.intDefault this.stack_count
