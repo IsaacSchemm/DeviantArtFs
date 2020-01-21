@@ -9,12 +9,28 @@ If you're using this library in a .NET Framework project and it doesn't run, mak
 Each request that can be made to DeviantArt is represented by a module
 somewhere in the DeviantArtFs.Requests namespace. These modules have static
 methods that take an IDeviantArtAccessToken (see "Authentication" below) and
-usually at least one other parameter.
+usually at least one other parameter. The main method is usually named
+`AsyncExecute` and returns an async workflow, the result of which is an F#
+record type that lines up with the original JSON.
 
-In most cases, these static methods exist in pairs - one method will use F#
-async and use F# features such as records and option types, while the other
-will return a Task<T> and use interfaces and null values for interoperability
-with C# and VB.NET.
+Many objects in the DeviantArt API have optional fields, which are difficult
+to represent in languages such as F# that expect a fixed schema. DeviantArtFs
+represents these optional fields with F# `option` types.
+
+### Use from C# and VB.NET
+
+Since F# async workflows and option types can be awkward to work with in other
+.NET languages, DeviantArtFs also exposes its functionality through alternate
+methods and interfaces. Modules with an `AsyncExecute` method also have an
+`ExecuteAsync` method that returns a `Task<T>`, and each record type has an
+explicit interface implementation that exposes the same fields, but with
+nullable types instead of `option` types.
+
+### Deleted Deviations and Status Updates
+
+`Deviation` and `DeviantArtStatus` objects can represent a deviation or status
+update that has been deleted; this is why most of the fields on those two
+types are marked optional.
 
 ## Pagination
 
