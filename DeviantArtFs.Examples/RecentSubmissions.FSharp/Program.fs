@@ -46,7 +46,7 @@ let sandbox token_string = async {
         |> Guid.Parse
         |> DeviantArtFs.Requests.Deviation.DeviationById.AsyncExecute token
     printfn "is_deleted: %b" sample_deviation.is_deleted
-    match sample_deviation.ToUnion() with
+    match DeviationExtensions.ToUnion sample_deviation with
     | Deleted -> ()
     | Existing sample_deviation_existing ->
         printfn "Retrieved deviation: %s" sample_deviation_existing.title
@@ -56,7 +56,7 @@ let sandbox token_string = async {
         |> Guid.Parse
         |> DeviantArtFs.Requests.User.StatusById.AsyncExecute token
     printfn "is_deleted: %b" sample_status.is_deleted
-    match sample_status.ToUnion() with
+    match DeviantArtStatusExtensions.ToUnion sample_status with
     | DeviantArtStatusUnion.Deleted -> ()
     | DeviantArtStatusUnion.Existing sample_status_existing ->
         printfn "Retrieved status: %s" sample_status_existing.body

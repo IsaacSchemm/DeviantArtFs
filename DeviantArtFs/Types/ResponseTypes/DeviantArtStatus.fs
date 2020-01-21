@@ -22,19 +22,6 @@ and DeviantArtStatus = {
     items: DeviantArtStatusItem list option
 } with
     static member internal Parse json = Json.deserialize<DeviantArtStatus> json
-    member this.ToUnion() =
-        match this.is_deleted with
-        | true -> Deleted
-        | false -> Existing {
-            statusid = this.statusid.Value
-            body = this.body.Value
-            ts = this.ts.Value
-            url = this.url.Value
-            comments_count = this.comments_count.Value
-            is_share = this.is_share.Value
-            author = this.author.Value
-            items = this.items.Value
-        }
 
 and DeviantArtStatusUnion =
 | Deleted
@@ -54,10 +41,25 @@ and DeviantArtExistingStatus = {
 [<Extension>]
 module DeviantArtStatusExtensions =
     [<Extension>]
+    let ToUnion (s: DeviantArtStatus) =
+        match s.is_deleted with
+        | true -> Deleted
+        | false -> Existing {
+            statusid = s.statusid.Value
+            body = s.body.Value
+            ts = s.ts.Value
+            url = s.url.Value
+            comments_count = s.comments_count.Value
+            is_share = s.is_share.Value
+            author = s.author.Value
+            items = s.items.Value
+        }
+
+    [<Extension>]
     let WhereNotDeleted (s: DeviantArtStatus seq) = seq {
         for d in s do
             if not (isNull (d :> obj)) then
-                match d.ToUnion() with
+                match ToUnion d with
                 | Deleted -> ()
                 | Existing e -> yield e
     }

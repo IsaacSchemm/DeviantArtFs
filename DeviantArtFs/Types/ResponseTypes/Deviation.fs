@@ -57,32 +57,6 @@ type Deviation = {
     download_filesize: int option
 } with
     static member Parse json = Json.deserialize<Deviation> json
-    member this.ToUnion() =
-        match this.is_deleted with
-        | true -> Deleted
-        | false -> Existing {
-            deviationid = this.deviationid
-            printid = this.printid
-            url = this.url.Value
-            title = this.title.Value
-            category = this.category.Value
-            category_path = this.category_path.Value
-            is_favourited = this.is_favourited.Value
-            author = this.author.Value
-            stats = this.stats.Value
-            published_time = this.published_time.Value
-            allows_comments = this.allows_comments.Value
-            preview = this.preview
-            content = this.content
-            thumbs = this.thumbs.Value
-            videos = this.videos
-            flash = this.flash
-            daily_deviation = this.daily_deviation
-            excerpt = this.excerpt
-            is_mature = this.is_mature.Value
-            is_downloadable = this.is_downloadable.Value
-            download_filesize = this.download_filesize
-        }
 
 and DeviationUnion =
 | Deleted
@@ -124,10 +98,38 @@ and ExistingDeviation = {
 [<Extension>]
 module DeviationExtensions =
     [<Extension>]
+    let ToUnion (d: Deviation) =
+        match d.is_deleted with
+        | true -> Deleted
+        | false -> Existing {
+            deviationid = d.deviationid
+            printid = d.printid
+            url = d.url.Value
+            title = d.title.Value
+            category = d.category.Value
+            category_path = d.category_path.Value
+            is_favourited = d.is_favourited.Value
+            author = d.author.Value
+            stats = d.stats.Value
+            published_time = d.published_time.Value
+            allows_comments = d.allows_comments.Value
+            preview = d.preview
+            content = d.content
+            thumbs = d.thumbs.Value
+            videos = d.videos
+            flash = d.flash
+            daily_deviation = d.daily_deviation
+            excerpt = d.excerpt
+            is_mature = d.is_mature.Value
+            is_downloadable = d.is_downloadable.Value
+            download_filesize = d.download_filesize
+        }
+
+    [<Extension>]
     let WhereNotDeleted (s: Deviation seq) = seq {
         for d in s do
             if not (isNull (d :> obj)) then
-                match d.ToUnion() with
+                match ToUnion d with
                 | Deleted -> ()
                 | Existing e -> yield e
     }

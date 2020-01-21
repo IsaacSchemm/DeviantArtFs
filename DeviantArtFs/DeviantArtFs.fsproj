@@ -16,6 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="Interop\**" />
     <EmbeddedResource Remove="Types\Interop\**" />
   </ItemGroup>
 
@@ -164,7 +165,6 @@
     <Compile Include="Requests\User\Whoami.fs" />
     <Compile Include="Requests\User\Whois.fs" />
     <Compile Include="Requests\Util\Placebo.fs" />
-    <Compile Include="Interop\DeviantArtUserExtensions.fs" />
   </ItemGroup>
 
   <ItemGroup>
