@@ -32,5 +32,5 @@ module FeedHomeBucket =
 
     let ExecuteAsync token paging bucketid =
         AsyncExecute token paging bucketid
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
+        |> AsyncThen.mapAndWrapPage (fun o -> o :> IBclDeviation)
         |> Async.StartAsTask

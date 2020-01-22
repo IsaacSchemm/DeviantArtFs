@@ -36,5 +36,5 @@ module WhoFaved =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtWhoFavedUser)
+        |> AsyncThen.mapAndWrapPage (fun o -> o :> IBclDeviantArtWhoFavedUser)
         |> Async.StartAsTask

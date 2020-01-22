@@ -31,5 +31,5 @@ module Tags =
 
     let ExecuteAsync token paging tag =
         AsyncExecute token paging tag
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
+        |> AsyncThen.mapAndWrapPage (fun o -> o :> IBclDeviation)
         |> Async.StartAsTask

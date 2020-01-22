@@ -40,5 +40,5 @@ module GetNotes =
         folderid
         |> Option.ofNullable
         |> AsyncExecute token paging
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtNote)
+        |> AsyncThen.mapAndWrapPage (fun o -> o :> IBclDeviantArtNote)
         |> Async.StartAsTask

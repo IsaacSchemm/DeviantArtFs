@@ -11,7 +11,12 @@ module internal AsyncThen =
         return Seq.map f o
     }
 
-    let mapPagedResult f a = async {
+    let mapPage f (a: Async<DeviantArtPagedResult<'a>>) = async {
         let! o = a
-        return DeviantArtPagedResult.Map f o
+        return o.Map f
+    }
+
+    let mapAndWrapPage f (a: Async<DeviantArtPagedResult<'a>>) = async {
+        let! o = a
+        return o.Map f :> IBclDeviantArtPagedResult<'b>
     }

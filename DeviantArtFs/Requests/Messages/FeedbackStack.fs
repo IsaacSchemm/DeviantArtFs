@@ -32,5 +32,5 @@ module FeedbackStack =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtMessage)
+        |> AsyncThen.mapAndWrapPage (fun o -> o :> IBclDeviantArtMessage)
         |> Async.StartAsTask

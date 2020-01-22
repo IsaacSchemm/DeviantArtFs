@@ -32,5 +32,5 @@ module StatusesList =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtStatus)
+        |> AsyncThen.mapAndWrapPage (fun o -> o :> IBclDeviantArtStatus)
         |> Async.StartAsTask

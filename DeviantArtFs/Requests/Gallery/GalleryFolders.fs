@@ -41,5 +41,5 @@ module GalleryFolders =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtGalleryFolder)
+        |> AsyncThen.mapAndWrapPage (fun o -> o :> IBclDeviantArtGalleryFolder)
         |> Async.StartAsTask

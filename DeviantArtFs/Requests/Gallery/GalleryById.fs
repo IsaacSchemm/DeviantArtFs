@@ -43,5 +43,5 @@ module GalleryById =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviation)
+        |> AsyncThen.mapAndWrapPage (fun o -> o :> IBclDeviation)
         |> Async.StartAsTask

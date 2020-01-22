@@ -34,5 +34,5 @@ module Contents =
 
     let ExecuteAsync token paging stackid =
         AsyncExecute token paging stackid
-        |> AsyncThen.mapPagedResult (fun i -> i :> IBclStashMetadata)
+        |> AsyncThen.mapAndWrapPage (fun i -> i :> IBclStashMetadata)
         |> Async.StartAsTask

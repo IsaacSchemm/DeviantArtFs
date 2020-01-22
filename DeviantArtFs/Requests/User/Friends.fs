@@ -34,5 +34,5 @@ module Friends =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtFriendRecord)
+        |> AsyncThen.mapAndWrapPage (fun o -> o :> IBclDeviantArtFriendRecord)
         |> Async.StartAsTask

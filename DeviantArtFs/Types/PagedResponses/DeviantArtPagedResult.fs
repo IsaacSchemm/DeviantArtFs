@@ -23,18 +23,17 @@ type DeviantArtPagedResult<'a> = {
     has_less: bool option
     prev_offset: int option
     name: string option
-    results: 'a[]
+    results: 'a list
 } with
     static member Parse json = Json.deserialize<DeviantArtPagedResult<'a>> json
-    static member Map (f: 'a -> 'b) (r: IBclDeviantArtPagedResult<'a>) = {
-        new IBclDeviantArtPagedResult<'b> with
-            member __.HasMore = r.HasMore
-            member __.NextOffset = r.NextOffset
-            member __.HasLess = r.HasLess
-            member __.PrevOffset = r.PrevOffset
-            member __.EstimatedTotal = r.EstimatedTotal
-            member __.Name = r.Name
-            member __.Results = Seq.map f r.Results
+    member this.Map (f: 'a -> 'b) = {
+        has_more = this.has_more
+        next_offset = this.next_offset
+        estimated_total = this.estimated_total
+        has_less = this.has_less
+        prev_offset = this.prev_offset
+        name = this.name
+        results = List.map f this.results
     }
     interface IBclDeviantArtPagedResult<'a> with
         member this.HasMore = this.has_more
@@ -43,8 +42,8 @@ type DeviantArtPagedResult<'a> = {
         member this.PrevOffset = this.prev_offset |> Option.toNullable
         member this.EstimatedTotal = this.estimated_total |> Option.toNullable
         member this.Name = this.name |> Option.toObj
-        member this.Results = this.results |> Seq.ofArray
+        member this.Results = this.results |> Seq.ofList
     interface IResultPage<int, 'a> with
         member this.HasMore = this.has_more
         member this.Cursor = this.next_offset |> Option.defaultValue 0
-        member this.Items = this.results |> Seq.ofArray
+        member this.Items = this.results |> Seq.ofList
