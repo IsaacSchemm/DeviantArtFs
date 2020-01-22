@@ -24,7 +24,7 @@ module EmbeddedContent =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/embeddedcontent?%s"
             |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
-        return DeviantArtPagedResult<Deviation>.Parse json
+        return DeviantArtEmbeddedContentPagedResult.Parse json
     }
 
     let ToAsyncSeq token offset req =
@@ -40,5 +40,5 @@ module EmbeddedContent =
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapAndWrapPage (fun o -> o :> IBclDeviation)
+        |> AsyncThen.map (fun p -> p :> IBclDeviantArtEmbeddedContentPagedResult)
         |> Async.StartAsTask
