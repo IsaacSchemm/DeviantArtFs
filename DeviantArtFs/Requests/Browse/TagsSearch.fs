@@ -12,7 +12,7 @@ module TagsSearch =
             sprintf "https://www.deviantart.com/api/v1/oauth2/browse/tags/search?tag_name=%s" (Dafs.urlEncode tag_name)
             |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
-        return DeviantArtListOnlyResponse.ParseSeq json |> Seq.map (fun t -> t.tag_name)
+        return DeviantArtListOnlyResponse.ParseList json |> List.map (fun t -> t.tag_name)
     }
 
     let ExecuteAsync token tag_name = AsyncExecute token tag_name |> Async.StartAsTask

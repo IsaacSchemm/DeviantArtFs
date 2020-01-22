@@ -2,8 +2,7 @@
 
 open FSharp.Json
 
-/// A DeviantArt response that contains only a "text" field. The library will
-/// make things simpler for these calls by returning the string directly.
+/// A DeviantArt response that contains only a "text" field.
 type DeviantArtTextOnlyResponse = {
     text: string
 } with
