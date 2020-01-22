@@ -14,6 +14,9 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * GetTokenAsync `string` `Uri` -> `Task<IDeviantArtRefreshTokenFull>`
 * RefreshAsync `string` -> `Task<IDeviantArtRefreshTokenFull>`
 
+### DeviantArtFs.DeviantArtRequest
+* AsyncReadJson -> `Async<string>`
+
 ### DeviantArtFs.Requests.Browse.CategoryTree
 * AsyncExecute `IDeviantArtAccessToken` `string` -> `Async<IEnumerable<DeviantArtCategory>>`
 * ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task<IEnumerable<IBclDeviantArtCategory>>`

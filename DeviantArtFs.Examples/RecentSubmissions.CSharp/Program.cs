@@ -88,10 +88,15 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Gallery.GalleryAllViewRequest { Username = username });
-            var deviation = deviations.Results.FirstOrDefault();
+            var deviation = deviations.Results.WhereNotDeleted().FirstOrDefault();
             if (deviation != null)
             {
-                Console.WriteLine($"Most recent deviation: {deviation.Title} ({deviation.PublishedTime})");
+                Console.WriteLine($"Most recent (non-deleted) deviation: {deviation.Title} ({deviation.PublishedTime})");
+                if (deviation.IsDownloadable) {
+                    Console.WriteLine($"Downloadable (size = {deviation.DownloadFilesize ?? -1}");
+                } else {
+                    Console.WriteLine("Not downloadable");
+                }
 
                 var metadata = await Requests.Deviation.MetadataById.ExecuteAsync(
                     token,
@@ -137,10 +142,10 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Browse.UserJournalsRequest(username) { Featured = false });
-            var journal = journals.Results.FirstOrDefault();
+            var journal = journals.Results.WhereNotDeleted().FirstOrDefault();
             if (journal != null)
             {
-                Console.WriteLine($"Most recent journal: {journal.Title} ({journal.PublishedTime})");
+                Console.WriteLine($"Most recent (non-deleted) journal: {journal.Title} ({journal.PublishedTime})");
 
                 var metadata = await Requests.Deviation.MetadataById.ExecuteAsync(
                     token,
@@ -186,28 +191,24 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 username);
-            var status = statuses.Results.FirstOrDefault();
+            var status = statuses.Results.WhereNotDeleted().FirstOrDefault();
             if (status != null)
             {
-                if (status.Body != null && status.Ts != null)
-                    Console.WriteLine($"Most recent status: {status.Body} ({status.Ts})");
+                Console.WriteLine($"Most recent (non-deleted) status: {status.Body} ({status.Ts})");
 
-                if (status.Statusid is Guid statusid)
+                var comments_req = new Requests.Comments.StatusCommentsRequest(status.Statusid.Value) { Maxdepth = 5 };
+                var comments = await Requests.Comments.StatusComments.ToArrayAsync(
+                    token,
+                    0,
+                    int.MaxValue,
+                    comments_req);
+                if (comments.Any())
                 {
-                    var comments_req = new Requests.Comments.StatusCommentsRequest(statusid) { Maxdepth = 5 };
-                    var comments = await Requests.Comments.StatusComments.ToArrayAsync(
-                        token,
-                        0,
-                        int.MaxValue,
-                        comments_req);
-                    if (comments.Any())
-                    {
-                        Console.WriteLine("Comments:");
-                    }
-                    foreach (var c in comments)
-                    {
-                        Console.WriteLine($"    {c.User.Username}: {c.Body}");
-                    }
+                    Console.WriteLine("Comments:");
+                }
+                foreach (var c in comments)
+                {
+                    Console.WriteLine($"    {c.User.Username}: {c.Body}");
                 }
 
                 Console.WriteLine();
@@ -215,10 +216,10 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
         }
 
         [STAThread]
-        static int Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
             string token_string = GetToken();
-            Sandbox(token_string).GetAwaiter().GetResult();
+            await Sandbox(token_string);
             return 0;
         }
     }

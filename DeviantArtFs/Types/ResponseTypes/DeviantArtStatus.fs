@@ -5,6 +5,8 @@ open FSharp.Json
 
 [<AllowNullLiteral>]
 type IBclDeviantArtStatus =
+    inherit IDeviantArtDeletable
+
     abstract member Statusid: Guid Nullable
     abstract member Body: string
     abstract member Ts: DateTimeOffset Nullable
@@ -49,6 +51,8 @@ and DeviantArtStatus = {
                 | None -> ()
     }
 
+    interface IDeviantArtDeletable with
+        member this.IsDeleted = this.is_deleted
     interface IBclDeviantArtStatus with
         member this.Body = this.body |> Option.defaultValue null
         member this.CommentsCount = this.comments_count |> Option.toNullable

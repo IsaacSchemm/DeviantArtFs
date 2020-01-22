@@ -31,6 +31,8 @@ type IBclDailyDeviation =
 
 [<AllowNullLiteral>]
 type IBclDeviation =
+    inherit IDeviantArtDeletable
+
     /// The deviation's ID in the DeviantArt API.
     abstract member Deviationid: Guid
     /// The UUID of the print. Available if the author chooses the "Sell Prints" option during submission.
@@ -144,6 +146,8 @@ type Deviation = {
     download_filesize: int option
 } with
     static member Parse json = Json.deserialize<Deviation> json
+    interface IDeviantArtDeletable with
+        member this.IsDeleted = this.is_deleted
     interface IBclDeviation with
         member this.AllowsComments = this.allows_comments |> Option.toNullable
         member this.Author = this.author |> Option.map (fun u -> u :> IBclDeviantArtUser) |> Option.toObj

@@ -65,10 +65,13 @@ let sandbox token_string = async {
     let! deviations =
         DeviantArtFs.Requests.Gallery.GalleryAllViewRequest(Username = username)
         |> DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token (page 0 1)
-    let deviation = Seq.tryHead deviations.results
+    let deviation = deviations.results |> DeviantArtExtensions.WhereNotDeleted |> Seq.tryHead
     match deviation with
     | Some s -> 
-        printfn "Most recent deviation: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
+        printfn "Most recent (non-deleted) deviation: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
+        match s.is_downloadable with
+        | Some true -> printfn "Downloadable (size = %d}" (s.download_filesize |> Option.defaultValue -1)
+        | _ -> printfn "Not downloadable"
 
         let! metadata =
             new DeviantArtFs.Requests.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = DeviantArtExtParams.All)
@@ -99,10 +102,10 @@ let sandbox token_string = async {
     let! journals =
         DeviantArtFs.Requests.Browse.UserJournalsRequest(username, Featured = false)
         |> DeviantArtFs.Requests.Browse.UserJournals.AsyncExecute token (page 0 1)
-    let journal = Seq.tryHead journals.results
+    let journal = journals.results |> DeviantArtExtensions.WhereNotDeleted |> Seq.tryHead
     match journal with
     | Some s -> 
-        printfn "Most recent journal: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
+        printfn "Most recent (non-deleted) journal: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
 
         let! favorites =
             DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token 0 s.deviationid
@@ -125,24 +128,19 @@ let sandbox token_string = async {
     | None -> ()
 
     let! statuses = DeviantArtFs.Requests.User.StatusesList.AsyncExecute token (page 0 1) username
-    let status = Seq.tryHead statuses.results
+    let status = statuses.results |> DeviantArtExtensions.WhereNotDeleted |> Seq.tryHead
     match status with
     | Some s ->
-        match (s.body, s.ts) with
-        | (Some body, Some ts) -> printfn "Most recent status: %s (%O)" body ts
-        | _ -> ()
+        printfn "Most recent (non-deleted) status: %s (%O)" (Option.get s.body) (Option.get s.ts)
 
-        match s.statusid with
-        | Some statusid ->
-            let! comments =
-                new DeviantArtFs.Requests.Comments.StatusCommentsRequest(statusid, Maxdepth = 5)
-                |> DeviantArtFs.Requests.Comments.StatusComments.ToAsyncSeq token 0
-                |> AsyncSeq.toArrayAsync
-            if (not << Seq.isEmpty) comments then
-                printfn "Comments:"
-            for c in comments do
-                printfn "    %s: %s" c.user.username c.body
-        | None -> ()
+        let! comments =
+            new DeviantArtFs.Requests.Comments.StatusCommentsRequest(Option.get s.statusid, Maxdepth = 5)
+            |> DeviantArtFs.Requests.Comments.StatusComments.ToAsyncSeq token 0
+            |> AsyncSeq.toArrayAsync
+        if (not << Seq.isEmpty) comments then
+            printfn "Comments:"
+        for c in comments do
+            printfn "    %s: %s" c.user.username c.body
 
         printfn ""
     | None -> ()

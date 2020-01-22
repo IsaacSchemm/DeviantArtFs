@@ -40,6 +40,23 @@ update that has been deleted; this is why most of the fields on those two
 types are marked optional. Check the `is_deleted` field (or `IsDeleted`
 property) before attempting to access any of the other fields.
 
+If you have a list or array of deviation or status update objects, you can use
+the extension method `DeviantArtExtensions.WhereNotDeleted` to filter deleted
+items out of the list:
+
+    // C#
+    IEnumerable<IBclDeviation> deviations;
+    var first_existing_deviation = deviations
+        .WhereNotDeleted()
+        .FirstOrDefault();
+
+    // F#
+    let deviations: Deviation seq
+    let first_existing_deviation =
+        existing_deviations
+        |> DeviantArtExtensions.WhereNotDeleted
+        |> Seq.tryHead
+
 ## Pagination
 
 Some of the DeviantArt endpoints support [pagination](https://www.deviantart.com/developers/pagination).
