@@ -2,7 +2,6 @@
 
 open System
 open FSharp.Json
-open System.Text.RegularExpressions
 
 type IBclDeviantArtCommentSiblingsContext =
     abstract member Parent: IBclDeviantArtComment
@@ -48,3 +47,7 @@ type DeviantArtCommentSiblingsPagedResult = {
         member this.PrevOffset = this.prev_offset |> Option.toNullable
         member this.Thread = this.thread |> Seq.map (fun c -> c :> IBclDeviantArtComment)
         member this.Context = this.context :> IBclDeviantArtCommentSiblingsContext
+    interface IResultPage<int, DeviantArtComment> with
+        member this.Cursor = this.next_offset |> Option.defaultValue 0
+        member this.HasMore = this.has_more
+        member this.Items = this.thread |> Seq.ofList

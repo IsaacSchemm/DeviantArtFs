@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs
 
 /// A page of results from the DeviantArt API.
+/// This interface is used to handle paging in ToAsyncSeq and ToArrayAsync methods.
 type internal IResultPage<'cursor, 'item> =
     /// Whether there are more results after this page.
     abstract member HasMore: bool

@@ -3,19 +3,24 @@
 open System
 open FSharp.Json
 
-/// A single page of results from a DeviantArt API endpoint with bidirectional
-/// paging. Uses .NET types.
+/// A single page of results from a DeviantArt API endpoint.
 type IBclDeviantArtPagedResult<'a> =
+    /// Whether there are more results on the next page.
     abstract member HasMore: bool
+    /// The next page's offset, if any.
     abstract member NextOffset: Nullable<int>
+    /// Whether there are more results on the previous page, if the request supports bidirectional paging.
     abstract member HasLess: Nullable<bool>
+    /// The previous page's offset, if any.
     abstract member PrevOffset: Nullable<int>
+    /// The estimated total number of results, if provided.
     abstract member EstimatedTotal: Nullable<int>
+    /// The name, if provided.
     abstract member Name: string
+    /// A list of results.
     abstract member Results: seq<'a>
 
-/// A single page of results from a DeviantArt API endpoint with bidirectional
-/// paging.
+/// A single page of results from a DeviantArt API endpoint.
 type DeviantArtPagedResult<'a> = {
     has_more: bool
     next_offset: int option

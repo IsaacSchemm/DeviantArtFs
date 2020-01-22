@@ -2,19 +2,17 @@
 
 open FSharp.Json
 
-/// A single page of results from a DeviantArt API endpoint that returns a
-/// list of messages. Uses .NET types.
+/// A single page of results from a DeviantArt API message feed.
 type IBclDeviantArtMessageCursorResult =
     abstract member Cursor: string
     abstract member HasMore: bool
     abstract member Results: seq<IBclDeviantArtMessage>
 
-/// A single page of results from a DeviantArt API endpoint that returns a
-/// list of messages.
+/// A single page of results from a DeviantArt API message feed.
 type DeviantArtMessageCursorResult = {
     cursor: string
     has_more: bool
-    results: DeviantArtMessage[]
+    results: DeviantArtMessage list
 } with
     static member Parse json = Json.deserialize<DeviantArtMessageCursorResult> json
     interface IBclDeviantArtMessageCursorResult with
@@ -24,4 +22,4 @@ type DeviantArtMessageCursorResult = {
     interface IResultPage<string option, DeviantArtMessage> with
         member this.HasMore = this.has_more
         member this.Cursor = Option.ofObj this.cursor
-        member this.Items = this.results |> Seq.ofArray
+        member this.Items = this.results |> Seq.ofList

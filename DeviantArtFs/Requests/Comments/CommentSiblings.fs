@@ -23,4 +23,18 @@ module CommentSiblings =
         return json |> DeviantArtCommentSiblingsPagedResult.Parse
     }
 
-    let ExecuteAsync token paging req = AsyncExecute token paging req |> AsyncThen.map (fun o -> o :> IBclDeviantArtCommentSiblingsPagedResult) |> Async.StartAsTask
+    let ToAsyncSeq token offset req =
+        Dafs.getMax AsyncExecute token
+        |> Dafs.toAsyncSeq offset req
+
+    let ToArrayAsync token offset limit req =
+        ToAsyncSeq token offset req
+        |> AsyncSeq.take limit
+        |> AsyncSeq.map (fun c -> c :> IBclDeviantArtComment)
+        |> AsyncSeq.toArrayAsync
+        |> Async.StartAsTask
+
+    let ExecuteAsync token paging req =
+        AsyncExecute token paging req
+        |> AsyncThen.map (fun o -> o :> IBclDeviantArtCommentSiblingsPagedResult)
+        |> Async.StartAsTask
