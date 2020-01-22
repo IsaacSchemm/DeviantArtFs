@@ -19,7 +19,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task<IEnumerable<IBclDeviantArtCategory>>`
 
 ### DeviantArtFs.Requests.Browse.DailyDeviations
-* AsyncExecute `IDeviantArtAccessToken` `DailyDeviationsRequest` -> `Async<IEnumerable<Deviation>>`
+* AsyncExecute `IDeviantArtAccessToken` `DailyDeviationsRequest` -> `Async<FSharpList<Deviation>>`
 * ExecuteAsync `IDeviantArtAccessToken` `DailyDeviationsRequest` -> `Task<IEnumerable<IBclDeviation>>`
 
 **DailyDeviationsRequest:**
@@ -81,7 +81,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * ToArrayAsync `IDeviantArtAccessToken` `int` `int` `string` -> `Task<IBclDeviation[]>`
 
 ### DeviantArtFs.Requests.Browse.TagsSearch
-* AsyncExecute `IDeviantArtAccessToken` `string` -> `Async<IEnumerable<string>>`
+* AsyncExecute `IDeviantArtAccessToken` `string` -> `Async<FSharpList<string>>`
 * ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task<IEnumerable<string>>`
 
 ### DeviantArtFs.Requests.Browse.Undiscovered
@@ -455,7 +455,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Folderid: `Guid`
 
 ### DeviantArtFs.Requests.Notes.NotesFolders
-* AsyncExecute `IDeviantArtAccessToken` -> `Async<IEnumerable<DeviantArtNotesFolder>>`
+* AsyncExecute `IDeviantArtAccessToken` -> `Async<FSharpList<DeviantArtNotesFolder>>`
 * ExecuteAsync `IDeviantArtAccessToken` -> `Task<IEnumerable<IBclDeviantArtNotesFolder>>`
 
 ### DeviantArtFs.Requests.Notes.RemoveNotesFolder
@@ -472,7 +472,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Title: `string`
 
 ### DeviantArtFs.Requests.Notes.SendNote
-* AsyncExecute `IDeviantArtAccessToken` `SendNoteRequest` -> `Async<IEnumerable<DeviantArtSendNoteResult>>`
+* AsyncExecute `IDeviantArtAccessToken` `SendNoteRequest` -> `Async<FSharpList<DeviantArtSendNoteResult>>`
 * ExecuteAsync `IDeviantArtAccessToken` `SendNoteRequest` -> `Task<IEnumerable<IBclDeviantArtSendNoteResult>>`
 
 **SendNoteRequest:**
@@ -608,7 +608,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Username: `string`
 
 ### DeviantArtFs.Requests.User.FriendsSearch
-* AsyncExecute `IDeviantArtAccessToken` `FriendsSearchRequest` -> `Async<IEnumerable<DeviantArtUser>>`
+* AsyncExecute `IDeviantArtAccessToken` `FriendsSearchRequest` -> `Async<FSharpList<DeviantArtUser>>`
 * ExecuteAsync `IDeviantArtAccessToken` `FriendsSearchRequest` -> `Task<IEnumerable<IBclDeviantArtUser>>`
 
 **FriendsSearchRequest:**
@@ -666,7 +666,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Bio: `DeviantArtFieldChange<string>`
 
 ### DeviantArtFs.Requests.User.StatusById
-* AsyncExecute `IDeviantArtAccessToken` `Guid` -> `Async<DeviantArtStatus option>`
+* AsyncExecute `IDeviantArtAccessToken` `Guid` -> `Async<DeviantArtStatus>`
 * ExecuteAsync `IDeviantArtAccessToken` `Guid` -> `Task<IBclDeviantArtStatus>`
 
 ### DeviantArtFs.Requests.User.StatusesList
@@ -701,7 +701,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * ExecuteAsync `IDeviantArtAccessToken` -> `Task<IBclDeviantArtUser>`
 
 ### DeviantArtFs.Requests.User.Whois
-* AsyncExecute `IDeviantArtAccessToken` `IEnumerable<string>` -> `Async<IEnumerable<DeviantArtUser>>`
+* AsyncExecute `IDeviantArtAccessToken` `IEnumerable<string>` -> `Async<FSharpList<DeviantArtUser>>`
 * ExecuteAsync `IDeviantArtAccessToken` `IEnumerable<string>` -> `Task<IEnumerable<IBclDeviantArtUser>>`
 
 ### DeviantArtFs.Requests.Util.Placebo

@@ -3,9 +3,6 @@
 open System
 
 type IStashDelta =
-    [<Obsolete>]
-    abstract member MetadataJson: string
-
     /// The item ID, if this object represents an item.
     abstract member Itemid: Nullable<int64>
     /// The ID of this stack, or - if this object represents an item - the item's parent stack.
@@ -28,6 +25,5 @@ type StashDeltaEntry = {
     interface IBclStashDeltaEntry with
         member this.Itemid = this.itemid |> Option.toNullable
         member this.Stackid = this.stackid |> Option.toNullable
-        member this.MetadataJson = this.metadata |> Option.map (fun m -> m.Json) |> Option.toObj
         member this.Position = this.position |> Option.toNullable
         member this.Metadata = this.metadata |> Option.map (fun m -> m :> IBclStashMetadata) |> Option.toObj

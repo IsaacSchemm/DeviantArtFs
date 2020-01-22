@@ -6,9 +6,6 @@ open System.Collections.Generic
 
 [<AllowNullLiteral>]
 type IBclStashMetadata =
-    [<Obsolete>]
-    abstract member Json: string
-
     /// The title of the stack or item.
     abstract member Title: string
     /// The path to the stack or item (separated by forward slashes).
@@ -66,11 +63,7 @@ type StashMetadata = {
 } with
     static member Parse json = Json.deserialize<StashMetadata> json
 
-    [<Obsolete>]
-    member this.Json = Json.serialize this
-
     interface IBclStashMetadata with
-        member this.Json = this.Json
         member this.ArtistComments = this.artist_comments |> Option.toObj
         member this.Camera = this.camera |> Option.defaultValue Map.empty :> IDictionary<string, string>
         member this.Category = this.category |> Option.toObj

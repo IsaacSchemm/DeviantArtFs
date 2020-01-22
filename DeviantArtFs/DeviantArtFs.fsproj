@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>3.0.0</Version>
+    <Version>4.0.0-beta1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Isaac Schemm</Authors>
     <Company></Company>
@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/IsaacSchemm/DeviantArtFs</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Description>An F#/.NET library to interact with the DeviantArt / Sta.sh API (.NET Standard 2.0)</Description>
-    <PackageReleaseNotes>3.0.0: Updated DeviantArtStatus/IBclDeviantArtStatus - most fields are now optional</PackageReleaseNotes>
+    <PackageReleaseNotes>4.0.0: Some minor cleanup; remove deprecated fields</PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
@@ -73,6 +73,7 @@
     <Compile Include="DeviantArtRequest.fs" />
     <Compile Include="Dafs.fs" />
     <Compile Include="QueryFor.fs" />
+    <Compile Include="Page.fs" />
     <Compile Include="AsyncThen.fs" />
     <Compile Include="DeviantArtAuth.fs" />
     <Compile Include="Requests\Browse\CategoryTree.fs" />

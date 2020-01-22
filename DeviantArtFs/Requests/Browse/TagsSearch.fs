@@ -15,4 +15,7 @@ module TagsSearch =
         return DeviantArtListOnlyResponse.ParseList json |> List.map (fun t -> t.tag_name)
     }
 
-    let ExecuteAsync token tag_name = AsyncExecute token tag_name |> Async.StartAsTask
+    let ExecuteAsync token tag_name =
+        AsyncExecute token tag_name
+        |> AsyncThen.map List.toSeq
+        |> Async.StartAsTask
