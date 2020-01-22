@@ -71,6 +71,10 @@ type IBclDeviation =
     abstract member Excerpt: string
     /// Whether the deviation contains mature content.
     abstract member IsMature: bool
+    /// Whether the deviation is downloadable.
+    abstract member IsDownloadable: bool
+    /// The download size of the deviation, if any.
+    abstract member DownloadFilesize: Nullable<int>
 
 type DeviationStats = {
     comments: int
@@ -148,9 +152,11 @@ type Deviation = {
         member this.Content = this.content |> Option.map (fun u -> u :> IBclDeviationContent) |> Option.toObj
         member this.DailyDeviation = this.daily_deviation |> Option.map (fun o -> o :> IBclDailyDeviation) |> Option.toObj
         member this.Deviationid = this.deviationid
+        member this.DownloadFilesize = this.download_filesize |> Option.toNullable
         member this.Excerpt = this.excerpt |> Option.toObj
         member this.Flash = this.flash |> Option.map (fun u -> u :> IBclDeviantArtFlash) |> Option.toObj
         member this.IsDeleted = this.is_deleted
+        member this.IsDownloadable = this.is_downloadable |> Option.defaultValue false
         member this.IsFavourited = this.is_favourited |> Option.toNullable
         member this.IsMature = this.is_mature |> Option.defaultValue false
         member this.Preview = this.preview |> Option.map (fun u -> u :> IBclDeviationPreview) |> Option.toObj
