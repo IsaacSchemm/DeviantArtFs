@@ -13,12 +13,8 @@ type IBclDeviantArtStatus =
     abstract member IsShare: bool Nullable
     abstract member IsDeleted: bool
     abstract member Author: IBclDeviantArtUser
-    abstract member EmbeddedDeviations: IBclDeviation seq
-    abstract member EmbeddedStatuses: IBclDeviantArtStatus seq
-
-type PossiblyDeletedDeviantArtStatus = {
-    is_deleted: bool
-}
+    abstract member GetEmbeddedDeviations: unit -> IBclDeviation seq
+    abstract member GetEmbeddedStatuses: unit -> IBclDeviantArtStatus seq
 
 type DeviantArtStatusItem = {
     ``type``: string
@@ -39,14 +35,14 @@ and DeviantArtStatus = {
 } with
     static member internal Parse json = Json.deserialize<DeviantArtStatus> json
 
-    member this.EmbeddedDeviations = seq {
+    member this.GetEmbeddedDeviations() = seq {
         for i in this.items |> Option.defaultValue List.empty do
             match i.deviation with
                 | Some s -> yield s
                 | None -> ()
     }
 
-    member this.EmbeddedStatuses = seq {
+    member this.GetEmbeddedStatuses() = seq {
         for i in this.items |> Option.defaultValue List.empty do
             match i.status with
                 | Some s -> yield s
@@ -56,8 +52,6 @@ and DeviantArtStatus = {
     interface IBclDeviantArtStatus with
         member this.Body = this.body |> Option.defaultValue null
         member this.CommentsCount = this.comments_count |> Option.toNullable
-        member this.EmbeddedDeviations = this.EmbeddedDeviations |> Seq.map (fun s -> s :> IBclDeviation)
-        member this.EmbeddedStatuses = this.EmbeddedStatuses |> Seq.map (fun s -> s :> IBclDeviantArtStatus)
         member this.IsDeleted = this.is_deleted
         member this.IsShare = this.is_share |> Option.toNullable
         member this.Statusid = this.statusid |> Option.toNullable
@@ -67,3 +61,6 @@ and DeviantArtStatus = {
             match this.author with
             | Some a -> a :> IBclDeviantArtUser
             | None -> null
+
+        member this.GetEmbeddedDeviations() = this.GetEmbeddedDeviations() |> Seq.map (fun s -> s :> IBclDeviation)
+        member this.GetEmbeddedStatuses() = this.GetEmbeddedStatuses() |> Seq.map (fun s -> s :> IBclDeviantArtStatus)
