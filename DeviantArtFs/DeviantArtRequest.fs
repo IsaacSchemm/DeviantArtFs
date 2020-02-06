@@ -75,7 +75,7 @@ type DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: string) =
                             do! auto.UpdateTokenAsync newToken |> Async.AwaitTask
                     finally
                         RefreshLock.Semaphore.Release() |> ignore
-                    return! this.AsyncGetResponse auto
+                    return! this.AsyncGetResponse { new IDeviantArtAccessToken with member __.AccessToken = auto.AccessToken }
                 | _ ->
                     return raise (new DeviantArtException(resp, obj, json))
     }
