@@ -24,7 +24,7 @@ module Newest =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/newest?%s"
             |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
-        return DeviantArtPagedResult<Deviation>.Parse json
+        return DeviantArtBrowsePagedResult.Parse json
     }
 
     let ToAsyncSeq token offset req =

@@ -27,7 +27,7 @@ module GalleryById =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/%A?%s" req.Folderid
             |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
-        return DeviantArtPagedResult<Deviation>.Parse json
+        return DeviantArtFolderPagedResult.Parse json
     }
 
     let ToAsyncSeq token offset req =
