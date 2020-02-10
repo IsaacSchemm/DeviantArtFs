@@ -28,3 +28,7 @@ type DeviantArtCommentSiblingsPagedResult = {
         |> Json.deserialize<DeviantArtCommentSiblingsPagedResult>
     member this.GetNextOffset() = OptUtils.intDefault this.next_offset
     member this.GetPrevOffset() = OptUtils.intDefault this.prev_offset
+    interface IResultPage<int, DeviantArtComment> with
+        member this.Cursor = this.next_offset |> Option.defaultValue 0
+        member this.HasMore = this.has_more
+        member this.Items = this.thread |> Seq.ofList

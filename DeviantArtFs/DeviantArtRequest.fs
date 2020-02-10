@@ -9,7 +9,7 @@ open System.Threading
 module internal RefreshLock =
     let Semaphore = new SemaphoreSlim(1, 1)
 
-type internal DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: string) =
+type DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: string) =
     let isStatus (code: int) (response: WebResponse) =
         match response with
         | :? HttpWebResponse as h -> int h.StatusCode = code
@@ -75,7 +75,7 @@ type internal DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: stri
                             do! auto.UpdateTokenAsync newToken |> Async.AwaitTask
                     finally
                         RefreshLock.Semaphore.Release() |> ignore
-                    return! this.AsyncGetResponse auto
+                    return! this.AsyncGetResponse { new IDeviantArtAccessToken with member __.AccessToken = auto.AccessToken }
                 | _ ->
                     return raise (new DeviantArtException(resp, obj, json))
     }

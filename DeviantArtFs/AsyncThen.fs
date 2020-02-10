@@ -6,7 +6,5 @@ module internal AsyncThen =
         return f o
     }
 
-    let mapSeq f a = async {
-        let! o = a
-        return Seq.map f o
-    }
+    let mapSeq f a =
+        map (Seq.map f) a

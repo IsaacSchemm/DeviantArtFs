@@ -14,12 +14,15 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * GetTokenAsync `string` `Uri` -> `Task<IDeviantArtRefreshTokenFull>`
 * RefreshAsync `string` -> `Task<IDeviantArtRefreshTokenFull>`
 
+### DeviantArtFs.DeviantArtRequest
+* AsyncReadJson -> `Async<string>`
+
 ### DeviantArtFs.Requests.Browse.CategoryTree
 * AsyncExecute `IDeviantArtAccessToken` `string` -> `Async<IEnumerable<DeviantArtCategory>>`
 * ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task<IEnumerable<IBclDeviantArtCategory>>`
 
 ### DeviantArtFs.Requests.Browse.DailyDeviations
-* AsyncExecute `IDeviantArtAccessToken` `DailyDeviationsRequest` -> `Async<IEnumerable<Deviation>>`
+* AsyncExecute `IDeviantArtAccessToken` `DailyDeviationsRequest` -> `Async<FSharpList<Deviation>>`
 * ExecuteAsync `IDeviantArtAccessToken` `DailyDeviationsRequest` -> `Task<IEnumerable<IBclDeviation>>`
 
 **DailyDeviationsRequest:**
@@ -52,8 +55,8 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * ExecuteAsync `IDeviantArtAccessToken` `Guid` -> `Task<IBclDeviantArtMoreLikeThisPreviewResult>`
 
 ### DeviantArtFs.Requests.Browse.Newest
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `NewestRequest` -> `Async<DeviantArtPagedResult<Deviation>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `NewestRequest` -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
+* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `NewestRequest` -> `Async<DeviantArtBrowsePagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `NewestRequest` -> `Task<IBclDeviantArtBrowsePagedResult>`
 * ToAsyncSeq `IDeviantArtAccessToken` `int` `NewestRequest` -> `AsyncSeq<Deviation>`
 * ToArrayAsync `IDeviantArtAccessToken` `int` `int` `NewestRequest` -> `Task<IBclDeviation[]>`
 
@@ -63,8 +66,8 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Q: `string`
 
 ### DeviantArtFs.Requests.Browse.Popular
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `PopularRequest` -> `Async<DeviantArtPagedResult<Deviation>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `PopularRequest` -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
+* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `PopularRequest` -> `Async<DeviantArtBrowsePagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `PopularRequest` -> `Task<IBclDeviantArtBrowsePagedResult>`
 * ToAsyncSeq `IDeviantArtAccessToken` `int` `PopularRequest` -> `AsyncSeq<Deviation>`
 * ToArrayAsync `IDeviantArtAccessToken` `int` `int` `PopularRequest` -> `Task<IBclDeviation[]>`
 
@@ -75,13 +78,13 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Timerange: `PopularTimeRange` (EightHours, TwentyFourHours, ThreeDays, OneWeek, OneMonth, AllTime)
 
 ### DeviantArtFs.Requests.Browse.Tags
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `string` -> `Async<DeviantArtPagedResult<Deviation>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `string` -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
+* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `string` -> `Async<DeviantArtBrowsePagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `string` -> `Task<IBclDeviantArtBrowsePagedResult>`
 * ToAsyncSeq `IDeviantArtAccessToken` `int` `string` -> `AsyncSeq<Deviation>`
 * ToArrayAsync `IDeviantArtAccessToken` `int` `int` `string` -> `Task<IBclDeviation[]>`
 
 ### DeviantArtFs.Requests.Browse.TagsSearch
-* AsyncExecute `IDeviantArtAccessToken` `string` -> `Async<IEnumerable<string>>`
+* AsyncExecute `IDeviantArtAccessToken` `string` -> `Async<FSharpList<string>>`
 * ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task<IEnumerable<string>>`
 
 ### DeviantArtFs.Requests.Browse.Undiscovered
@@ -106,8 +109,8 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Featured: `bool`
 
 ### DeviantArtFs.Requests.Collections.CollectionById
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `CollectionByIdRequest` -> `Async<DeviantArtPagedResult<Deviation>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `CollectionByIdRequest` -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
+* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `CollectionByIdRequest` -> `Async<DeviantArtFolderPagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `CollectionByIdRequest` -> `Task<IBclDeviantArtFolderPagedResult>`
 * ToAsyncSeq `IDeviantArtAccessToken` `int` `CollectionByIdRequest` -> `AsyncSeq<Deviation>`
 * ToArrayAsync `IDeviantArtAccessToken` `int` `int` `CollectionByIdRequest` -> `Task<IBclDeviation[]>`
 
@@ -147,6 +150,8 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 ### DeviantArtFs.Requests.Comments.CommentSiblings
 * AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `CommentSiblingsRequest` -> `Async<DeviantArtCommentSiblingsPagedResult>`
 * ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `CommentSiblingsRequest` -> `Task<IBclDeviantArtCommentSiblingsPagedResult>`
+* ToAsyncSeq `IDeviantArtAccessToken` `int` `CommentSiblingsRequest` -> `AsyncSeq<DeviantArtComment>`
+* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `CommentSiblingsRequest` -> `Task<IBclDeviantArtComment[]>`
 
 **CommentSiblingsRequest:**
 
@@ -248,8 +253,8 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * ExecuteAsync `IDeviantArtAccessToken` `Guid` -> `Task<IBclDeviationDownload>`
 
 ### DeviantArtFs.Requests.Deviation.EmbeddedContent
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `EmbeddedContentRequest` -> `Async<DeviantArtPagedResult<Deviation>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `EmbeddedContentRequest` -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
+* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `EmbeddedContentRequest` -> `Async<DeviantArtEmbeddedContentPagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `EmbeddedContentRequest` -> `Task<IBclDeviantArtEmbeddedContentPagedResult>`
 * ToAsyncSeq `IDeviantArtAccessToken` `int` `EmbeddedContentRequest` -> `AsyncSeq<Deviation>`
 * ToArrayAsync `IDeviantArtAccessToken` `int` `int` `EmbeddedContentRequest` -> `Task<IBclDeviation[]>`
 
@@ -330,8 +335,8 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Username: `string`
 
 ### DeviantArtFs.Requests.Gallery.GalleryById
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `GalleryByIdRequest` -> `Async<DeviantArtPagedResult<Deviation>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `GalleryByIdRequest` -> `Task<IBclDeviantArtPagedResult<IBclDeviation>>`
+* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `GalleryByIdRequest` -> `Async<DeviantArtFolderPagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `GalleryByIdRequest` -> `Task<IBclDeviantArtFolderPagedResult>`
 * ToAsyncSeq `IDeviantArtAccessToken` `int` `GalleryByIdRequest` -> `AsyncSeq<Deviation>`
 * ToArrayAsync `IDeviantArtAccessToken` `int` `int` `GalleryByIdRequest` -> `Task<IBclDeviation[]>`
 
@@ -455,7 +460,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Folderid: `Guid`
 
 ### DeviantArtFs.Requests.Notes.NotesFolders
-* AsyncExecute `IDeviantArtAccessToken` -> `Async<IEnumerable<DeviantArtNotesFolder>>`
+* AsyncExecute `IDeviantArtAccessToken` -> `Async<FSharpList<DeviantArtNotesFolder>>`
 * ExecuteAsync `IDeviantArtAccessToken` -> `Task<IEnumerable<IBclDeviantArtNotesFolder>>`
 
 ### DeviantArtFs.Requests.Notes.RemoveNotesFolder
@@ -472,7 +477,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Title: `string`
 
 ### DeviantArtFs.Requests.Notes.SendNote
-* AsyncExecute `IDeviantArtAccessToken` `SendNoteRequest` -> `Async<IEnumerable<DeviantArtSendNoteResult>>`
+* AsyncExecute `IDeviantArtAccessToken` `SendNoteRequest` -> `Async<FSharpList<DeviantArtSendNoteResult>>`
 * ExecuteAsync `IDeviantArtAccessToken` `SendNoteRequest` -> `Task<IEnumerable<IBclDeviantArtSendNoteResult>>`
 
 **SendNoteRequest:**
@@ -608,7 +613,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Username: `string`
 
 ### DeviantArtFs.Requests.User.FriendsSearch
-* AsyncExecute `IDeviantArtAccessToken` `FriendsSearchRequest` -> `Async<IEnumerable<DeviantArtUser>>`
+* AsyncExecute `IDeviantArtAccessToken` `FriendsSearchRequest` -> `Async<FSharpList<DeviantArtUser>>`
 * ExecuteAsync `IDeviantArtAccessToken` `FriendsSearchRequest` -> `Task<IEnumerable<IBclDeviantArtUser>>`
 
 **FriendsSearchRequest:**
@@ -666,7 +671,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * Bio: `DeviantArtFieldChange<string>`
 
 ### DeviantArtFs.Requests.User.StatusById
-* AsyncExecute `IDeviantArtAccessToken` `Guid` -> `Async<DeviantArtStatus option>`
+* AsyncExecute `IDeviantArtAccessToken` `Guid` -> `Async<DeviantArtStatus>`
 * ExecuteAsync `IDeviantArtAccessToken` `Guid` -> `Task<IBclDeviantArtStatus>`
 
 ### DeviantArtFs.Requests.User.StatusesList
@@ -701,7 +706,7 @@ Methods that return a Task<T> can be used from async methods in C# and VB.NET, a
 * ExecuteAsync `IDeviantArtAccessToken` -> `Task<IBclDeviantArtUser>`
 
 ### DeviantArtFs.Requests.User.Whois
-* AsyncExecute `IDeviantArtAccessToken` `IEnumerable<string>` -> `Async<IEnumerable<DeviantArtUser>>`
+* AsyncExecute `IDeviantArtAccessToken` `IEnumerable<string>` -> `Async<FSharpList<DeviantArtUser>>`
 * ExecuteAsync `IDeviantArtAccessToken` `IEnumerable<string>` -> `Task<IEnumerable<IBclDeviantArtUser>>`
 
 ### DeviantArtFs.Requests.Util.Placebo

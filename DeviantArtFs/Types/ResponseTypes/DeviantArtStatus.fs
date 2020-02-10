@@ -22,6 +22,7 @@ and DeviantArtStatus = {
     items: DeviantArtStatusItem list option
 } with
     static member internal Parse json = Json.deserialize<DeviantArtStatus> json
+
     member this.GetStatusId() = OptUtils.guidDefault this.statusid
     member this.GetBody() = OptUtils.stringDefault this.body
     member this.GetTs() = OptUtils.timeDefault this.ts
@@ -31,12 +32,19 @@ and DeviantArtStatus = {
     member this.GetAuthor() = OptUtils.recordDefault this.author
     member this.GetItems() = OptUtils.listDefault this.items
 
-[<Extension>]
-module DeviantArtStatusExtensions =
-    [<Extension>]
-    let GetEmbeddedDeviations (seq: DeviantArtStatusItem seq) =
-        seq |> Seq.choose (fun i -> i.deviation)
+    member this.GetEmbeddedDeviations() = seq {
+        for i in this.items |> Option.defaultValue List.empty do
+            match i.deviation with
+                | Some s -> yield s
+                | None -> ()
+    }
 
-    [<Extension>]
-    let GetEmbeddedStatuses (seq: DeviantArtStatusItem seq) =
-        seq |> Seq.choose (fun i -> i.status)
+    member this.GetEmbeddedStatuses() = seq {
+        for i in this.items |> Option.defaultValue List.empty do
+            match i.status with
+                | Some s -> yield s
+                | None -> ()
+    }
+
+    interface IDeviantArtDeletable with
+        member this.IsDeleted = this.is_deleted

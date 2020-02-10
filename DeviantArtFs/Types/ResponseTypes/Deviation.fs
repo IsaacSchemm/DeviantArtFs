@@ -77,3 +77,5 @@ type Deviation = {
     member this.GetIsMature() = OptUtils.boolDefault this.is_mature
     member this.GetIsDownloadable() = OptUtils.boolDefault this.is_downloadable
     member this.GetDownloadFilesize() = OptUtils.intDefault this.download_filesize
+    interface IDeviantArtDeletable with
+        member this.IsDeleted = this.is_deleted

@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/IsaacSchemm/DeviantArtFs</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Description>An F#/.NET library to interact with the DeviantArt / Sta.sh API (.NET Standard 2.0)</Description>
-    <PackageReleaseNotes>4.0.0: removed IBcl interfaces, adding methods to records instead</PackageReleaseNotes>
+    <PackageReleaseNotes>5.0.0: removed IBcl interfaces, adding methods to records instead</PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
@@ -25,6 +25,7 @@
     <Compile Include="Json\Transforms\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Types\AccessTokens.fs" />
     <Compile Include="Types\IResultPage.fs" />
+    <Compile Include="Types\IDeviantArtDeletable.fs" />
     <Compile Include="Types\RequestTypes\DeviantArtPagingParams.fs" />
     <Compile Include="Types\RequestTypes\DeviantArtExtParams.fs" />
     <Compile Include="Types\RequestTypes\DeviantArtFieldChange.fs" />
@@ -59,7 +60,6 @@
     <Compile Include="Types\ResponseTypes\StashPublishResponse.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtRelationshipRecords.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtComment.fs" />
-    <Compile Include="Types\ResponseTypes\DeviantArtCommentSiblingsPagedResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtFeedItem.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtFeedSettings.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtMessage.fs" />
@@ -67,12 +67,18 @@
     <Compile Include="Types\ResponseTypes\DeviantArtNotesFolder.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtSendNoteResult.fs" />
     <Compile Include="Types\PagedResponses\DeviantArtPagedResult.fs" />
+    <Compile Include="Types\PagedResponses\DeviantArtEmbeddedContentPagedResult.fs" />
+    <Compile Include="Types\PagedResponses\DeviantArtBrowsePagedResult.fs" />
+    <Compile Include="Types\PagedResponses\DeviantArtFolderPagedResult.fs" />
     <Compile Include="Types\PagedResponses\DeviantArtCommentPagedResult.fs" />
+    <Compile Include="Types\PagedResponses\DeviantArtCommentSiblingsPagedResult.fs" />
     <Compile Include="Types\PagedResponses\DeviantArtFeedCursorResult.fs" />
     <Compile Include="Types\PagedResponses\DeviantArtMessageCursorResult.fs" />
     <Compile Include="Types\Exceptions.fs" />
     <Compile Include="DeviantArtRequest.fs" />
+    <Compile Include="DeviantArtExtensions.fs" />
     <Compile Include="Dafs.fs" />
+    <Compile Include="Page.fs" />
     <Compile Include="QueryFor.fs" />
     <Compile Include="AsyncThen.fs" />
     <Compile Include="DeviantArtAuth.fs" />

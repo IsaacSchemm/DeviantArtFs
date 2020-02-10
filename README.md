@@ -9,7 +9,53 @@ If you're using this library in a .NET Framework project and it doesn't run, mak
 Each request that can be made to DeviantArt is represented by a module
 somewhere in the DeviantArtFs.Requests namespace. These modules have static
 methods that take an IDeviantArtAccessToken (see "Authentication" below) and
-usually at least one other parameter.
+usually at least one other parameter. The main method is usually named
+`AsyncExecute` and returns an async workflow, the result of which is an F#
+record type that lines up with the original JSON.
+
+Many objects in the DeviantArt API have optional fields, which are difficult
+to represent in languages such as F# that expect a fixed schema. DeviantArtFs
+represents these optional fields with F# `option` types.
+
+For requests that return an object with a single field that is either a string
+or a list, DeviantArtFs will flatten the response to just the string or list
+itself.
+
+### Using the library from C# or VB.NET
+
+Since F# async workflows and option types can be awkward to work with in other
+.NET languages, DeviantArtFs also exposes its functionality through alternate
+methods and interfaces. Modules with an `AsyncExecute` method also have an
+`ExecuteAsync` method that returns a `Task<T>`, and each record type has an
+explicit interface implementation that exposes the same fields, but with
+nullable types instead of `option` types. (Keep in mind that this is an
+*explicit* interface implementation, which has implications for JSON
+serialization.) This approach results in a lot of boilerplate code, but
+provides a consistent pattern.
+
+### Deleted Deviations and Status Updates
+
+`Deviation` and `DeviantArtStatus` objects can represent a deviation or status
+update that has been deleted; this is why most of the fields on those two
+types are marked optional. Check the `is_deleted` field (or `IsDeleted`
+property) before attempting to access any of the other fields.
+
+If you have a list or array of deviation or status update objects, you can use
+the extension method `DeviantArtExtensions.WhereNotDeleted` to filter deleted
+items out of the list:
+
+    // C#
+    IEnumerable<IBclDeviation> deviations;
+    var first_existing_deviation = deviations
+        .WhereNotDeleted()
+        .FirstOrDefault();
+
+    // F#
+    let deviations: Deviation seq
+    let first_existing_deviation =
+        existing_deviations
+        |> DeviantArtExtensions.WhereNotDeleted
+        |> Seq.tryHead
 
 The DeviantArt API schema has many objects with optional fields, which are
 represented in this library by F# option types. For languages other than F#,
