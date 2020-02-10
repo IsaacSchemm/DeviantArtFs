@@ -29,7 +29,6 @@ module FeedHome =
         |> Option.ofObj
         |> ToAsyncSeq token
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun o -> o :> IBclDeviantArtFeedItem)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
@@ -37,5 +36,4 @@ module FeedHome =
         cursor
         |> Option.ofObj
         |> AsyncExecute token
-        |> AsyncThen.map (fun o -> o :> IBclDeviantArtFeedCursorResult)
         |> Async.StartAsTask

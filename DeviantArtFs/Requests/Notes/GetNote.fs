@@ -16,5 +16,4 @@ module GetNote =
 
     let ExecuteAsync token noteid =
         AsyncExecute token noteid
-        |> AsyncThen.map (fun o -> o :> IBclDeviantArtNote)
         |> Async.StartAsTask

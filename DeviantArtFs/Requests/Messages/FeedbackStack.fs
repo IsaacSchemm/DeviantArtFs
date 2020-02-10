@@ -26,11 +26,9 @@ module FeedbackStack =
     let ToArrayAsync token req offset limit =
         ToAsyncSeq token offset req
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun o -> o :> IBclDeviantArtMessage)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapAndWrapPage (fun o -> o :> IBclDeviantArtMessage)
         |> Async.StartAsTask

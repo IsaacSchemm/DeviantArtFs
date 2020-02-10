@@ -36,4 +36,4 @@ module SendNote =
         return DeviantArtListOnlyResponse<DeviantArtSendNoteResult>.ParseList json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapSeq (fun o -> o :> IBclDeviantArtSendNoteResult) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

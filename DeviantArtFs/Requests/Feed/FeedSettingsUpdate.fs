@@ -12,19 +12,18 @@ type FeedSettingsUpdateRequest() =
     member val Misc = Nullable<bool>() with get, set
 
     // For convenience, you can create an DeviantArtFeedInclude record and pass it into this constructor to update all settings
-    new(x: IBclDeviantArtFeedInclude) as this =
+    new(x: DeviantArtFeedInclude) as this =
         FeedSettingsUpdateRequest()
         then
-            this.Statuses <- Nullable x.Statuses
-            this.Deviations <- Nullable x.Deviations
-            this.Journals <- Nullable x.Journals
-            this.GroupDeviations <- Nullable x.GroupDeviations
-            this.Collections <- Nullable x.Collections
-            this.Misc <- Nullable x.Misc
+            this.Statuses <- Nullable x.statuses
+            this.Deviations <- Nullable x.deviations
+            this.Journals <- Nullable x.journals
+            this.GroupDeviations <- Nullable x.group_deviations
+            this.Collections <- Nullable x.collections
+            this.Misc <- Nullable x.misc
 
 module FeedSettingsUpdate =
     open FSharp.Control
-    open System.IO
 
     let AsyncExecute token (req: FeedSettingsUpdateRequest) = async {
         let query = seq {
@@ -43,7 +42,7 @@ module FeedSettingsUpdate =
 
         let! json = Dafs.asyncRead req
         let resp = DeviantArtSuccessOrErrorResponse.Parse json
-        ignore json
+        ignore resp
     }
 
     let ExecuteAsync token req =

@@ -34,11 +34,9 @@ module StatusComments =
     let ToArrayAsync token offset limit req =
         ToAsyncSeq token offset req
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun c -> c :> IBclDeviantArtComment)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.map (fun o -> o :> IBclDeviantArtCommentPagedResult)
         |> Async.StartAsTask

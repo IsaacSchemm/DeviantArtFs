@@ -22,4 +22,4 @@ module FriendsSearch =
         return DeviantArtListOnlyResponse<DeviantArtUser>.ParseList json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapSeq (fun o -> o :> IBclDeviantArtUser) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

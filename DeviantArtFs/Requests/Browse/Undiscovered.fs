@@ -30,11 +30,9 @@ module Undiscovered =
     let ToArrayAsync token offset limit tag =
         ToAsyncSeq token offset tag
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun o -> o :> IBclDeviation)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapAndWrapPage (fun o -> o :> IBclDeviation)
         |> Async.StartAsTask

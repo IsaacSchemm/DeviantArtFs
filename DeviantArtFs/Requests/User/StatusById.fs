@@ -12,7 +12,6 @@ module StatusById =
         return DeviantArtStatus.Parse json
     }
 
-    let ExecuteAsync token id = Async.StartAsTask (async {
-        let! status = AsyncExecute token id
-        return status :> IBclDeviantArtStatus
-    })
+    let ExecuteAsync token id =
+        AsyncExecute token id
+        |> Async.StartAsTask

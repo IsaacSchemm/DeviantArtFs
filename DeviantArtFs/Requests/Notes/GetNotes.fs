@@ -32,7 +32,6 @@ module GetNotes =
         |> Option.ofNullable
         |> ToAsyncSeq token offset
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun o -> o :> IBclDeviantArtNote)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
@@ -40,5 +39,4 @@ module GetNotes =
         folderid
         |> Option.ofNullable
         |> AsyncExecute token paging
-        |> AsyncThen.mapAndWrapPage (fun o -> o :> IBclDeviantArtNote)
         |> Async.StartAsTask
