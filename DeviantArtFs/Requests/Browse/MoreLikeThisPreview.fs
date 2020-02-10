@@ -17,4 +17,4 @@ module MoreLikeThisPreview =
         return DeviantArtMoreLikeThisPreviewResult.Parse json
     }
 
-    let ExecuteAsync token seed = AsyncExecute token seed |> AsyncThen.map (fun o -> o :> IBclDeviantArtMoreLikeThisPreviewResult) |> Async.StartAsTask
+    let ExecuteAsync token seed = AsyncExecute token seed |> Async.StartAsTask

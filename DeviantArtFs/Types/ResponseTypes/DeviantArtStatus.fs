@@ -2,23 +2,7 @@
 
 open System
 open FSharp.Json
-
-[<AllowNullLiteral>]
-type IBclDeviantArtStatus =
-    abstract member Statusid: Guid Nullable
-    abstract member Body: string
-    abstract member Ts: DateTimeOffset Nullable
-    abstract member Url: string
-    abstract member CommentsCount: int Nullable
-    abstract member IsShare: bool Nullable
-    abstract member IsDeleted: bool
-    abstract member Author: IBclDeviantArtUser
-    abstract member EmbeddedDeviations: IBclDeviation seq
-    abstract member EmbeddedStatuses: IBclDeviantArtStatus seq
-
-type PossiblyDeletedDeviantArtStatus = {
-    is_deleted: bool
-}
+open System.Runtime.CompilerServices
 
 type DeviantArtStatusItem = {
     ``type``: string
@@ -38,32 +22,21 @@ and DeviantArtStatus = {
     items: DeviantArtStatusItem list option
 } with
     static member internal Parse json = Json.deserialize<DeviantArtStatus> json
+    member this.GetStatusId() = OptUtils.guidDefault this.statusid
+    member this.GetBody() = OptUtils.stringDefault this.body
+    member this.GetTs() = OptUtils.timeDefault this.ts
+    member this.GetUrl() = OptUtils.stringDefault this.url
+    member this.GetCommentsCount() = OptUtils.intDefault this.comments_count
+    member this.GetIsShare() = OptUtils.boolDefault this.is_share
+    member this.GetAuthor() = OptUtils.recordDefault this.author
+    member this.GetItems() = OptUtils.listDefault this.items
 
-    member this.EmbeddedDeviations = seq {
-        for i in this.items |> Option.defaultValue List.empty do
-            match i.deviation with
-                | Some s -> yield s
-                | None -> ()
-    }
+[<Extension>]
+module DeviantArtStatusExtensions =
+    [<Extension>]
+    let GetEmbeddedDeviations (seq: DeviantArtStatusItem seq) =
+        seq |> Seq.choose (fun i -> i.deviation)
 
-    member this.EmbeddedStatuses = seq {
-        for i in this.items |> Option.defaultValue List.empty do
-            match i.status with
-                | Some s -> yield s
-                | None -> ()
-    }
-
-    interface IBclDeviantArtStatus with
-        member this.Body = this.body |> Option.defaultValue null
-        member this.CommentsCount = this.comments_count |> Option.toNullable
-        member this.EmbeddedDeviations = this.EmbeddedDeviations |> Seq.map (fun s -> s :> IBclDeviation)
-        member this.EmbeddedStatuses = this.EmbeddedStatuses |> Seq.map (fun s -> s :> IBclDeviantArtStatus)
-        member this.IsDeleted = this.is_deleted
-        member this.IsShare = this.is_share |> Option.toNullable
-        member this.Statusid = this.statusid |> Option.toNullable
-        member this.Ts = this.ts |> Option.toNullable
-        member this.Url = this.url |> Option.defaultValue null
-        member this.Author =
-            match this.author with
-            | Some a -> a :> IBclDeviantArtUser
-            | None -> null
+    [<Extension>]
+    let GetEmbeddedStatuses (seq: DeviantArtStatusItem seq) =
+        seq |> Seq.choose (fun i -> i.status)

@@ -59,9 +59,9 @@ Public Class Form1
         Dim request As New Requests.Gallery.GalleryAllViewRequest With {.Username = CurrentUsername}
         Dim page = Await Requests.Gallery.GalleryAllView.ExecuteAsync(Token, paging, request)
 
-        NextOffset = page.NextOffset
-        For Each r In page.Results
-            Dim thumbUrl = r.Thumbs.Select(Function(t) t.Src).FirstOrDefault()
+        NextOffset = page.GetNextOffset()
+        For Each r In page.results.Where(Function(d) Not d.is_deleted)
+            Dim thumbUrl = r.GetThumbs().Select(Function(t) t.src).FirstOrDefault()
             Dim pic As New PictureBox With {.ImageLocation = thumbUrl, .SizeMode = PictureBoxSizeMode.Zoom, .Dock = DockStyle.Fill}
             AddHandler pic.Click, Sub(sender, e)
                                       ThumbnailClick(r)
@@ -70,20 +70,20 @@ Public Class Form1
         Next
     End Function
 
-    Private Async Sub ThumbnailClick(deviation As IBclDeviation)
+    Private Async Sub ThumbnailClick(deviation As Deviation)
         PictureBox1.ImageLocation = Nothing
-        Dim download As IBclDeviationFile
+        Dim download As IDeviationFile
         Try
-            download = Await Requests.Deviation.Download.ExecuteAsync(Token, deviation.Deviationid)
+            download = Await Requests.Deviation.Download.ExecuteAsync(Token, deviation.deviationid)
         Catch ex As DeviantArtException
-            download = If(deviation.Content, deviation.Thumbs.LastOrDefault())
+            download = Enumerable.Empty(Of IDeviationFile).Concat(deviation.GetContent()).Concat(deviation.GetThumbs()).FirstOrDefault()
         End Try
-        PictureBox1.ImageLocation = If(download IsNot Nothing and download.Width * download.Height > 0, download.Src, Nothing)
+        PictureBox1.ImageLocation = If(download IsNot Nothing And download.Width * download.Height > 0, download.Src, Nothing)
 
         WebBrowser1.Navigate("about:blank")
-        Dim req = New Requests.Deviation.MetadataRequest({deviation.Deviationid})
+        Dim req = New Requests.Deviation.MetadataRequest({deviation.deviationid})
         Dim metadata = Await Requests.Deviation.MetadataById.ExecuteAsync(Token, req)
         Dim s = metadata.Single()
-        WebBrowser1.Document.Write(s.Description)
+        WebBrowser1.Document.Write(s.description)
     End Sub
 End Class

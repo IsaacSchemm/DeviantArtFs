@@ -52,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Control.AsyncSeq">
-      <HintPath>..\..\packages\FSharp.Control.AsyncSeq.2.0.22\lib\net45\FSharp.Control.AsyncSeq.dll</HintPath>
+      <HintPath>..\..\packages\FSharp.Control.AsyncSeq.2.0.23\lib\net45\FSharp.Control.AsyncSeq.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Core">
       <HintPath>..\..\packages\FSharp.Core.4.7.0\lib\net45\FSharp.Core.dll</HintPath>

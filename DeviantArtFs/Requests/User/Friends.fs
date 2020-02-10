@@ -28,11 +28,9 @@ module Friends =
     let ToArrayAsync token offset limit req =
         ToAsyncSeq token offset req
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun w -> w :> IBclDeviantArtFriendRecord)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtFriendRecord)
         |> Async.StartAsTask

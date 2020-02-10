@@ -42,7 +42,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                     ? "https://www.example.com"
                     : url1;
 
-                using (var form = new WinForms.DeviantArtImplicitGrantForm(client_id, new Uri(url2), new[] { "browse", "user", "stash", "publish", "user.manage" }))
+                using (var form = new WinForms.DeviantArtImplicitGrantForm(client_id, new Uri(url2), new[] { "browse", "user", "stash", "publish", "user.manage", "message" }))
                 {
                     if (form.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                     {
@@ -63,6 +63,18 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
         {
             var token = new Token(token_string);
 
+            var sample_deviation = await Requests.Deviation.DeviationById.ExecuteAsync(token, Guid.Parse("99F2A1D6-AC4C-2D88-6E57-595D6162B4C1"));
+            if (!sample_deviation.is_deleted) {
+                Console.WriteLine($"Retrieved deviation: {sample_deviation.GetTitle()}");
+            }
+
+            var sample_status = await Requests.User.StatusById.ExecuteAsync(token, Guid.Parse("C52B5BC5-4140-1DF1-10C5-8E091098E495"));
+            if (!sample_status.is_deleted) {
+                Console.WriteLine($"Retrieved status: {sample_status.GetBody()}");
+            }
+
+            Console.WriteLine($"----------");
+
             Console.Write("Enter a username (leave blank to see your own submissions): ");
             string read = Console.ReadLine();
             Console.WriteLine();
@@ -70,52 +82,52 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
             var me = await Requests.User.Whoami.ExecuteAsync(token);
 
             string username = read == ""
-                ? me.Username
+                ? me.username
                 : read;
 
             var profile = await Requests.User.ProfileByName.ExecuteAsync(
                 token,
                 new Requests.User.ProfileByNameRequest(username));
-            Console.WriteLine(profile.RealName);
-            if (!string.IsNullOrEmpty(profile.Tagline))
+            Console.WriteLine(profile.real_name);
+            if (!string.IsNullOrEmpty(profile.tagline))
             {
-                Console.WriteLine(profile.Tagline);
+                Console.WriteLine(profile.tagline);
             }
-            Console.WriteLine($"{profile.Stats.UserDeviations} deviations");
+            Console.WriteLine($"{profile.stats.user_deviations} deviations");
             Console.WriteLine();
 
             var deviations = await Requests.Gallery.GalleryAllView.ExecuteAsync(
                 token,
                 Page(0, 1),
                 new Requests.Gallery.GalleryAllViewRequest { Username = username });
-            var deviation = deviations.Results.FirstOrDefault();
-            if (deviation != null)
+            var deviation = deviations.results.FirstOrDefault();
+            if (!deviation.is_deleted)
             {
-                Console.WriteLine($"Most recent deviation: {deviation.Title} ({deviation.PublishedTime})");
+                Console.WriteLine($"Most recent deviation: {deviation.GetTitle()} ({deviation.GetPublishedTime()})");
 
                 var metadata = await Requests.Deviation.MetadataById.ExecuteAsync(
                     token,
-                    new Requests.Deviation.MetadataRequest(new[] { deviation.Deviationid }));
+                    new Requests.Deviation.MetadataRequest(new[] { deviation.deviationid }));
                 foreach (var m in metadata)
                 {
-                    Console.WriteLine(string.Join(" ", m.Tags.Select(t => $"#{t.TagName}")));
+                    Console.WriteLine(string.Join(" ", m.tags.Select(t => $"#{t.tag_name}")));
                 }
 
                 var favorites = await Requests.Deviation.WhoFaved.ToArrayAsync(
                     token,
                     0,
                     int.MaxValue,
-                    deviation.Deviationid);
+                    deviation.deviationid);
                 if (favorites.Any())
                 {
                     Console.WriteLine("Favorited by:");
                     foreach (var f in favorites)
                     {
-                        Console.WriteLine($"    {f.User.Username} {f.Time}");
+                        Console.WriteLine($"    {f.user.username} {f.time}");
                     }
                 }
 
-                var comments_req = new Requests.Comments.DeviationCommentsRequest(deviation.Deviationid) { Maxdepth = 5 };
+                var comments_req = new Requests.Comments.DeviationCommentsRequest(deviation.deviationid) { Maxdepth = 5 };
                 var comments = await Requests.Comments.DeviationComments.ToArrayAsync(
                     token,
                     0,
@@ -126,7 +138,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                     Console.WriteLine("Comments by:");
                     foreach (var c in comments)
                     {
-                        Console.WriteLine($"    {c.User.Username} {c.Body}");
+                        Console.WriteLine($"    {c.user.username} {c.body}");
                     }
                 }
 
@@ -137,34 +149,34 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Browse.UserJournalsRequest(username) { Featured = false });
-            var journal = journals.Results.FirstOrDefault();
-            if (journal != null)
+            var journal = journals.results.FirstOrDefault();
+            if (!journal.is_deleted)
             {
-                Console.WriteLine($"Most recent journal: {journal.Title} ({journal.PublishedTime})");
+                Console.WriteLine($"Most recent journal: {journal.GetTitle()} ({journal.GetPublishedTime()})");
 
                 var metadata = await Requests.Deviation.MetadataById.ExecuteAsync(
                     token,
-                    new Requests.Deviation.MetadataRequest(new[] { journal.Deviationid }));
+                    new Requests.Deviation.MetadataRequest(new[] { journal.deviationid }));
                 foreach (var m in metadata)
                 {
-                    Console.WriteLine(string.Join(" ", m.Tags.Select(t => $"#{t.TagName}")));
+                    Console.WriteLine(string.Join(" ", m.tags.Select(t => $"#{t.tag_name}")));
                 }
 
                 var favorites = await Requests.Deviation.WhoFaved.ToArrayAsync(
                     token,
                     0,
                     int.MaxValue,
-                    journal.Deviationid);
+                    journal.deviationid);
                 if (favorites.Any())
                 {
                     Console.WriteLine("Favorited by:");
                     foreach (var f in favorites)
                     {
-                        Console.WriteLine($"    {f.User.Username} {f.Time}");
+                        Console.WriteLine($"    {f.user.username} {f.time}");
                     }
                 }
 
-                var comments_req = new Requests.Comments.DeviationCommentsRequest(journal.Deviationid) { Maxdepth = 5 };
+                var comments_req = new Requests.Comments.DeviationCommentsRequest(journal.deviationid) { Maxdepth = 5 };
                 var comments = await Requests.Comments.DeviationComments.ToArrayAsync(
                     token,
                     0,
@@ -175,7 +187,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                     Console.WriteLine("Comments by:");
                     foreach (var c in comments)
                     {
-                        Console.WriteLine($"    {c.User.Username} {c.Body}");
+                        Console.WriteLine($"    {c.user.username} {c.body}");
                     }
                 }
 
@@ -186,31 +198,46 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 username);
-            var status = statuses.Results.FirstOrDefault();
-            if (status != null)
+            var status = statuses.results.FirstOrDefault();
+            if (!status.is_deleted)
             {
-                if (status.Body != null && status.Ts != null)
-                    Console.WriteLine($"Most recent status: {status.Body} ({status.Ts})");
+                Console.WriteLine($"Most recent status: {status.GetBody()} ({status.GetTs()})");
 
-                if (status.Statusid is Guid statusid)
+                var comments_req = new Requests.Comments.StatusCommentsRequest(status.GetStatusId().Value) { Maxdepth = 5 };
+                var comments = await Requests.Comments.StatusComments.ToArrayAsync(
+                    token,
+                    0,
+                    int.MaxValue,
+                    comments_req);
+                if (comments.Any())
                 {
-                    var comments_req = new Requests.Comments.StatusCommentsRequest(statusid) { Maxdepth = 5 };
-                    var comments = await Requests.Comments.StatusComments.ToArrayAsync(
-                        token,
-                        0,
-                        int.MaxValue,
-                        comments_req);
-                    if (comments.Any())
-                    {
-                        Console.WriteLine("Comments:");
-                    }
-                    foreach (var c in comments)
-                    {
-                        Console.WriteLine($"    {c.User.Username}: {c.Body}");
-                    }
+                    Console.WriteLine("Comments:");
+                }
+                foreach (var c in comments)
+                {
+                    Console.WriteLine($"    {c.user.username}: {c.body}");
                 }
 
                 Console.WriteLine();
+            }
+
+            var messages = await Requests.Messages.MessagesFeed.ToArrayAsync(
+                token,
+                new Requests.Messages.MessagesFeedRequest(),
+                null,
+                5);
+            foreach (var m in messages) {
+                string originator = m.GetOriginator().SingleOrDefault()?.username ?? "???";
+                object subject = m.GetSubjects()
+                    .DefaultIfEmpty(null)
+                    .Single();
+                if (subject == null) {
+                    Console.WriteLine($"New message, originator {originator}, no subject");
+                } else if (subject is DeviantArtUser u) {
+                    Console.WriteLine($"New message, originator {originator}, subject is user with ID {u.userid} and name {u.username}");
+                } else {
+                    Console.WriteLine($"New message, originator {originator}, subject = {subject}");
+                }
             }
         }
 

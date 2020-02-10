@@ -10,4 +10,4 @@ module Space =
         return StashSpaceResult.Parse json
     }
 
-    let ExecuteAsync token = AsyncExecute token |> AsyncThen.map (fun r -> r :> IBclStashSpaceResult) |> Async.StartAsTask
+    let ExecuteAsync token = AsyncExecute token |> Async.StartAsTask

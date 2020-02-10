@@ -28,11 +28,9 @@ module Watchers =
     let ToArrayAsync token offset limit req =
         ToAsyncSeq token offset req
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun w -> w :> IBclDeviantArtWatcherRecord)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtWatcherRecord)
         |> Async.StartAsTask

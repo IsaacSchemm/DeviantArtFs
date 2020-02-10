@@ -26,11 +26,9 @@ module StatusesList =
     let ToArrayAsync token offset limit req =
         ToAsyncSeq token offset req
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun o -> o :> IBclDeviantArtStatus)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtStatus)
         |> Async.StartAsTask

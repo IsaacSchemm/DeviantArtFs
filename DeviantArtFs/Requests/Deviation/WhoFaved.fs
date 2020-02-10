@@ -30,11 +30,9 @@ module WhoFaved =
     let ToArrayAsync token offset limit deviationid =
         ToAsyncSeq token offset deviationid
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun w -> w :> IBclDeviantArtWhoFavedUser)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtWhoFavedUser)
         |> Async.StartAsTask

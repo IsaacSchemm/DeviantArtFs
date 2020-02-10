@@ -37,7 +37,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             var token = new Token
             {
                 Id = Guid.NewGuid(),
-                UserId = me.Userid,
+                UserId = me.userid,
                 AccessToken = result.AccessToken,
                 RefreshToken = result.RefreshToken
             };
@@ -46,7 +46,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
 
             var claimsIdentity = new ClaimsIdentity(
                 new[] {
-                    new Claim(ClaimTypes.Name, me.Username),
+                    new Claim(ClaimTypes.Name, me.username),
                     new Claim("token-id", token.Id.ToString())
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>3.0.0</Version>
+    <Version>4.0.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Isaac Schemm</Authors>
     <Company></Company>
@@ -10,16 +10,18 @@
     <PackageProjectUrl>https://github.com/IsaacSchemm/DeviantArtFs</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Description>An F#/.NET library to interact with the DeviantArt / Sta.sh API (.NET Standard 2.0)</Description>
-    <PackageReleaseNotes>3.0.0: Updated DeviantArtStatus/IBclDeviantArtStatus - most fields are now optional</PackageReleaseNotes>
+    <PackageReleaseNotes>4.0.0: removed IBcl interfaces, adding methods to records instead</PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="Interop\**" />
     <EmbeddedResource Remove="Types\Interop\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="OptUtils.fs" />
     <Compile Include="Json\Transforms\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Types\AccessTokens.fs" />
     <Compile Include="Types\IResultPage.fs" />
@@ -34,8 +36,7 @@
     <Compile Include="Types\ResponseTypes\DeviantArtWhoFavedUser.fs" />
     <Compile Include="Types\ResponseTypes\DeviationFile.fs" />
     <Compile Include="Types\ResponseTypes\Deviation.fs" />
-    <Compile Include="Types\ResponseTypes\DeviantArtGalleryFolder.fs" />
-    <Compile Include="Types\ResponseTypes\DeviantArtCollectionFolder.fs" />
+    <Compile Include="Types\ResponseTypes\DeviantArtFolder.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtCategory.fs" />
     <Compile Include="Types\ResponseTypes\DeviantArtMoreLikeThisPreviewResult.fs" />
     <Compile Include="Types\ResponseTypes\DeviationTextContent.fs" />
@@ -167,7 +168,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FSharp.Control.AsyncSeq" Version="2.0.22" />
+    <PackageReference Include="FSharp.Control.AsyncSeq" Version="2.0.23" />
     <PackageReference Include="FSharp.Json" Version="0.4.0" />
   </ItemGroup>
 

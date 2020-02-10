@@ -25,7 +25,7 @@ module GalleryFolders =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/folders?%s"
             |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
-        return DeviantArtPagedResult<DeviantArtGalleryFolder>.Parse json
+        return DeviantArtPagedResult<DeviantArtFolder>.Parse json
     }
 
     let ToAsyncSeq token offset req =
@@ -35,11 +35,9 @@ module GalleryFolders =
     let ToArrayAsync token offset limit req =
         ToAsyncSeq token offset req
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun f -> f :> IBclDeviantArtGalleryFolder)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
     let ExecuteAsync token paging req =
         AsyncExecute token paging req
-        |> AsyncThen.mapPagedResult (fun o -> o :> IBclDeviantArtGalleryFolder)
         |> Async.StartAsTask

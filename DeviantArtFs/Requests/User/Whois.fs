@@ -14,7 +14,7 @@ module Whois =
         req.ContentType <- "application/x-www-form-urlencoded"
         req.RequestBodyText <- String.concat "&" query
         let! json = Dafs.asyncRead req
-        return DeviantArtListOnlyResponse<DeviantArtUser>.ParseSeq json
+        return DeviantArtListOnlyResponse<DeviantArtUser>.ParseList json
     }
 
-    let ExecuteAsync token usernames = AsyncExecute token usernames |> AsyncThen.mapSeq (fun o -> o :> IBclDeviantArtUser) |> Async.StartAsTask
+    let ExecuteAsync token usernames = AsyncExecute token usernames |> Async.StartAsTask

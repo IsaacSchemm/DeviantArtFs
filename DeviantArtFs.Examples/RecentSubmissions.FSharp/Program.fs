@@ -41,6 +41,27 @@ let page offset limit = new DeviantArtPagingParams(Offset = offset, Limit = Null
 let sandbox token_string = async {
     let token = create_token_obj token_string
 
+    let! sample_deviation =
+        "99F2A1D6-AC4C-2D88-6E57-595D6162B4C1"
+        |> Guid.Parse
+        |> DeviantArtFs.Requests.Deviation.DeviationById.AsyncExecute token
+    match sample_deviation.title with
+    | Some title ->
+        printfn "Retrieved deviation: %s" title
+    | None -> ()
+
+    let! sample_status =
+        "C52B5BC5-4140-1DF1-10C5-8E091098E495"
+        |> Guid.Parse
+        |> DeviantArtFs.Requests.User.StatusById.AsyncExecute token
+    printfn "is_deleted: %b" sample_status.is_deleted
+    match sample_status.body with
+    | Some body ->
+        printfn "Retrieved status: %s" body
+    | None -> ()
+
+    printfn "----------"
+
     printf "Enter a username (leave blank to see your own submissions): "
     let read = Console.ReadLine()
     printfn ""
@@ -65,10 +86,13 @@ let sandbox token_string = async {
     let! deviations =
         DeviantArtFs.Requests.Gallery.GalleryAllViewRequest(Username = username)
         |> DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token (page 0 1)
-    let deviation = Seq.tryHead deviations.results
+    let deviation =
+        deviations.results
+        |> Seq.where (fun d -> not d.is_deleted)
+        |> Seq.tryHead
     match deviation with
     | Some s -> 
-        printfn "Most recent deviation: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
+        printfn "Most recent deviation: %s (%A)" s.title.Value s.published_time.Value
 
         let! metadata =
             new DeviantArtFs.Requests.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = DeviantArtExtParams.All)
@@ -94,15 +118,18 @@ let sandbox token_string = async {
             printfn "    %s: %s" c.user.username c.body
 
         printfn ""
-    | None -> ()
+    | _ -> ()
 
     let! journals =
         DeviantArtFs.Requests.Browse.UserJournalsRequest(username, Featured = false)
         |> DeviantArtFs.Requests.Browse.UserJournals.AsyncExecute token (page 0 1)
-    let journal = Seq.tryHead journals.results
+    let journal =
+        journals.results
+        |> Seq.where (fun d -> not d.is_deleted)
+        |> Seq.tryHead
     match journal with
     | Some s -> 
-        printfn "Most recent journal: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
+        printfn "Most recent journal: %s (%A)" s.title.Value s.published_time.Value
 
         let! favorites =
             DeviantArtFs.Requests.Deviation.WhoFaved.ToAsyncSeq token 0 s.deviationid
@@ -122,30 +149,47 @@ let sandbox token_string = async {
             printfn "    %s: %s" c.user.username c.body
 
         printfn ""
-    | None -> ()
+    | _ -> ()
 
     let! statuses = DeviantArtFs.Requests.User.StatusesList.AsyncExecute token (page 0 1) username
-    let status = Seq.tryHead statuses.results
+    let status =
+        statuses.results
+        |> Seq.where (fun s -> not s.is_deleted)
+        |> Seq.tryHead
     match status with
     | Some s ->
-        match (s.body, s.ts) with
-        | (Some body, Some ts) -> printfn "Most recent status: %s (%O)" body ts
-        | _ -> ()
+        printfn "Most recent status: %s (%O)" s.body.Value s.ts.Value
 
-        match s.statusid with
-        | Some statusid ->
-            let! comments =
-                new DeviantArtFs.Requests.Comments.StatusCommentsRequest(statusid, Maxdepth = 5)
-                |> DeviantArtFs.Requests.Comments.StatusComments.ToAsyncSeq token 0
-                |> AsyncSeq.toArrayAsync
-            if (not << Seq.isEmpty) comments then
-                printfn "Comments:"
-            for c in comments do
-                printfn "    %s: %s" c.user.username c.body
-        | None -> ()
+        let! comments =
+            new DeviantArtFs.Requests.Comments.StatusCommentsRequest(s.statusid.Value, Maxdepth = 5)
+            |> DeviantArtFs.Requests.Comments.StatusComments.ToAsyncSeq token 0
+            |> AsyncSeq.toArrayAsync
+        if (not << Seq.isEmpty) comments then
+            printfn "Comments:"
+        for c in comments do
+            printfn "    %s: %s" c.user.username c.body
 
         printfn ""
-    | None -> ()
+    | _ -> ()
+
+    let! messages =
+        new DeviantArtFs.Requests.Messages.MessagesFeedRequest()
+        |> DeviantArtFs.Requests.Messages.MessagesFeed.ToAsyncSeq token None
+        |> AsyncSeq.take 5
+        |> AsyncSeq.toListAsync
+    for m in messages do
+        printfn "%A" m
+        let originator =
+            m.originator
+            |> Option.map (fun u -> u.username)
+            |> Option.defaultValue "???"
+        let subject =
+            m.GetSubjects()
+            |> Seq.tryHead
+        match subject with
+        | None -> printfn "New message, originator %s, no subject" originator
+        | Some (:? DeviantArtUser as u) -> printfn "New message, originator %s, subject is user with ID %O and name %s" originator u.userid u.username
+        | Some o -> printfn "New message, originator %s, subject = %A" originator o
 }
 
 [<EntryPoint>]

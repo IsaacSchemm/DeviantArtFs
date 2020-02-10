@@ -1,14 +1,6 @@
 ﻿namespace DeviantArtFs
 
-open System
 open FSharp.Json
-open System.Text.RegularExpressions
-
-type IBclDeviantArtCommentSiblingsContext =
-    abstract member Parent: IBclDeviantArtComment
-    abstract member ItemProfile: IBclDeviantArtUser
-    abstract member ItemDeviation: IBclDeviation
-    abstract member ItemStatus: IBclDeviantArtStatus
 
 type DeviantArtCommentSiblingsContext = {
     parent: DeviantArtComment option
@@ -16,19 +8,12 @@ type DeviantArtCommentSiblingsContext = {
     item_deviation: Deviation option
     item_status: DeviantArtStatus option
 } with
-    interface IBclDeviantArtCommentSiblingsContext with
-        member this.Parent = this.parent |> Option.map (fun o -> o :> IBclDeviantArtComment) |> Option.toObj
-        member this.ItemProfile = this.item_profile |> Option.map (fun o -> o :> IBclDeviantArtUser) |> Option.toObj
-        member this.ItemDeviation = this.item_deviation |> Option.map (fun o -> o :> IBclDeviation) |> Option.toObj
-        member this.ItemStatus = this.item_status |> Option.map (fun o -> o :> IBclDeviantArtStatus) |> Option.toObj
-
-type IBclDeviantArtCommentSiblingsPagedResult =
-    abstract member HasMore: bool
-    abstract member NextOffset: Nullable<int>
-    abstract member HasLess: bool
-    abstract member PrevOffset: Nullable<int>
-    abstract member Thread: seq<IBclDeviantArtComment>
-    abstract member Context: IBclDeviantArtCommentSiblingsContext
+    member this.GetParent() = OptUtils.recordDefault this.parent
+    member this.GetItems() = seq {
+        yield! OptUtils.toObjSeq this.item_profile
+        yield! OptUtils.toObjSeq this.item_deviation
+        yield! OptUtils.toObjSeq this.item_status
+    }
 
 type DeviantArtCommentSiblingsPagedResult = {
     has_more: bool
@@ -41,10 +26,5 @@ type DeviantArtCommentSiblingsPagedResult = {
     static member Parse (json: string) =
         json.Replace(""""context": list""", """"context":{}""")
         |> Json.deserialize<DeviantArtCommentSiblingsPagedResult>
-    interface IBclDeviantArtCommentSiblingsPagedResult with
-        member this.HasMore = this.has_more
-        member this.NextOffset = this.next_offset |> Option.toNullable
-        member this.HasLess = this.has_less
-        member this.PrevOffset = this.prev_offset |> Option.toNullable
-        member this.Thread = this.thread |> Seq.map (fun c -> c :> IBclDeviantArtComment)
-        member this.Context = this.context :> IBclDeviantArtCommentSiblingsContext
+    member this.GetNextOffset() = OptUtils.intDefault this.next_offset
+    member this.GetPrevOffset() = OptUtils.intDefault this.prev_offset
