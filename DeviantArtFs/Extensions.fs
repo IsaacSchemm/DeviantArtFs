@@ -4,16 +4,6 @@ open System
 open System.Runtime.CompilerServices
 
 [<Extension>]
-module OptionExtensions =
-    [<Extension>]
-    let DefaultValue (this: 'a option, that: 'a) =
-        Option.defaultValue that this
-
-    [<Extension>]
-    let DefaultWith (this: 'a option, that: 'a Func) =
-        Option.defaultWith (fun () -> that.Invoke()) this
-
-[<Extension>]
 module OptionValueExtensions =
     [<Extension>]
     let OrNull this =

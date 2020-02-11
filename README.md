@@ -24,11 +24,22 @@ itself.
 ### Using the library from C# or VB.NET
 
 Since F# async workflows can be awkward to work with in other
-.NET languages, DeviantArtFs also exposes its functionality through alternate
-methods. Modules with an `AsyncExecute` method also have an
+.NET languages, modules with an `AsyncExecute` method also have an
 `ExecuteAsync` method that returns a `Task<T>`. The library also provides
 extension methods in the namespace `DeviantArtFs.Extensions` for dealing with
-option types from outside F#.
+option types from outside F#:
+
+    public string GetTitleCarefully(Deviation d) {
+        return d.title.ToObj() ?? "Could not find title!";
+	}
+
+    public string GetTitleRecklessly(Deviation d) {
+        return d.title.Value; // throws an exception if field is None
+	}
+
+Also note that some methods return a value of `FSharpList<T>`; this type
+implements `IEnumerable<T>` and so can easily be converted to a list or array
+with LINQ.
 
 ### Deleted Deviations and Status Updates
 
