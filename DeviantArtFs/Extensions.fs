@@ -1,6 +1,5 @@
 ﻿namespace DeviantArtFs.Extensions
 
-open System
 open System.Runtime.CompilerServices
 
 [<Extension>]
@@ -8,6 +7,12 @@ module OptionValueExtensions =
     [<Extension>]
     let OrNull this =
         Option.toNullable this
+
+[<Extension>]
+module OptionReferenceExtensions =
+    [<Extension>]
+    let OrNull this =
+        Option.toObj this
 
 [<Extension>]
 module OptionBooleanExtensions =
@@ -22,12 +27,6 @@ module OptionBooleanExtensions =
         match this with
         | Some false -> true
         | _ -> false
-
-[<Extension>]
-module OptionReferenceExtensions =
-    [<Extension>]
-    let OrNull this =
-        Option.toObj this
 
 [<Extension>]
 module OptionListExtensions =

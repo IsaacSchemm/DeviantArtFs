@@ -37,6 +37,14 @@ option types from outside F#:
         return d.title.Value; // throws an exception if field is None
 	}
 
+    public IEnumerable<DeviationPreview> GetThumbnails(Deviation d) {
+        return d.thumbs.OrEmpty();
+	}
+
+    public bool CheckIfFavorited(Deviation d) {
+        return d.is_favourited.IsTrue();
+	}
+
 Also note that some methods return a value of `FSharpList<T>`; this type
 implements `IEnumerable<T>` and so can easily be converted to a list or array
 with LINQ.
