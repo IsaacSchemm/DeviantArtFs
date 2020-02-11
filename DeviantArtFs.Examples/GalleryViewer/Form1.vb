@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports DeviantArtFs.Extensions
 Imports DeviantArtFs.WinForms
 
 Public Class Form1
@@ -13,7 +14,7 @@ Public Class Form1
 
             Try
                 Dim user = Await Requests.User.Whoami.ExecuteAsync(t)
-                If MsgBox($"Log in as {user.Username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
+                If MsgBox($"Log in as {user.username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
                     Token = t
                 End If
             Catch ex As InvalidRefreshTokenException
@@ -35,7 +36,7 @@ Public Class Form1
 
         If Token IsNot Nothing Then
             Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
-            ToolStripStatusLabel1.Text = $"Logged in as {user.Username}"
+            ToolStripStatusLabel1.Text = $"Logged in as {user.username}"
 
             CurrentUsername = TextBox1.Text
             NextOffset = 0
@@ -61,7 +62,7 @@ Public Class Form1
 
         NextOffset = page.next_offset.OrNull()
         For Each r In page.results
-            Dim thumbUrl = r.thumbs.OrEmptyList().Select(Function(t) t.src).FirstOrDefault()
+            Dim thumbUrl = r.thumbs.OrEmpty().Select(Function(t) t.src).FirstOrDefault()
             Dim pic As New PictureBox With {.ImageLocation = thumbUrl, .SizeMode = PictureBoxSizeMode.Zoom, .Dock = DockStyle.Fill}
             AddHandler pic.Click, Sub(sender, e)
                                       ThumbnailClick(r)
@@ -76,9 +77,9 @@ Public Class Form1
         Try
             download = Await Requests.Deviation.Download.ExecuteAsync(Token, deviation.deviationid)
         Catch ex As DeviantArtException
-            download = If(deviation.content, deviation.thumbs.OrEmptyList().LastOrDefault())
+            download = If(deviation.content, deviation.thumbs.OrEmpty().LastOrDefault())
         End Try
-        PictureBox1.ImageLocation = If(download IsNot Nothing And download.Width * download.Height > 0, download.Src, Nothing)
+        PictureBox1.ImageLocation = If(download IsNot Nothing And download.width * download.height > 0, download.src, Nothing)
 
         WebBrowser1.Navigate("about:blank")
         Dim req = New Requests.Deviation.MetadataRequest({deviation.deviationid})

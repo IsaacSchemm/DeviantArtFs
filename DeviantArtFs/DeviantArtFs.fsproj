@@ -21,7 +21,8 @@
 
   <ItemGroup>
     <Compile Include="AssemblyAttributes.fs" />
-    <Compile Include="Json\Transforms\DateTimeOffsetEpochAsString.fs" />
+    <Compile Include="Extensions.fs" />
+    <Compile Include="JsonTransforms.fs" />
     <Compile Include="Types\AccessTokens.fs" />
     <Compile Include="Types\IResultPage.fs" />
     <Compile Include="Types\IDeviantArtDeletable.fs" />
@@ -76,7 +77,6 @@
     <Compile Include="Types\PagedResponses\DeviantArtMessageCursorResult.fs" />
     <Compile Include="Types\Exceptions.fs" />
     <Compile Include="DeviantArtRequest.fs" />
-    <Compile Include="DeviantArtExtensions.fs" />
     <Compile Include="Dafs.fs" />
     <Compile Include="Page.fs" />
     <Compile Include="QueryFor.fs" />

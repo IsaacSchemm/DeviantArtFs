@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeviantArtFs.Extensions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -88,7 +89,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Gallery.GalleryAllViewRequest { Username = username });
-            var deviation = deviations.results.WhereNotDeleted().FirstOrDefault();
+            var deviation = deviations.results.Where(x => !x.is_deleted).FirstOrDefault();
             if (deviation != null)
             {
                 Console.WriteLine($"Most recent (non-deleted) deviation: {deviation.title.OrNull()} ({deviation.published_time.OrNull()})");
@@ -142,7 +143,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Browse.UserJournalsRequest(username) { Featured = false });
-            var journal = journals.results.WhereNotDeleted().FirstOrDefault();
+            var journal = journals.results.Where(x => !x.is_deleted).FirstOrDefault();
             if (journal != null)
             {
                 Console.WriteLine($"Most recent (non-deleted) journal: {journal.title.OrNull()} ({journal.published_time.OrNull()})");
@@ -191,7 +192,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 username);
-            var status = statuses.results.WhereNotDeleted().FirstOrDefault();
+            var status = statuses.results.Where(x => !x.is_deleted).FirstOrDefault();
             if (status != null)
             {
                 Console.WriteLine($"Most recent (non-deleted) status: {status.body.OrNull()} ({status.ts.OrNull()})");

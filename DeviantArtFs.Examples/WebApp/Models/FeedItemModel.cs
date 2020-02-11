@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeviantArtFs.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -15,7 +16,7 @@ namespace DeviantArtFs.Examples.WebApp.Models
             _item = item ?? throw new ArgumentNullException(nameof(item));
         }
 
-        private Deviation Deviation => _item.deviations.OrEmptyList().WhereNotDeleted().FirstOrDefault();
+        private Deviation Deviation => _item.deviations.OrEmpty().Where(x => !x.is_deleted).FirstOrDefault();
         private DeviantArtStatus Status => _item.status.OrNull() is DeviantArtStatus s && !s.is_deleted
             ? s
             : null;
@@ -29,7 +30,7 @@ namespace DeviantArtFs.Examples.WebApp.Models
             ?? Status?.url?.OrNull()
             ?? Collection?.url;
         public string ThumbnailUrl =>
-            Deviation?.thumbs?.OrEmptyList()?.FirstOrDefault()?.src;
+            Deviation?.thumbs?.OrEmpty()?.FirstOrDefault()?.src;
         public string Title =>
             Deviation?.title?.OrNull();
         public string HTMLDescription =>
