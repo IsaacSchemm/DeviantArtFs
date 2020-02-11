@@ -28,8 +28,6 @@ type ProfileUpdateRequest() =
     member val Bio = DeviantArtFieldChange<string>.NoChange with get, set
 
 module ProfileUpdate =
-    open System.IO
-
     let AsyncExecute token (ps: ProfileUpdateRequest) = async {
         let query = seq {
             yield! ps.UserIsArtist |> QueryFor.fieldChange "user_is_artist"
