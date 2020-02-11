@@ -24,7 +24,6 @@
     <Compile Include="IResultPage.fs" />
     <Compile Include="DeviantArtPagingParams.fs" />
     <Compile Include="DeviantArtExtParams.fs" />
-    <Compile Include="DeviantArtFieldChange.fs" />
     <Compile Include="ResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtSuccessOrErrorResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtTextOnlyResponse.fs" />

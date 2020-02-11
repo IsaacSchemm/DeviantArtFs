@@ -85,15 +85,21 @@ return a theoretically unlimited amount of data!)
 ## Partial updates
 
 `Stash.Update` and `User.ProfileUpdate` allow you to choose which fields to
-update on the object. DeviantArtFs uses a discriminated union
-(`DeviantArtFieldChange<T>`) to represent these updates:
+update on the object. DeviantArtFs uses discriminated unions to represent
+these updates:
 
-    new DeviantArtFs.Requests.Stash.UpdateRequest(4567890123456789L) {
-        Title = DeviantArtFieldChange<string>.NewUpdateToValue("new title"),
-        Description = DeviantArtFieldChange<string>.NoChange
-    }
+    await Requests.User.ProfileUpdate.ExecuteAsync(token, new[] {
+        ProfileUpdateField.NewArtistLevel(ArtistLevel.Student),
+        ProfileUpdateField.NewWebsite("https://www.example.com")
+    });
 
-Note that DeviantArt allows a null value for some fields, but not others.
+    await Requests.Stash.Update.ExecuteAsync(token, 12345678L, new[] {
+        UpdateField.NewTitle("new stack title"),
+        UpdateField.ClearDescription
+    });
+
+Note that DeviantArt allows a null value for the "description" field on a
+Sta.sh stack, and this is represented by its own union case.
 
 ## Currently unsupported features
 

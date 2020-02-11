@@ -1,21 +1,23 @@
 ﻿namespace DeviantArtFs.Requests.Stash
 
 open DeviantArtFs
-open System.IO
 
-type UpdateRequest(stackid: int64) =
-    member __.Stackid = stackid
-    member val Title = DeviantArtFieldChange<string>.NoChange with get, set
-    member val Description = DeviantArtFieldChange<string>.NoChange with get, set
+type UpdateField =
+| Title of string
+| Description of string
+| ClearDescription
 
 module Update =
-    let AsyncExecute token (req: UpdateRequest) = async {
+    let AsyncExecute token (stackid: int64) (updates: UpdateField seq) = async {
         let query = seq {
-            yield! req.Title |> QueryFor.fieldChange "title"
-            yield! req.Description |> fch.allowNull |> QueryFor.fieldChange "description"
+            for update in updates do
+                match update with
+                | Title v -> yield sprintf "title=%s" (Dafs.urlEncode v)
+                | Description v -> yield sprintf "description=%s" (Dafs.urlEncode v)
+                | ClearDescription -> yield "description=null"
         }
 
-        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/update/%d" req.Stackid |> Dafs.createRequest token
+        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/update/%d" stackid |> Dafs.createRequest token
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
@@ -25,7 +27,7 @@ module Update =
         ignore json
     }
 
-    let ExecuteAsync token req =
-        AsyncExecute token req
+    let ExecuteAsync token stackid updates =
+        AsyncExecute token stackid updates
         |> Async.StartAsTask
         :> System.Threading.Tasks.Task

@@ -12,14 +12,3 @@ module internal QueryFor =
         yield sprintf "ext_camera=%b" extParams.ExtCamera
         yield sprintf "ext_stats=%b" extParams.ExtStats
     }
-
-    let fieldChange (name: string) (value: DeviantArtFieldChange<'a>) = seq {
-        match value with
-        | DeviantArtFieldChange.UpdateToValue s ->
-            if obj.ReferenceEquals(s, null) then
-                failwithf "Null is not allowed (parameter: %s)" name
-            else
-                let str = s.ToString()
-                yield sprintf "%s=%s" (Dafs.urlEncode name) (Dafs.urlEncode str)
-        | DeviantArtFieldChange.NoChange -> ()
-    }
