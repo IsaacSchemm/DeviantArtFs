@@ -65,7 +65,7 @@ let sandbox token_string = async {
     let! deviations =
         DeviantArtFs.Requests.Gallery.GalleryAllViewRequest(Username = username)
         |> DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token (page 0 1)
-    let deviation = deviations.results |> DeviantArtExtensions.WhereNotDeleted |> Seq.tryHead
+    let deviation = deviations.results |> Seq.where (fun x -> not x.is_deleted) |> Seq.tryHead
     match deviation with
     | Some s -> 
         printfn "Most recent (non-deleted) deviation: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
@@ -102,7 +102,7 @@ let sandbox token_string = async {
     let! journals =
         DeviantArtFs.Requests.Browse.UserJournalsRequest(username, Featured = false)
         |> DeviantArtFs.Requests.Browse.UserJournals.AsyncExecute token (page 0 1)
-    let journal = journals.results |> DeviantArtExtensions.WhereNotDeleted |> Seq.tryHead
+    let journal = journals.results |> Seq.where (fun x -> not x.is_deleted) |> Seq.tryHead
     match journal with
     | Some s -> 
         printfn "Most recent (non-deleted) journal: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
@@ -128,7 +128,7 @@ let sandbox token_string = async {
     | None -> ()
 
     let! statuses = DeviantArtFs.Requests.User.StatusesList.AsyncExecute token (page 0 1) username
-    let status = statuses.results |> DeviantArtExtensions.WhereNotDeleted |> Seq.tryHead
+    let status = statuses.results |> Seq.where (fun x -> not x.is_deleted) |> Seq.tryHead
     match status with
     | Some s ->
         printfn "Most recent (non-deleted) status: %s (%O)" (Option.get s.body) (Option.get s.ts)

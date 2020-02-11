@@ -8,6 +8,3 @@ module internal AsyncThen =
 
     let mapSeq f a =
         map (Seq.map f) a
-
-    let mapAndWrapPage f (a: Async<DeviantArtPagedResult<'a>>) =
-        map (Page.mapAndWrap f) a

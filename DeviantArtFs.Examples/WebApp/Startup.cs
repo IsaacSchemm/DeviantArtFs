@@ -33,9 +33,9 @@ namespace DeviantArtFs.Examples.WebApp
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSingleton(
-                typeof(DeviantArtAuth),
-                new DeviantArtAuth(
-                    int.Parse(Configuration["DeviantArtClientId"]),
+                typeof(DeviantArtApp),
+                new DeviantArtApp(
+                    Configuration["DeviantArtClientId"],
                     Configuration["DeviantArtClientSecret"]));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();

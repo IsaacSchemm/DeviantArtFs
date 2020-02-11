@@ -23,15 +23,31 @@ itself.
 
 ### Using the library from C# or VB.NET
 
-Since F# async workflows and option types can be awkward to work with in other
-.NET languages, DeviantArtFs also exposes its functionality through alternate
-methods and interfaces. Modules with an `AsyncExecute` method also have an
-`ExecuteAsync` method that returns a `Task<T>`, and each record type has an
-explicit interface implementation that exposes the same fields, but with
-nullable types instead of `option` types. (Keep in mind that this is an
-*explicit* interface implementation, which has implications for JSON
-serialization.) This approach results in a lot of boilerplate code, but
-provides a consistent pattern.
+Since F# async workflows can be awkward to work with in other
+.NET languages, modules with an `AsyncExecute` method also have an
+`ExecuteAsync` method that returns a `Task<T>`. The library also provides
+extension methods in the namespace `DeviantArtFs.Extensions` for dealing with
+option types from outside F#:
+
+    public string GetTitleCarefully(Deviation d) {
+        return d.title.ToObj() ?? "Could not find title!";
+	}
+
+    public string GetTitleRecklessly(Deviation d) {
+        return d.title.Value; // throws an exception if field is None
+	}
+
+    public IEnumerable<DeviationPreview> GetThumbnails(Deviation d) {
+        return d.thumbs.OrEmpty();
+	}
+
+    public bool CheckIfFavorited(Deviation d) {
+        return d.is_favourited.IsTrue();
+	}
+
+Also note that some methods return a value of `FSharpList<T>`; this type
+implements `IEnumerable<T>` and so can easily be converted to a list or array
+with LINQ.
 
 ### Deleted Deviations and Status Updates
 
@@ -39,23 +55,6 @@ provides a consistent pattern.
 update that has been deleted; this is why most of the fields on those two
 types are marked optional. Check the `is_deleted` field (or `IsDeleted`
 property) before attempting to access any of the other fields.
-
-If you have a list or array of deviation or status update objects, you can use
-the extension method `DeviantArtExtensions.WhereNotDeleted` to filter deleted
-items out of the list:
-
-    // C#
-    IEnumerable<IBclDeviation> deviations;
-    var first_existing_deviation = deviations
-        .WhereNotDeleted()
-        .FirstOrDefault();
-
-    // F#
-    let deviations: Deviation seq
-    let first_existing_deviation =
-        existing_deviations
-        |> DeviantArtExtensions.WhereNotDeleted
-        |> Seq.tryHead
 
 ## Pagination
 
@@ -115,13 +114,14 @@ Example (C#):
             Offset = offset,
             Limit = 24
         };
-        IBclDeviantArtPagedResult<IBclDeviation> resp =
+        DeviantArtPagedResult<Deviation> resp =
             await DeviantArtFs.Requests.Gallery.GalleryAllView.ExecuteAsync(token, paging, req);
-        foreach (var d in resp.Results) {
-            Console.WriteLine($"{d.Author.Username}: ${d.Title}");
+        foreach (var d in resp.results) {
+            if (!d.is_deleted)
+                Console.WriteLine($"{d.author.Value.username}: ${d.title.Value}");
         }
-        offset = resp.NextOffset ?? 0;
-        if (!resp.HasMore) break;
+        offset = resp.next_offset.OrNull() ?? 0;
+        if (!resp.has_more) break;
     }
 
 Example (F#):
@@ -132,8 +132,9 @@ Example (F#):
         let req = new DeviantArtFs.Requests.Gallery.GalleryAllViewRequest()
         let paging = new DeviantArtPagingParams(Offset = 0, Limit = Nullable 24)
         let! (resp: DeviantArtPagedResult<Deviation>) = DeviantArtFs.Requests.Gallery.GalleryAllView.AsyncExecute token paging req
-        for d in resp.Results do
-            printf "%s: %s" d.author.username d.title
+        for d in resp.results do
+            if not d.is_deleted then
+                printf "%s: %s" (Option.get d.author).username (Option.get d.title)
         offset <- resp.next_offset |> Option.defaultValue 0
         more <- resp.has_more
 
@@ -142,14 +143,7 @@ See ENDPOINTS.md for more information.
 ## Common parameters
 
 Several endpoints support common object expansion (e.g. user.details, user.geo) and/or mature content filtering.
-To use these features of the DeviantArt API, wrap the token using DeviantArtCommonParameters.Wrap. For example:
-
-    var commonParameters = new DeviantArtCommonParameters {
-        Expand = DeviantArtObjectExpansion.UserDetails | DeviantArtObjectExpansion.UserGeo,
-        MatureContent = true
-    };
-    var new_token = commonParameters.WrapToken(token);
-    var me = await Requests.User.Whoami.ExecuteAsync(new_token);
+To use these features of the DeviantArt API, make sure your implementation of `IDeviantArtAccessToken` also implements `IDeviantArtAccessTokenWithCommonParameters`.
 
 ## Examples
 
@@ -158,10 +152,9 @@ that use DeviantArtFs:
 
 * **RecentSubmissions.CSharp**: A C# console application that shows the most
   recent submission, journal, and status for a user, along with any favorites
-  or comments. (WinForms is needed for the login window, however.)
+  or comments. (WinForms is needed for the login window.)
   Uses the Implicit grant and stores tokens in a file.
-* **RecentSubmissions.FSharp**: As above, but in F#, to demonstrate how
-  DeviantArtFs has both F#-style and .NET-style functions and types.
+* **RecentSubmissions.FSharp**: As above, but in F#.
 * **GalleryViewer**: A VB.NET app that lets you see the "All" view of
   someone's gallery and read the descriptions of individual submissions.
   Uses the Client Credentials grant and stores tokens in a file.

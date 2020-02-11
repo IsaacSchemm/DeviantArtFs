@@ -14,7 +14,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
 {
     public class HomeController : ControllerBase
     {
-        public HomeController(ExampleDbContext context, DeviantArtAuth appReg) : base(context, appReg) { }
+        public HomeController(ExampleDbContext context, DeviantArtApp appReg) : base(context, appReg) { }
 
         public IActionResult Index()
         {
@@ -27,17 +27,17 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             {
                 return RedirectToAction("Index");
             }
-            return Redirect($"https://www.deviantart.com/oauth2/authorize?response_type=code&client_id={_appReg.ClientId}&redirect_uri=https://{HttpContext.Request.Host}/Home/Callback&scope=browse+feed+user");
+            return Redirect($"https://www.deviantart.com/oauth2/authorize?response_type=code&client_id={_appReg.client_id}&redirect_uri=https://{HttpContext.Request.Host}/Home/Callback&scope=browse+feed+user");
         }
 
         public async Task<IActionResult> Callback(string code, string state = null)
         {
-            var result = await _appReg.GetTokenAsync(code, new Uri($"https://{HttpContext.Request.Host}/Home/Callback"));
+            IDeviantArtRefreshToken result = await DeviantArtAuth.GetTokenAsync(_appReg, code, new Uri($"https://{HttpContext.Request.Host}/Home/Callback"));
             var me = await Requests.User.Whoami.ExecuteAsync(result);
             var token = new Token
             {
                 Id = Guid.NewGuid(),
-                UserId = me.Userid,
+                UserId = me.userid,
                 AccessToken = result.AccessToken,
                 RefreshToken = result.RefreshToken
             };
@@ -46,7 +46,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
 
             var claimsIdentity = new ClaimsIdentity(
                 new[] {
-                    new Claim(ClaimTypes.Name, me.Username),
+                    new Claim(ClaimTypes.Name, me.username),
                     new Claim("token-id", token.Id.ToString())
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(

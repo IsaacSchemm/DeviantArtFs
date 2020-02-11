@@ -13,16 +13,11 @@ type DeviantArtCategory = {
     title: string
     has_subcategory: bool
     parent_catpath: string
-} with
-    interface IBclDeviantArtCategory with
-        member this.Catpath = this.catpath
-        member this.Title = this.title
-        member this.HasSubcategory = this.has_subcategory
-        member this.ParentCatpath = this.parent_catpath
+}
 
 type DeviantArtCategoryList = {
     categories: DeviantArtCategory list
 } with
-    static member ParseSeq json =
+    static member ParseList json =
         let o = Json.deserialize<DeviantArtCategoryList> json
-        o.categories :> seq<DeviantArtCategory>
+        o.categories

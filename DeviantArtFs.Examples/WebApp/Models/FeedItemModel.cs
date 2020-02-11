@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeviantArtFs.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -8,40 +9,42 @@ namespace DeviantArtFs.Examples.WebApp.Models
 {
     public class FeedItemModel
     {
-        private readonly IBclDeviantArtFeedItem _item;
+        private readonly DeviantArtFeedItem _item;
 
-        public FeedItemModel(IBclDeviantArtFeedItem item)
+        public FeedItemModel(DeviantArtFeedItem item)
         {
             _item = item ?? throw new ArgumentNullException(nameof(item));
         }
 
-        private IBclDeviation Deviation => _item.Deviations.WhereNotDeleted().FirstOrDefault();
-        private IBclDeviantArtStatus Status => new[] { _item.Status }.WhereNotDeleted().FirstOrDefault();
-        private IBclDeviantArtFeedItemCollection Collection => _item.Collection;
+        private Deviation Deviation => _item.deviations.OrEmpty().Where(x => !x.is_deleted).FirstOrDefault();
+        private DeviantArtStatus Status => _item.status.OrNull() is DeviantArtStatus s && !s.is_deleted
+            ? s
+            : null;
+        private DeviantArtFeedItemCollection Collection => _item.collection.OrNull();
 
-        public string Type => _item.Type;
-        public string Username => _item.ByUser.Username;
-        public string Usericon => _item.ByUser.Usericon;
+        public string Type => _item.type;
+        public string Username => _item.by_user.username;
+        public string Usericon => _item.by_user.usericon;
         public string Url =>
-            Deviation?.Url
-            ?? Status?.Url
-            ?? Collection.Url;
+            Deviation?.url?.OrNull()
+            ?? Status?.url?.OrNull()
+            ?? Collection?.url;
         public string ThumbnailUrl =>
-            Deviation?.Thumbs?.FirstOrDefault()?.Src;
+            Deviation?.thumbs?.OrEmpty()?.FirstOrDefault()?.src;
         public string Title =>
-            Deviation?.Title;
+            Deviation?.title?.OrNull();
         public string HTMLDescription =>
-            _item.Type == "collection_update" ? $"Updated collection <a href='{Collection?.Url}'>{WebUtility.HtmlEncode(Collection?.Name ?? "")}</a>"
-            : _item.Type == "status" ? Status?.Body
-            : Deviation?.Excerpt;
+            _item.type == "collection_update" ? $"Updated collection <a href='{Collection?.url}'>{WebUtility.HtmlEncode(Collection?.name ?? "")}</a>"
+            : _item.type == "status" ? Status?.body?.OrNull()
+            : Deviation?.excerpt?.OrNull();
         public string TimeAgo {
             get {
-                TimeSpan ts = DateTimeOffset.UtcNow - _item.Ts.ToUniversalTime();
+                TimeSpan ts = DateTimeOffset.UtcNow - _item.ts.ToUniversalTime();
                 if (ts.TotalMinutes < 1) return $"{(int)ts.TotalSeconds}s";
                 if (ts.TotalHours < 1) return $"{(int)ts.TotalMinutes}m";
                 if (ts.TotalDays < 1) return $"{(int)ts.TotalHours}h";
                 if (ts.TotalDays < 30) return $"{(int)ts.TotalDays}d";
-                return _item.Ts.ToString();
+                return _item.ts.ToString();
             }
         }
     }

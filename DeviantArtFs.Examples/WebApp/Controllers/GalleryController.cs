@@ -9,7 +9,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
 {
     public class GalleryController : ControllerBase
     {
-        public GalleryController(ExampleDbContext context, DeviantArtAuth appReg) : base(context, appReg) { }
+        public GalleryController(ExampleDbContext context, DeviantArtApp appReg) : base(context, appReg) { }
 
         public async Task<IActionResult> Index(string username = null, Guid? folderId = null, int offset = 0, int? limit = null)
         {
@@ -17,15 +17,19 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             if (token == null) return Forbid();
 
             var paging = new DeviantArtPagingParams { Offset = offset, Limit = limit };
-            var resp = folderId is Guid f
-                ? await Requests.Gallery.GalleryById.ExecuteAsync(
+            DeviantArtPagedResult<Deviation> resp;
+            if (folderId is Guid f) {
+                var r = await Requests.Gallery.GalleryById.ExecuteAsync(
                     token,
                     paging,
-                    new Requests.Gallery.GalleryByIdRequest(f) { Username = username })
-                : await Requests.Gallery.GalleryAllView.ExecuteAsync(
+                    new Requests.Gallery.GalleryByIdRequest(f) { Username = username });
+                resp = new DeviantArtPagedResult<Deviation>(r.has_more, r.next_offset, r.results);
+            } else {
+                resp = await Requests.Gallery.GalleryAllView.ExecuteAsync(
                     token,
                     paging,
                     new Requests.Gallery.GalleryAllViewRequest { Username = username });
+            }
 
             ViewBag.Username = username;
             ViewBag.FolderId = folderId;

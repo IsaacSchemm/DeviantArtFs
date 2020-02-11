@@ -25,11 +25,9 @@ module Tags =
     let ToArrayAsync token offset limit tag =
         ToAsyncSeq token offset tag
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun o -> o :> IBclDeviation)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
     let ExecuteAsync token paging tag =
         AsyncExecute token paging tag
-        |> AsyncThen.map (fun p -> p :> IBclDeviantArtBrowsePagedResult)
         |> Async.StartAsTask

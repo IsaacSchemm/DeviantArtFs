@@ -17,4 +17,4 @@ module Whois =
         return DeviantArtListOnlyResponse<DeviantArtUser>.ParseList json
     }
 
-    let ExecuteAsync token usernames = AsyncExecute token usernames |> AsyncThen.mapSeq (fun o -> o :> IBclDeviantArtUser) |> Async.StartAsTask
+    let ExecuteAsync token usernames = AsyncExecute token usernames |> Async.StartAsTask

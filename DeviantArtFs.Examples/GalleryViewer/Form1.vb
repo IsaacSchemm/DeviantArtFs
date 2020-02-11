@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports DeviantArtFs.Extensions
 Imports DeviantArtFs.WinForms
 
 Public Class Form1
@@ -13,7 +14,7 @@ Public Class Form1
 
             Try
                 Dim user = Await Requests.User.Whoami.ExecuteAsync(t)
-                If MsgBox($"Log in as {user.Username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
+                If MsgBox($"Log in as {user.username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
                     Token = t
                 End If
             Catch ex As InvalidRefreshTokenException
@@ -26,8 +27,8 @@ Public Class Form1
 
             Using form = New DeviantArtAuthorizationCodeForm(DeviantArtClientId, url, {"browse", "user"})
                 If form.ShowDialog() = DialogResult.OK Then
-                    Dim auth = New DeviantArtAuth(DeviantArtClientId, DeviantArtClientSecret)
-                    Token = New AccessToken("refresh_token.txt", Await auth.GetTokenAsync(form.Code, url))
+                    Dim app = New DeviantArtApp(DeviantArtClientId, DeviantArtClientSecret)
+                    Token = New AccessToken("refresh_token.txt", Await DeviantArtAuth.GetTokenAsync(app, form.Code, url))
                     Token.Write()
                 End If
             End Using
@@ -35,7 +36,7 @@ Public Class Form1
 
         If Token IsNot Nothing Then
             Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
-            ToolStripStatusLabel1.Text = $"Logged in as {user.Username}"
+            ToolStripStatusLabel1.Text = $"Logged in as {user.username}"
 
             CurrentUsername = TextBox1.Text
             NextOffset = 0
@@ -59,9 +60,9 @@ Public Class Form1
         Dim request As New Requests.Gallery.GalleryAllViewRequest With {.Username = CurrentUsername}
         Dim page = Await Requests.Gallery.GalleryAllView.ExecuteAsync(Token, paging, request)
 
-        NextOffset = page.NextOffset
-        For Each r In page.Results
-            Dim thumbUrl = r.Thumbs.Select(Function(t) t.Src).FirstOrDefault()
+        NextOffset = page.next_offset.OrNull()
+        For Each r In page.results
+            Dim thumbUrl = r.thumbs.OrEmpty().Select(Function(t) t.src).FirstOrDefault()
             Dim pic As New PictureBox With {.ImageLocation = thumbUrl, .SizeMode = PictureBoxSizeMode.Zoom, .Dock = DockStyle.Fill}
             AddHandler pic.Click, Sub(sender, e)
                                       ThumbnailClick(r)
@@ -70,20 +71,24 @@ Public Class Form1
         Next
     End Function
 
-    Private Async Sub ThumbnailClick(deviation As IBclDeviation)
+    Private Async Sub ThumbnailClick(deviation As Deviation)
         PictureBox1.ImageLocation = Nothing
-        Dim download As IBclDeviationFile
         Try
-            download = Await Requests.Deviation.Download.ExecuteAsync(Token, deviation.Deviationid)
+            Dim download = Await Requests.Deviation.Download.ExecuteAsync(Token, deviation.deviationid)
+            PictureBox1.ImageLocation = download.src
         Catch ex As DeviantArtException
-            download = If(deviation.Content, deviation.Thumbs.LastOrDefault())
+            If deviation.content.OrNull() IsNot Nothing Then
+                PictureBox1.ImageLocation = deviation.content.OrNull().src
+            Else
+                Dim download = deviation.thumbs.OrEmpty().LastOrDefault()
+                PictureBox1.ImageLocation = download.src
+            End If
         End Try
-        PictureBox1.ImageLocation = If(download IsNot Nothing and download.Width * download.Height > 0, download.Src, Nothing)
 
         WebBrowser1.Navigate("about:blank")
-        Dim req = New Requests.Deviation.MetadataRequest({deviation.Deviationid})
+        Dim req = New Requests.Deviation.MetadataRequest({deviation.deviationid})
         Dim metadata = Await Requests.Deviation.MetadataById.ExecuteAsync(Token, req)
         Dim s = metadata.Single()
-        WebBrowser1.Document.Write(s.Description)
+        WebBrowser1.Document.Write(s.description)
     End Sub
 End Class

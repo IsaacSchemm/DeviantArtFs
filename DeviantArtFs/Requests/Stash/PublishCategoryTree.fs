@@ -21,7 +21,7 @@ module PublishCategoryTree =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/publish/categorytree?%s"
             |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
-        return DeviantArtCategoryList.ParseSeq json
+        return DeviantArtCategoryList.ParseList json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapSeq (fun c -> c :> IBclDeviantArtCategory) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

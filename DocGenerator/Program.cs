@@ -25,6 +25,7 @@ namespace DocGenerator
             var generics = string.Join(", ", t.GenericTypeArguments.Select(x => PrintTypeName(x)));
             if (n == "Nullable") return $"{generics}?";
             if (n == "FSharpOption") return $"{generics} option";
+            if (n == "FSharpList") return $"{generics} list";
             return $"{n}{(t.GenericTypeArguments.Any() ? $"<{generics}>" : "")}";
         }
 
@@ -35,11 +36,9 @@ namespace DocGenerator
             {
                 sw.WriteLine(@"This is a list of functions in the DeviantArtFs library that call DeviantArt / Sta.sh API endpoints.
 
-Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#, and their return values use option types to represent missing or null fields.
+Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#. Methods that return a Task<T> can be used from async methods in C# and VB.NET.
 
-Methods that return a Task<T> can be used from async methods in C# and VB.NET, and their return values use null or Nullable<T> to represent missing or null fields.
-
-""long"" indicates a 64-bit integer, and a question mark (?) following a type name indicates a Nullable<T>, as in C#.
+""long"" indicates a 64-bit integer, and a question mark (?) following a type name indicates a Nullable<T>, as in C#. ""T list"" indicates an FSharpList<T>, as in F#.
 ");
 
                 var a = Assembly.GetAssembly(typeof(DeviantArtFs.Requests.Browse.CategoryTree));

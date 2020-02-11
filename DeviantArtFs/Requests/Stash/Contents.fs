@@ -28,11 +28,9 @@ module Contents =
     let ToArrayAsync token offset limit req =
         ToAsyncSeq token offset req
         |> AsyncSeq.take limit
-        |> AsyncSeq.map (fun i -> i :> IBclStashMetadata)
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
     let ExecuteAsync token paging stackid =
         AsyncExecute token paging stackid
-        |> AsyncThen.mapAndWrapPage (fun i -> i :> IBclStashMetadata)
         |> Async.StartAsTask

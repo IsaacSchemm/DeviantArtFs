@@ -24,7 +24,7 @@ module MetadataById =
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/metadata?%s"
             |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
-        return DeviationMetadataResponse.ParseSeq json
+        return DeviationMetadataResponse.ParseList json
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> AsyncThen.mapSeq (fun m -> m :> IBclDeviationMetadata) |> Async.StartAsTask
+    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask

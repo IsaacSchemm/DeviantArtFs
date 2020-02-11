@@ -1,5 +1,6 @@
 ﻿@using DeviantArtFs
-@model IEnumerable<IBclDeviantArtGalleryFolder>
+@using DeviantArtFs.Extensions
+@model IEnumerable<DeviantArtGalleryFolder>
 
 @{
     ViewData["Title"] = $"{ViewBag.Username} - Gallery Folders";
@@ -16,11 +17,11 @@
     @foreach (var f in Model)
     {
         <li>
-            <a href="@Url.Action("Index", "Gallery", new { Username = ViewBag.Username, Limit = 5, FolderId = f.Folderid })">
-                @f.Name
+            <a href="@Url.Action("Index", "Gallery", new { Username = ViewBag.Username, Limit = 5, FolderId = f.folderid })">
+                @f.name
             </a>
-            @if (f.Size != null) {
-                @:(@f.Size)
+            @if (f.size.OrNull() != null) {
+                @:(@f.size.OrNull())
             }
         </li>
     }
