@@ -12,9 +12,9 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
     public abstract class ControllerBase : Controller
     {
         protected readonly ExampleDbContext _context;
-        protected readonly DeviantArtAuth _appReg;
+        protected readonly DeviantArtApp _appReg;
 
-        public ControllerBase(ExampleDbContext context, DeviantArtAuth appReg)
+        public ControllerBase(ExampleDbContext context, DeviantArtApp appReg)
         {
             _context = context;
             _appReg = appReg;

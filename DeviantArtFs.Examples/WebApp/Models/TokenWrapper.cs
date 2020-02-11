@@ -9,18 +9,18 @@ namespace DeviantArtFs.Examples.WebApp.Models
     public class TokenWrapper : IDeviantArtRefreshToken, IDeviantArtAutomaticRefreshToken
     {
         public IDeviantArtRefreshToken CurrentToken { get; private set; }
-        public IDeviantArtAuth DeviantArtAuth { get; private set; }
+        public DeviantArtApp App { get; private set; }
 
         private readonly Token _originalToken;
         private readonly ExampleDbContext _context;
 
-        public TokenWrapper(Token originalToken, IDeviantArtAuth auth, ExampleDbContext context)
+        public TokenWrapper(Token originalToken, DeviantArtApp app, ExampleDbContext context)
         {
             _originalToken = originalToken;
             _context = context;
 
             CurrentToken = originalToken;
-            DeviantArtAuth = auth;
+            App = app;
         }
 
         public string AccessToken => CurrentToken.AccessToken;

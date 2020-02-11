@@ -10,9 +10,9 @@ Public Class AccessToken
 
     Public Property R As String Implements IDeviantArtAutomaticRefreshToken.RefreshToken
 
-    Public ReadOnly Property DeviantArtAuth As IDeviantArtAuth Implements IDeviantArtAutomaticRefreshToken.DeviantArtAuth
+    Public ReadOnly Property App As DeviantArtApp Implements IDeviantArtAutomaticRefreshToken.App
         Get
-            Return New DeviantArtAuth(DeviantArtClientId, DeviantArtClientSecret)
+            Return New DeviantArtApp(DeviantArtClientId, DeviantArtClientSecret)
         End Get
     End Property
 

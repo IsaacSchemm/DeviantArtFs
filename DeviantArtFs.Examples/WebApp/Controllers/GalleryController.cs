@@ -9,7 +9,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
 {
     public class GalleryController : ControllerBase
     {
-        public GalleryController(ExampleDbContext context, DeviantArtAuth appReg) : base(context, appReg) { }
+        public GalleryController(ExampleDbContext context, DeviantArtApp appReg) : base(context, appReg) { }
 
         public async Task<IActionResult> Index(string username = null, Guid? folderId = null, int offset = 0, int? limit = null)
         {

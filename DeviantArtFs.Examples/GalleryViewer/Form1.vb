@@ -27,8 +27,8 @@ Public Class Form1
 
             Using form = New DeviantArtAuthorizationCodeForm(DeviantArtClientId, url, {"browse", "user"})
                 If form.ShowDialog() = DialogResult.OK Then
-                    Dim auth = New DeviantArtAuth(DeviantArtClientId, DeviantArtClientSecret)
-                    Token = New AccessToken("refresh_token.txt", Await auth.GetTokenAsync(form.Code, url))
+                    Dim app = New DeviantArtApp(DeviantArtClientId, DeviantArtClientSecret)
+                    Token = New AccessToken("refresh_token.txt", Await DeviantArtAuth.GetTokenAsync(app, form.Code, url))
                     Token.Write()
                 End If
             End Using

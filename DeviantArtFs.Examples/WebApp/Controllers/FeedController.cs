@@ -10,7 +10,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
 {
     public class FeedController : ControllerBase
     {
-        public FeedController(ExampleDbContext context, DeviantArtAuth appReg) : base(context, appReg) { }
+        public FeedController(ExampleDbContext context, DeviantArtApp appReg) : base(context, appReg) { }
 
         public IActionResult Index(string cursor = null)
         {

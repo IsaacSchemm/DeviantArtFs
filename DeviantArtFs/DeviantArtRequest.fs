@@ -24,7 +24,7 @@ type DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: string) =
 
     let mutable retry429 = 500
 
-    static member UserAgent = "DeviantArtFs/1.1 (https://github.com/libertyernie/DeviantArtFs)"
+    let UserAgent = DeviantArtAuth.UserAgent
 
     member val Method: string = "GET" with get, set
     member val ContentType: string = null with get, set
@@ -35,7 +35,7 @@ type DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: string) =
 
     member private this.AsyncToWebRequest() = async {
         let req = WebRequest.CreateHttp url
-        req.UserAgent <- DeviantArtRequest.UserAgent
+        req.UserAgent <- UserAgent
         req.Method <- this.Method
         req.ContentType <- this.ContentType
         if not (isNull this.RequestBody) then
@@ -71,7 +71,7 @@ type DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: string) =
                     do! RefreshLock.Semaphore.WaitAsync() |> Async.AwaitTask
                     try
                         if accessToken = token.AccessToken then
-                            let! newToken = auto.DeviantArtAuth.AsyncRefresh auto.RefreshToken
+                            let! newToken = DeviantArtAuth.AsyncRefresh auto.App auto.RefreshToken
                             do! auto.UpdateTokenAsync newToken |> Async.AwaitTask
                     finally
                         RefreshLock.Semaphore.Release() |> ignore

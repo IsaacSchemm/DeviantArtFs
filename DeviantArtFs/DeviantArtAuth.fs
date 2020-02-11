@@ -8,25 +8,23 @@ open FSharp.Json
 
 /// A response from the DeviantArt API that contains new tokens.
 type DeviantArtTokenResponse = {
-  expires_in: int
-  status: string
-  access_token: string
-  token_type: string
-  refresh_token: string
-  scope: string
+    expires_in: int
+    status: string
+    access_token: string
+    token_type: string
+    refresh_token: string
+    scope: string
 } with
-    interface IDeviantArtRefreshTokenFull with
+    interface IDeviantArtRefreshToken with
         member this.AccessToken = this.access_token
-        member this.ExpiresAt = DateTimeOffset.UtcNow.AddSeconds (float this.expires_in)
         member this.RefreshToken = this.refresh_token
-        member this.Scopes = this.scope.Split(' ') :> seq<string>
 
-/// A class that provides methods to obtain tokens from the DeviantArt API.
-type DeviantArtAuth(client_id: int, client_secret: string) =
-    let UserAgent = DeviantArtRequest.UserAgent
+/// A module that provides methods to obtain tokens from the DeviantArt API.
+module DeviantArtAuth =
+    let UserAgent = "DeviantArtFs/5.0 (https://github.com/IsaacSchemm/DeviantArtFs)"
 
     /// Checks whether the given WebResponse has the given HTTP status code.
-    let isStatus (code: int) (response: WebResponse) =
+    let IsStatus (code: int) (response: WebResponse) =
         match response with
         | :? HttpWebResponse as h -> int h.StatusCode = code
         | _ -> false
@@ -37,19 +35,14 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
             for p in dict do
                 if isNull p.Value then
                     failwithf "Null values in form not allowed"
-                let key = Dafs.urlEncode p.Key
-                let value = Dafs.urlEncode (p.Value.ToString())
+                let key = Uri.EscapeDataString p.Key
+                let value = Uri.EscapeDataString (p.Value.ToString())
                 yield sprintf "%s=%s" key value
         }
         String.concat "&" parameters
 
-    /// The DeviantArt API client ID.
-    member __.ClientId = client_id
-    /// The DeviantArt API client secret.
-    member __.ClientSecret = client_secret
-
     /// Get a new token from the server, using an authorization code.
-    member __.AsyncGetToken (code: string) (redirect_uri: Uri) = async {
+    let AsyncGetToken (app: DeviantArtApp) (code: string) (redirect_uri: Uri) = async {
         if isNull code then
             nullArg "code"
         if isNull redirect_uri then
@@ -65,8 +58,8 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
             use sw = new StreamWriter(reqStream)
             do!
                 [
-                    ("client_id", client_id.ToString());
-                    ("client_secret", client_secret);
+                    ("client_id", app.client_id);
+                    ("client_secret", app.client_secret);
                     ("grant_type", "authorization_code");
                     ("code", code);
                     ("redirect_uri", redirect_uri.AbsoluteUri)
@@ -85,11 +78,11 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
             failwithf "An unknown error occured"
         if obj.token_type <> "Bearer" then
             failwithf "token_type was not Bearer"
-        return obj :> IDeviantArtRefreshTokenFull
+        return obj
     }
 
     /// Get a new token from the server, using a refresh token.
-    member __.AsyncRefresh (refresh_token: string) = async {
+    let AsyncRefresh (app: DeviantArtApp) (refresh_token: string) = async {
         if isNull refresh_token then
             nullArg "refresh_token"
 
@@ -103,8 +96,8 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
             use sw = new StreamWriter(reqStream)
             do!
                 [
-                    ("client_id", client_id.ToString());
-                    ("client_secret", client_secret);
+                    ("client_id", app.client_id);
+                    ("client_secret", app.client_secret);
                     ("grant_type", "refresh_token");
                     ("refresh_token", refresh_token)
                 ]
@@ -123,24 +116,24 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
                 failwithf "An unknown error occured"
             if obj.token_type <> "Bearer" then
                 failwithf "token_type was not Bearer"
-            return obj :> IDeviantArtRefreshTokenFull
+            return obj
         with
-        | :? WebException as ex when isStatus 400 ex.Response ->
+        | :? WebException as ex when IsStatus 400 ex.Response ->
             return raise (new InvalidRefreshTokenException(ex))
     }
 
     /// Revoke a refresh token or access token.
-    static member AsyncRevoke (token: string) (revoke_refresh_only: bool) = async {
+    let AsyncRevoke (token: string) (revoke_refresh_only: bool) = async {
         if isNull token then
             nullArg "token"
 
         let req = WebRequest.CreateHttp "https://www.deviantart.com/oauth2/revoke"
-        req.UserAgent <- DeviantArtRequest.UserAgent
+        req.UserAgent <- UserAgent
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
         let query = seq {
-            yield token |> Dafs.urlEncode |> sprintf "token=%s"
+            yield token |> Uri.EscapeDataString |> sprintf "token=%s"
             if revoke_refresh_only then
                 yield "revoke_refresh_only=true"
         }
@@ -158,14 +151,11 @@ type DeviantArtAuth(client_id: int, client_secret: string) =
     }
 
     /// Get a new token from the server, using an authorization code.
-    member this.GetTokenAsync code redirect_uri =
-        this.AsyncGetToken code redirect_uri |> Async.StartAsTask
+    let GetTokenAsync app code redirect_uri =
+        AsyncGetToken app code redirect_uri |> Async.StartAsTask
     /// Get a new token from the server, using a refresh token.
-    member this.RefreshAsync refresh_token =
-        this.AsyncRefresh refresh_token |> Async.StartAsTask
+    let RefreshAsync app refresh_token =
+        AsyncRefresh app refresh_token |> Async.StartAsTask
     /// Revoke a refresh token or access token.
-    static member RevokeAsync token revoke_refresh_only =
-        DeviantArtAuth.AsyncRevoke token revoke_refresh_only |> Async.StartAsTask :> System.Threading.Tasks.Task
-
-    interface IDeviantArtAuth with
-        member this.AsyncRefresh refresh_token = this.AsyncRefresh refresh_token
+    let RevokeAsync token revoke_refresh_only =
+        AsyncRevoke token revoke_refresh_only |> Async.StartAsTask :> System.Threading.Tasks.Task

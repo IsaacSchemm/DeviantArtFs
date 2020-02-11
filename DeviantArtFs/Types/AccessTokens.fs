@@ -16,28 +16,18 @@ type IDeviantArtRefreshToken =
     /// set of tokens when the access token expires.
     abstract member RefreshToken: string with get
 
-/// A set of tokens obtained from the DeviantArt API, including an expiration
-/// date and scope information.
-type IDeviantArtRefreshTokenFull =
-    inherit IDeviantArtRefreshToken
-    /// The date and time at which the access token expires.
-    abstract member ExpiresAt: DateTimeOffset with get
-    /// A list of permissions for this token.
-    abstract member Scopes: seq<string> with get
-
-/// An object that connects to DeviantArt to get a new set of API tokens.
-type IDeviantArtAuth =
-    /// Get a new set of API tokens, given a refresh token.
-    abstract member AsyncRefresh: string -> Async<IDeviantArtRefreshTokenFull>
+/// A DeviantArt app that connects via OAuth.
+type DeviantArtApp = {
+    client_id: string
+    client_secret: string
+}
 
 /// An object that holds DeviantArt API tokens and provides a method to update
 /// its backing store with new tokens when needed.
 type IDeviantArtAutomaticRefreshToken =
     inherit IDeviantArtRefreshToken
-    /// An object that can get a new set of API tokens from DeviantArt. This
-    /// is typically an object of the class "DeviantArtAuth", created using
-    /// a client ID and client secret.
-    abstract member DeviantArtAuth: IDeviantArtAuth with get
+    /// An object containing a client ID and client secret.
+    abstract member App: DeviantArtApp with get
     /// A function that takes a new set of tokens and saves them, both in this
     /// object and in the backing store (if any).
     abstract member UpdateTokenAsync: IDeviantArtRefreshToken -> Task
