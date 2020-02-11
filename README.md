@@ -143,14 +143,7 @@ See ENDPOINTS.md for more information.
 ## Common parameters
 
 Several endpoints support common object expansion (e.g. user.details, user.geo) and/or mature content filtering.
-To use these features of the DeviantArt API, wrap the token using DeviantArtCommonParameters.Wrap. For example:
-
-    var commonParameters = new DeviantArtCommonParameters {
-        Expand = DeviantArtObjectExpansion.UserDetails | DeviantArtObjectExpansion.UserGeo,
-        MatureContent = true
-    };
-    var new_token = commonParameters.WrapToken(token);
-    var me = await Requests.User.Whoami.ExecuteAsync(new_token);
+To use these features of the DeviantArt API, make sure your implementation of `IDeviantArtAccessToken` also implements `IDeviantArtAccessTokenWithCommonParameters`.
 
 ## Examples
 
@@ -159,10 +152,9 @@ that use DeviantArtFs:
 
 * **RecentSubmissions.CSharp**: A C# console application that shows the most
   recent submission, journal, and status for a user, along with any favorites
-  or comments. (WinForms is needed for the login window, however.)
+  or comments. (WinForms is needed for the login window.)
   Uses the Implicit grant and stores tokens in a file.
-* **RecentSubmissions.FSharp**: As above, but in F#, to demonstrate how
-  DeviantArtFs has both F#-style and .NET-style functions and types.
+* **RecentSubmissions.FSharp**: As above, but in F#.
 * **GalleryViewer**: A VB.NET app that lets you see the "All" view of
   someone's gallery and read the descriptions of individual submissions.
   Uses the Client Credentials grant and stores tokens in a file.

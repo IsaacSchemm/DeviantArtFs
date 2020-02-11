@@ -61,19 +61,3 @@ type IDeviantArtAccessTokenWithCommonParameters =
     abstract member Expand: DeviantArtObjectExpansion
     /// Whether to include mature content (default false).
     abstract member MatureContent: bool
-
-/// A class that contains additional parameters for DeviantArt API calls and
-/// lets you wrap your IDeviantArtAccessToken object with them.
-type DeviantArtCommonParameters() =
-    /// Which expanded fields (if any) to include (default none).
-    member val Expand = DeviantArtObjectExpansion.None with get, set
-    /// Whether to include mature content (default false).
-    member val MatureContent = false with get, set
-    /// Create an IDeviantArtAccessToken object that includes the additional
-    /// parameters defined in this object.
-    member this.WrapToken (token: IDeviantArtAccessToken) = {
-        new IDeviantArtAccessTokenWithCommonParameters with
-            member __.AccessToken = token.AccessToken
-            member __.Expand = this.Expand
-            member __.MatureContent = this.MatureContent
-    }

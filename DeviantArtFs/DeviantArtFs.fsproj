@@ -25,7 +25,6 @@
     <Compile Include="JsonTransforms.fs" />
     <Compile Include="Types\AccessTokens.fs" />
     <Compile Include="Types\IResultPage.fs" />
-    <Compile Include="Types\IDeviantArtDeletable.fs" />
     <Compile Include="Types\RequestTypes\DeviantArtPagingParams.fs" />
     <Compile Include="Types\RequestTypes\DeviantArtExtParams.fs" />
     <Compile Include="Types\RequestTypes\DeviantArtFieldChange.fs" />

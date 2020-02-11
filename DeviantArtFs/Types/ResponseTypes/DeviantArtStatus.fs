@@ -31,6 +31,3 @@ and DeviantArtStatus = {
         this.items
         |> Option.defaultValue List.empty
         |> Seq.choose (fun i -> i.status)
-
-    interface IDeviantArtDeletable with
-        member this.IsDeleted = this.is_deleted

@@ -55,5 +55,3 @@ type Deviation = {
     download_filesize: int option
 } with
     static member Parse json = Json.deserialize<Deviation> json
-    interface IDeviantArtDeletable with
-        member this.IsDeleted = this.is_deleted
