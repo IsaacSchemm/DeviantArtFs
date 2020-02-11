@@ -70,57 +70,57 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
             var me = await Requests.User.Whoami.ExecuteAsync(token);
 
             string username = read == ""
-                ? me.Username
+                ? me.username
                 : read;
 
             var profile = await Requests.User.ProfileByName.ExecuteAsync(
                 token,
                 new Requests.User.ProfileByNameRequest(username));
-            Console.WriteLine(profile.RealName);
-            if (!string.IsNullOrEmpty(profile.Tagline))
+            Console.WriteLine(profile.real_name);
+            if (!string.IsNullOrEmpty(profile.tagline))
             {
-                Console.WriteLine(profile.Tagline);
+                Console.WriteLine(profile.tagline);
             }
-            Console.WriteLine($"{profile.Stats.UserDeviations} deviations");
+            Console.WriteLine($"{profile.stats.user_deviations} deviations");
             Console.WriteLine();
 
             var deviations = await Requests.Gallery.GalleryAllView.ExecuteAsync(
                 token,
                 Page(0, 1),
                 new Requests.Gallery.GalleryAllViewRequest { Username = username });
-            var deviation = deviations.Results.WhereNotDeleted().FirstOrDefault();
+            var deviation = deviations.results.WhereNotDeleted().FirstOrDefault();
             if (deviation != null)
             {
-                Console.WriteLine($"Most recent (non-deleted) deviation: {deviation.Title} ({deviation.PublishedTime})");
-                if (deviation.IsDownloadable) {
-                    Console.WriteLine($"Downloadable (size = {deviation.DownloadFilesize ?? -1}");
+                Console.WriteLine($"Most recent (non-deleted) deviation: {deviation.title.OrNull()} ({deviation.published_time.OrNull()})");
+                if (deviation.is_downloadable.IsTrue()) {
+                    Console.WriteLine($"Downloadable (size = {deviation.download_filesize ?? -1}");
                 } else {
                     Console.WriteLine("Not downloadable");
                 }
 
                 var metadata = await Requests.Deviation.MetadataById.ExecuteAsync(
                     token,
-                    new Requests.Deviation.MetadataRequest(new[] { deviation.Deviationid }));
+                    new Requests.Deviation.MetadataRequest(new[] { deviation.deviationid }));
                 foreach (var m in metadata)
                 {
-                    Console.WriteLine(string.Join(" ", m.Tags.Select(t => $"#{t.TagName}")));
+                    Console.WriteLine(string.Join(" ", m.tags.Select(t => $"#{t.tag_name}")));
                 }
 
                 var favorites = await Requests.Deviation.WhoFaved.ToArrayAsync(
                     token,
                     0,
                     int.MaxValue,
-                    deviation.Deviationid);
+                    deviation.deviationid);
                 if (favorites.Any())
                 {
                     Console.WriteLine("Favorited by:");
                     foreach (var f in favorites)
                     {
-                        Console.WriteLine($"    {f.User.Username} {f.Time}");
+                        Console.WriteLine($"    {f.user.username} {f.time}");
                     }
                 }
 
-                var comments_req = new Requests.Comments.DeviationCommentsRequest(deviation.Deviationid) { Maxdepth = 5 };
+                var comments_req = new Requests.Comments.DeviationCommentsRequest(deviation.deviationid) { Maxdepth = 5 };
                 var comments = await Requests.Comments.DeviationComments.ToArrayAsync(
                     token,
                     0,
@@ -131,7 +131,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                     Console.WriteLine("Comments by:");
                     foreach (var c in comments)
                     {
-                        Console.WriteLine($"    {c.User.Username} {c.Body}");
+                        Console.WriteLine($"    {c.user.username} {c.body}");
                     }
                 }
 
@@ -142,34 +142,34 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 new Requests.Browse.UserJournalsRequest(username) { Featured = false });
-            var journal = journals.Results.WhereNotDeleted().FirstOrDefault();
+            var journal = journals.results.WhereNotDeleted().FirstOrDefault();
             if (journal != null)
             {
-                Console.WriteLine($"Most recent (non-deleted) journal: {journal.Title} ({journal.PublishedTime})");
+                Console.WriteLine($"Most recent (non-deleted) journal: {journal.title.OrNull()} ({journal.published_time.OrNull()})");
 
                 var metadata = await Requests.Deviation.MetadataById.ExecuteAsync(
                     token,
-                    new Requests.Deviation.MetadataRequest(new[] { journal.Deviationid }));
+                    new Requests.Deviation.MetadataRequest(new[] { journal.deviationid }));
                 foreach (var m in metadata)
                 {
-                    Console.WriteLine(string.Join(" ", m.Tags.Select(t => $"#{t.TagName}")));
+                    Console.WriteLine(string.Join(" ", m.tags.Select(t => $"#{t.tag_name}")));
                 }
 
                 var favorites = await Requests.Deviation.WhoFaved.ToArrayAsync(
                     token,
                     0,
                     int.MaxValue,
-                    journal.Deviationid);
+                    journal.deviationid);
                 if (favorites.Any())
                 {
                     Console.WriteLine("Favorited by:");
                     foreach (var f in favorites)
                     {
-                        Console.WriteLine($"    {f.User.Username} {f.Time}");
+                        Console.WriteLine($"    {f.user.username} {f.time}");
                     }
                 }
 
-                var comments_req = new Requests.Comments.DeviationCommentsRequest(journal.Deviationid) { Maxdepth = 5 };
+                var comments_req = new Requests.Comments.DeviationCommentsRequest(journal.deviationid) { Maxdepth = 5 };
                 var comments = await Requests.Comments.DeviationComments.ToArrayAsync(
                     token,
                     0,
@@ -180,7 +180,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                     Console.WriteLine("Comments by:");
                     foreach (var c in comments)
                     {
-                        Console.WriteLine($"    {c.User.Username} {c.Body}");
+                        Console.WriteLine($"    {c.user.username} {c.body}");
                     }
                 }
 
@@ -191,12 +191,12 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 token,
                 Page(0, 1),
                 username);
-            var status = statuses.Results.WhereNotDeleted().FirstOrDefault();
+            var status = statuses.results.WhereNotDeleted().FirstOrDefault();
             if (status != null)
             {
-                Console.WriteLine($"Most recent (non-deleted) status: {status.Body} ({status.Ts})");
+                Console.WriteLine($"Most recent (non-deleted) status: {status.body.OrNull()} ({status.ts.OrNull()})");
 
-                var comments_req = new Requests.Comments.StatusCommentsRequest(status.Statusid.Value) { Maxdepth = 5 };
+                var comments_req = new Requests.Comments.StatusCommentsRequest(status.statusid.Value) { Maxdepth = 5 };
                 var comments = await Requests.Comments.StatusComments.ToArrayAsync(
                     token,
                     0,
@@ -208,7 +208,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 }
                 foreach (var c in comments)
                 {
-                    Console.WriteLine($"    {c.User.Username}: {c.Body}");
+                    Console.WriteLine($"    {c.user.username}: {c.body}");
                 }
 
                 Console.WriteLine();

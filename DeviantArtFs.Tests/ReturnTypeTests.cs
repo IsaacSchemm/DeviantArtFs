@@ -19,9 +19,8 @@ namespace DeviantArtFs.Tests
 
             if (t.IsGenericParameter && t.DeclaringMethod != null) Assert.Fail($"On {typeName}, found type \"{t.Name}\" declared in method {t.DeclaringMethod.Name}");
 
-            if (t.Namespace.StartsWith("DeviantArtFs") && t.IsInterface) Assert.Fail($"Found interface {t.Name} in result of {methodName} on {typeName}");
             if (t.Name.StartsWith("Nullable")) Assert.Fail($"Found Nullable<T> in result of {methodName} on {typeName}");
-            if (t.Name.StartsWith("IBcl")) Assert.Fail($"Found one of the IBcl*** types in result of {methodName} on {typeName}");
+            if (t.Name.StartsWith("IBcl")) Assert.Fail($"Found one of the IBcl*** types");
             foreach (var a in t.GenericTypeArguments)
             {
                 AssertOkForFSharp(a, methodName, typeName);
@@ -39,8 +38,7 @@ namespace DeviantArtFs.Tests
 
             if (t.IsGenericParameter && t.DeclaringMethod != null) Assert.Fail($"On {typeName}, found type \"{t.Name}\" declared in method {t.DeclaringMethod.Name}");
 
-            if (t.Namespace.StartsWith("DeviantArtFs") && t.IsInterface && !t.Name.StartsWith("IBcl")) Assert.Fail($"Found interface {t.Name} in result of {methodName} on {typeName} that does not conform to naming convention");
-            if (t.Name.StartsWith("FSharpOption")) Assert.Fail($"Found FSharpOption<T> in result of {methodName} on {typeName}");
+            if (t.Name.StartsWith("IBcl")) Assert.Fail($"Found one of the IBcl*** types");
             foreach (var a in t.GenericTypeArguments)
             {
                 AssertOkForCSharp(a, methodName, typeName);
