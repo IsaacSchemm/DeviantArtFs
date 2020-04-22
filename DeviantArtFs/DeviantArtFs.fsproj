@@ -173,6 +173,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DeviantArtFs.Types\DeviantArtFs.Types.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Update="FSharp.Core" Version="4.7.0" />
   </ItemGroup>
 
