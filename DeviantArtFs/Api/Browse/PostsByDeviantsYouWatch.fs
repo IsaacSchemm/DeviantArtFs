@@ -15,7 +15,7 @@ module PostsByDeviantsYouWatch =
            |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/posts/deviantsyouwatch?%s"
            |> Dafs.createRequest token
        let! json = Dafs.asyncRead req
-       return DeviantArtPostsPagedResult.Parse json
+       return DeviantArtPagedResult<DeviantArtPost>.Parse json
    }
 
    let ToAsyncSeq token common offset =

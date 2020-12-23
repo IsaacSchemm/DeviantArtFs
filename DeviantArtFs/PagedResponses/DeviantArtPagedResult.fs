@@ -6,6 +6,7 @@ open FSharp.Json
 type DeviantArtPagedResult<'a> = {
     has_more: bool
     next_offset: int option
+    error_code: int option
     results: 'a list
 } with
     static member Parse json = Json.deserialize<DeviantArtPagedResult<'a>> json

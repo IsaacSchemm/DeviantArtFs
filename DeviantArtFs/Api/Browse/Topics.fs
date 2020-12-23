@@ -1,27 +1,28 @@
 ﻿namespace DeviantArtFs.Api.Browse
 
+open System
 open DeviantArtFs
 open FSharp.Control
 
-type UserJournalsRequest(username: string) =
-    member __.Username = username
-    member val Featured = true with get, set
+type TopicsRequest() =
+    member val NumDeviationsPerTopic = Nullable() with get, set
 
-module UserJournals =
-    let AsyncExecute token common paging (req: UserJournalsRequest) = async {
+module Topics =
+    let AsyncExecute token common paging (req: TopicsRequest) = async {
         let query = seq {
-            yield sprintf "username=%s" (Dafs.urlEncode req.Username)
-            yield sprintf "featured=%b" req.Featured
-            yield! QueryFor.paging paging 50
+            match Option.ofNullable req.NumDeviationsPerTopic with
+            | Some s -> yield sprintf "topic=%d" s
+            | None -> ()
+            yield! QueryFor.paging paging 10
             yield! QueryFor.commonParams common
         }
         let req =
             query
             |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/user/journals?%s"
+            |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/topics?%s"
             |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
-        return DeviantArtPagedResult<Deviation>.Parse json
+        return DeviantArtPagedResult<DeviantArtTopic>.Parse json
     }
 
     let ToAsyncSeq token common offset req =

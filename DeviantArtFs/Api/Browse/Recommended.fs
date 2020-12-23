@@ -21,7 +21,7 @@ module Recommended =
            |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/recommended?%s"
            |> Dafs.createRequest token
        let! json = Dafs.asyncRead req
-       return DeviantArtBrowsePagedResult.Parse json
+       return DeviantArtRecommendedPagedResult.Parse json
    }
 
    let ToAsyncSeq token common offset req =

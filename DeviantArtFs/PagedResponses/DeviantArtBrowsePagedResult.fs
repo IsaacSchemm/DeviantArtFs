@@ -8,7 +8,6 @@ type DeviantArtBrowsePagedResult = {
     next_offset: int option
     error_code: int option
     estimated_total: int option
-    effective_page_type: string option
     results: Deviation list
 } with
     static member Parse json = Json.deserialize<DeviantArtBrowsePagedResult> json

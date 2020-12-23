@@ -30,6 +30,7 @@
     <Compile Include="ResponseTypes\DeviantArtListOnlyResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtUser.fs" />
     <Compile Include="ResponseTypes\DeviantArtWhoFavedUser.fs" />
+    <Compile Include="ResponseTypes\DeviantArtGallection.fs" />
     <Compile Include="ResponseTypes\DeviationFile.fs" />
     <Compile Include="ResponseTypes\Deviation.fs" />
     <Compile Include="ResponseTypes\DeviantArtGalleryFolder.fs" />
@@ -63,10 +64,11 @@
     <Compile Include="ResponseTypes\DeviantArtNote.fs" />
     <Compile Include="ResponseTypes\DeviantArtNotesFolder.fs" />
     <Compile Include="ResponseTypes\DeviantArtSendNoteResult.fs" />
+    <Compile Include="ResponseTypes\DeviantArtTopic.fs" />
     <Compile Include="PagedResponses\DeviantArtPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtEmbeddedContentPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtBrowsePagedResult.fs" />
-    <Compile Include="PagedResponses\DeviantArtPostsPagedResult.fs" />
+    <Compile Include="PagedResponses\DeviantArtRecommendedPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtFolderPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtCommentPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtCommentSiblingsPagedResult.fs" />
@@ -87,7 +89,9 @@
     <Compile Include="Api\Browse\Recommended.fs" />
     <Compile Include="Api\Browse\Tags.fs" />
     <Compile Include="Api\Browse\TagsSearch.fs" />
-    <Compile Include="Api\Browse\Undiscovered.fs" />
+    <Compile Include="Api\Browse\Topic.fs" />
+    <Compile Include="Api\Browse\Topics.fs" />
+    <Compile Include="Api\Browse\TopTopics.fs" />
     <Compile Include="Api\Browse\UserJournals.fs" />
     <Compile Include="Api\Collections\CollectionById.fs" />
     <Compile Include="Api\Collections\CollectionFolders.fs" />

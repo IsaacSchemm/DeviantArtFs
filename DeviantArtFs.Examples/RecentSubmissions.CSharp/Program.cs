@@ -64,6 +64,25 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
         {
             var token = new Token(token_string);
 
+            var topics = await Api.Browse.Topics.ToArrayAsync(token, DeviantArtCommonParams.Default, 0, 5, new Api.Browse.TopicsRequest());
+            Console.WriteLine("First 5 topics:");
+            foreach (var t in topics) {
+                Console.WriteLine("* " + t.name);
+                var dd = await Api.Browse.Topic.ToArrayAsync(token, DeviantArtCommonParams.Default, 0, 3, t.canonical_name);
+                foreach (var d in dd) {
+                    Console.WriteLine("  * " + d.title);
+                }
+            }
+
+            var topTopics = await Api.Browse.TopTopics.ExecuteAsync(token);
+            Console.WriteLine("Top topics:");
+            foreach (var t in topTopics) {
+                Console.WriteLine("* " + t.name);
+                foreach (var d in t.ExampleDeviations) {
+                    Console.WriteLine("  * Example: " + d.title);
+                }
+            }
+
             var watched_art = await Api.Browse.DeviantsYouWatch.ToArrayAsync(token, DeviantArtCommonParams.Default, 0, 50);
             Console.WriteLine("First 50 deviations by deviants you watch:");
             foreach (var d in watched_art) {
