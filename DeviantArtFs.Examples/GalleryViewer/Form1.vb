@@ -13,7 +13,7 @@ Public Class Form1
             Dim t = AccessToken.ReadFrom("refresh_token.txt")
 
             Try
-                Dim user = Await Requests.User.Whoami.ExecuteAsync(t)
+                Dim user = Await Api.User.Whoami.ExecuteAsync(t)
                 If MsgBox($"Log in as {user.username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
                     Token = t
                 End If
@@ -35,7 +35,7 @@ Public Class Form1
         End If
 
         If Token IsNot Nothing Then
-            Dim user = Await Requests.User.Whoami.ExecuteAsync(Token)
+            Dim user = Await Api.User.Whoami.ExecuteAsync(Token)
             ToolStripStatusLabel1.Text = $"Logged in as {user.username}"
 
             CurrentUsername = TextBox1.Text
@@ -57,8 +57,8 @@ Public Class Form1
         PictureBox1.ImageLocation = Nothing
 
         Dim paging = New DeviantArtPagingParams With {.Offset = NextOffset, .Limit = TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount}
-        Dim request As New Requests.Gallery.GalleryAllViewRequest With {.Username = CurrentUsername}
-        Dim page = Await Requests.Gallery.GalleryAllView.ExecuteAsync(Token, paging, request)
+        Dim request As New Api.Gallery.GalleryAllViewRequest With {.Username = CurrentUsername}
+        Dim page = Await Api.Gallery.GalleryAllView.ExecuteAsync(Token, paging, request)
 
         NextOffset = page.next_offset.OrNull()
         For Each r In page.results
@@ -74,7 +74,7 @@ Public Class Form1
     Private Async Sub ThumbnailClick(deviation As Deviation)
         PictureBox1.ImageLocation = Nothing
         Try
-            Dim download = Await Requests.Deviation.Download.ExecuteAsync(Token, deviation.deviationid)
+            Dim download = Await Api.Deviation.Download.ExecuteAsync(Token, deviation.deviationid)
             PictureBox1.ImageLocation = download.src
         Catch ex As DeviantArtException
             If deviation.content.OrNull() IsNot Nothing Then
@@ -86,8 +86,8 @@ Public Class Form1
         End Try
 
         WebBrowser1.Navigate("about:blank")
-        Dim req = New Requests.Deviation.MetadataRequest({deviation.deviationid})
-        Dim metadata = Await Requests.Deviation.MetadataById.ExecuteAsync(Token, req)
+        Dim req = New Api.Deviation.MetadataRequest({deviation.deviationid})
+        Dim metadata = Await Api.Deviation.MetadataById.ExecuteAsync(Token, req)
         Dim s = metadata.Single()
         WebBrowser1.Document.Write(s.description)
     End Sub

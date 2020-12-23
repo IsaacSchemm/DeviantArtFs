@@ -19,16 +19,16 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             var paging = new DeviantArtPagingParams { Offset = offset, Limit = limit };
             DeviantArtPagedResult<Deviation> resp;
             if (folderId is Guid f) {
-                var r = await Requests.Gallery.GalleryById.ExecuteAsync(
+                var r = await Api.Gallery.GalleryById.ExecuteAsync(
                     token,
                     paging,
-                    new Requests.Gallery.GalleryByIdRequest(f) { Username = username });
+                    new Api.Gallery.GalleryByIdRequest(f) { Username = username });
                 resp = new DeviantArtPagedResult<Deviation>(r.has_more, r.next_offset, r.results);
             } else {
-                resp = await Requests.Gallery.GalleryAllView.ExecuteAsync(
+                resp = await Api.Gallery.GalleryAllView.ExecuteAsync(
                     token,
                     paging,
-                    new Requests.Gallery.GalleryAllViewRequest { Username = username });
+                    new Api.Gallery.GalleryAllViewRequest { Username = username });
             }
 
             ViewBag.Username = username;
@@ -42,7 +42,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             var token = await GetAccessTokenAsync();
             if (token == null) return Forbid();
 
-            var list = await Requests.Gallery.GalleryFolders.ToArrayAsync(token, 0, 100, new Requests.Gallery.GalleryFoldersRequest { CalculateSize = true, Username = username });
+            var list = await Api.Gallery.GalleryFolders.ToArrayAsync(token, 0, 100, new Api.Gallery.GalleryFoldersRequest { CalculateSize = true, Username = username });
 
             ViewBag.Username = username;
             return View(list);

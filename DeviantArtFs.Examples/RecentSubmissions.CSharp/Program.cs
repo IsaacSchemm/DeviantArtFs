@@ -27,7 +27,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 ? File.ReadAllText(token_file)
                 : "";
 
-            bool valid = Requests.Util.Placebo.IsValidAsync(new Token(token_string)).GetAwaiter().GetResult();
+            bool valid = Api.Util.Placebo.IsValidAsync(new Token(token_string)).GetAwaiter().GetResult();
             if (valid)
             {
                 return token_string;
@@ -68,15 +68,15 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
             string read = Console.ReadLine();
             Console.WriteLine();
 
-            var me = await Requests.User.Whoami.ExecuteAsync(token);
+            var me = await Api.User.Whoami.ExecuteAsync(token);
 
             string username = read == ""
                 ? me.username
                 : read;
 
-            var profile = await Requests.User.ProfileByName.ExecuteAsync(
+            var profile = await Api.User.ProfileByName.ExecuteAsync(
                 token,
-                new Requests.User.ProfileByNameRequest(username));
+                new Api.User.ProfileByNameRequest(username));
             Console.WriteLine(profile.real_name);
             if (!string.IsNullOrEmpty(profile.tagline))
             {
@@ -85,10 +85,10 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
             Console.WriteLine($"{profile.stats.user_deviations} deviations");
             Console.WriteLine();
 
-            var deviations = await Requests.Gallery.GalleryAllView.ExecuteAsync(
+            var deviations = await Api.Gallery.GalleryAllView.ExecuteAsync(
                 token,
                 Page(0, 1),
-                new Requests.Gallery.GalleryAllViewRequest { Username = username });
+                new Api.Gallery.GalleryAllViewRequest { Username = username });
             var deviation = deviations.results.Where(x => !x.is_deleted).FirstOrDefault();
             if (deviation != null)
             {
@@ -99,15 +99,15 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                     Console.WriteLine("Not downloadable");
                 }
 
-                var metadata = await Requests.Deviation.MetadataById.ExecuteAsync(
+                var metadata = await Api.Deviation.MetadataById.ExecuteAsync(
                     token,
-                    new Requests.Deviation.MetadataRequest(new[] { deviation.deviationid }));
+                    new Api.Deviation.MetadataRequest(new[] { deviation.deviationid }));
                 foreach (var m in metadata)
                 {
                     Console.WriteLine(string.Join(" ", m.tags.Select(t => $"#{t.tag_name}")));
                 }
 
-                var favorites = await Requests.Deviation.WhoFaved.ToArrayAsync(
+                var favorites = await Api.Deviation.WhoFaved.ToArrayAsync(
                     token,
                     0,
                     int.MaxValue,
@@ -121,8 +121,8 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                     }
                 }
 
-                var comments_req = new Requests.Comments.DeviationCommentsRequest(deviation.deviationid) { Maxdepth = 5 };
-                var comments = await Requests.Comments.DeviationComments.ToArrayAsync(
+                var comments_req = new Api.Comments.DeviationCommentsRequest(deviation.deviationid) { Maxdepth = 5 };
+                var comments = await Api.Comments.DeviationComments.ToArrayAsync(
                     token,
                     0,
                     int.MaxValue,
@@ -139,24 +139,24 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 Console.WriteLine();
             }
 
-            var journals = await Requests.Browse.UserJournals.ExecuteAsync(
+            var journals = await Api.Browse.UserJournals.ExecuteAsync(
                 token,
                 Page(0, 1),
-                new Requests.Browse.UserJournalsRequest(username) { Featured = false });
+                new Api.Browse.UserJournalsRequest(username) { Featured = false });
             var journal = journals.results.Where(x => !x.is_deleted).FirstOrDefault();
             if (journal != null)
             {
                 Console.WriteLine($"Most recent (non-deleted) journal: {journal.title.OrNull()} ({journal.published_time.OrNull()})");
 
-                var metadata = await Requests.Deviation.MetadataById.ExecuteAsync(
+                var metadata = await Api.Deviation.MetadataById.ExecuteAsync(
                     token,
-                    new Requests.Deviation.MetadataRequest(new[] { journal.deviationid }));
+                    new Api.Deviation.MetadataRequest(new[] { journal.deviationid }));
                 foreach (var m in metadata)
                 {
                     Console.WriteLine(string.Join(" ", m.tags.Select(t => $"#{t.tag_name}")));
                 }
 
-                var favorites = await Requests.Deviation.WhoFaved.ToArrayAsync(
+                var favorites = await Api.Deviation.WhoFaved.ToArrayAsync(
                     token,
                     0,
                     int.MaxValue,
@@ -170,8 +170,8 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                     }
                 }
 
-                var comments_req = new Requests.Comments.DeviationCommentsRequest(journal.deviationid) { Maxdepth = 5 };
-                var comments = await Requests.Comments.DeviationComments.ToArrayAsync(
+                var comments_req = new Api.Comments.DeviationCommentsRequest(journal.deviationid) { Maxdepth = 5 };
+                var comments = await Api.Comments.DeviationComments.ToArrayAsync(
                     token,
                     0,
                     int.MaxValue,
@@ -188,7 +188,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 Console.WriteLine();
             }
 
-            var statuses = await Requests.User.StatusesList.ExecuteAsync(
+            var statuses = await Api.User.StatusesList.ExecuteAsync(
                 token,
                 Page(0, 1),
                 username);
@@ -197,8 +197,8 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
             {
                 Console.WriteLine($"Most recent (non-deleted) status: {status.body.OrNull()} ({status.ts.OrNull()})");
 
-                var comments_req = new Requests.Comments.StatusCommentsRequest(status.statusid.Value) { Maxdepth = 5 };
-                var comments = await Requests.Comments.StatusComments.ToArrayAsync(
+                var comments_req = new Api.Comments.StatusCommentsRequest(status.statusid.Value) { Maxdepth = 5 };
+                var comments = await Api.Comments.StatusComments.ToArrayAsync(
                     token,
                     0,
                     int.MaxValue,

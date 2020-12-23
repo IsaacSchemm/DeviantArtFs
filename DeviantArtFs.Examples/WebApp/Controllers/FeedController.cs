@@ -22,7 +22,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             var token = await GetAccessTokenAsync();
             if (token == null) return Forbid();
 
-            var feed = await Requests.Feed.FeedHome.ExecuteAsync(token, cursor);
+            var feed = await Api.Feed.FeedHome.ExecuteAsync(token, cursor);
             return Json(new FeedModel(feed));
         }
     }
