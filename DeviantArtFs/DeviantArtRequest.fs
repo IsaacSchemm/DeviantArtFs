@@ -38,7 +38,7 @@ type DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: string) =
         req.UserAgent <- UserAgent
         req.Method <- this.Method
         req.ContentType <- this.ContentType
-        req.Headers.Add("dA-minor-version", "20160316")
+        req.Headers.Add("dA-minor-version", "20200519")
         if not (isNull this.RequestBody) then
             do! async {
                 use! stream = req.GetRequestStreamAsync() |> Async.AwaitTask

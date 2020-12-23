@@ -31,7 +31,9 @@ module internal Dafs =
             yield url
             if not (url.Contains("?")) then
                 yield "?"
-            yield query |> String.concat "&"
+            for q in query do
+               yield "&"
+               yield q
         })
 
     /// Creates a DeviantArtRequest object, given a token object, common parameters, and a URL.
@@ -51,6 +53,18 @@ module internal Dafs =
         let mutable has_more = true
         while has_more do
             let! resp = f cursor req
+            for r in resp.Items do
+                yield r
+            cursor <- resp.Cursor
+            has_more <- resp.HasMore
+    }
+
+    let toAsyncSeq2 (offset: int) (f: DeviantArtPagingParams -> Async<'b> when 'b :> IResultPage<int, 'item>) = asyncSeq {
+        let mutable cursor = offset
+        let mutable has_more = true
+        while has_more do
+            let paging = { Offset = cursor; Limit = Nullable Int32.MaxValue }
+            let! resp = f paging
             for r in resp.Items do
                 yield r
             cursor <- resp.Cursor

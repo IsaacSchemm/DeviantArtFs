@@ -6,6 +6,7 @@ open FSharp.Json
 type DeviantArtBrowsePagedResult = {
     has_more: bool
     next_offset: int option
+    error_code: int option
     estimated_total: int option
     results: Deviation list
 } with

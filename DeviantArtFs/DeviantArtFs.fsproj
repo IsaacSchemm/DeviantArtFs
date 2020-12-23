@@ -76,10 +76,8 @@
     <Compile Include="Dafs.fs" />
     <Compile Include="QueryFor.fs" />
     <Compile Include="AsyncThen.fs" />
-    <Compile Include="Api\Browse\CategoryTree.fs" />
     <Compile Include="Api\Browse\DailyDeviations.fs" />
-    <Compile Include="Api\Browse\Hot.fs" />
-    <Compile Include="Api\Browse\MoreLikeThis.fs" />
+    <Compile Include="Api\Browse\DeviantsYouWatch.fs" />
     <Compile Include="Api\Browse\MoreLikeThisPreview.fs" />
     <Compile Include="Api\Browse\Newest.fs" />
     <Compile Include="Api\Browse\Popular.fs" />
