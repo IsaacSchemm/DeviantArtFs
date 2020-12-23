@@ -43,6 +43,7 @@
     <Compile Include="ResponseTypes\DeviationMetadataStats.fs" />
     <Compile Include="ResponseTypes\DeviationMetadata.fs" />
     <Compile Include="ResponseTypes\DeviantArtStatus.fs" />
+    <Compile Include="ResponseTypes\DeviantArtPost.fs" />
     <Compile Include="ResponseTypes\DeviantArtProfileStats.fs" />
     <Compile Include="ResponseTypes\DeviantArtProfile.fs" />
     <Compile Include="ResponseTypes\StashStats.fs" />
@@ -65,6 +66,7 @@
     <Compile Include="PagedResponses\DeviantArtPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtEmbeddedContentPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtBrowsePagedResult.fs" />
+    <Compile Include="PagedResponses\DeviantArtPostsPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtFolderPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtCommentPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtCommentSiblingsPagedResult.fs" />
@@ -81,6 +83,7 @@
     <Compile Include="Api\Browse\MoreLikeThisPreview.fs" />
     <Compile Include="Api\Browse\Newest.fs" />
     <Compile Include="Api\Browse\Popular.fs" />
+    <Compile Include="Api\Browse\PostsByDeviantsYouWatch.fs" />
     <Compile Include="Api\Browse\Tags.fs" />
     <Compile Include="Api\Browse\TagsSearch.fs" />
     <Compile Include="Api\Browse\Undiscovered.fs" />

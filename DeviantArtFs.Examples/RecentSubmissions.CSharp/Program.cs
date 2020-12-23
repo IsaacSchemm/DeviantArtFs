@@ -64,6 +64,23 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
         {
             var token = new Token(token_string);
 
+            var watched_art = await Api.Browse.DeviantsYouWatch.ToArrayAsync(token, DeviantArtCommonParams.Default, 0, 50);
+            Console.WriteLine("First 50 deviations by deviants you watch:");
+            foreach (var d in watched_art) {
+                Console.WriteLine($"* {d.title.OrNull()} ({d.published_time.OrNull()})");
+            }
+            Console.WriteLine();
+
+            var watched_posts = await Api.Browse.PostsByDeviantsYouWatch.ToArrayAsync(token, DeviantArtCommonParams.Default, 0, 50);
+            Console.WriteLine("First 50 status or journal posts by deviants you watch:");
+
+            var watched_statuses = watched_posts.SelectMany(x => x.GetStatusObjects());
+            Console.WriteLine($"{watched_statuses.Count()} statuses");
+            var watched_journals = watched_posts.SelectMany(x => x.GetJournalObjects());
+            Console.WriteLine($"{watched_journals.Count()} journals");
+
+            Console.WriteLine();
+
             Console.Write("Enter a username (leave blank to see your own submissions): ");
             string read = Console.ReadLine();
             Console.WriteLine();

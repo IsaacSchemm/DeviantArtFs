@@ -17,7 +17,7 @@ module DeviantsYouWatch =
         return DeviantArtBrowsePagedResult.Parse json
     }
 
-    let ToAsyncSeq token common offset: Deviation AsyncSeq =
+    let ToAsyncSeq token common offset =
         (fun p -> AsyncExecute token common p)
         |> Dafs.toAsyncSeq2 offset
 
