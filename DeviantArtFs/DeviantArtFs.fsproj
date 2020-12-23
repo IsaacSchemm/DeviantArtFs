@@ -18,7 +18,7 @@
   <ItemGroup>
     <Compile Include="AssemblyAttributes.fs" />
     <Compile Include="Extensions\Extensions.fs" />
-    <Compile Include="Transforms\JsonTransforms.fs" />
+    <Compile Include="Transforms\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="IResultPage.fs" />
     <Compile Include="Tokens.fs" />
     <Compile Include="CommonParams.fs" />
