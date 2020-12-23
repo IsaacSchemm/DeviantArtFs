@@ -84,6 +84,7 @@
     <Compile Include="Api\Browse\Newest.fs" />
     <Compile Include="Api\Browse\Popular.fs" />
     <Compile Include="Api\Browse\PostsByDeviantsYouWatch.fs" />
+    <Compile Include="Api\Browse\Recommended.fs" />
     <Compile Include="Api\Browse\Tags.fs" />
     <Compile Include="Api\Browse\TagsSearch.fs" />
     <Compile Include="Api\Browse\Undiscovered.fs" />
