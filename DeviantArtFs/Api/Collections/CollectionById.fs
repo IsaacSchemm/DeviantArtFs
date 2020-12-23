@@ -10,12 +10,13 @@ type CollectionByIdRequest(folderid: Guid) =
 module CollectionById =
     open FSharp.Control
 
-    let AsyncExecute token paging (req: CollectionByIdRequest) = async {
+    let AsyncExecute token common paging (req: CollectionByIdRequest) = async {
         let query = seq {
             match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (Dafs.urlEncode s)
             | None -> ()
             yield! QueryFor.paging paging 24
+            yield! QueryFor.commonParams common
         }
         let req =
             query
@@ -26,16 +27,16 @@ module CollectionById =
         return DeviantArtFolderPagedResult.Parse json
     }
 
-    let ToAsyncSeq token offset req =
-        Dafs.getMax (AsyncExecute token)
-        |> Dafs.toAsyncSeq offset req
+    let ToAsyncSeq token common offset req =
+        (fun p -> AsyncExecute token common p req)
+        |> Dafs.toAsyncSeq2 offset
 
-    let ToArrayAsync token offset limit req =
-        ToAsyncSeq token offset req
+    let ToArrayAsync token common offset limit req =
+        ToAsyncSeq token common offset req
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging req =
-        AsyncExecute token paging req
+    let ExecuteAsync token common paging req =
+        AsyncExecute token common paging req
         |> Async.StartAsTask
