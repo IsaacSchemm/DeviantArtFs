@@ -25,13 +25,13 @@ module GalleryById =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/%A?%s" req.Folderid
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
         let! json = Dafs.asyncRead req
         return DeviantArtFolderPagedResult.Parse json
     }
 
     let ToAsyncSeq token offset req =
-        Dafs.getMax AsyncExecute token
+        Dafs.getMax (AsyncExecute token)
         |> Dafs.toAsyncSeq offset req
 
     let ToArrayAsync token offset limit req =

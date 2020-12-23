@@ -22,13 +22,13 @@ module Newest =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/newest?%s"
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
         let! json = Dafs.asyncRead req
         return DeviantArtBrowsePagedResult.Parse json
     }
 
     let ToAsyncSeq token offset req =
-        Dafs.getMax AsyncExecute token
+        Dafs.getMax (AsyncExecute token)
         |> Dafs.toAsyncSeq offset req
 
     let ToArrayAsync token offset limit req =

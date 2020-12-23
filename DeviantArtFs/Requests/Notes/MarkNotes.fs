@@ -32,7 +32,7 @@ module MarkNotes =
             | _ -> invalidArg "req" "Invalid \"mark as\" type"
         }
 
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/notes/mark"
+        let req = Dafs.createRequest token DeviantArtCommonParams.Default "https://www.deviantart.com/api/v1/oauth2/notes/mark"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 

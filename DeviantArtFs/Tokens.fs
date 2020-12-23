@@ -1,5 +1,6 @@
 ﻿namespace DeviantArtFs
 
+open System
 open System.Threading.Tasks
 
 /// A DeviantArt app that connects via OAuth.

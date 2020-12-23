@@ -22,13 +22,13 @@ module ProfileComments =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/comments/profile/%s?%s" req.Username
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
         let! json = Dafs.asyncRead req
         return json |> DeviantArtCommentPagedResult.Parse
     }
 
     let ToAsyncSeq token offset req =
-        Dafs.getMax AsyncExecute token
+        Dafs.getMax (AsyncExecute token)
         |> Dafs.toAsyncSeq offset req
 
     let ToArrayAsync token offset limit req =

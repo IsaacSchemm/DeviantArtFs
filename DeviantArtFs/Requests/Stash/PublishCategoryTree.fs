@@ -19,7 +19,7 @@ module PublishCategoryTree =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/publish/categorytree?%s"
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
         let! json = Dafs.asyncRead req
         return DeviantArtCategoryList.ParseList json
     }

@@ -16,7 +16,7 @@ module FeedNotifications =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/feed/notifications?%s"
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
         let! json = Dafs.asyncRead req
         return DeviantArtFeedCursorResult.Parse json
     }

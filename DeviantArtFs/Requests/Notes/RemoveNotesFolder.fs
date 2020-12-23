@@ -7,7 +7,7 @@ module RemoveNotesFolder =
     let AsyncExecute token (folderid: Guid) = async {
         let req =
             sprintf "https://www.deviantart.com/api/v1/oauth2/notes/folders/remove/%O" folderid
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
         req.Method <- "POST"
 
         let! json = Dafs.asyncRead req

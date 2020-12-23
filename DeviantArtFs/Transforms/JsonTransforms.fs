@@ -1,4 +1,4 @@
-﻿namespace DeviantArtFs.Json.Transforms
+﻿namespace DeviantArtFs.Transforms
 
 open FSharp.Json
 open FSharp.Json.Transforms

@@ -14,13 +14,13 @@ module FeedHomeBucket =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/feed/home/%O?%s" bucketid
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
         let! json = Dafs.asyncRead req
         return DeviantArtPagedResult<Deviation>.Parse json
     }
 
     let ToAsyncSeq token offset bucketid =
-        Dafs.getMax AsyncExecute token
+        Dafs.getMax (AsyncExecute token)
         |> Dafs.toAsyncSeq offset bucketid
 
     let ToArrayAsync token offset limit bucketid =

@@ -2,7 +2,7 @@
 
 open System
 open FSharp.Json
-open DeviantArtFs.Json.Transforms
+open DeviantArtFs.Transforms
 
 type DeviationStats = {
     comments: int

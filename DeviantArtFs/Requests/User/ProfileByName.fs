@@ -16,7 +16,7 @@ module ProfileByName =
         let qs = String.concat "&" query
         let req =
             sprintf "https://www.deviantart.com/api/v1/oauth2/user/profile/%s?%s" (Dafs.urlEncode req.Username) qs
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
         let! json = Dafs.asyncRead req
         return DeviantArtProfile.Parse json
     }

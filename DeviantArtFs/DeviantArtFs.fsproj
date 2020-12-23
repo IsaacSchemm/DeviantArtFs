@@ -17,13 +17,13 @@
 
   <ItemGroup>
     <Compile Include="AssemblyAttributes.fs" />
-    <Compile Include="Extensions.fs" />
-    <Compile Include="JsonTransforms.fs" />
-    <Compile Include="AccessTokens.fs" />
-    <Compile Include="CommonParameters.fs" />
+    <Compile Include="Extensions\Extensions.fs" />
+    <Compile Include="Transforms\JsonTransforms.fs" />
     <Compile Include="IResultPage.fs" />
-    <Compile Include="DeviantArtPagingParams.fs" />
-    <Compile Include="DeviantArtExtParams.fs" />
+    <Compile Include="Tokens.fs" />
+    <Compile Include="CommonParams.fs" />
+    <Compile Include="PagingParams.fs" />
+    <Compile Include="ExtParams.fs" />
     <Compile Include="ResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtSuccessOrErrorResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtTextOnlyResponse.fs" />

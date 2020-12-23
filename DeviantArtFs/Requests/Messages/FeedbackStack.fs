@@ -13,14 +13,14 @@ module FeedbackStack =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/messages/feedback/%s?%s" (Dafs.urlEncode stackid)
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
 
         let! json = Dafs.asyncRead req
         return DeviantArtPagedResult<DeviantArtMessage>.Parse json
     }
 
     let ToAsyncSeq token offset req =
-        Dafs.getMax AsyncExecute token
+        Dafs.getMax (AsyncExecute token)
         |> Dafs.toAsyncSeq offset req
 
     let ToArrayAsync token req offset limit =

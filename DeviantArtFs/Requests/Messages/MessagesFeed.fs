@@ -23,7 +23,7 @@ module MessagesFeed =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/messages/feed?%s"
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
 
         let! json = Dafs.asyncRead req
         return DeviantArtMessageCursorResult.Parse json

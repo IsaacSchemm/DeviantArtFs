@@ -13,13 +13,13 @@ module Tags =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/tags?%s"
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
         let! json = Dafs.asyncRead req
         return DeviantArtBrowsePagedResult.Parse json
     }
 
     let ToAsyncSeq token offset tag =
-        Dafs.getMax AsyncExecute token
+        Dafs.getMax (AsyncExecute token)
         |> Dafs.toAsyncSeq offset tag
 
     let ToArrayAsync token offset limit tag =

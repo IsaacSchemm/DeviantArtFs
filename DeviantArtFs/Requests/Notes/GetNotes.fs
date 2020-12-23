@@ -17,14 +17,14 @@ module GetNotes =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/notes?%s"
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
 
         let! json = Dafs.asyncRead req
         return DeviantArtPagedResult<DeviantArtNote>.Parse json
     }
 
     let ToAsyncSeq token offset folderid =
-        Dafs.getMax AsyncExecute token
+        Dafs.getMax (AsyncExecute token)
         |> Dafs.toAsyncSeq offset folderid
 
     let ToArrayAsync token folderid offset limit =

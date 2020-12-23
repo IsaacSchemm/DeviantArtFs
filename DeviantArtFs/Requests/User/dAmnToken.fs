@@ -9,7 +9,7 @@ type dAmnTokenResponse = {
 
 module dAmnToken =
     let AsyncExecute token = async {
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/damntoken"
+        let req = Dafs.createRequest token DeviantArtCommonParams.Default "https://www.deviantart.com/api/v1/oauth2/user/damntoken"
         let! json = Dafs.asyncRead req
         let o = Json.deserialize<dAmnTokenResponse> json
         return o.damntoken

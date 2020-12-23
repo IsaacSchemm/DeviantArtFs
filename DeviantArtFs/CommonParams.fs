@@ -13,11 +13,14 @@ type DeviantArtObjectExpansion =
 | UserWatch = 16
 | All = -1
 
-/// An object that specifies both a DeviantArt access token and additional
-/// parameters that will be passed to the API call.
-type IDeviantArtAccessTokenWithCommonParameters =
-    inherit IDeviantArtAccessToken
+/// An object with common parameters for DeviantArt API requests.
+type DeviantArtCommonParams = {
     /// Which expanded fields (if any) to include (default none).
-    abstract member Expand: DeviantArtObjectExpansion
+    Expand: DeviantArtObjectExpansion
     /// Whether to include mature content (default false).
-    abstract member MatureContent: bool
+    MatureContent: bool
+} with
+    static member Default = {
+        Expand = DeviantArtObjectExpansion.None
+        MatureContent = false
+    }

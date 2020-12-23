@@ -17,7 +17,7 @@ module CreateNotesFolder =
                 yield sprintf "parentid=%O" req.Parentid.Value
         }
 
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/notes/folders/create"
+        let req = Dafs.createRequest token DeviantArtCommonParams.Default "https://www.deviantart.com/api/v1/oauth2/notes/folders/create"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 

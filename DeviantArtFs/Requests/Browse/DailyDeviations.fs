@@ -17,7 +17,7 @@ module DailyDeviations =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/dailydeviations?%s"
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
         let! json = Dafs.asyncRead req
         return DeviantArtListOnlyResponse<Deviation>.ParseList json
     }

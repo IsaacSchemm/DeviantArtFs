@@ -10,7 +10,7 @@ module Position =
             yield sprintf "position=%d" position
         }
 
-        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/position/%d" stackid |> Dafs.createRequest token
+        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/position/%d" stackid |> Dafs.createRequest token DeviantArtCommonParams.Default
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 

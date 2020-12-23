@@ -21,7 +21,7 @@ module DeleteMessage =
                 yield sprintf "stackid=%s" req.Stackid
         }
 
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/messages/delete"
+        let req = Dafs.createRequest token DeviantArtCommonParams.Default "https://www.deviantart.com/api/v1/oauth2/messages/delete"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 

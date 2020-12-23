@@ -15,14 +15,14 @@ module Contents =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d/contents?%s" stackid
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
 
         let! json = Dafs.asyncRead req
         return DeviantArtPagedResult<StashMetadata>.Parse json
     }
 
     let ToAsyncSeq token offset stackid =
-        Dafs.getMax AsyncExecute token
+        Dafs.getMax (AsyncExecute token)
         |> Dafs.toAsyncSeq offset stackid
 
     let ToArrayAsync token offset limit req =

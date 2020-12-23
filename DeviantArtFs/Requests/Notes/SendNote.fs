@@ -26,7 +26,7 @@ module SendNote =
                 yield sprintf "noteid=%O" req.Noteid.Value
         }
 
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/notes/send"
+        let req = Dafs.createRequest token DeviantArtCommonParams.Default "https://www.deviantart.com/api/v1/oauth2/notes/send"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 

@@ -5,7 +5,7 @@ open DeviantArtFs
 module Placebo =
     let AsyncIsValid (token: IDeviantArtAccessToken) = async {
         try
-            let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/placebo"
+            let req = Dafs.createRequest token DeviantArtCommonParams.Default "https://www.deviantart.com/api/v1/oauth2/placebo"
             let! json = Dafs.asyncRead req
             ignore json
             return true

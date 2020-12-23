@@ -9,7 +9,7 @@ module FriendsUnwatch =
             username
             |> WebUtility.UrlEncode
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/unwatch/%s"
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
         let! json = Dafs.asyncRead req
         ignore json
     }

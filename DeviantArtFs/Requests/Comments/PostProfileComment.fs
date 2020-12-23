@@ -20,7 +20,7 @@ module PostProfileComment =
         }
         let req =
             sprintf "https://www.deviantart.com/api/v1/oauth2/comments/post/profile/%s" req.Username
-            |> Dafs.createRequest token
+            |> Dafs.createRequest token DeviantArtCommonParams.Default
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
         req.RequestBodyText <- String.concat "&" query
