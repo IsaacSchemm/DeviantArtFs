@@ -13,12 +13,13 @@ module Recommended =
            | Some s -> yield sprintf "q=%s" (Dafs.urlEncode s)
            | None -> ()
            yield! QueryFor.paging paging 50
+           yield! QueryFor.commonParams common
        }
        let req =
            query
            |> String.concat "&"
            |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/recommended?%s"
-           |> Dafs.createRequest token common
+           |> Dafs.createRequest token
        let! json = Dafs.asyncRead req
        return DeviantArtBrowsePagedResult.Parse json
    }

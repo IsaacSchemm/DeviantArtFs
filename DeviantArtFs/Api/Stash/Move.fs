@@ -10,7 +10,7 @@ module Move =
             yield sprintf "targetid=%d" targetid
         }
 
-        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/move/%d" stackid |> Dafs.createRequest token DeviantArtCommonParams.Default
+        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/move/%d" stackid |> Dafs.createRequest token
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 

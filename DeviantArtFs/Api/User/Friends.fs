@@ -16,7 +16,7 @@ module Friends =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/%s?%s" (Dafs.urlEncode req.Username)
-            |> Dafs.createRequest token DeviantArtCommonParams.Default
+            |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
         return json |> DeviantArtPagedResult<DeviantArtFriendRecord>.Parse
     }

@@ -19,7 +19,7 @@ module RenameNotesFolder =
 
         let req =
             sprintf "https://www.deviantart.com/api/v1/oauth2/notes/folders/rename/%O" req.Folderid
-            |> Dafs.createRequest token DeviantArtCommonParams.Default
+            |> Dafs.createRequest token
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 

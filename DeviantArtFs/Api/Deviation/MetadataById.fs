@@ -22,7 +22,7 @@ module MetadataById =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/metadata?%s"
-            |> Dafs.createRequest token DeviantArtCommonParams.Default
+            |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
         return DeviationMetadataResponse.ParseList json
     }

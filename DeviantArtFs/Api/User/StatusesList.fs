@@ -14,7 +14,7 @@ module StatusesList =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/statuses?%s"
-            |> Dafs.createRequest token DeviantArtCommonParams.Default
+            |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
         return DeviantArtPagedResult<DeviantArtStatus>.Parse json
     }

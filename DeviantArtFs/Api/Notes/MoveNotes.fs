@@ -19,7 +19,7 @@ module MoveNotes =
             yield sprintf "folderid=%O" req.Folderid
         }
 
-        let req = Dafs.createRequest token DeviantArtCommonParams.Default "https://www.deviantart.com/api/v1/oauth2/notes/move"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/notes/move"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 

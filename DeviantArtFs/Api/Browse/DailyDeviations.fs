@@ -12,12 +12,13 @@ module DailyDeviations =
             match Option.ofNullable req.Date with
             | Some d -> yield d.ToString("YYYY-MM-dd") |> sprintf "date=%s"
             | None -> ()
+            yield! QueryFor.commonParams common
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/dailydeviations?%s"
-            |> Dafs.createRequest token common
+            |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
         return DeviantArtListOnlyResponse<Deviation>.ParseList json
     }

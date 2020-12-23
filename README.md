@@ -108,6 +108,8 @@ Sta.sh stack, and this is represented by its own union case.
   * challenge_entry
   * motion_book
 * The profile_pic field in the user.profile expansion is not supported due to circular type definitions. Get it from the full profile object instead.
+* Some of the newer fields on the deviation object (like premium_folder_data or text_content) are not currently supported.
+* The api_session return object is ignored.
 
 ## Usage
 

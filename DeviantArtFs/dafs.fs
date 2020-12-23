@@ -8,37 +8,9 @@ module internal Dafs =
     /// URL-encodes a string.
     let urlEncode = WebUtility.UrlEncode
 
-    /// Adds common parameters to a URL.
-    let buildUrl (p: DeviantArtCommonParams) (url: string) =
-        let expand = seq {
-            if p.Expand.HasFlag(DeviantArtObjectExpansion.UserDetails) then
-                yield sprintf "user.details"
-            if p.Expand.HasFlag(DeviantArtObjectExpansion.UserGeo) then
-                yield sprintf "user.geo"
-            if p.Expand.HasFlag(DeviantArtObjectExpansion.UserProfile) then
-                yield sprintf "user.profile"
-            if p.Expand.HasFlag(DeviantArtObjectExpansion.UserStats) then
-                yield sprintf "user.stats"
-            if p.Expand.HasFlag(DeviantArtObjectExpansion.UserWatch) then
-                yield sprintf "user.watch"
-        }
-        let query = seq {
-            yield sprintf "mature_content=%b" p.MatureContent
-            if p.Expand <> DeviantArtObjectExpansion.None then
-                yield expand |> String.concat "," |> sprintf "expand=%s"
-        }
-        String.concat "" (seq {
-            yield url
-            if not (url.Contains("?")) then
-                yield "?"
-            for q in query do
-               yield "&"
-               yield q
-        })
-
     /// Creates a DeviantArtRequest object, given a token object, common parameters, and a URL.
-    let createRequest (token: IDeviantArtAccessToken) (p: DeviantArtCommonParams) (url: string) =
-        new DeviantArtRequest(token, buildUrl p url)
+    let createRequest (token: IDeviantArtAccessToken) (url: string) =
+        new DeviantArtRequest(token, url)
 
     /// Executes a DeviantArtRequest and gets the response body.
     let asyncRead (req: DeviantArtRequest) = req.AsyncReadJson()

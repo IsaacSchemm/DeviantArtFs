@@ -34,12 +34,13 @@ module Popular =
             | PopularTimeRange.AllTime -> yield "timerange=alltime"
             | _ -> ()
             yield! QueryFor.paging paging 120
+            yield! QueryFor.commonParams common
         }
         let req =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/popular?%s"
-            |> Dafs.createRequest token common
+            |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
         return DeviantArtBrowsePagedResult.Parse json
     }

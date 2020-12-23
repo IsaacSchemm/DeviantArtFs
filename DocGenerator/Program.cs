@@ -41,7 +41,7 @@ Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#. Met
 ""long"" indicates a 64-bit integer, and a question mark (?) following a type name indicates a Nullable<T>, as in C#. ""T list"" indicates an FSharpList<T>, as in F#.
 ");
 
-                var a = Assembly.GetAssembly(typeof(DeviantArtFs.Api.Browse.CategoryTree));
+                var a = Assembly.GetAssembly(typeof(DeviantArtFs.Api.Browse.DailyDeviations));
                 foreach (var t in a.GetTypes().OrderBy(x => x.FullName))
                 {
                     if (t.Name.Contains("@")) continue;

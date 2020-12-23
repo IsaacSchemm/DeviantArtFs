@@ -11,7 +11,7 @@ module CreateGalleryFolder =
             yield sprintf "folder=%s" (Dafs.urlEncode folder)
         }
 
-        let req = Dafs.createRequest token DeviantArtCommonParams.Default "https://www.deviantart.com/api/v1/oauth2/gallery/folders/create"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/gallery/folders/create"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 

@@ -15,7 +15,7 @@ module Contents =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d/contents?%s" stackid
-            |> Dafs.createRequest token DeviantArtCommonParams.Default
+            |> Dafs.createRequest token
 
         let! json = Dafs.asyncRead req
         return DeviantArtPagedResult<StashMetadata>.Parse json

@@ -15,7 +15,7 @@ module FeedHome =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/feed/home?%s"
-            |> Dafs.createRequest token DeviantArtCommonParams.Default
+            |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
         return DeviantArtFeedCursorResult.Parse json
     }

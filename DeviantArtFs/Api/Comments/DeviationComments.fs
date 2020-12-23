@@ -22,7 +22,7 @@ module DeviationComments =
             query
             |> String.concat "&"
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/comments/deviation/%O?%s" req.Deviationid
-            |> Dafs.createRequest token DeviantArtCommonParams.Default
+            |> Dafs.createRequest token
         let! json = Dafs.asyncRead req
         return json |> DeviantArtCommentPagedResult.Parse
     }
