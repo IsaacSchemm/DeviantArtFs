@@ -9,7 +9,7 @@ type DeltaRequest() =
 module Delta =
     open FSharp.Control
 
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: DeltaRequest) = async {
+    let AsyncExecute token paging (req: DeltaRequest) = async {
         let query = seq {
             match Option.ofObj req.Cursor with
             | Some s -> yield sprintf "cursor=%s" (Dafs.urlEncode s)

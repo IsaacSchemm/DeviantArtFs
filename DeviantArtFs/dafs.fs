@@ -42,9 +42,8 @@ module internal Dafs =
     let asyncRead (req: DeviantArtRequest) = req.AsyncReadJson()
     
     /// Converts a paged function with offset and limit parameters to one that requests the maximum page size each time.
-    let getMax (f: IDeviantArtPagingParams -> 'a) (offset: int) =
-        new DeviantArtPagingParams(Offset = offset, Limit = Nullable Int32.MaxValue)
-        |> f
+    let getMax (f: DeviantArtPagingParams -> 'a) (offset: int) =
+        f ({ Offset = offset; Limit = Nullable Int32.MaxValue })
 
     /// Converts a paged function that takes a "cursor" as one of its parameters into an AsyncSeq.
     let toAsyncSeq (initial_cursor: 'cursor) (req: 'req) (f: 'cursor -> 'req -> Async<'b> when 'b :> IResultPage<'cursor, 'item>) = asyncSeq {

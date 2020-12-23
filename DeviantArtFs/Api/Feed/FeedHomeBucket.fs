@@ -6,7 +6,7 @@ module FeedHomeBucket =
     open FSharp.Control
     open System
 
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (bucketid: Guid) = async {
+    let AsyncExecute token paging (bucketid: Guid) = async {
         let query = seq {
             yield! QueryFor.paging paging 50
         }

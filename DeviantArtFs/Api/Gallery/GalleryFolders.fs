@@ -10,7 +10,7 @@ type GalleryFoldersRequest() =
 module GalleryFolders =
     open FSharp.Control
 
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: GalleryFoldersRequest) = async {
+    let AsyncExecute token paging (req: GalleryFoldersRequest) = async {
         let query = seq {
             match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (Dafs.urlEncode s)

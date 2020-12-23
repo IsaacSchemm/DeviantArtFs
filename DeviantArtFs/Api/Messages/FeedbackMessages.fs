@@ -15,7 +15,7 @@ type FeedbackMessagesRequest(``type``: FeedbackMessageType) =
     member val Stack = true with get, set
 
 module FeedbackMessages =
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: FeedbackMessagesRequest) = async {
+    let AsyncExecute token paging (req: FeedbackMessagesRequest) = async {
         let query = seq {
             match req.Type with
             | FeedbackMessageType.Comments -> yield "type=comments"

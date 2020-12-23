@@ -36,7 +36,7 @@ let get_token =
             File.WriteAllText(token_file, form.AccessToken)
             form.AccessToken
 
-let page offset limit = new DeviantArtPagingParams(Offset = offset, Limit = Nullable limit)
+let page offset limit = { Offset = offset; Limit = Nullable limit }
 
 let sandbox token_string = async {
     let token = create_token_obj token_string

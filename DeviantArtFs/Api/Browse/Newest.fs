@@ -8,7 +8,7 @@ type NewestRequest() =
     member val Q = null with get, set
 
 module Newest =
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: NewestRequest) = async {
+    let AsyncExecute token paging (req: NewestRequest) = async {
         let query = seq {
             match Option.ofObj req.CategoryPath with
             | Some s -> yield sprintf "category_path=%s" (Dafs.urlEncode s)

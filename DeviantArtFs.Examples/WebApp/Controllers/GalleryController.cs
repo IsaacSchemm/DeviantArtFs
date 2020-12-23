@@ -16,7 +16,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             var token = await GetAccessTokenAsync();
             if (token == null) return Forbid();
 
-            var paging = new DeviantArtPagingParams { Offset = offset, Limit = limit };
+            var paging = new DeviantArtPagingParams(offset, limit);
             DeviantArtPagedResult<Deviation> resp;
             if (folderId is Guid f) {
                 var r = await Api.Gallery.GalleryById.ExecuteAsync(

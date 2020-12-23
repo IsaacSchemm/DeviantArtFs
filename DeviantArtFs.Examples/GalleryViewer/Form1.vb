@@ -56,7 +56,7 @@ Public Class Form1
         TableLayoutPanel1.Controls.Clear()
         PictureBox1.ImageLocation = Nothing
 
-        Dim paging = New DeviantArtPagingParams With {.Offset = NextOffset, .Limit = TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount}
+        Dim paging = New DeviantArtPagingParams(NextOffset, TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount)
         Dim request As New Api.Gallery.GalleryAllViewRequest With {.Username = CurrentUsername}
         Dim page = Await Api.Gallery.GalleryAllView.ExecuteAsync(Token, paging, request)
 

@@ -5,7 +5,7 @@ open DeviantArtFs
 open FSharp.Control
 
 module GetNotes =
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (folderid: Guid option) = async {
+    let AsyncExecute token paging (folderid: Guid option) = async {
         let query = seq {
             match folderid with
             | Some g -> yield sprintf "folderid=%O" g

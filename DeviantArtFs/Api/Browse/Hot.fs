@@ -7,7 +7,7 @@ type HotRequest() =
     member val CategoryPath = null with get, set
 
 module Hot =
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: HotRequest) = async {
+    let AsyncExecute token paging (req: HotRequest) = async {
         let query = seq {
             match Option.ofObj req.CategoryPath with
             | Some s -> yield sprintf "category_path=%s" (Dafs.urlEncode s)

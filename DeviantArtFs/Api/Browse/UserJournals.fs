@@ -8,7 +8,7 @@ type UserJournalsRequest(username: string) =
     member val Featured = true with get, set
 
 module UserJournals =
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: UserJournalsRequest) = async {
+    let AsyncExecute token paging (req: UserJournalsRequest) = async {
         let query = seq {
             yield sprintf "username=%s" (Dafs.urlEncode req.Username)
             yield sprintf "featured=%b" req.Featured

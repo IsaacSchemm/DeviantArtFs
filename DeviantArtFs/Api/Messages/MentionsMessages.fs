@@ -9,7 +9,7 @@ type MentionsMessagesRequest() =
     member val Stack = true with get, set
 
 module MentionsMessages =
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: MentionsMessagesRequest) = async {
+    let AsyncExecute token paging (req: MentionsMessagesRequest) = async {
         let query = seq {
             if req.Folderid.HasValue then
                 yield sprintf "folderid=%O" req.Folderid

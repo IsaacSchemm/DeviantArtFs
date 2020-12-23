@@ -10,7 +10,7 @@ type CollectionByIdRequest(folderid: Guid) =
 module CollectionById =
     open FSharp.Control
 
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: CollectionByIdRequest) = async {
+    let AsyncExecute token paging (req: CollectionByIdRequest) = async {
         let query = seq {
             match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (Dafs.urlEncode s)

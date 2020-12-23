@@ -9,7 +9,7 @@ type MoreLikeThisRequest(seed: Guid) =
     member val Category = null with get, set
 
 module MoreLikeThis =
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: MoreLikeThisRequest) = async {
+    let AsyncExecute token paging (req: MoreLikeThisRequest) = async {
         let query = seq {
             yield sprintf "seed=%O" req.Seed
             match Option.ofObj req.Category with

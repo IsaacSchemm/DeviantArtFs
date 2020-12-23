@@ -10,7 +10,7 @@ type StatusCommentsRequest(statusid: Guid) =
     member val Maxdepth = 0 with get, set
 
 module StatusComments =
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (req: StatusCommentsRequest) = async {
+    let AsyncExecute token paging (req: StatusCommentsRequest) = async {
         let query = seq {
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s

@@ -9,7 +9,7 @@ module WhoFaved =
 
     let internal epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)
 
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (deviationid: Guid) = async {
+    let AsyncExecute token paging (deviationid: Guid) = async {
         let query = seq {
             yield sprintf "deviationid=%O" deviationid
             yield! QueryFor.paging paging 50

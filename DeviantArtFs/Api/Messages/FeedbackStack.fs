@@ -4,7 +4,7 @@ open DeviantArtFs
 open FSharp.Control
 
 module FeedbackStack =
-    let AsyncExecute token (paging: IDeviantArtPagingParams) (stackid: string) = async {
+    let AsyncExecute token paging (stackid: string) = async {
         let query = seq {
             yield! QueryFor.paging paging 50
         }
