@@ -1,38 +1,30 @@
 ﻿namespace DeviantArtFs.Api.Deviation
 
 open DeviantArtFs
-open FSharp.Data
 open System
+open FSharp.Control
 
 module WhoFaved =
-    open FSharp.Control
-
-    let internal epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)
-
-    let AsyncExecute token paging (deviationid: Guid) = async {
-        let query = seq {
+    let AsyncExecute token common paging (deviationid: Guid) =
+        seq {
             yield sprintf "deviationid=%O" deviationid
             yield! QueryFor.paging paging 50
+            yield! QueryFor.commonParams common
         }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/whofaved?%s"
-            |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return json |> DeviantArtPagedResult<DeviantArtWhoFavedUser>.Parse
-    }
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/deviation/whofaved"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtWhoFavedUser>>
 
-    let ToAsyncSeq token offset req =
-        Dafs.getMax (AsyncExecute token)
-        |> Dafs.toAsyncSeq offset req
+    let ToAsyncSeq token common offset deviationid =
+        (fun p -> AsyncExecute token common p deviationid)
+        |> Dafs.toAsyncSeq2 offset
 
-    let ToArrayAsync token offset limit deviationid =
-        ToAsyncSeq token offset deviationid
+    let ToArrayAsync token common offset limit deviationid =
+        ToAsyncSeq token common offset deviationid
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging req =
-        AsyncExecute token paging req
+    let ExecuteAsync token common paging req =
+        AsyncExecute token common paging req
         |> Async.StartAsTask

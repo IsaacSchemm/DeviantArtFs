@@ -3,10 +3,13 @@
 open DeviantArtFs
 
 module Privacy =
-    let AsyncExecute token = async {
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/data/privacy"
-        let! json = Dafs.asyncRead req
-        return DeviantArtTextOnlyResponse.ParseString json
-    }
+    let AsyncExecute token =
+        Seq.empty
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/data/privacy"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtTextOnlyResponse>
+        |> Dafs.extractText
 
-    let ExecuteAsync token = AsyncExecute token |> Async.StartAsTask
+    let ExecuteAsync token =
+        AsyncExecute token
+        |> Async.StartAsTask

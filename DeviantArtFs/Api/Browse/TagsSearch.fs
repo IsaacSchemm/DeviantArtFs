@@ -15,7 +15,7 @@ module TagsSearch =
         |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/browse/tags/search"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<TagsElement>>
-        |> Dafs.extractResults
+        |> Dafs.extractList
         |> AsyncThen.mapSeq (fun t -> t.tag_name)
 
     let ExecuteAsync token common tag_name =

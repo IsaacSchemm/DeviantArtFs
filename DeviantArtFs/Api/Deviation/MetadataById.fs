@@ -9,22 +9,21 @@ type MetadataRequest(deviationids: seq<Guid>) =
     member val ExtCollection = false with get, set
 
 module MetadataById =
-    let AsyncExecute token (req: MetadataRequest) = async {
-        let query = seq {
+    let AsyncExecute token common (req: MetadataRequest) =
+        seq {
             yield! QueryFor.extParams req.ExtParams
             yield sprintf "ext_collection=%b" req.ExtCollection
             yield req.Deviationids
                 |> Seq.map (fun o -> o.ToString())
                 |> String.concat ","
                 |> sprintf "deviationids[]=%s"
+            yield! QueryFor.commonParams common
         }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/metadata?%s"
-            |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return DeviationMetadataResponse.ParseList json
-    }
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/deviation/metadata"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviationMetadataResponse>
+        |> Dafs.extractList
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token common req =
+        AsyncExecute token common req
+        |> Async.StartAsTask

@@ -74,7 +74,7 @@ Public Class Form1
     Private Async Sub ThumbnailClick(deviation As Deviation)
         PictureBox1.ImageLocation = Nothing
         Try
-            Dim download = Await Api.Deviation.Download.ExecuteAsync(Token, deviation.deviationid)
+            Dim download = Await Api.Deviation.Download.ExecuteAsync(Token, DeviantArtCommonParams.Default, deviation.deviationid)
             PictureBox1.ImageLocation = download.src
         Catch ex As DeviantArtException
             If deviation.content.OrNull() IsNot Nothing Then
@@ -87,7 +87,7 @@ Public Class Form1
 
         WebBrowser1.Navigate("about:blank")
         Dim req = New Api.Deviation.MetadataRequest({deviation.deviationid})
-        Dim metadata = Await Api.Deviation.MetadataById.ExecuteAsync(Token, req)
+        Dim metadata = Await Api.Deviation.MetadataById.ExecuteAsync(Token, DeviantArtCommonParams.Default, req)
         Dim s = metadata.Single()
         WebBrowser1.Document.Write(s.description)
     End Sub

@@ -36,9 +36,14 @@ module internal Dafs =
         |> AsyncThen.map ignore
 
     /// Takes an async workflow that returns a DeviantArtListOnlyResponse, and creates another async workflow that returns the list it contains.
-    let extractResults<'a> (workflow: Async<DeviantArtListOnlyResponse<'a>>) =
+    let extractList (workflow: Async<'a> when 'a :> IDeviantArtListOnlyResponse<'b>) =
         workflow
-        |> AsyncThen.map (fun x -> x.results)
+        |> AsyncThen.map (fun x -> x.List)
+
+    /// Takes an async workflow that returns a DeviantArtTextOnlyResponse, and creates another async workflow that returns the text it contains.
+    let extractText<'a> (workflow: Async<DeviantArtTextOnlyResponse>) =
+        workflow
+        |> AsyncThen.map (fun x -> x.text)
 
     /// Converts a paged function with offset and limit parameters to one that requests the maximum page size each time.
     let getMax (f: DeviantArtPagingParams -> 'a) (offset: int) =

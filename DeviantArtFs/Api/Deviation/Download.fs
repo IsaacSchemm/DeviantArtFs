@@ -4,10 +4,14 @@ open DeviantArtFs
 open System
 
 module Download =
-    let AsyncExecute token (deviationid: Guid) = async {
-        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/download/%O" deviationid |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return DeviationDownload.Parse json
-    }
+    let AsyncExecute token common (deviationid: Guid) =
+        seq {
+            yield! QueryFor.commonParams common
+        }
+        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/download/%O" deviationid)
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviationDownload>
 
-    let ExecuteAsync token deviationid = AsyncExecute token deviationid |> Async.StartAsTask
+    let ExecuteAsync token common deviationid =
+        AsyncExecute token common deviationid
+        |> Async.StartAsTask
