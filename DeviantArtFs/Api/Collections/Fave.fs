@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Api.Collections
 
 open System
-open System.IO
 open DeviantArtFs
 
 type FaveResponse = {
@@ -10,15 +9,14 @@ type FaveResponse = {
 }
 
 module Fave =
-    open FSharp.Json
-
-    let AsyncExecute token (deviationid: Guid) (folderids: seq<Guid>) = async {
+    let AsyncExecute token common (deviationid: Guid) (folderids: seq<Guid>) = async {
         let query = seq {
             yield sprintf "deviationid=%O" deviationid
             let mutable index = 0
             for f in folderids do
                 yield sprintf "folderid[%d]=%O" index f
                 index <- index + 1
+            yield! QueryFor.commonParams common
         }
 
         let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/collections/fave"
@@ -27,9 +25,11 @@ module Fave =
 
         req.RequestBodyText <- String.concat "&" query
 
-        let! json = Dafs.asyncRead req
-        let o = Json.deserialize<FaveResponse> json
-        return o.favourites
+        return! req
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<FaveResponse>
     }
 
-    let ExecuteAsync token deviationid folderids = AsyncExecute token deviationid folderids |> Async.StartAsTask
+    let ExecuteAsync token common deviationid folderids =
+        AsyncExecute token common deviationid folderids
+        |> Async.StartAsTask

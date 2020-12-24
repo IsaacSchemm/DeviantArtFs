@@ -1,12 +1,12 @@
 ﻿namespace DeviantArtFs.Api.Collections
 
-open System.IO
 open DeviantArtFs
 
 module CreateCollectionFolder =
-    let AsyncExecute token (folder: string) = async {
+    let AsyncExecute token common (folder: string) = async {
         let query = seq {
             yield sprintf "folder=%s" (Dafs.urlEncode folder)
+            yield! QueryFor.commonParams common
         }
 
         let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/collections/folders/create"
@@ -15,10 +15,11 @@ module CreateCollectionFolder =
 
         req.RequestBodyText <- String.concat "&" query
 
-        let! json = Dafs.asyncRead req
-        return DeviantArtCollectionFolder.Parse json
+        return! req
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtCollectionFolder>
     }
 
-    let ExecuteAsync token folder =
-        AsyncExecute token folder
+    let ExecuteAsync token common folder =
+        AsyncExecute token common folder
         |> Async.StartAsTask

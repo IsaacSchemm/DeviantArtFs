@@ -29,7 +29,12 @@ module internal Dafs =
     let thenParse<'a> workflow =
         workflow
         |> AsyncThen.map parse<'a>
-        
+
+    /// Takes an async workflow, and waits for it but ignores its result.
+    let thenIgnore (workflow: Async<'a>) =
+        workflow
+        |> AsyncThen.map ignore
+
     /// Takes an async workflow that returns a DeviantArtListOnlyResponse, and creates another async workflow that returns the list it contains.
     let extractResults<'a> (workflow: Async<DeviantArtListOnlyResponse<'a>>) =
         workflow

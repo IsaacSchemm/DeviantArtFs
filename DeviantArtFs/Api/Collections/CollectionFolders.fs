@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs.Api.Collections
 
 open DeviantArtFs
+open FSharp.Control
 
 type CollectionFoldersRequest() =
     member val Username = null with get, set
@@ -8,36 +9,30 @@ type CollectionFoldersRequest() =
     member val ExtPreload = false with get, set
 
 module CollectionFolders =
-    open FSharp.Control
-
-    let AsyncExecute token paging (ps: CollectionFoldersRequest) = async {
-        let query = seq {
-            match Option.ofObj ps.Username with
+    let AsyncExecute token common paging (req: CollectionFoldersRequest) =
+        seq {
+            match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (Dafs.urlEncode s)
             | None -> ()
-            yield sprintf "calculate_size=%b" ps.CalculateSize
-            yield sprintf "ext_preload=%b" ps.ExtPreload
+            yield sprintf "calculate_size=%b" req.CalculateSize
+            yield sprintf "ext_preload=%b" req.ExtPreload
             yield! QueryFor.paging paging 50
+            yield! QueryFor.commonParams common
         }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/collections/folders?%s"
-            |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return DeviantArtPagedResult<DeviantArtCollectionFolder>.Parse json
-    }
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/collections/folders"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtCollectionFolder>>
 
-    let ToAsyncSeq token offset req =
-        Dafs.getMax (AsyncExecute token)
-        |> Dafs.toAsyncSeq offset req
+    let ToAsyncSeq token common offset req =
+        (fun p -> AsyncExecute token common p req)
+        |> Dafs.toAsyncSeq2 offset
 
-    let ToArrayAsync token offset limit req =
-        ToAsyncSeq token offset req
+    let ToArrayAsync token common offset limit req =
+        ToAsyncSeq token common offset req
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging req =
-        AsyncExecute token paging req
+    let ExecuteAsync token common paging req =
+        AsyncExecute token common paging req
         |> Async.StartAsTask

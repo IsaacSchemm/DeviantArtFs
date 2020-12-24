@@ -1,14 +1,19 @@
 ﻿namespace DeviantArtFs.Api.Collections
 
 open System
-open System.IO
 open DeviantArtFs
 
-module RemoveCollectionFolder =
-    let AsyncExecute token (folderid: Guid) = async {
-        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/collections/folders/remove/%A" folderid |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        ignore json
-    }
+type RemoveCollectionFolderResponse = {
+    success: bool
+}
 
-    let ExecuteAsync token folderid = AsyncExecute token folderid |> Async.StartAsTask :> System.Threading.Tasks.Task
+module RemoveCollectionFolder =
+    let AsyncExecute token (folderid: Guid) =
+        Seq.empty
+        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/collections/folders/remove/%A" folderid)
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<RemoveCollectionFolderResponse>
+
+    let ExecuteAsync token folderid =
+        AsyncExecute token folderid
+        |> Async.StartAsTask
