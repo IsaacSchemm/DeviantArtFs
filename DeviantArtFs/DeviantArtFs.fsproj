@@ -116,12 +116,6 @@
     <Compile Include="Api\Deviation\EmbeddedContent.fs" />
     <Compile Include="Api\Deviation\MetadataById.fs" />
     <Compile Include="Api\Deviation\WhoFaved.fs" />
-    <Compile Include="Api\Feed\FeedHome.fs" />
-    <Compile Include="Api\Feed\FeedHomeBucket.fs" />
-    <Compile Include="Api\Feed\FeedNotifications.fs" />
-    <Compile Include="Api\Feed\ProfileFeed.fs" />
-    <Compile Include="Api\Feed\FeedSettings.fs" />
-    <Compile Include="Api\Feed\FeedSettingsUpdate.fs" />
     <Compile Include="Api\Gallery\GalleryAllView.fs" />
     <Compile Include="Api\Gallery\GalleryById.fs" />
     <Compile Include="Api\Gallery\GalleryFolders.fs" />

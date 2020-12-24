@@ -123,6 +123,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
 
             var deviations = await Api.Gallery.GalleryAllView.ExecuteAsync(
                 token,
+                DeviantArtCommonParams.Default,
                 Page(0, 1),
                 new Api.Gallery.GalleryAllViewRequest { Username = username });
             var deviation = deviations.results.Where(x => !x.is_deleted).FirstOrDefault();
@@ -137,6 +138,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
 
                 var metadata = await Api.Deviation.MetadataById.ExecuteAsync(
                     token,
+                    DeviantArtCommonParams.Default,
                     new Api.Deviation.MetadataRequest(new[] { deviation.deviationid }));
                 foreach (var m in metadata)
                 {
@@ -145,6 +147,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
 
                 var favorites = await Api.Deviation.WhoFaved.ToArrayAsync(
                     token,
+                    DeviantArtCommonParams.Default,
                     0,
                     int.MaxValue,
                     deviation.deviationid);
@@ -188,6 +191,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
 
                 var metadata = await Api.Deviation.MetadataById.ExecuteAsync(
                     token,
+                    DeviantArtCommonParams.Default,
                     new Api.Deviation.MetadataRequest(new[] { journal.deviationid }));
                 foreach (var m in metadata)
                 {
@@ -196,6 +200,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
 
                 var favorites = await Api.Deviation.WhoFaved.ToArrayAsync(
                     token,
+                    DeviantArtCommonParams.Default,
                     0,
                     int.MaxValue,
                     journal.deviationid);

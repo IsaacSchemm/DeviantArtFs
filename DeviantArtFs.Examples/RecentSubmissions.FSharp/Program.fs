@@ -64,7 +64,7 @@ let sandbox token_string = async {
 
     let! deviations =
         DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username)
-        |> DeviantArtFs.Api.Gallery.GalleryAllView.AsyncExecute token (page 0 1)
+        |> DeviantArtFs.Api.Gallery.GalleryAllView.AsyncExecute token DeviantArtCommonParams.Default (page 0 1)
     let deviation = deviations.results |> Seq.where (fun x -> not x.is_deleted) |> Seq.tryHead
     match deviation with
     | Some s -> 
@@ -75,12 +75,12 @@ let sandbox token_string = async {
 
         let! metadata =
             new DeviantArtFs.Api.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = DeviantArtExtParams.All)
-            |> DeviantArtFs.Api.Deviation.MetadataById.AsyncExecute token
+            |> DeviantArtFs.Api.Deviation.MetadataById.AsyncExecute token DeviantArtCommonParams.Default
         for m in metadata do
             m.tags |> Seq.map (fun t -> sprintf "#%s" t.tag_name) |> String.concat " " |> printfn "%s"
 
         let! favorites =
-            DeviantArtFs.Api.Deviation.WhoFaved.ToAsyncSeq token 0 s.deviationid
+            DeviantArtFs.Api.Deviation.WhoFaved.ToAsyncSeq token DeviantArtCommonParams.Default 0 s.deviationid
             |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) favorites then
             printfn "Favorited by:"
@@ -108,7 +108,7 @@ let sandbox token_string = async {
         printfn "Most recent (non-deleted) journal: %s (%A)" (s.title |> Option.defaultValue "???") s.published_time
 
         let! favorites =
-            DeviantArtFs.Api.Deviation.WhoFaved.ToAsyncSeq token 0 s.deviationid
+            DeviantArtFs.Api.Deviation.WhoFaved.ToAsyncSeq token DeviantArtCommonParams.Default 0 s.deviationid
             |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) favorites then
             printfn "Favorited by:"

@@ -1,9 +1,6 @@
 ﻿namespace DeviantArtFs.Api.Gallery
 
-open System
-open System.IO
 open DeviantArtFs
-open FSharp.Data
 
 module CreateGalleryFolder =
     let AsyncExecute token (folder: string) = async {
@@ -17,8 +14,9 @@ module CreateGalleryFolder =
 
         req.RequestBodyText <- String.concat "&" query
 
-        let! json = Dafs.asyncRead req
-        return DeviantArtGalleryFolder.Parse json
+        return! req
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtCollectionFolder>
     }
 
     let ExecuteAsync token folder =

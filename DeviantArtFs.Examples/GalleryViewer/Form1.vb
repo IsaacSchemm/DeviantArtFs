@@ -38,7 +38,7 @@ Public Class Form1
             Dim user = Await Api.User.Whoami.ExecuteAsync(Token)
             ToolStripStatusLabel1.Text = $"Logged in as {user.username}"
 
-            CurrentUsername = TextBox1.Text
+            CurrentUsername = user.username
             NextOffset = 0
             Await LoadNextPage()
         End If
@@ -58,7 +58,7 @@ Public Class Form1
 
         Dim paging = New DeviantArtPagingParams(NextOffset, TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount)
         Dim request As New Api.Gallery.GalleryAllViewRequest With {.Username = CurrentUsername}
-        Dim page = Await Api.Gallery.GalleryAllView.ExecuteAsync(Token, paging, request)
+        Dim page = Await Api.Gallery.GalleryAllView.ExecuteAsync(Token, DeviantArtCommonParams.Default, paging, request)
 
         NextOffset = page.next_offset.OrNull()
         For Each r In page.results
