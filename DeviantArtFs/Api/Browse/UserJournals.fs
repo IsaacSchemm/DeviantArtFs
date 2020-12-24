@@ -8,21 +8,16 @@ type UserJournalsRequest(username: string) =
     member val Featured = true with get, set
 
 module UserJournals =
-    let AsyncExecute token common paging (req: UserJournalsRequest) = async {
-        let query = seq {
+    let AsyncExecute token common paging (req: UserJournalsRequest) =
+        seq {
             yield sprintf "username=%s" (Dafs.urlEncode req.Username)
             yield sprintf "featured=%b" req.Featured
             yield! QueryFor.paging paging 50
             yield! QueryFor.commonParams common
         }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/user/journals?%s"
-            |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return DeviantArtPagedResult<Deviation>.Parse json
-    }
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/browse/user/journals"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtPagedResult<Deviation>>
 
     let ToAsyncSeq token common offset req =
         (fun p -> AsyncExecute token common p req)

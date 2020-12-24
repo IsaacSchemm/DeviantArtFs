@@ -17,8 +17,8 @@ type PopularRequest() =
     member val Timerange = PopularTimeRange.TwentyFourHours with get, set
 
 module Popular =
-    let AsyncExecute token common paging (req: PopularRequest) = async {
-        let query = seq {
+    let AsyncExecute token common paging (req: PopularRequest) =
+        seq {
             match Option.ofObj req.CategoryPath with
             | Some s -> yield sprintf "category_path=%s" (Dafs.urlEncode s)
             | None -> ()
@@ -36,14 +36,9 @@ module Popular =
             yield! QueryFor.paging paging 120
             yield! QueryFor.commonParams common
         }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/popular?%s"
-            |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return DeviantArtBrowsePagedResult.Parse json
-    }
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/browse/popular"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtBrowsePagedResult>
 
     let ToAsyncSeq token common offset req =
         (fun p -> AsyncExecute token common p req)

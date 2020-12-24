@@ -4,20 +4,15 @@ open DeviantArtFs
 open FSharp.Control
 
 module Tags =
-    let AsyncExecute token common paging (tag: string) = async {
-        let query = seq {
+    let AsyncExecute token common paging (tag: string) =
+        seq {
             yield sprintf "tag=%s" (Dafs.urlEncode tag)
             yield! QueryFor.paging paging 50
             yield! QueryFor.commonParams common
         }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/tags?%s"
-            |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return DeviantArtBrowsePagedResult.Parse json
-    }
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/browse/tags"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtBrowsePagedResult>
 
     let ToAsyncSeq token common offset tag =
         Dafs.getMax (AsyncExecute token common)

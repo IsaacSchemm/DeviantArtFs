@@ -4,17 +4,12 @@ open System
 open DeviantArtFs
 
 module MoreLikeThisPreview =
-    let AsyncExecute token (seed: Guid) = async {
-        let query = seq {
+    let AsyncExecute token (seed: Guid) =
+        seq {
             yield sprintf "seed=%O" seed
         }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/morelikethis/preview?%s"
-            |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return DeviantArtMoreLikeThisPreviewResult.Parse json
-    }
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/browse/morelikethis/preview"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtMoreLikeThisPreviewResult>
 
     let ExecuteAsync token seed = AsyncExecute token seed |> Async.StartAsTask

@@ -4,18 +4,14 @@ open DeviantArtFs
 open FSharp.Control
 
 module TopTopics =
-    let AsyncExecute token common = async {
-        let query = seq {
+    let AsyncExecute token common =
+        seq {
             yield! QueryFor.commonParams common
         }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/toptopics?%s"
-            |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return DeviantArtListOnlyResponse<DeviantArtTopic>.ParseList json
-    }
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/browse/toptopics"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtListOnlyResponse<DeviantArtTopic>>
+        |> Dafs.extractResults
 
     let ExecuteAsync token common =
         AsyncExecute token common

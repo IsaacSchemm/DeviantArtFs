@@ -7,22 +7,17 @@ type RecommendedRequest() =
     member val Q = null with get, set
 
 module Recommended =
-   let AsyncExecute token common paging (req: RecommendedRequest) = async {
-       let query = seq {
+   let AsyncExecute token common paging (req: RecommendedRequest) =
+       seq {
            match Option.ofObj req.Q with
            | Some s -> yield sprintf "q=%s" (Dafs.urlEncode s)
            | None -> ()
            yield! QueryFor.paging paging 50
            yield! QueryFor.commonParams common
        }
-       let req =
-           query
-           |> String.concat "&"
-           |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/recommended?%s"
-           |> Dafs.createRequest token
-       let! json = Dafs.asyncRead req
-       return DeviantArtRecommendedPagedResult.Parse json
-   }
+       |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/browse/recommended"
+       |> Dafs.asyncRead
+       |> Dafs.thenParse<DeviantArtRecommendedPagedResult>
 
    let ToAsyncSeq token common offset req =
        (fun p -> AsyncExecute token common p req)
