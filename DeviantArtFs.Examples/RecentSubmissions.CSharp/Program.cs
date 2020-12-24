@@ -93,9 +93,9 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
             var watched_posts = await Api.Browse.PostsByDeviantsYouWatch.ToArrayAsync(token, DeviantArtCommonParams.Default, 0, 50);
             Console.WriteLine("First 50 status or journal posts by deviants you watch:");
 
-            var watched_statuses = watched_posts.SelectMany(x => x.GetStatusObjects());
+            var watched_statuses = watched_posts.Select(x => x.status.OrNull()).Where(x => x != null);
             Console.WriteLine($"{watched_statuses.Count()} statuses");
-            var watched_journals = watched_posts.SelectMany(x => x.GetJournalObjects());
+            var watched_journals = watched_posts.Select(x => x.status.OrNull()).Where(x => x != null);
             Console.WriteLine($"{watched_journals.Count()} journals");
 
             Console.WriteLine();
