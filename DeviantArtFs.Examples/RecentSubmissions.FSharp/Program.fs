@@ -89,7 +89,7 @@ let sandbox token_string = async {
 
         let! comments =
             new DeviantArtFs.Api.Comments.DeviationCommentsRequest(s.deviationid, Maxdepth = 5)
-            |> DeviantArtFs.Api.Comments.DeviationComments.ToAsyncSeq token 0
+            |> DeviantArtFs.Api.Comments.DeviationComments.ToAsyncSeq token DeviantArtCommonParams.Default 0
             |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) comments then
             printfn "Comments:"
@@ -101,7 +101,7 @@ let sandbox token_string = async {
 
     let! journals =
         DeviantArtFs.Api.Browse.UserJournalsRequest(username, Featured = false)
-        |> DeviantArtFs.Api.Browse.UserJournals.AsyncExecute token (page 0 1)
+        |> DeviantArtFs.Api.Browse.UserJournals.AsyncExecute token DeviantArtCommonParams.Default (page 0 1)
     let journal = journals.results |> Seq.where (fun x -> not x.is_deleted) |> Seq.tryHead
     match journal with
     | Some s -> 
@@ -117,7 +117,7 @@ let sandbox token_string = async {
 
         let! comments =
             new DeviantArtFs.Api.Comments.DeviationCommentsRequest(s.deviationid, Maxdepth = 5)
-            |> DeviantArtFs.Api.Comments.DeviationComments.ToAsyncSeq token 0
+            |> DeviantArtFs.Api.Comments.DeviationComments.ToAsyncSeq token DeviantArtCommonParams.Default 0
             |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) comments then
             printfn "Comments:"
@@ -135,7 +135,7 @@ let sandbox token_string = async {
 
         let! comments =
             new DeviantArtFs.Api.Comments.StatusCommentsRequest(Option.get s.statusid, Maxdepth = 5)
-            |> DeviantArtFs.Api.Comments.StatusComments.ToAsyncSeq token 0
+            |> DeviantArtFs.Api.Comments.StatusComments.ToAsyncSeq token DeviantArtCommonParams.Default 0
             |> AsyncSeq.toArrayAsync
         if (not << Seq.isEmpty) comments then
             printfn "Comments:"

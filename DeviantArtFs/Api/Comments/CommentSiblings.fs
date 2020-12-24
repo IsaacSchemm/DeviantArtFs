@@ -9,30 +9,26 @@ type CommentSiblingsRequest(commentid: Guid) =
     member val ExtItem = false with get, set
 
 module CommentSiblings =
-    let AsyncExecute token paging (req: CommentSiblingsRequest) = async {
-        let query = seq {
+    let AsyncExecute token common paging (req: CommentSiblingsRequest) =
+        seq {
             yield sprintf "ext_item=%b" req.ExtItem
             yield! QueryFor.paging paging 50
+            yield! QueryFor.commonParams common
         }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/comments/%O/siblings?%s" req.Commentid
-            |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return json |> DeviantArtCommentSiblingsPagedResult.Parse
-    }
+        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/%O/siblings" req.Commentid)
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtCommentSiblingsPagedResult>
 
-    let ToAsyncSeq token offset req =
-        Dafs.getMax (AsyncExecute token)
-        |> Dafs.toAsyncSeq offset req
+    let ToAsyncSeq token common offset req =
+        (fun p -> AsyncExecute token common p req)
+        |> Dafs.toAsyncSeq2 offset
 
-    let ToArrayAsync token offset limit req =
-        ToAsyncSeq token offset req
+    let ToArrayAsync token common offset limit req =
+        ToAsyncSeq token common offset req
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging req =
-        AsyncExecute token paging req
+    let ExecuteAsync token common paging req =
+        AsyncExecute token common paging req
         |> Async.StartAsTask

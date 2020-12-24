@@ -74,7 +74,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 }
             }
 
-            var topTopics = await Api.Browse.TopTopics.ExecuteAsync(token);
+            var topTopics = await Api.Browse.TopTopics.ExecuteAsync(token, DeviantArtCommonParams.Default);
             Console.WriteLine("Top topics:");
             foreach (var t in topTopics) {
                 Console.WriteLine("* " + t.name);
@@ -160,6 +160,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 var comments_req = new Api.Comments.DeviationCommentsRequest(deviation.deviationid) { Maxdepth = 5 };
                 var comments = await Api.Comments.DeviationComments.ToArrayAsync(
                     token,
+                    DeviantArtCommonParams.Default,
                     0,
                     int.MaxValue,
                     comments_req);
@@ -177,6 +178,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
 
             var journals = await Api.Browse.UserJournals.ExecuteAsync(
                 token,
+                DeviantArtCommonParams.Default,
                 Page(0, 1),
                 new Api.Browse.UserJournalsRequest(username) { Featured = false });
             var journal = journals.results.Where(x => !x.is_deleted).FirstOrDefault();
@@ -209,6 +211,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 var comments_req = new Api.Comments.DeviationCommentsRequest(journal.deviationid) { Maxdepth = 5 };
                 var comments = await Api.Comments.DeviationComments.ToArrayAsync(
                     token,
+                    DeviantArtCommonParams.Default,
                     0,
                     int.MaxValue,
                     comments_req);
@@ -236,6 +239,7 @@ namespace DeviantArtFs.Examples.RecentSubmissions.CSharp
                 var comments_req = new Api.Comments.StatusCommentsRequest(status.statusid.Value) { Maxdepth = 5 };
                 var comments = await Api.Comments.StatusComments.ToArrayAsync(
                     token,
+                    DeviantArtCommonParams.Default,
                     0,
                     int.MaxValue,
                     comments_req);
