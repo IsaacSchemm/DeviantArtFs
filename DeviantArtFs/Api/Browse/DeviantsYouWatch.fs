@@ -18,9 +18,11 @@ module DeviantsYouWatch =
         return DeviantArtPagedResult<Deviation>.Parse json
     }
 
+    let AsyncGetPage token common limit offset =
+        AsyncExecute token common { Offset = offset; Limit = limit }
+
     let ToAsyncSeq token common offset =
-        (fun p -> AsyncExecute token common p)
-        |> Dafs.toAsyncSeq2 offset
+        Dafs.toAsyncSeq3 offset (AsyncGetPage token common DeviantArtPagingParams.Max)
 
     let ToArrayAsync token common offset limit =
         ToAsyncSeq token common offset

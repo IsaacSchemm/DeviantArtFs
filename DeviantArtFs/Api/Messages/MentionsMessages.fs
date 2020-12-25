@@ -21,11 +21,11 @@ module MentionsMessages =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
 
-    let private AsyncGetPage token common req cursor =
-        AsyncExecute token common { Offset = cursor; Limit = Nullable Int32.MaxValue } req
+    let AsyncGetPage token common req limit offset =
+        AsyncExecute token common { Offset = offset; Limit = limit } req
 
     let ToAsyncSeq token common offset req =
-        Dafs.toAsyncSeq3 offset (AsyncGetPage token common req)
+        Dafs.toAsyncSeq3 offset (AsyncGetPage token common req DeviantArtPagingParams.Max)
 
     let ToArrayAsync token common offset limit req =
         ToAsyncSeq token common offset req

@@ -8,4 +8,5 @@ type DeviantArtPagingParams = {
     Offset: int
     /// The number of items to return in this request.
     Limit: Nullable<int>
-}
+} with
+    static member Max = Nullable Int32.MaxValue

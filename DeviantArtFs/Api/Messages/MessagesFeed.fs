@@ -23,7 +23,7 @@ module MessagesFeed =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtMessageCursorResult>
 
-    let private AsyncGetPage token common req cursor =
+    let AsyncGetPage token common req cursor =
         AsyncExecute token common cursor req
 
     let ToAsyncSeq token common cursor req =

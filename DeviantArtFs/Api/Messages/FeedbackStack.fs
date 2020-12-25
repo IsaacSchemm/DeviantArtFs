@@ -2,7 +2,6 @@
 
 open DeviantArtFs
 open FSharp.Control
-open System
 
 module FeedbackStack =
     let AsyncExecute token common paging (stackid: string) =
@@ -14,11 +13,11 @@ module FeedbackStack =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
 
-    let private AsyncGetPage token common stackid cursor =
-        AsyncExecute token common { Offset = cursor; Limit = Nullable Int32.MaxValue } stackid
+    let AsyncGetPage token common stackid limit offset =
+        AsyncExecute token common { Offset = offset; Limit = limit } stackid
 
     let ToAsyncSeq token common offset stackid =
-        Dafs.toAsyncSeq3 offset (AsyncGetPage token common stackid)
+        Dafs.toAsyncSeq3 offset (AsyncGetPage token common stackid DeviantArtPagingParams.Max)
 
     let ToArrayAsync token common offset limit stackid =
         ToAsyncSeq token common offset stackid

@@ -61,18 +61,6 @@ module internal Dafs =
             has_more <- resp.HasMore
     }
 
-    let toAsyncSeq2 (offset: int) (f: DeviantArtPagingParams -> Async<'b> when 'b :> IResultPage<int, 'item>) = asyncSeq {
-        let mutable cursor = offset
-        let mutable has_more = true
-        while has_more do
-            let paging = { Offset = cursor; Limit = Nullable Int32.MaxValue }
-            let! resp = f paging
-            for r in resp.Items do
-                yield r
-            cursor <- resp.Cursor
-            has_more <- resp.HasMore
-    }
-
     let toAsyncSeq3 (cursor: 'a) (f: 'a -> Async<'b> when 'b :> IResultPage<'a, 'item>) = asyncSeq {
         let mutable cursor = cursor
         let mutable has_more = true
