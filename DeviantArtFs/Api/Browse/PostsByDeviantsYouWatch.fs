@@ -13,11 +13,8 @@ module PostsByDeviantsYouWatch =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtPost>>
 
-    let AsyncGetPage token common limit offset =
-        AsyncExecute token common { Offset = offset; Limit = limit }
-
     let ToAsyncSeq token common offset =
-        Dafs.toAsyncSeq3 offset (AsyncGetPage token common DeviantArtPagingParams.Max)
+        Dafs.toAsyncSeq3 offset (fun o -> AsyncExecute token common { Offset = o; Limit = DeviantArtPagingParams.Max })
 
     let ToArrayAsync token common offset limit =
         ToAsyncSeq token common offset

@@ -14,9 +14,8 @@ module Tags =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtBrowsePagedResult>
 
-    let ToAsyncSeq token common offset tag =
-        Dafs.getMax (AsyncExecute token common)
-        |> Dafs.toAsyncSeq offset tag
+    let ToAsyncSeq token common offset req =
+        Dafs.toAsyncSeq3 offset (fun o -> AsyncExecute token common { Offset = o; Limit = DeviantArtPagingParams.Max } req)
 
     let ToArrayAsync token common offset limit tag =
         ToAsyncSeq token common offset tag

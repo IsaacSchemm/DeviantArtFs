@@ -13,11 +13,8 @@ module FeedbackStack =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
 
-    let AsyncGetPage token common stackid limit offset =
-        AsyncExecute token common { Offset = offset; Limit = limit } stackid
-
     let ToAsyncSeq token common offset stackid =
-        Dafs.toAsyncSeq3 offset (AsyncGetPage token common stackid DeviantArtPagingParams.Max)
+        Dafs.toAsyncSeq3 offset (fun o -> AsyncExecute token common { Offset = o; Limit = DeviantArtPagingParams.Max } stackid)
 
     let ToArrayAsync token common offset limit stackid =
         ToAsyncSeq token common offset stackid

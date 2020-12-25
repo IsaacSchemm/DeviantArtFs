@@ -32,11 +32,8 @@ module FeedbackMessages =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
 
-    let AsyncGetPage token common req limit offset =
-        AsyncExecute token common { Offset = offset; Limit = limit } req
-
     let ToAsyncSeq token common offset req =
-        Dafs.toAsyncSeq3 offset (AsyncGetPage token common req DeviantArtPagingParams.Max)
+        Dafs.toAsyncSeq3 offset (fun o -> AsyncExecute token common { Offset = o; Limit = DeviantArtPagingParams.Max } req)
 
     let ToArrayAsync token common offset limit req =
         ToAsyncSeq token common offset req

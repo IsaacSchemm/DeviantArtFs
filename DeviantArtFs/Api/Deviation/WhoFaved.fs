@@ -15,11 +15,8 @@ module WhoFaved =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtWhoFavedUser>>
 
-    let AsyncGetPage token common deviationid limit offset =
-        AsyncExecute token common { Offset = offset; Limit = limit } deviationid
-
-    let ToAsyncSeq token common offset deviationid =
-        Dafs.toAsyncSeq3 offset (AsyncGetPage token common deviationid DeviantArtPagingParams.Max)
+    let ToAsyncSeq token common offset req =
+        Dafs.toAsyncSeq3 offset (fun o -> AsyncExecute token common { Offset = o; Limit = DeviantArtPagingParams.Max } req)
 
     let ToArrayAsync token common offset limit deviationid =
         ToAsyncSeq token common offset deviationid
