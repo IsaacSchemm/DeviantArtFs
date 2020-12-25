@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports DeviantArtFs
 Imports DeviantArtFs.Extensions
 Imports DeviantArtFs.WinForms
 
@@ -73,17 +74,13 @@ Public Class Form1
 
     Private Async Sub ThumbnailClick(deviation As Deviation)
         PictureBox1.ImageLocation = Nothing
-        Try
-            Dim download = Await Api.Deviation.Download.ExecuteAsync(Token, DeviantArtCommonParams.Default, deviation.deviationid)
+
+        If deviation.content.OrNull() IsNot Nothing Then
+            PictureBox1.ImageLocation = deviation.content.OrNull().src
+        Else
+            Dim download = deviation.thumbs.OrEmpty().LastOrDefault()
             PictureBox1.ImageLocation = download.src
-        Catch ex As DeviantArtException
-            If deviation.content.OrNull() IsNot Nothing Then
-                PictureBox1.ImageLocation = deviation.content.OrNull().src
-            Else
-                Dim download = deviation.thumbs.OrEmpty().LastOrDefault()
-                PictureBox1.ImageLocation = download.src
-            End If
-        End Try
+        End If
 
         WebBrowser1.Navigate("about:blank")
         Dim req = New Api.Deviation.MetadataRequest({deviation.deviationid})
