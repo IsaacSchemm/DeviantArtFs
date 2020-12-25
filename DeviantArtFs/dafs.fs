@@ -72,3 +72,14 @@ module internal Dafs =
             cursor <- resp.Cursor
             has_more <- resp.HasMore
     }
+
+    let toAsyncSeq3 (cursor: 'a) (f: 'a -> Async<'b> when 'b :> IResultPage<'a, 'item>) = asyncSeq {
+        let mutable cursor = cursor
+        let mutable has_more = true
+        while has_more do
+            let! resp = f cursor
+            for r in resp.Items do
+                yield r
+            cursor <- resp.Cursor
+            has_more <- resp.HasMore
+    }

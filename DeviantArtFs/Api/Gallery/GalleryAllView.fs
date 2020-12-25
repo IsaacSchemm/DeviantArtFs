@@ -1,5 +1,6 @@
 ﻿namespace DeviantArtFs.Api.Gallery
 
+open System
 open DeviantArtFs
 open FSharp.Control
 
@@ -19,9 +20,11 @@ module GalleryAllView =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<Deviation>>
 
+    let private AsyncGetPage token common req cursor =
+        AsyncExecute token common { Offset = cursor; Limit = Nullable Int32.MaxValue } req
+
     let ToAsyncSeq token common offset req =
-        (fun p -> AsyncExecute token common p req)
-        |> Dafs.toAsyncSeq2 offset
+        Dafs.toAsyncSeq3 offset (AsyncGetPage token common req)
 
     let ToArrayAsync token common offset limit req =
         ToAsyncSeq token common offset req

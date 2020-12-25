@@ -9,36 +9,32 @@ type MessagesFeedRequest() =
     member val Stack = true with get, set
 
 module MessagesFeed =
-    let AsyncExecute token (cursor: string option) (req: MessagesFeedRequest) = async {
-        let query = seq {
+    let AsyncExecute token common (cursor: string option) (req: MessagesFeedRequest) =
+        seq {
             if req.Folderid.HasValue then
                 yield sprintf "folderid=%O" req.Folderid
             yield sprintf "stack=%b" req.Stack
             match cursor with
             | Some c -> yield sprintf "cursor=%s" c
             | None -> ()
+            yield! QueryFor.commonParams common
         }
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/messages/feed"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtMessageCursorResult>
 
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/messages/feed?%s"
-            |> Dafs.createRequest token
+    let private AsyncGetPage token common req cursor =
+        AsyncExecute token common cursor req
 
-        let! json = Dafs.asyncRead req
-        return DeviantArtMessageCursorResult.Parse json
-    }
+    let ToAsyncSeq token common cursor req =
+        Dafs.toAsyncSeq3 cursor (AsyncGetPage token common req)
 
-    let ToAsyncSeq token cursor req =
-        AsyncExecute token
-        |> Dafs.toAsyncSeq cursor req
-
-    let ToArrayAsync token req cursor limit =
-        ToAsyncSeq token (Option.ofObj cursor) req
+    let ToArrayAsync token common req cursor limit =
+        ToAsyncSeq token common (Option.ofObj cursor) req
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token cursor req =
-        AsyncExecute token (Option.ofObj cursor) req
+    let ExecuteAsync token common cursor req =
+        AsyncExecute token common (Option.ofObj cursor) req
         |> Async.StartAsTask
