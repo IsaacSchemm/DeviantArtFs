@@ -15,8 +15,8 @@ type FeedbackMessagesRequest(``type``: FeedbackMessageType) =
     member val Stack = true with get, set
 
 module FeedbackMessages =
-    let AsyncExecute token paging (req: FeedbackMessagesRequest) = async {
-        let query = seq {
+    let AsyncExecute token common paging (req: FeedbackMessagesRequest) =
+        seq {
             match req.Type with
             | FeedbackMessageType.Comments -> yield "type=comments"
             | FeedbackMessageType.Replies -> yield "type=replies"
@@ -26,28 +26,24 @@ module FeedbackMessages =
                 yield sprintf "folderid=%O" req.Folderid
             yield sprintf "stack=%b" req.Stack
             yield! QueryFor.paging paging 50
+            yield! QueryFor.commonParams common
         }
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/messages/feedback"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
 
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/messages/feedback?%s"
-            |> Dafs.createRequest token
+    let private AsyncGetPage token common req cursor =
+        AsyncExecute token common { Offset = cursor; Limit = Nullable Int32.MaxValue } req
 
-        let! json = Dafs.asyncRead req
-        return DeviantArtPagedResult<DeviantArtMessage>.Parse json
-    }
+    let ToAsyncSeq token common offset req =
+        Dafs.toAsyncSeq3 offset (AsyncGetPage token common req)
 
-    let ToAsyncSeq token offset req =
-        Dafs.getMax (AsyncExecute token)
-        |> Dafs.toAsyncSeq offset req
-
-    let ToArrayAsync token req offset limit =
-        ToAsyncSeq token offset req
+    let ToArrayAsync token common offset limit req =
+        ToAsyncSeq token common offset req
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging req =
-        AsyncExecute token paging req
+    let ExecuteAsync token common paging req =
+        AsyncExecute token common paging req
         |> Async.StartAsTask

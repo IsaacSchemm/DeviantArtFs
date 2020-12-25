@@ -9,8 +9,6 @@ type DeleteMessageRequest() =
     member val Stackid = null with get, set
 
 module DeleteMessage =
-    open System.IO
-
     let AsyncExecute token (req: DeleteMessageRequest) = async {
         let query = seq {
             if req.Folderid.HasValue then
@@ -21,14 +19,17 @@ module DeleteMessage =
                 yield sprintf "stackid=%s" req.Stackid
         }
 
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/messages/delete"
+        let req = Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/messages/delete" Seq.empty
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 
         req.RequestBodyText <- String.concat "&" query
 
-        let! json = Dafs.asyncRead req
-        return ignore json
+        return! req
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask :> System.Threading.Tasks.Task
+    let ExecuteAsync token req =
+        AsyncExecute token req
+        |> Async.StartAsTask

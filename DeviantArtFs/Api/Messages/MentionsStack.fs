@@ -2,33 +2,30 @@
 
 open DeviantArtFs
 open FSharp.Control
+open System
 
 module MentionsStack =
-    let AsyncExecute token paging (stackid: string) = async {
-        let query = seq {
+    let AsyncExecute token common paging (stackid: string) =
+        seq {
             yield! QueryFor.paging paging 50
+            yield! QueryFor.commonParams common
         }
+        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/messages/mentions/%s" (Dafs.urlEncode stackid))
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
 
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/messages/mentions/%s?%s" (Dafs.urlEncode stackid)
-            |> Dafs.createRequest token
+    let private AsyncGetPage token common stackid cursor =
+        AsyncExecute token common { Offset = cursor; Limit = Nullable Int32.MaxValue } stackid
 
-        let! json = Dafs.asyncRead req
-        return DeviantArtPagedResult<DeviantArtMessage>.Parse json
-    }
+    let ToAsyncSeq token common offset stackid =
+        Dafs.toAsyncSeq3 offset (AsyncGetPage token common stackid)
 
-    let ToAsyncSeq token offset req =
-        Dafs.getMax (AsyncExecute token)
-        |> Dafs.toAsyncSeq offset req
-
-    let ToArrayAsync token req offset limit =
-        ToAsyncSeq token offset req
+    let ToArrayAsync token common offset limit stackid =
+        ToAsyncSeq token common offset stackid
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging req =
-        AsyncExecute token paging req
+    let ExecuteAsync token common paging stackid =
+        AsyncExecute token common paging stackid
         |> Async.StartAsTask
