@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using DeviantArtFs.Examples.WebApp.Data;
+using ExampleWebApp.Data;
 using DeviantArtFs.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using DeviantArtFs;
 
-namespace DeviantArtFs.Examples.WebApp.Controllers
+namespace ExampleWebApp.Controllers
 {
     public class GalleryController : ControllerBase
     {
@@ -26,18 +26,18 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             var paging = new DeviantArtPagingParams(offset, limit);
             Page resp;
             if (folderId is Guid f) {
-                var r = await Api.Gallery.GalleryById.ExecuteAsync(
+                var r = await DeviantArtFs.Api.Gallery.GalleryById.ExecuteAsync(
                     token,
                     DeviantArtCommonParams.Default,
                     paging,
-                    new Api.Gallery.GalleryByIdRequest { Folderid = f, Username = username });
+                    new DeviantArtFs.Api.Gallery.GalleryByIdRequest { Folderid = f, Username = username });
                 resp = new Page { HasMore = r.has_more, NextOffset = r.next_offset.OrNull(), Results = r.results };
             } else {
-                var r = await Api.Gallery.GalleryAllView.ExecuteAsync(
+                var r = await DeviantArtFs.Api.Gallery.GalleryAllView.ExecuteAsync(
                     token,
                     DeviantArtCommonParams.Default,
                     paging,
-                    new Api.Gallery.GalleryAllViewRequest { Username = username });
+                    new DeviantArtFs.Api.Gallery.GalleryAllViewRequest { Username = username });
                 resp = new Page { HasMore = r.has_more, NextOffset = r.next_offset.OrNull(), Results = r.results };
             }
 
@@ -52,7 +52,12 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             var token = await GetAccessTokenAsync();
             if (token == null) return Forbid();
 
-            var list = await Api.Gallery.GalleryFolders.ToArrayAsync(token, DeviantArtCommonParams.Default, 0, 100, new Api.Gallery.GalleryFoldersRequest { CalculateSize = true, Username = username });
+            var list = await DeviantArtFs.Api.Gallery.GalleryFolders.ToArrayAsync(
+                token,
+                DeviantArtCommonParams.Default,
+                0,
+                100,
+                new DeviantArtFs.Api.Gallery.GalleryFoldersRequest { CalculateSize = true, Username = username });
 
             ViewBag.Username = username;
             return View(list);

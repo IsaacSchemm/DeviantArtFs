@@ -1,13 +1,13 @@
-﻿using DeviantArtFs.Examples.WebApp.Data;
-using DeviantArtFs.Examples.WebApp.Models;
+﻿using DeviantArtFs;
+using ExampleWebApp.Data;
+using ExampleWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DeviantArtFs.Examples.WebApp.Controllers
+namespace ExampleWebApp.Controllers
 {
     public abstract class ControllerBase : Controller
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace DeviantArtFs.Examples.WebApp.Migrations
+namespace ExampleWebApp.Migrations
 {
     public partial class Tokens : Migration
     {

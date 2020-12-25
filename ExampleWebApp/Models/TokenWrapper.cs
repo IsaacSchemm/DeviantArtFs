@@ -1,18 +1,19 @@
-﻿using DeviantArtFs.Examples.WebApp.Data;
+﻿using DeviantArtFs;
+using ExampleWebApp.Data;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace DeviantArtFs.Examples.WebApp.Models
+namespace ExampleWebApp.Models
 {
-    public class TokenWrapper : IDeviantArtRefreshToken, IDeviantArtAutomaticRefreshToken
+    public class TokenWrapper : IDeviantArtAutomaticRefreshToken
     {
         public IDeviantArtRefreshToken CurrentToken { get; private set; }
         public DeviantArtApp App { get; private set; }
 
         private readonly Token _originalToken;
         private readonly ExampleDbContext _context;
+
+        public Guid IdInDatabase => _originalToken.Id;
 
         public TokenWrapper(Token originalToken, DeviantArtApp app, ExampleDbContext context)
         {

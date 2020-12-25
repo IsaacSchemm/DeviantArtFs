@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DeviantArtFs;
+using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace DeviantArtFs.Examples.WebApp.Models
+namespace ExampleWebApp.Models
 {
     public class Token : IDeviantArtRefreshToken
     {

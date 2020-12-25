@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using DeviantArtFs.Examples.WebApp.Data;
-using DeviantArtFs.Examples.WebApp.Models;
+using DeviantArtFs;
+using ExampleWebApp.Data;
+using ExampleWebApp.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace DeviantArtFs.Examples.WebApp.Controllers
+namespace ExampleWebApp.Controllers
 {
     public class HomeController : ControllerBase
     {
@@ -33,7 +32,7 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
         public async Task<IActionResult> Callback(string code, string state = null)
         {
             IDeviantArtRefreshToken result = await DeviantArtAuth.GetTokenAsync(_appReg, code, new Uri($"https://{HttpContext.Request.Host}/Home/Callback"));
-            var me = await Api.User.Whoami.ExecuteAsync(result);
+            var me = await DeviantArtFs.Api.User.Whoami.ExecuteAsync(result);
             var token = new Token
             {
                 Id = Guid.NewGuid(),
@@ -61,37 +60,20 @@ namespace DeviantArtFs.Examples.WebApp.Controllers
             if (t == null)
                 return RedirectToAction("Login");
 
-            var me = await Api.User.Whoami.ExecuteAsync(t);
+            var me = await DeviantArtFs.Api.User.Whoami.ExecuteAsync(t);
             return Json(me);
-        }
-
-        public async Task S()
-        {
-            string str = User.Claims
-                .Where(c => c.Type == "token-id")
-                .Select(c => c.Value)
-                .FirstOrDefault();
-            if (str != null && Guid.TryParse(str, out Guid tokenId))
-            {
-                var token = await _context.Tokens.SingleOrDefaultAsync(t => t.Id == tokenId);
-                if (token != null)
-                {
-                    token.AccessToken = "test";
-                    await _context.SaveChangesAsync();
-                }
-            }
         }
 
         public async Task<IActionResult> Logout()
         {
             var t = await GetAccessTokenAsync();
-            if (t is Token dbToken)
+            if (t is TokenWrapper wrapper)
             {
-                _context.Tokens.RemoveRange(_context.Tokens.Where(x => x.Id == dbToken.Id));
+                _context.Tokens.RemoveRange(_context.Tokens.Where(x => x.Id == wrapper.IdInDatabase));
                 await _context.SaveChangesAsync();
                 await HttpContext.SignOutAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme);
-                await DeviantArtAuth.RevokeAsync(dbToken.RefreshToken, revoke_refresh_only: true);
+                await DeviantArtAuth.RevokeAsync(wrapper.RefreshToken, revoke_refresh_only: true);
                 return RedirectToAction("Index");
             }
             else
