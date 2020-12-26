@@ -127,16 +127,6 @@
     <Compile Include="Api\Messages\FeedbackStack.fs" />
     <Compile Include="Api\Messages\MentionsMessages.fs" />
     <Compile Include="Api\Messages\MentionsStack.fs" />
-    <Compile Include="Api\Notes\GetNotes.fs" />
-    <Compile Include="Api\Notes\GetNote.fs" />
-    <Compile Include="Api\Notes\DeleteNotes.fs" />
-    <Compile Include="Api\Notes\NotesFolders.fs" />
-    <Compile Include="Api\Notes\CreateNotesFolder.fs" />
-    <Compile Include="Api\Notes\RemoveNotesFolder.fs" />
-    <Compile Include="Api\Notes\RenameNotesFolder.fs" />
-    <Compile Include="Api\Notes\MarkNotes.fs" />
-    <Compile Include="Api\Notes\MoveNotes.fs" />
-    <Compile Include="Api\Notes\SendNote.fs" />
     <Compile Include="Api\Stash\Stack.fs" />
     <Compile Include="Api\Stash\Contents.fs" />
     <Compile Include="Api\Stash\Delete.fs" />
