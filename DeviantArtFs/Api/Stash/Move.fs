@@ -1,13 +1,12 @@
 ﻿namespace DeviantArtFs.Api.Stash
 
 open DeviantArtFs
-open FSharp.Data
-open System.IO
 
 module Move =
-    let AsyncExecute token (stackid: int64) (targetid: int64) = async {
+    let AsyncExecute token common (stackid: int64) (targetid: int64) = async {
         let query = seq {
             yield sprintf "targetid=%d" targetid
+            yield! QueryFor.commonParams common
         }
 
         let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/move/%d" stackid |> Dafs.createRequest token
@@ -16,8 +15,11 @@ module Move =
 
         req.RequestBodyText <- String.concat "&" query
 
-        let! json = Dafs.asyncRead req
-        return StashMoveResult.Parse json
+        return! req
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<StashMoveResult>
     }
 
-    let ExecuteAsync token stackid targetid = AsyncExecute token stackid targetid |> Async.StartAsTask
+    let ExecuteAsync token common stackid targetid =
+        AsyncExecute token common stackid targetid
+        |> Async.StartAsTask

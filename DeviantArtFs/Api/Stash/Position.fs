@@ -1,8 +1,6 @@
 ﻿namespace DeviantArtFs.Api.Stash
 
 open DeviantArtFs
-open FSharp.Data
-open System.IO
 
 module Position =
     let AsyncExecute token (stackid: int64) (position: int) = async {
@@ -16,8 +14,11 @@ module Position =
 
         req.RequestBodyText <- String.concat "&" query
 
-        let! json = Dafs.asyncRead req
-        ignore json
+        return! req
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
     }
 
-    let ExecuteAsync token stackid position = AsyncExecute token stackid position |> Async.StartAsTask :> System.Threading.Tasks.Task
+    let ExecuteAsync token stackid position =
+        AsyncExecute token stackid position
+        |> Async.StartAsTask

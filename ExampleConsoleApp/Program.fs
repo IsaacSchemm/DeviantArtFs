@@ -102,6 +102,34 @@ let sandbox token_string = async {
             printfn "Unknown title or published_time"
 
     printfn ""
+
+    printfn "Sta.sh stacks:"
+
+    let! all_stacks =
+        DeviantArtFs.Api.Stash.Contents.ToAsyncSeq
+            token
+            DeviantArtCommonParams.Default
+            DeviantArtFs.Api.Stash.Contents.RootStack
+            0
+        |> AsyncSeq.toListAsync
+    for s in all_stacks do
+        printfn "%s (%A)" s.title s.stackid
+
+    for s in all_stacks |> Seq.take 3 do
+        match s.stackid with
+        | None -> ()
+        | Some stackid ->
+            printfn ""
+            printfn "Stack %d:" stackid
+            let! contents =
+                DeviantArtFs.Api.Stash.Contents.ToAsyncSeq
+                    token
+                    DeviantArtCommonParams.Default
+                    stackid
+                    0
+                |> AsyncSeq.toListAsync
+            for c in contents do
+                printfn "%s (%A -> %A)" c.title c.parentid c.stackid
 }
 
 [<EntryPoint>]

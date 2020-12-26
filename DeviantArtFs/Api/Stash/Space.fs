@@ -3,11 +3,12 @@
 open DeviantArtFs
 
 module Space =
-    let AsyncExecute token = async {
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/space"
+    let AsyncExecute token =
+        Seq.empty
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/stash/space"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<StashSpaceResult>
 
-        let! json = Dafs.asyncRead req
-        return StashSpaceResult.Parse json
-    }
-
-    let ExecuteAsync token = AsyncExecute token |> Async.StartAsTask
+    let ExecuteAsync token =
+        AsyncExecute token
+        |> Async.StartAsTask

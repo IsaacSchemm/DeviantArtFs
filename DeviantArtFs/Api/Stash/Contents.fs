@@ -1,35 +1,29 @@
 ﻿namespace DeviantArtFs.Api.Stash
 
 open DeviantArtFs
+open FSharp.Control
 
 module Contents =
-    open FSharp.Control
-
     let RootStack = 0L
 
-    let AsyncExecute token paging (stackid: int64) = async {
-        let query = seq {
+    let AsyncExecute token common (stackid: int64) paging =
+        seq {
             yield! QueryFor.paging paging 50
+            yield! QueryFor.commonParams common
         }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d/contents?%s" stackid
-            |> Dafs.createRequest token
+        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d/contents" stackid)
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtPagedResult<StashMetadata>>
 
-        let! json = Dafs.asyncRead req
-        return DeviantArtPagedResult<StashMetadata>.Parse json
-    }
+    let ToAsyncSeq token common stackid offset =
+        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common stackid)
 
-    let ToAsyncSeq token offset stackid =
-        failwith "Not implemented"
-
-    let ToArrayAsync token offset limit req =
-        ToAsyncSeq token offset req
+    let ToArrayAsync token common stackid offset limit =
+        ToAsyncSeq token common stackid offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token paging stackid =
-        AsyncExecute token paging stackid
+    let ExecuteAsync token common stackid paging =
+        AsyncExecute token common stackid paging
         |> Async.StartAsTask

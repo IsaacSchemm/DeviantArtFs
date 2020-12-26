@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Api.Stash
 
 open DeviantArtFs
-open FSharp.Json
 open System
 open System.IO
 
@@ -122,9 +121,11 @@ module Submit =
             req.RequestBody <- ms.ToArray()
         }
 
-        let! json = Dafs.asyncRead req
-        let o = Json.deserialize<SubmitResponse> json
-        return o.itemid
+        return! req
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<SubmitResponse>
     }
 
-    let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask
+    let ExecuteAsync token ps =
+        AsyncExecute token ps
+        |> Async.StartAsTask

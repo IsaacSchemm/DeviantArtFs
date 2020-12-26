@@ -7,17 +7,15 @@ type ItemRequest(itemid: int64) =
     member val ExtParams = DeviantArtExtParams.None with get, set
 
 module Item =
-    let AsyncExecute token (req: ItemRequest) = async {
-        let query = seq {
+    let AsyncExecute token common (req: ItemRequest) =
+        seq {
             yield! QueryFor.extParams req.ExtParams
+            yield! QueryFor.commonParams common
         }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/item/%d?%s" req.Itemid
-            |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return StashMetadata.Parse json
-    }
+        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/item/%d" req.Itemid)
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<StashMetadata>
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token common req =
+        AsyncExecute token common req
+        |> Async.StartAsTask

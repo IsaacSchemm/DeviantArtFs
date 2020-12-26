@@ -3,16 +3,19 @@
 open DeviantArtFs
 open System
 
-type LicenseModifyOption = No=0 | Yes=1 | ShareAlike=2
+[<RequireQualifiedAccess>]
+type LicenseModifyOption = No | Yes | ShareAlike
 
-type MatureLevel = None=0 | Strict=1 | Moderate=2
+[<RequireQualifiedAccess>]
+type MatureLevel = None | Strict | Moderate
 
-[<FlagsAttribute>]
-type MatureClassification = None=0 | Nudity=1 | Sexual=2 | Gore=4 | Language=8 | Ideology=16
+[<RequireQualifiedAccess>]
+type MatureClassification = Nudity | Sexual | Gore | Language | Ideology
 
-type DisplayResolution = Original=0 | Max400Px=1 | Max600px=2 | Max800px=3 | Max900px=4 | Max1024px=5 | Max1280px=6 | Max1600px=7
+[<RequireQualifiedAccess>]
+type Sharing = Allow | HideShareButtons | HideAndMembersOnly
 
-type Sharing = Allow=0 | HideShareButtons=1 | HideAndMembersOnly=2
+type DisplayResolution = Original=0 | Max400Px=1 | Max600px=2 | Max800px=3 | Max900px=4 | Max1024px=5 | Max1280px=6 | Max1600px=7 | Max1920px=8
 
 type LicenseOptions() =
     member val CreativeCommons = false with get, set
@@ -22,7 +25,7 @@ type LicenseOptions() =
 type PublishRequest(itemid: int64) =
     member val IsMature = false with get, set
     member val MatureLevel = MatureLevel.None with get, set
-    member val MatureClassification = MatureClassification.None with get, set
+    member val MatureClassification = Seq.empty<MatureClassification> with get, set
     member val AgreeSubmission = false with get, set
     member val AgreeTos = false with get, set
     member val Catpath = null with get, set
@@ -38,8 +41,6 @@ type PublishRequest(itemid: int64) =
     member val Itemid = itemid
 
 module Publish =
-    open System.IO
-
     let AsyncExecute token (req: PublishRequest) = async {
         let query = seq {
             yield sprintf "is_mature=%b" req.IsMature
@@ -47,15 +48,15 @@ module Publish =
             | MatureLevel.Strict -> yield "mature_level=strict"
             | MatureLevel.Moderate -> yield "mature_level=moderate"
             | _ -> ()
-            if req.MatureClassification.HasFlag MatureClassification.Nudity then
+            if req.MatureClassification |> Seq.contains MatureClassification.Nudity then
                 yield "mature_classification[]=nudity"
-            if req.MatureClassification.HasFlag MatureClassification.Sexual then
+            if req.MatureClassification |> Seq.contains MatureClassification.Sexual then
                 yield "mature_classification[]=sexual"
-            if req.MatureClassification.HasFlag MatureClassification.Gore then
+            if req.MatureClassification |> Seq.contains MatureClassification.Gore then
                 yield "mature_classification[]=gore"
-            if req.MatureClassification.HasFlag MatureClassification.Language then
+            if req.MatureClassification |> Seq.contains MatureClassification.Language then
                 yield "mature_classification[]=language"
-            if req.MatureClassification.HasFlag MatureClassification.Ideology then
+            if req.MatureClassification |> Seq.contains MatureClassification.Ideology then
                 yield "mature_classification[]=ideology"
             yield sprintf "agree_submission=%b" req.AgreeSubmission
             yield sprintf "agree_tos=%b" req.AgreeTos
@@ -68,14 +69,12 @@ module Publish =
             | Sharing.Allow -> yield sprintf "sharing=allow"
             | Sharing.HideShareButtons -> yield sprintf "sharing=hide_share_buttons"
             | Sharing.HideAndMembersOnly -> yield sprintf "sharing=hide_and_members_only"
-            | _ -> ()
             yield sprintf "license_options[creative_commons]=%b" req.LicenseOptions.CreativeCommons
             yield sprintf "license_options[commercial]=%s" (if req.LicenseOptions.Commercial then "yes" else "no")
             match req.LicenseOptions.Modify with
             | LicenseModifyOption.Yes -> yield "license_options[modify]=yes"
             | LicenseModifyOption.No -> yield "license_options[modify]=no"
             | LicenseModifyOption.ShareAlike -> yield "license_options[modify]=share"
-            | _ -> ()
             for id in req.Galleryids do
                 yield sprintf "galleryids[]=%O" id
             yield sprintf "allow_free_download=%b" req.AllowFreeDownload
@@ -88,8 +87,11 @@ module Publish =
         req.ContentType <- "application/x-www-form-urlencoded"
         req.RequestBodyText <- String.concat "&" query
 
-        let! json = Dafs.asyncRead req
-        return StashPublishResponse.Parse json
+        return! req
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<StashPublishResponse>
     }
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req =
+        AsyncExecute token req
+        |> Async.StartAsTask

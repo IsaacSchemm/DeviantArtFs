@@ -26,7 +26,7 @@ Public Class Form1
         If Token Is Nothing Then
             Dim url As New Uri(DeviantArtRedirectUrl)
 
-            Using form = New DeviantArtAuthorizationCodeForm(DeviantArtClientId, url, {"browse", "user"})
+            Using form = New DeviantArtAuthorizationCodeForm(DeviantArtClientId, url, {"browse", "user", "stash"})
                 If form.ShowDialog() = DialogResult.OK Then
                     Dim app = New DeviantArtApp(DeviantArtClientId, DeviantArtClientSecret)
                     Token = New AccessToken("refresh_token.txt", Await DeviantArtAuth.GetTokenAsync(app, form.Code, url))

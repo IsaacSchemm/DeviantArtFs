@@ -8,20 +8,17 @@ type PublishCategoryTreeRequest(catpath: string) =
     member val Frequent = false with get, set
 
 module PublishCategoryTree =
-    let AsyncExecute token (req: PublishCategoryTreeRequest) = async {
-        let query = seq {
+    let AsyncExecute token (req: PublishCategoryTreeRequest) =
+        seq {
             yield sprintf "catpath=%s" (Dafs.urlEncode req.Catpath)
             if not (isNull req.Filetype) then
                 yield sprintf "filetype=%s" (Dafs.urlEncode req.Filetype)
             yield sprintf "frequent=%b" req.Frequent
         }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/stash/publish/categorytree?%s"
-            |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return DeviantArtCategoryList.ParseList json
-    }
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/stash/publish/categorytree"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtCategoryList>
 
-    let ExecuteAsync token req = AsyncExecute token req |> Async.StartAsTask
+    let ExecuteAsync token req =
+        AsyncExecute token req
+        |> Async.StartAsTask
