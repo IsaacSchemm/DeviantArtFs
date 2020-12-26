@@ -1,7 +1,5 @@
 ﻿namespace DeviantArtFs
 
-open FSharp.Json
-
 type IBclDeviantArtCategory =
     abstract member Catpath: string
     abstract member Title: string
@@ -17,7 +15,4 @@ type DeviantArtCategory = {
 
 type DeviantArtCategoryList = {
     categories: DeviantArtCategory list
-} with
-    static member ParseList json =
-        let o = Json.deserialize<DeviantArtCategoryList> json
-        o.categories
+}

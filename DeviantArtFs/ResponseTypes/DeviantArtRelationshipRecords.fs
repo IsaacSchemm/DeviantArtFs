@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs
 
 open System
-open FSharp.Json
 
 type DeviantArtWatchInfo = {
     friend: bool
@@ -19,13 +18,11 @@ type DeviantArtFriendRecord = {
     is_watching: bool
     watches_you: bool
     watch: DeviantArtWatchInfo
-} with
-    static member Parse json = Json.deserialize<DeviantArtFriendRecord> json
+}
 
 type DeviantArtWatcherRecord = {
     user: DeviantArtUser
     is_watching: bool
     lastvisit: DateTimeOffset option
     watch: DeviantArtWatchInfo
-} with
-    static member Parse json = Json.deserialize<DeviantArtWatcherRecord> json
+}

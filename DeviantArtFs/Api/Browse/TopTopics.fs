@@ -11,7 +11,6 @@ module TopTopics =
         |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/toptopics"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<DeviantArtTopic>>
-        |> Dafs.extractList
 
     let ExecuteAsync token common =
         AsyncExecute token common

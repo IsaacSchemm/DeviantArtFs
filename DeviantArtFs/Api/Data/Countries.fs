@@ -13,7 +13,6 @@ module Countries =
         |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/data/countries"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<CountriesElement>>
-        |> Dafs.extractList
 
     let ExecuteAsync token =
         AsyncExecute token

@@ -18,5 +18,4 @@ type DeviantArtComment = {
     hidden: DeviantArtCommentHideType option
     body: string
     user: DeviantArtUser
-} with
-    static member Parse json = Json.deserialize<DeviantArtComment> json
+}

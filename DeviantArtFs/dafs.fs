@@ -25,16 +25,7 @@ module internal Dafs =
         workflow
         |> AsyncThen.map parse<'a>
 
-    /// Takes an async workflow that returns a DeviantArtListOnlyResponse, and creates another async workflow that returns the list it contains.
-    let extractList (workflow: Async<'a> when 'a :> IDeviantArtListOnlyResponse<'b>) =
-        workflow
-        |> AsyncThen.map (fun x -> x.List)
-
-    /// Takes an async workflow that returns a DeviantArtTextOnlyResponse, and creates another async workflow that returns the text it contains.
-    let extractText<'a> (workflow: Async<DeviantArtTextOnlyResponse>) =
-        workflow
-        |> AsyncThen.map (fun x -> x.text)
-
+    /// Builds an AsyncSeq from an initial cursor and a function that uses that cursor to generate an IResultPage with the same cursor type.
     let toAsyncSeq (cursor: 'a) (f: 'a -> Async<'b> when 'b :> IResultPage<'a, 'item>) = asyncSeq {
         let mutable cursor = cursor
         let mutable has_more = true

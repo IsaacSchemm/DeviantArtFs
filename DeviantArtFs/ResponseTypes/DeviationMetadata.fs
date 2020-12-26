@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs
 
 open System
-open FSharp.Json
 
 type DeviationMetadata = {
     deviationid: Guid
@@ -24,9 +23,4 @@ type DeviationMetadata = {
 
 type DeviationMetadataResponse = {
     metadata: DeviationMetadata list
-} with
-    interface IDeviantArtListOnlyResponse<DeviationMetadata> with
-        member this.List = this.metadata
-    static member ParseList json =
-        let o = Json.deserialize<DeviationMetadataResponse> json
-        o.metadata
+}

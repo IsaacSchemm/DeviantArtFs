@@ -17,6 +17,5 @@ module DailyDeviations =
         |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/dailydeviations"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<Deviation>>
-        |> Dafs.extractList
 
     let ExecuteAsync token common req = AsyncExecute token common req |> Async.StartAsTask

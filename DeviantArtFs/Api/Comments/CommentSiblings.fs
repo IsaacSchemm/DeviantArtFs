@@ -17,6 +17,7 @@ module CommentSiblings =
         }
         |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/%O/siblings" req.Commentid)
         |> Dafs.asyncRead
+        |> AsyncThen.map (fun str -> str.Replace(""""context": list""", """"context":{}"""))
         |> Dafs.thenParse<DeviantArtCommentSiblingsPagedResult>
 
     let ToAsyncSeq token common req offset =

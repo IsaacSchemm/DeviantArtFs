@@ -2,7 +2,7 @@
 
 /// A page of results from the DeviantArt API.
 /// This interface is used to handle paging in ToAsyncSeq and ToArrayAsync methods.
-type internal IResultPage<'cursor, 'item> =
+type IResultPage<'cursor, 'item> =
     /// Whether there are more results after this page.
     abstract member HasMore: bool
     /// The current cursor or offset. Used to get the next page.

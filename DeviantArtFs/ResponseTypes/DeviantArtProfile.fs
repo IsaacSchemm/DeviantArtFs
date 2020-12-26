@@ -1,8 +1,6 @@
 ﻿namespace DeviantArtFs
 
 open DeviantArtFs
-open FSharp.Json
-
 type DeviantArtProfile = {
     user: DeviantArtUser
     is_watching: bool
@@ -22,5 +20,4 @@ type DeviantArtProfile = {
     stats: DeviantArtProfileStats
     collections: DeviantArtCollectionFolder list option
     galleries: DeviantArtGalleryFolder list option
-} with
-    static member Parse json = Json.deserialize<DeviantArtProfile> json
+}

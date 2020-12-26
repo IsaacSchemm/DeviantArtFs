@@ -1,7 +1,5 @@
 ﻿namespace DeviantArtFs
 
-open FSharp.Json
-
 type DeviantArtFeedInclude = {
     statuses: bool
     deviations: bool
@@ -13,5 +11,4 @@ type DeviantArtFeedInclude = {
 
 type DeviantArtFeedSettings = {
     ``include``: DeviantArtFeedInclude
-} with
-    static member Parse (json: string) = Json.deserialize<DeviantArtFeedSettings> json
+}

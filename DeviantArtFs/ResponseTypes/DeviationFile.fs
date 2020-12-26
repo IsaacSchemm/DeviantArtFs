@@ -1,7 +1,5 @@
 ﻿namespace DeviantArtFs
 
-open FSharp.Json
-
 type DeviationPreview = {
     src: string
     height: int
@@ -14,8 +12,7 @@ type DeviationDownload = {
     height: int
     width: int
     filesize: int
-} with
-    static member Parse json = Json.deserialize<DeviationDownload> json
+}
 
 type DeviationContent = {
     src: string

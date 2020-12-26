@@ -22,7 +22,6 @@ module MetadataById =
         |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/deviation/metadata"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviationMetadataResponse>
-        |> Dafs.extractList
 
     let ExecuteAsync token common req =
         AsyncExecute token common req

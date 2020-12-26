@@ -30,17 +30,11 @@ be available as well; when using these, DeviantArtFs will perform multiple API
 calls, asking for the maximum amount of results in each. Be careful not to
 request too much data or you might hit API usage limits.
 
-### JSON conversion notes
+### Optional types
 
 Many objects in the DeviantArt API have optional fields, which are difficult
 to represent in languages such as F# that expect a fixed schema. DeviantArtFs
 represents these optional fields with F# `option` types.
-
-For requests that return an object with a single field that is either a string
-or a list, DeviantArtFs will flatten the response to just the string or list
-itself.
-
-### Using the library from C# or VB.NET
 
 The library provides
 extension methods in the namespace `DeviantArtFs.Extensions` for dealing with
@@ -62,7 +56,7 @@ option types from outside F#:
         return d.is_favourited.IsTrue();
 	}
 
-### Deleted Deviations and Status Updates
+### Deleted deviations and status updates
 
 `Deviation` and `DeviantArtStatus` objects can represent a deviation or status
 update that has been deleted; this is why most of the fields on those two
@@ -88,7 +82,7 @@ these updates:
 Note that DeviantArt allows a null value for the "description" field on a
 Sta.sh stack, and this is represented by its own union case.
 
-## Currently unsupported features
+## Known issues
 
 * The following fields in the deviation object are not supported:
   * challenge

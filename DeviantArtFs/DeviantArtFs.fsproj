@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>5.0.0</Version>
+    <Version>6.0.0-beta1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Isaac Schemm</Authors>
     <Company></Company>
@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/IsaacSchemm/DeviantArtFs</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Description>An F# library to interact with the DeviantArt / Sta.sh API</Description>
-    <PackageReleaseNotes>5.0.0: Removed wrappers around option types; restructed other components</PackageReleaseNotes>
+    <PackageReleaseNotes>6.0.0: Updates for new version of DeviantArt API; refactoring for cleaner code</PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>

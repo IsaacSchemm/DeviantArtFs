@@ -23,5 +23,4 @@ type StashMetadata = {
     stackid: int64 option
     itemid: int64 option
     tags: string list option
-} with
-    static member Parse json = Json.deserialize<StashMetadata> json
+}

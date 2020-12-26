@@ -52,10 +52,10 @@ let sandbox token_string = async {
         | Some true -> printfn "Downloadable (size = %d)" (s.download_filesize |> Option.defaultValue -1)
         | _ -> printfn "Not downloadable"
 
-        let! metadata =
+        let! metadata_response =
             new DeviantArtFs.Api.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = DeviantArtExtParams.All)
             |> DeviantArtFs.Api.Deviation.MetadataById.AsyncExecute token DeviantArtCommonParams.Default
-        for m in metadata do
+        for m in metadata_response.metadata do
             m.tags |> Seq.map (fun t -> sprintf "#%s" t.tag_name) |> String.concat " " |> printfn "%s"
 
         let! all_favorites =

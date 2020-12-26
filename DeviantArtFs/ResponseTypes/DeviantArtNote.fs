@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs
 
 open System
-open FSharp.Json
 
 type DeviantArtNote = {
     noteid: Guid
@@ -15,5 +14,4 @@ type DeviantArtNote = {
     body: string
     user: DeviantArtUser
     recipients: DeviantArtUser list
-} with
-    static member Parse json = Json.deserialize<DeviantArtNote> json
+}

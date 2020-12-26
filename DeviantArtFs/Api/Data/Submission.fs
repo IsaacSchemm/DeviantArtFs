@@ -8,7 +8,6 @@ module Submission =
         |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/data/submission"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtTextOnlyResponse>
-        |> Dafs.extractText
 
     let ExecuteAsync token =
         AsyncExecute token

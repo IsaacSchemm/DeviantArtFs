@@ -5,6 +5,7 @@ open System.IO
 open System
 open System.Text
 open System.Threading
+open FSharp.Json
 
 module internal RefreshLock =
     let Semaphore = new SemaphoreSlim(1, 1)
@@ -65,7 +66,7 @@ type DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: string) =
                 use resp = ex.Response
                 use sr = new StreamReader(resp.GetResponseStream())
                 let! json = sr.ReadToEndAsync() |> Async.AwaitTask
-                let obj = DeviantArtBaseResponse.Parse json
+                let obj = Json.deserialize<DeviantArtBaseResponse> json
 
                 match (token, obj.error) with
                 | (:? IDeviantArtAutomaticRefreshToken as auto, Some "invalid_token") ->
@@ -85,7 +86,7 @@ type DeviantArtRequest(initial_token: IDeviantArtAccessToken, url: string) =
         use! resp = this.AsyncGetResponse initial_token
         use sr = new StreamReader(resp.GetResponseStream())
         let! json = sr.ReadToEndAsync() |> Async.AwaitTask
-        let obj = DeviantArtBaseResponse.Parse json
+        let obj = Json.deserialize<DeviantArtBaseResponse> json
         if obj.status = Some "error" then
             return raise (new DeviantArtException(resp, obj, json))
         else

@@ -72,5 +72,4 @@ type Deviation = {
     is_downloadable: bool option
     download_filesize: int option
     //suggested_reasons: SuggestedReason list option
-} with
-    static member Parse json = Json.deserialize<Deviation> json
+}
