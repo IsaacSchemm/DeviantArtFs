@@ -12,6 +12,7 @@ module ProfileByName =
         seq {
             yield sprintf "ext_collections=%b" req.ExtCollections
             yield sprintf "ext_galleries=%b" req.ExtGalleries
+            yield! QueryFor.commonParams common
         }
         |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/profile/%s" (Dafs.urlEncode req.Username))
         |> Dafs.asyncRead

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.FSharp.Reflection;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,34 +12,24 @@ namespace DocGenerator
         static string PrintTypeName(Type t)
         {
             string n = t.Name.Replace("`1", "").Replace("`2", "");
-            if (n == "FSharpAsync") n = "Async";
-            if (n == "IAsyncEnumerable") n = "AsyncSeq";
-            if (n == "Boolean") n = "bool";
-            if (n == "Byte") n = "byte";
-            if (n == "Int16") n = "short";
-            if (n == "Int32") n = "int";
-            if (n == "Int64") n = "long";
-            if (n == "Byte[]") n = "byte[]";
-            if (n == "String") n = "string";
-            if (n == "Unit") n = "unit";
+            if (t.Namespace == "FSharp.Control" && n == "IAsyncEnumerable") n = "AsyncSeq";
+            if (n == "FSharpAsync") n = "AsyncSeq";
             if (t.Namespace == "DeviantArtFs.Interop") n = $"Interop.{n}";
             var generics = string.Join(", ", t.GenericTypeArguments.Select(x => PrintTypeName(x)));
             if (n == "Nullable") return $"{generics}?";
-            if (n == "FSharpOption") return $"{generics} option";
-            if (n == "FSharpList") return $"{generics} list";
             return $"{n}{(t.GenericTypeArguments.Any() ? $"<{generics}>" : "")}";
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             using (var fs = new FileStream(Path.Combine(Environment.CurrentDirectory, "../../../..", "ENDPOINTS.md"), FileMode.Create, FileAccess.Write))
             using (var sw = new StreamWriter(fs))
             {
                 sw.WriteLine(@"This is a list of functions in the DeviantArtFs library that call DeviantArt / Sta.sh API endpoints.
 
-Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#. Methods that return a Task<T> can be used from async methods in C# and VB.NET.
+Methods that return an Async<T> or AsyncSeq<T> are intended for F# consumers. Methods that return a Task<T> can be used from async methods in C# and VB.NET.
 
-""long"" indicates a 64-bit integer, and a question mark (?) following a type name indicates a Nullable<T>, as in C#. ""T list"" indicates an FSharpList<T>, as in F#.
+A question mark (?) following a type name indicates a Nullable<T>, as in C#.
 ");
 
                 var a = Assembly.GetAssembly(typeof(DeviantArtFs.Api.Browse.DailyDeviations));
@@ -56,17 +47,20 @@ Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#. Met
                     if (ae.Any())
                     {
                         sw.WriteLine($"### {t.FullName}");
-
                         ISet<Type> typesToDescribe = new HashSet<Type>();
                         foreach (var x in ae)
                         {
                             sw.Write($"* {x.Name}");
                             foreach (var p in x.GetParameters())
                             {
-                                sw.Write($" `{PrintTypeName(p.ParameterType)}`");
-                                if (p.ParameterType.FullName.StartsWith("DeviantArtFs.") && !new[] { "IDeviantArtAccessToken", "IDeviantArtAccessToken", "IDeviantArtExtParams", "IDeviantArtPagingParams" }.Contains(p.ParameterType.Name))
+                                sw.Write($" `{PrintTypeName(p.ParameterType)} {p.Name}`");
+                                if (p.ParameterType.FullName.StartsWith("DeviantArtFs.") && !new[] { "IDeviantArtAccessToken", "IDeviantArtAccessToken", "DeviantArtCommonParams", "DeviantArtExtParams", "DeviantArtPagingParams" }.Contains(p.ParameterType.Name))
                                 {
                                     typesToDescribe.Add(p.ParameterType);
+                                }
+                                foreach (var g in p.ParameterType.GenericTypeArguments)
+                                {
+                                    typesToDescribe.Add(g);
                                 }
                             }
                             sw.WriteLine($" -> `{PrintTypeName(x.ReturnType)}`");
@@ -75,16 +69,28 @@ Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#. Met
 
                         foreach (var d in typesToDescribe)
                         {
-                            sw.WriteLine($"**{PrintTypeName(d)}:**");
-                            sw.WriteLine();
-                            foreach (var p in d.GetProperties())
+                            if (FSharpType.IsUnion(d, Microsoft.FSharp.Core.FSharpOption<BindingFlags>.None))
                             {
-                                sw.Write($"* {p.Name}: `{PrintTypeName(p.PropertyType)}`");
-                                if (p.PropertyType.IsEnum)
-                                {
-                                    sw.Write($" ({string.Join(", ", p.PropertyType.GetEnumNames())})");
-                                }
+                                sw.WriteLine($"**{PrintTypeName(d)}** ({string.Join(" | ", FSharpType.GetUnionCases(d, Microsoft.FSharp.Core.FSharpOption<BindingFlags>.None).Select(x => x.Name))})");
                                 sw.WriteLine();
+                            }
+                            else
+                            {
+                                sw.WriteLine($"**{PrintTypeName(d)}:**");
+                                sw.WriteLine();
+                                foreach (var p in d.GetProperties())
+                                {
+                                    sw.Write($"* {p.Name}: `{PrintTypeName(p.PropertyType)}`");
+                                    if (p.PropertyType.IsEnum)
+                                    {
+                                        sw.Write($" ({string.Join(", ", p.PropertyType.GetEnumNames())})");
+                                    }
+                                    else if (FSharpType.IsUnion(p.PropertyType, Microsoft.FSharp.Core.FSharpOption<BindingFlags>.None))
+                                    {
+                                        sw.Write($" ({string.Join(" | ", FSharpType.GetUnionCases(p.PropertyType, Microsoft.FSharp.Core.FSharpOption<BindingFlags>.None).Select(x => x.Name))})");
+                                    }
+                                    sw.WriteLine();
+                                }
                             }
                             sw.WriteLine();
                         }
