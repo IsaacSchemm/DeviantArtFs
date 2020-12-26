@@ -19,12 +19,12 @@ module DeviationComments =
             yield! QueryFor.paging paging 50
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/deviation/%O" req.Deviationid)
+        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/deviation/%O" req.Deviationid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtCommentPagedResult>
 
     let ToAsyncSeq token common req offset =
-        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
 
     let ToArrayAsync token common req offset limit =
         ToAsyncSeq token common req offset

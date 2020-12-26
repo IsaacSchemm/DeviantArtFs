@@ -15,7 +15,7 @@ module PublishCategoryTree =
                 yield sprintf "filetype=%s" (Dafs.urlEncode req.Filetype)
             yield sprintf "frequent=%b" req.Frequent
         }
-        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/stash/publish/categorytree"
+        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/publish/categorytree"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtCategoryList>
 

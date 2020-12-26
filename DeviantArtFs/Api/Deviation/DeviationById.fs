@@ -8,7 +8,7 @@ module DeviationById =
         seq {
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/%O" id)
+        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/%O" id)
         |> Dafs.asyncRead
         |> Dafs.thenParse<Deviation>
 

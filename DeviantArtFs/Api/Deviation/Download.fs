@@ -8,7 +8,7 @@ module Download =
         seq {
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/download/%O" deviationid)
+        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/download/%O" deviationid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviationDownload>
 

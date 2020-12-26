@@ -82,7 +82,7 @@ module Publish =
             yield sprintf "itemid=%d" req.Itemid
         }
 
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/publish"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/publish" Seq.empty
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
         req.RequestBodyText <- String.concat "&" query

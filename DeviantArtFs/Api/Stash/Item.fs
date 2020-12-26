@@ -12,7 +12,7 @@ module Item =
             yield! QueryFor.extParams req.ExtParams
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/item/%d" req.Itemid)
+        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/item/%d" req.Itemid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<StashMetadata>
 

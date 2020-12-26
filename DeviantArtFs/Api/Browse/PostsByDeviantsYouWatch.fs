@@ -9,12 +9,12 @@ module PostsByDeviantsYouWatch =
             yield! QueryFor.paging paging 50
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/browse/posts/deviantsyouwatch"
+        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/posts/deviantsyouwatch"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtPost>>
 
     let ToAsyncSeq token common offset =
-        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common)
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common)
 
     let ToArrayAsync token common offset limit =
         ToAsyncSeq token common offset

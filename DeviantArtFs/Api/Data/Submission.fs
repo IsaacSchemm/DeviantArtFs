@@ -5,7 +5,7 @@ open DeviantArtFs
 module Submission =
     let AsyncExecute token =
         Seq.empty
-        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/data/submission"
+        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/data/submission"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtTextOnlyResponse>
         |> Dafs.extractText

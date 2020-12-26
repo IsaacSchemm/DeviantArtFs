@@ -9,7 +9,7 @@ module Move =
             yield! QueryFor.commonParams common
         }
 
-        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/move/%d" stackid |> Dafs.createRequest token
+        let req = Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/move/%d" stackid) Seq.empty
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 

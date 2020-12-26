@@ -18,12 +18,12 @@ module PostDeviationComment =
             yield sprintf "body=%s" (Dafs.urlEncode req.Body)
             yield! QueryFor.commonParams common
         }
-        let req =
-            sprintf "https://www.deviantart.com/api/v1/oauth2/comments/post/deviation/%O" req.Deviationid
-            |> Dafs.createRequest token
+
+        let req = Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/post/deviation/%O" req.Deviationid) Seq.empty
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
         req.RequestBodyText <- String.concat "&" query
+
         return! req
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtComment>

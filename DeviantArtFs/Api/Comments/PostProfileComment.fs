@@ -18,12 +18,12 @@ module PostProfileComment =
             yield sprintf "body=%s" (Dafs.urlEncode req.Body)
             yield! QueryFor.commonParams common
         }
-        let req =
-            sprintf "https://www.deviantart.com/api/v1/oauth2/comments/post/profile/%s" req.Username
-            |> Dafs.createRequest token
+
+        let req = Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/post/profile/%s" req.Username) Seq.empty
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
         req.RequestBodyText <- String.concat "&" query
+
         return! req
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtComment>

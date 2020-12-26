@@ -28,12 +28,12 @@ module FeedbackMessages =
             yield! QueryFor.paging paging 50
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/messages/feedback"
+        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/messages/feedback"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
 
     let ToAsyncSeq token common req offset =
-        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
 
     let ToArrayAsync token common req offset limit =
         ToAsyncSeq token common req offset

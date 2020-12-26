@@ -18,12 +18,12 @@ module CollectionById =
             yield! QueryFor.paging paging 24
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/collections/%A" req.Folderid)
+        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/collections/%A" req.Folderid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtFolderPagedResult>
 
     let ToAsyncSeq token common req offset =
-        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
 
     let ToArrayAsync token common req offset limit =
         ToAsyncSeq token common req offset

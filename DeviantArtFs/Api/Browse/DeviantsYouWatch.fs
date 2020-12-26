@@ -4,22 +4,17 @@ open DeviantArtFs
 open FSharp.Control
 
 module DeviantsYouWatch =
-    let AsyncExecute token common paging = async {
-        let query = seq {
+    let AsyncExecute token common paging =
+        seq {
             yield! QueryFor.paging paging 50
             yield! QueryFor.commonParams common
         }
-        let req =
-            query
-            |> String.concat "&"
-            |> sprintf "https://www.deviantart.com/api/v1/oauth2/browse/deviantsyouwatch?%s"
-            |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return DeviantArtPagedResult<Deviation>.Parse json
-    }
+        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/deviantsyouwatch"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtPagedResult<Deviation>>
 
     let ToAsyncSeq token common offset =
-        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common)
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common)
 
     let ToArrayAsync token common offset limit =
         ToAsyncSeq token common offset

@@ -18,7 +18,7 @@ module Update =
                 | UpdateField.ClearDescription -> yield "description=null"
         }
 
-        let req = sprintf "https://www.deviantart.com/api/v1/oauth2/stash/update/%d" stackid |> Dafs.createRequest token
+        let req = Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/update/%d" stackid) Seq.empty
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 

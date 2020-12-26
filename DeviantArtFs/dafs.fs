@@ -8,15 +8,11 @@ module internal Dafs =
     /// URL-encodes a string.
     let urlEncode = WebUtility.UrlEncode
 
-    /// Creates a DeviantArtRequest object, given a token object, common parameters, and a URL.
-    let createRequest (token: IDeviantArtAccessToken) (url: string) =
-        new DeviantArtRequest(token, url)
-
     /// Creates a DeviantArtRequest object, given a token object, common parameters, a URL, and a query string.
-    let createRequest2 token url query =
+    let createRequest token url query =
         let q = String.concat "&" query
         let u = sprintf "%s?%s" url q
-        createRequest token u
+        new DeviantArtRequest(token, u)
 
     /// Executes a DeviantArtRequest and gets the response body.
     let asyncRead (req: DeviantArtRequest) = req.AsyncReadJson()
@@ -29,11 +25,6 @@ module internal Dafs =
         workflow
         |> AsyncThen.map parse<'a>
 
-    /// Takes an async workflow, and waits for it but ignores its result.
-    let thenIgnore (workflow: Async<'a>) =
-        workflow
-        |> AsyncThen.map ignore
-
     /// Takes an async workflow that returns a DeviantArtListOnlyResponse, and creates another async workflow that returns the list it contains.
     let extractList (workflow: Async<'a> when 'a :> IDeviantArtListOnlyResponse<'b>) =
         workflow
@@ -44,7 +35,7 @@ module internal Dafs =
         workflow
         |> AsyncThen.map (fun x -> x.text)
 
-    let toAsyncSeq3 (cursor: 'a) (f: 'a -> Async<'b> when 'b :> IResultPage<'a, 'item>) = asyncSeq {
+    let toAsyncSeq (cursor: 'a) (f: 'a -> Async<'b> when 'b :> IResultPage<'a, 'item>) = asyncSeq {
         let mutable cursor = cursor
         let mutable has_more = true
         while has_more do

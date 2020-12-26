@@ -16,12 +16,12 @@ module Topics =
             yield! QueryFor.paging paging 10
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/browse/topics"
+        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/topics"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtTopic>>
 
     let ToAsyncSeq token common req offset =
-        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
 
     let ToArrayAsync token common req offset limit =
         ToAsyncSeq token common req offset

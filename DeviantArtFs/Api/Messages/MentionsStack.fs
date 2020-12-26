@@ -9,12 +9,12 @@ module MentionsStack =
             yield! QueryFor.paging paging 50
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/messages/mentions/%s" (Dafs.urlEncode stackid))
+        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/messages/mentions/%s" (Dafs.urlEncode stackid))
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
 
     let ToAsyncSeq token common stackid offset =
-        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common stackid)
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common stackid)
 
     let ToArrayAsync token common stackid offset limit =
         ToAsyncSeq token common stackid offset

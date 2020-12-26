@@ -19,12 +19,12 @@ module MessagesFeed =
             | None -> ()
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/messages/feed"
+        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/messages/feed"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtMessageCursorResult>
 
     let ToAsyncSeq token common req cursor =
-        Dafs.toAsyncSeq3 cursor (AsyncExecute token common req)
+        Dafs.toAsyncSeq cursor (AsyncExecute token common req)
 
     let ToArrayAsync token common req cursor limit =
         ToAsyncSeq token common req (Option.ofObj cursor)

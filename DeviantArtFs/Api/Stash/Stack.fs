@@ -7,7 +7,7 @@ module Stack =
         seq {
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d" stackid)
+        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d" stackid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<StashMetadata>
 

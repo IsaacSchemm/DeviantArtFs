@@ -12,7 +12,7 @@ module TagsSearch =
             yield sprintf "tag_name=%s" (Dafs.urlEncode tag_name)
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/browse/tags/search"
+        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/tags/search"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<TagsElement>>
         |> Dafs.extractList

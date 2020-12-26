@@ -10,7 +10,7 @@ module Whois =
                 yield! QueryFor.commonParams common
         }
 
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/whois"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/whois" Seq.empty
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
         req.RequestBodyText <- String.concat "&" query

@@ -8,7 +8,7 @@ module TopTopics =
         seq {
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/browse/toptopics"
+        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/toptopics"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<DeviantArtTopic>>
         |> Dafs.extractList

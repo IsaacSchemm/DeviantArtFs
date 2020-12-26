@@ -5,7 +5,7 @@ open DeviantArtFs
 module Space =
     let AsyncExecute token =
         Seq.empty
-        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/stash/space"
+        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/space"
         |> Dafs.asyncRead
         |> Dafs.thenParse<StashSpaceResult>
 

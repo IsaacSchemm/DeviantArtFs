@@ -41,7 +41,7 @@ module ProfileUpdate =
                 | ProfileUpdateField.Countryid v -> sprintf "countryid=%d" v
                 | ProfileUpdateField.Website v -> sprintf "website=%s" (Dafs.urlEncode v)
         }
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/profile/update"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/profile/update" Seq.empty
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
         req.RequestBodyText <- String.concat "&" query

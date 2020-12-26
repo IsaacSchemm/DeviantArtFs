@@ -8,7 +8,7 @@ module StatusById =
         seq {
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/statuses/%O" id)
+        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/statuses/%O" id)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtStatus>
 

@@ -19,7 +19,7 @@ module Fave =
             yield! QueryFor.commonParams common
         }
 
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/collections/fave"
+        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/collections/fave" Seq.empty
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
 

@@ -10,12 +10,12 @@ module StatusesList =
             yield! QueryFor.paging paging 50
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/user/statuses"
+        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/statuses"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtStatus>>
 
     let ToAsyncSeq token common username offset =
-        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common username)
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common username)
 
     let ToArrayAsync token common username offset limit =
         ToAsyncSeq token common username offset

@@ -5,7 +5,7 @@ open DeviantArtFs
 module FriendsUnwatch =
     let AsyncExecute token username =
         Seq.empty
-        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/unwatch/%s" (Dafs.urlEncode username))
+        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/unwatch/%s" (Dafs.urlEncode username))
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
 

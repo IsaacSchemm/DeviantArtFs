@@ -7,7 +7,7 @@ module Whoami =
         seq {
             yield! QueryFor.commonParams common
         }
-        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/user/whoami"
+        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/whoami"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtUser>
 
