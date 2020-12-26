@@ -3,9 +3,10 @@
 open DeviantArtFs
 
 module Position =
-    let AsyncExecute token (stackid: int64) (position: int) = async {
+    let AsyncExecute token common (stackid: int64) (position: int) = async {
         let query = seq {
             yield sprintf "position=%d" position
+            yield! QueryFor.commonParams common
         }
 
         let req = Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/position/%d" stackid) Seq.empty
@@ -19,6 +20,6 @@ module Position =
         |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
     }
 
-    let ExecuteAsync token stackid position =
-        AsyncExecute token stackid position
+    let ExecuteAsync token common stackid position =
+        AsyncExecute token common stackid position
         |> Async.StartAsTask
