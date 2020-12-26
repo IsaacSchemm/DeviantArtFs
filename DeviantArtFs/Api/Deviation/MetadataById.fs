@@ -18,7 +18,7 @@ module MetadataById =
                 |> String.concat ","
                 |> sprintf "deviationids[]=%s"
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/deviation/metadata"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/deviation/metadata"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviationMetadataResponse>
 

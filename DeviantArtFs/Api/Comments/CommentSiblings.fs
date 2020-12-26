@@ -14,7 +14,7 @@ module CommentSiblings =
             yield sprintf "ext_item=%b" req.ExtItem
             yield! QueryFor.paging paging 50
         }
-        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/%O/siblings" req.Commentid)
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/%O/siblings" req.Commentid)
         |> Dafs.asyncRead
         |> AsyncThen.map (fun str -> str.Replace(""""context": list""", """"context":{}"""))
         |> Dafs.thenParse<DeviantArtCommentSiblingsPagedResult>

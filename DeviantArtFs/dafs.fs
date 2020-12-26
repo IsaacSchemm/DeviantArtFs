@@ -8,11 +8,17 @@ module internal Dafs =
     /// URL-encodes a string.
     let urlEncode = WebUtility.UrlEncode
 
-    /// Creates a DeviantArtRequest object, given a token object, common parameters, a URL, and a query string.
-    let createRequest token url query =
+    [<RequireQualifiedAccess>]
+    type Method = GET | POST
+
+    /// Creates a DeviantArtRequest object, given a method, token object, common parameters, a URL, and a query string.
+    let createRequest method token url query =
         let q = String.concat "&" query
-        let u = sprintf "%s?%s" url q
-        new DeviantArtRequest(token, u)
+        match method with
+        | Method.GET ->
+            new DeviantArtRequest(token, sprintf "%s?%s" url q, Method = "GET")
+        | Method.POST ->
+            new DeviantArtRequest(token, url, Method = "POST", ContentType = "application/x-www-form-urlencoded", RequestBodyText = q)
 
     /// Executes a DeviantArtRequest and gets the response body.
     let asyncRead (req: DeviantArtRequest) = req.AsyncReadJson()

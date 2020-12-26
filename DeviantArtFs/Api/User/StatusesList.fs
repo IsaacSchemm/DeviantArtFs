@@ -9,7 +9,7 @@ module StatusesList =
             yield sprintf "username=%s" (Dafs.urlEncode username)
             yield! QueryFor.paging paging 50
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/statuses"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/user/statuses"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtStatus>>
 

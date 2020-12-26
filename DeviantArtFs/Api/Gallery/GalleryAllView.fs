@@ -14,7 +14,7 @@ module GalleryAllView =
             | None -> ()
             yield! QueryFor.paging paging 24
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/gallery/all"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/gallery/all"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<Deviation>>
 

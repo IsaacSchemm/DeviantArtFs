@@ -16,7 +16,7 @@ module Delta =
             yield! QueryFor.paging paging 120
             yield! QueryFor.extParams req.ExtParams
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/delta?%s"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/stash/delta?%s"
         |> Dafs.asyncRead
         |> Dafs.thenParse<StashDeltaResult>
 

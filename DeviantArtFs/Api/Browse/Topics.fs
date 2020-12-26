@@ -15,7 +15,7 @@ module Topics =
             | None -> ()
             yield! QueryFor.paging paging 10
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/topics"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/topics"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtTopic>>
 

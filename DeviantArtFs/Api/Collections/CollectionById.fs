@@ -18,7 +18,7 @@ module CollectionById =
             yield! QueryFor.paging paging 24
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/collections/%A" req.Folderid)
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/collections/%A" req.Folderid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtFolderPagedResult>
 

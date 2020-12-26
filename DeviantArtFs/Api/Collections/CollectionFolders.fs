@@ -18,7 +18,7 @@ module CollectionFolders =
             yield sprintf "ext_preload=%b" req.ExtPreload
             yield! QueryFor.paging paging 50
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/collections/folders"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/collections/folders"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtCollectionFolder>>
 

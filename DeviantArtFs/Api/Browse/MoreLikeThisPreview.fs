@@ -9,7 +9,7 @@ module MoreLikeThisPreview =
             yield sprintf "seed=%O" seed
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/morelikethis/preview"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/morelikethis/preview"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtMoreLikeThisPreviewResult>
 

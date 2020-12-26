@@ -17,7 +17,7 @@ module EmbeddedContent =
             | None -> ()
             yield! QueryFor.paging paging 50
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/deviation/embeddedcontent"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/deviation/embeddedcontent"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtEmbeddedContentPagedResult>
 

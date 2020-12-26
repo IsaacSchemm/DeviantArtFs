@@ -6,7 +6,7 @@ open System
 module Download =
     let AsyncExecute token (deviationid: Guid) =
         Seq.empty
-        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/download/%O" deviationid)
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/download/%O" deviationid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviationDownload>
 

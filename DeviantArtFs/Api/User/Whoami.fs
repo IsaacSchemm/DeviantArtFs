@@ -7,7 +7,7 @@ module Whoami =
         seq {
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/whoami"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/user/whoami"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtUser>
 

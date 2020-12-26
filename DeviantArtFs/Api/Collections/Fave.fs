@@ -9,25 +9,17 @@ type FaveResponse = {
 }
 
 module Fave =
-    let AsyncExecute token (deviationid: Guid) (folderids: seq<Guid>) = async {
-        let query = seq {
+    let AsyncExecute token (deviationid: Guid) (folderids: seq<Guid>) =
+        seq {
             yield sprintf "deviationid=%O" deviationid
             let mutable index = 0
             for f in folderids do
                 yield sprintf "folderid[%d]=%O" index f
                 index <- index + 1
         }
-
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/collections/fave" Seq.empty
-        req.Method <- "POST"
-        req.ContentType <- "application/x-www-form-urlencoded"
-
-        req.RequestBodyText <- String.concat "&" query
-
-        return! req
+        |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/collections/fave"
         |> Dafs.asyncRead
         |> Dafs.thenParse<FaveResponse>
-    }
 
     let ExecuteAsync token deviationid folderids =
         AsyncExecute token deviationid folderids

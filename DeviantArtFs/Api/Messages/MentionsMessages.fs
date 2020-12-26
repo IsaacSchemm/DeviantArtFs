@@ -16,7 +16,7 @@ module MentionsMessages =
             yield sprintf "stack=%b" req.Stack
             yield! QueryFor.paging paging 50
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/messages/mentions"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/messages/mentions"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
 

@@ -15,7 +15,7 @@ module Recommended =
             yield! QueryFor.paging paging 50
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/recommended"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/recommended"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtRecommendedPagedResult>
 

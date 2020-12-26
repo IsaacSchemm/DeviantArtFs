@@ -36,7 +36,7 @@ module Popular =
             yield! QueryFor.paging paging 120
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/popular"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/popular"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtBrowsePagedResult>
 

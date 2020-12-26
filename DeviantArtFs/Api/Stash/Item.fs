@@ -11,7 +11,7 @@ module Item =
         seq {
             yield! QueryFor.extParams req.ExtParams
         }
-        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/item/%d" req.Itemid)
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/item/%d" req.Itemid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<StashMetadata>
 

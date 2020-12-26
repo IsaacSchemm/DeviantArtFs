@@ -30,8 +30,8 @@ type ProfileUpdateField =
 | Website of string
 
 module ProfileUpdate =
-    let AsyncExecute token (updates: ProfileUpdateField seq) = async {
-        let query = seq {
+    let AsyncExecute token (updates: ProfileUpdateField seq) =
+        seq {
             for update in updates do
                 match update with
                 | ProfileUpdateField.UserIsArtist v -> sprintf "user_is_artist=%b" v
@@ -41,15 +41,9 @@ module ProfileUpdate =
                 | ProfileUpdateField.Countryid v -> sprintf "countryid=%d" v
                 | ProfileUpdateField.Website v -> sprintf "website=%s" (Dafs.urlEncode v)
         }
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/profile/update" Seq.empty
-        req.Method <- "POST"
-        req.ContentType <- "application/x-www-form-urlencoded"
-        req.RequestBodyText <- String.concat "&" query
-        
-        return! req
+        |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/user/profile/update"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
-    }
 
     let ExecuteAsync token updates =
         AsyncExecute token updates

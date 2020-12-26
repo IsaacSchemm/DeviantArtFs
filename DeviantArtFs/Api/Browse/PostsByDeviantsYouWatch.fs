@@ -8,7 +8,7 @@ module PostsByDeviantsYouWatch =
         seq {
             yield! QueryFor.paging paging 50
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/posts/deviantsyouwatch"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/posts/deviantsyouwatch"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtPost>>
 

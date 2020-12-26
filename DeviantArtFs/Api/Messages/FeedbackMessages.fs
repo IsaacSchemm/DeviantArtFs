@@ -27,7 +27,7 @@ module FeedbackMessages =
             yield sprintf "stack=%b" req.Stack
             yield! QueryFor.paging paging 5
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/messages/feedback"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/messages/feedback"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
 

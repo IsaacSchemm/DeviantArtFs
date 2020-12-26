@@ -15,7 +15,7 @@ module UserJournals =
             yield! QueryFor.paging paging 50
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/user/journals"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/user/journals"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<Deviation>>
 

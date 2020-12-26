@@ -14,7 +14,7 @@ module DailyDeviations =
             | None -> ()
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/dailydeviations"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/dailydeviations"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<Deviation>>
 

@@ -18,7 +18,7 @@ module StatusComments =
             yield sprintf "maxdepth=%d" req.Maxdepth
             yield! QueryFor.paging paging 50
         }
-        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/status/%O" req.Statusid)
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/status/%O" req.Statusid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtCommentPagedResult>
 

@@ -3,21 +3,13 @@
 open DeviantArtFs
 
 module Move =
-    let AsyncExecute token (stackid: int64) (targetid: int64) = async {
-        let query = seq {
+    let AsyncExecute token (stackid: int64) (targetid: int64) =
+        seq {
             yield sprintf "targetid=%d" targetid
         }
-
-        let req = Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/move/%d" stackid) Seq.empty
-        req.Method <- "POST"
-        req.ContentType <- "application/x-www-form-urlencoded"
-
-        req.RequestBodyText <- String.concat "&" query
-
-        return! req
+        |> Dafs.createRequest Dafs.Method.POST token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/move/%d" stackid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<StashMoveResult>
-    }
 
     let ExecuteAsync token stackid targetid =
         AsyncExecute token stackid targetid

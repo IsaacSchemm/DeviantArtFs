@@ -10,7 +10,7 @@ module Contents =
         seq {
             yield! QueryFor.paging paging 50
         }
-        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d/contents" stackid)
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d/contents" stackid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<StashMetadata>>
 

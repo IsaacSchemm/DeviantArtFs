@@ -5,7 +5,7 @@ open DeviantArtFs
 module PublishUserdata =
     let AsyncExecute token =
         Seq.empty
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/publish/userdata"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/stash/publish/userdata"
         |> Dafs.asyncRead
         |> Dafs.thenParse<StashPublishUserdataResult>
 

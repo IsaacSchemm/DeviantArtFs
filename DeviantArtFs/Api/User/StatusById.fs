@@ -6,7 +6,7 @@ open System
 module StatusById =
     let AsyncExecute token (id: Guid) =
         Seq.empty
-        |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/statuses/%O" id)
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/statuses/%O" id)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtStatus>
 

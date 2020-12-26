@@ -18,7 +18,7 @@ module MessagesFeed =
             | Some c -> yield sprintf "cursor=%s" c
             | None -> ()
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/messages/feed"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/messages/feed"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtMessageCursorResult>
 

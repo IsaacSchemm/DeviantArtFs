@@ -13,7 +13,7 @@ module FriendsSearch =
             if req.Username |> isNull |> not then
                 yield req.Username |> Dafs.urlEncode |> sprintf "username=%s"
         }
-        |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/friends/search"
+        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/user/friends/search"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<DeviantArtUser>>
 

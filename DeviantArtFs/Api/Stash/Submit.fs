@@ -31,7 +31,7 @@ module Submit =
         let h2 = sprintf "--%s" h1
         let h3 = sprintf "--%s--" h1
 
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/submit" Seq.empty
+        let req = Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/stash/submit" Seq.empty
         req.Method <- "POST"
         req.ContentType <- sprintf "multipart/form-data; boundary=%s" h1
 
