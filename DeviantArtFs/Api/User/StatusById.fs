@@ -4,14 +4,14 @@ open DeviantArtFs
 open System
 
 module StatusById =
-    let AsyncExecute token (id: Guid) = async {
-        let req =
-            sprintf "https://www.deviantart.com/api/v1/oauth2/user/statuses/%O" id
-            |> Dafs.createRequest token
-        let! json = Dafs.asyncRead req
-        return DeviantArtStatus.Parse json
-    }
+    let AsyncExecute token common (id: Guid) =
+        seq {
+            yield! QueryFor.commonParams common
+        }
+        |> Dafs.createRequest2 token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/statuses/%O" id)
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtStatus>
 
-    let ExecuteAsync token id =
-        AsyncExecute token id
+    let ExecuteAsync token common id =
+        AsyncExecute token common id
         |> Async.StartAsTask

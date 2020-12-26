@@ -1,8 +1,6 @@
 ﻿namespace DeviantArtFs.Api.User
 
 open DeviantArtFs
-open System.IO
-open System.Net
 
 type FriendsWatchRequest(username: string) =
     member __.Username = username
@@ -27,16 +25,21 @@ module FriendsWatch =
             yield sprintf "watch[activity]=%b" ps.Activity
             yield sprintf "watch[collections]=%b" ps.Collections
         }
+
         let req =
             ps.Username
-            |> WebUtility.UrlEncode
+            |> Dafs.urlEncode
             |> sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/watch/%s"
             |> Dafs.createRequest token
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
         req.RequestBodyText <- String.concat "&" query
-        let! json = Dafs.asyncRead req
-        ignore json
+
+        return! req
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
     }
 
-    let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask :> System.Threading.Tasks.Task
+    let ExecuteAsync token ps =
+        AsyncExecute token ps
+        |> Async.StartAsTask

@@ -15,8 +15,6 @@ type StatusPostRequest(body: string) =
     member val Stashid = Nullable<int64>() with get, set
 
 module StatusPost =
-    open System.IO
-
     let AsyncExecute token (ps: StatusPostRequest) = async {
         let query = seq {
             match Option.ofObj ps.Body with
@@ -32,13 +30,17 @@ module StatusPost =
             | Some s -> yield sprintf "stashid=%O" s
             | None -> ()
         }
+
         let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/statuses/post"
         req.Method <- "POST"
         req.ContentType <- "application/x-www-form-urlencoded"
         req.RequestBodyText <- String.concat "&" query
-        let! json = Dafs.asyncRead req
-        let result = Json.deserialize<StatusPostResponse> json
-        return result.statusid
+
+        return! req
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<StatusPostResponse>
     }
 
-    let ExecuteAsync token ps = AsyncExecute token ps |> Async.StartAsTask
+    let ExecuteAsync token ps =
+        AsyncExecute token ps
+        |> Async.StartAsTask

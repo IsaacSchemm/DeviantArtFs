@@ -3,10 +3,14 @@
 open DeviantArtFs
 
 module Whoami =
-    let AsyncExecute token = async {
-        let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/whoami"
-        let! json = Dafs.asyncRead req
-        return DeviantArtUser.Parse json
-    }
+    let AsyncExecute token common =
+        seq {
+            yield! QueryFor.commonParams common
+        }
+        |> Dafs.createRequest2 token "https://www.deviantart.com/api/v1/oauth2/user/whoami"
+        |> Dafs.asyncRead
+        |> Dafs.thenParse<DeviantArtUser>
 
-    let ExecuteAsync token = AsyncExecute token |> Async.StartAsTask
+    let ExecuteAsync token common =
+        AsyncExecute token common
+        |> Async.StartAsTask
