@@ -10,13 +10,12 @@ type PostProfileCommentRequest(username: string, body: string) =
     member val Commentid = Nullable<Guid>() with get, set
 
 module PostProfileComment =
-    let AsyncExecute token common (req: PostProfileCommentRequest) = async {
+    let AsyncExecute token (req: PostProfileCommentRequest) = async {
         let query = seq {
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s
             | None -> ()
             yield sprintf "body=%s" (Dafs.urlEncode req.Body)
-            yield! QueryFor.commonParams common
         }
 
         let req = Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/post/profile/%s" req.Username) Seq.empty
@@ -29,6 +28,6 @@ module PostProfileComment =
         |> Dafs.thenParse<DeviantArtComment>
     }
 
-    let ExecuteAsync token common req =
-        AsyncExecute token common req
+    let ExecuteAsync token req =
+        AsyncExecute token req
         |> Async.StartAsTask

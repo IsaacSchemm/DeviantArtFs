@@ -12,9 +12,7 @@ methods that take one or more parameters:
 
 * `token` (an object that implements the `IDeviantArtAccessToken` interface
   and provides the library with the API credentials)
-* `common` (allows user object expansion and mature content filtering;
-  `DeviantArtCommonParams.Default` will hide mature content and avoid
-  all user object expansion)
+* `expansion` (on some requests; allows user object expansion)
 * A parameter specific to the request (if any)
 * `paging` / `cursor` / `offset` (for endpoints that ask the user to request a
   particular range of results; `paging` will be a `DeviantArtPagingParams`
@@ -84,6 +82,7 @@ Sta.sh stack, and this is represented by its own union case.
 
 ## Known issues
 
+* Mature content filtering is not supported (use the `is_mature` flag on the deviation instead).
 * The following fields in the deviation object are not supported:
   * challenge
   * challenge_entry

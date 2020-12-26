@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>6.0.0-beta1</Version>
+    <Version>6.0.0-beta2</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Isaac Schemm</Authors>
     <Company></Company>
@@ -21,7 +21,7 @@
     <Compile Include="Transforms\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="IResultPage.fs" />
     <Compile Include="Tokens.fs" />
-    <Compile Include="CommonParams.fs" />
+    <Compile Include="ObjectExpansion.fs" />
     <Compile Include="PagingParams.fs" />
     <Compile Include="ExtParams.fs" />
     <Compile Include="ResponseTypes\DeviantArtBaseResponse.fs" />

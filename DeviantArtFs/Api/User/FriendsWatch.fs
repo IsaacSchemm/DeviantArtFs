@@ -14,7 +14,7 @@ type FriendsWatchRequest(username: string) =
     member val Collections = true with get, set
 
 module FriendsWatch =
-    let AsyncExecute token common (ps: FriendsWatchRequest) = async {
+    let AsyncExecute token (ps: FriendsWatchRequest) = async {
         let query = seq {
             yield sprintf "watch[friend]=%b" ps.Friend
             yield sprintf "watch[deviations]=%b" ps.Deviations
@@ -24,7 +24,6 @@ module FriendsWatch =
             yield sprintf "watch[scraps]=%b" ps.Scraps
             yield sprintf "watch[activity]=%b" ps.Activity
             yield sprintf "watch[collections]=%b" ps.Collections
-            yield! QueryFor.commonParams common
         }
 
         let req = Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/watch/%s" (Dafs.urlEncode ps.Username)) Seq.empty
@@ -37,6 +36,6 @@ module FriendsWatch =
         |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
     }
 
-    let ExecuteAsync token common ps =
-        AsyncExecute token common ps
+    let ExecuteAsync token ps =
+        AsyncExecute token ps
         |> Async.StartAsTask

@@ -8,26 +8,26 @@ type UserJournalsRequest(username: string) =
     member val Featured = true with get, set
 
 module UserJournals =
-    let AsyncExecute token common (req: UserJournalsRequest) paging =
+    let AsyncExecute token expansion (req: UserJournalsRequest) paging =
         seq {
             yield sprintf "username=%s" (Dafs.urlEncode req.Username)
             yield sprintf "featured=%b" req.Featured
             yield! QueryFor.paging paging 50
-            yield! QueryFor.commonParams common
+            yield! QueryFor.objectExpansion expansion
         }
         |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/user/journals"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<Deviation>>
 
-    let ToAsyncSeq token common req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
+    let ToAsyncSeq token expansion req offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token expansion req)
 
-    let ToArrayAsync token common req offset limit =
-        ToAsyncSeq token common req offset
+    let ToArrayAsync token expansion req offset limit =
+        ToAsyncSeq token expansion req offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token common req paging =
-        AsyncExecute token common req paging
+    let ExecuteAsync token expansion req paging =
+        AsyncExecute token expansion req paging
         |> Async.StartAsTask

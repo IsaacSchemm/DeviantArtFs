@@ -7,15 +7,14 @@ type TagsElement = {
 }
 
 module TagsSearch =
-    let AsyncExecute token common (tag_name: string) =
+    let AsyncExecute token (tag_name: string) =
         seq {
             yield sprintf "tag_name=%s" (Dafs.urlEncode tag_name)
-            yield! QueryFor.commonParams common
         }
         |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/tags/search"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<TagsElement>>
 
-    let ExecuteAsync token common tag_name =
-        AsyncExecute token common tag_name
+    let ExecuteAsync token tag_name =
+        AsyncExecute token tag_name
         |> Async.StartAsTask

@@ -3,14 +3,14 @@
 open DeviantArtFs
 
 module Whoami =
-    let AsyncExecute token common =
+    let AsyncExecute token expansion =
         seq {
-            yield! QueryFor.commonParams common
+            yield! QueryFor.objectExpansion expansion
         }
         |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/whoami"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtUser>
 
-    let ExecuteAsync token common =
-        AsyncExecute token common
+    let ExecuteAsync token expansion =
+        AsyncExecute token expansion
         |> Async.StartAsTask

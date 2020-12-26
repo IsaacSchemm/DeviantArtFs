@@ -3,7 +3,7 @@
 open DeviantArtFs
 
 module Placebo =
-    let AsyncIsValid (token: IDeviantArtAccessToken) = async {
+    let AsyncIsValid token = async {
         try
             let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/placebo" Seq.empty
             let! json = Dafs.asyncRead req

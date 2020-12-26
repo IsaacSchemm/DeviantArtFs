@@ -15,7 +15,7 @@ type StatusPostRequest(body: string) =
     member val Stashid = Nullable<int64>() with get, set
 
 module StatusPost =
-    let AsyncExecute token common (ps: StatusPostRequest) = async {
+    let AsyncExecute token (ps: StatusPostRequest) = async {
         let query = seq {
             match Option.ofObj ps.Body with
             | Some s -> yield sprintf "body=%s" (Dafs.urlEncode s)
@@ -29,7 +29,6 @@ module StatusPost =
             match Option.ofNullable ps.Stashid with
             | Some s -> yield sprintf "stashid=%O" s
             | None -> ()
-            yield! QueryFor.commonParams common
         }
 
         let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/statuses/post" Seq.empty
@@ -42,6 +41,6 @@ module StatusPost =
         |> Dafs.thenParse<StatusPostResponse>
     }
 
-    let ExecuteAsync token common ps =
-        AsyncExecute token common ps
+    let ExecuteAsync token ps =
+        AsyncExecute token ps
         |> Async.StartAsTask

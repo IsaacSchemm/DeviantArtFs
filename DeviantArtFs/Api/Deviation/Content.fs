@@ -4,14 +4,12 @@ open DeviantArtFs
 open System
 
 module Content =
-    let AsyncExecute token common (deviationid: Guid) =
-        seq {
-            yield! QueryFor.commonParams common
-        }
+    let AsyncExecute token (deviationid: Guid) =
+        Seq.empty
         |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/content?deviationid=%O" deviationid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviationTextContent>
 
-    let ExecuteAsync token common deviationid =
-        AsyncExecute token common deviationid
+    let ExecuteAsync token deviationid =
+        AsyncExecute token deviationid
         |> Async.StartAsTask

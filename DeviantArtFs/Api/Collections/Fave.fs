@@ -9,14 +9,13 @@ type FaveResponse = {
 }
 
 module Fave =
-    let AsyncExecute token common (deviationid: Guid) (folderids: seq<Guid>) = async {
+    let AsyncExecute token (deviationid: Guid) (folderids: seq<Guid>) = async {
         let query = seq {
             yield sprintf "deviationid=%O" deviationid
             let mutable index = 0
             for f in folderids do
                 yield sprintf "folderid[%d]=%O" index f
                 index <- index + 1
-            yield! QueryFor.commonParams common
         }
 
         let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/collections/fave" Seq.empty
@@ -30,6 +29,6 @@ module Fave =
         |> Dafs.thenParse<FaveResponse>
     }
 
-    let ExecuteAsync token common deviationid folderids =
-        AsyncExecute token common deviationid folderids
+    let ExecuteAsync token deviationid folderids =
+        AsyncExecute token deviationid folderids
         |> Async.StartAsTask

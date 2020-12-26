@@ -8,16 +8,16 @@ type ProfileByNameRequest(username: string) =
     member val ExtGalleries = false with get, set
 
 module ProfileByName =
-    let AsyncExecute token common (req: ProfileByNameRequest) =
+    let AsyncExecute token expansion (req: ProfileByNameRequest) =
         seq {
             yield sprintf "ext_collections=%b" req.ExtCollections
             yield sprintf "ext_galleries=%b" req.ExtGalleries
-            yield! QueryFor.commonParams common
+            yield! QueryFor.objectExpansion expansion
         }
         |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/profile/%s" (Dafs.urlEncode req.Username))
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtProfile>
 
-    let ExecuteAsync token common req =
-        AsyncExecute token common req
+    let ExecuteAsync token expansion req =
+        AsyncExecute token expansion req
         |> Async.StartAsTask

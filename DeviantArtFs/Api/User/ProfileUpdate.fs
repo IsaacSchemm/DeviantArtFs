@@ -30,7 +30,7 @@ type ProfileUpdateField =
 | Website of string
 
 module ProfileUpdate =
-    let AsyncExecute token common (updates: ProfileUpdateField seq) = async {
+    let AsyncExecute token (updates: ProfileUpdateField seq) = async {
         let query = seq {
             for update in updates do
                 match update with
@@ -40,7 +40,6 @@ module ProfileUpdate =
                 | ProfileUpdateField.Tagline v -> sprintf "tagline=%s" (Dafs.urlEncode v)
                 | ProfileUpdateField.Countryid v -> sprintf "countryid=%d" v
                 | ProfileUpdateField.Website v -> sprintf "website=%s" (Dafs.urlEncode v)
-            yield! QueryFor.commonParams common
         }
         let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/profile/update" Seq.empty
         req.Method <- "POST"
@@ -52,6 +51,6 @@ module ProfileUpdate =
         |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
     }
 
-    let ExecuteAsync token common updates =
-        AsyncExecute token common updates
+    let ExecuteAsync token updates =
+        AsyncExecute token updates
         |> Async.StartAsTask

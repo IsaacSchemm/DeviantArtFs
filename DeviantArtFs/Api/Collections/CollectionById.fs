@@ -10,27 +10,27 @@ type CollectionByIdRequest(folderid: Guid) =
 module CollectionById =
     open FSharp.Control
 
-    let AsyncExecute token common (req: CollectionByIdRequest) paging =
+    let AsyncExecute token expansion (req: CollectionByIdRequest) paging =
         seq {
             match Option.ofObj req.Username with
             | Some s -> yield sprintf "username=%s" (Dafs.urlEncode s)
             | None -> ()
             yield! QueryFor.paging paging 24
-            yield! QueryFor.commonParams common
+            yield! QueryFor.objectExpansion expansion
         }
         |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/collections/%A" req.Folderid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtFolderPagedResult>
 
-    let ToAsyncSeq token common req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
+    let ToAsyncSeq token expansion req offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token expansion req)
 
-    let ToArrayAsync token common req offset limit =
-        ToAsyncSeq token common req offset
+    let ToArrayAsync token expansion req offset limit =
+        ToAsyncSeq token expansion req offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token common req paging =
-        AsyncExecute token common req paging
+    let ExecuteAsync token expansion req paging =
+        AsyncExecute token expansion req paging
         |> Async.StartAsTask

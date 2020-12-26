@@ -41,7 +41,7 @@ type PublishRequest(itemid: int64) =
     member val Itemid = itemid
 
 module Publish =
-    let AsyncExecute token common (req: PublishRequest) = async {
+    let AsyncExecute token (req: PublishRequest) = async {
         let query = seq {
             yield sprintf "is_mature=%b" req.IsMature
             match req.MatureLevel with
@@ -80,7 +80,6 @@ module Publish =
             yield sprintf "allow_free_download=%b" req.AllowFreeDownload
             yield sprintf "add_watermark=%b" req.AddWatermark
             yield sprintf "itemid=%d" req.Itemid
-            yield! QueryFor.commonParams common
         }
 
         let req = Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/publish" Seq.empty
@@ -93,6 +92,6 @@ module Publish =
         |> Dafs.thenParse<StashPublishResponse>
     }
 
-    let ExecuteAsync token common req =
-        AsyncExecute token common req
+    let ExecuteAsync token req =
+        AsyncExecute token req
         |> Async.StartAsTask

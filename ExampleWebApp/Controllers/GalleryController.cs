@@ -28,14 +28,13 @@ namespace ExampleWebApp.Controllers
             if (folderId is Guid f) {
                 var r = await DeviantArtFs.Api.Gallery.GalleryById.ExecuteAsync(
                     token,
-                    DeviantArtCommonParams.Default,
+                    DeviantArtObjectExpansion.None,
                     new DeviantArtFs.Api.Gallery.GalleryByIdRequest { Folderid = f, Username = username },
                     paging);
                 resp = new Page { HasMore = r.has_more, NextOffset = r.next_offset.OrNull(), Results = r.results };
             } else {
                 var r = await DeviantArtFs.Api.Gallery.GalleryAllView.ExecuteAsync(
                     token,
-                    DeviantArtCommonParams.Default,
                     new DeviantArtFs.Api.Gallery.GalleryAllViewRequest { Username = username },
                     paging);
                 resp = new Page { HasMore = r.has_more, NextOffset = r.next_offset.OrNull(), Results = r.results };
@@ -54,7 +53,6 @@ namespace ExampleWebApp.Controllers
 
             var list = await DeviantArtFs.Api.Gallery.GalleryFolders.ToArrayAsync(
                 token,
-                DeviantArtCommonParams.Default,
                 new DeviantArtFs.Api.Gallery.GalleryFoldersRequest { CalculateSize = true, Username = username },
                 0,
                 100);

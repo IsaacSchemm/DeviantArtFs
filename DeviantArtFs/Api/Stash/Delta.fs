@@ -8,28 +8,27 @@ type DeltaRequest() =
     member val ExtParams = DeviantArtExtParams.None with get, set
 
 module Delta =
-    let AsyncExecute token common (req: DeltaRequest) paging =
+    let AsyncExecute token (req: DeltaRequest) paging =
         seq {
             match Option.ofObj req.Cursor with
             | Some s -> yield sprintf "cursor=%s" (Dafs.urlEncode s)
             | None -> ()
             yield! QueryFor.paging paging 120
             yield! QueryFor.extParams req.ExtParams
-            yield! QueryFor.commonParams common
         }
         |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/stash/delta?%s"
         |> Dafs.asyncRead
         |> Dafs.thenParse<StashDeltaResult>
 
-    let ToAsyncSeq token common req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
+    let ToAsyncSeq token req offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token req)
 
-    let ToArrayAsync token common req offset limit =
-        ToAsyncSeq token common req offset
+    let ToArrayAsync token req offset limit =
+        ToAsyncSeq token req offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token common req paging =
-        AsyncExecute token common req paging
+    let ExecuteAsync token req paging =
+        AsyncExecute token req paging
         |> Async.StartAsTask

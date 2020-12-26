@@ -7,15 +7,15 @@ type DailyDeviationsRequest() =
     member val Date = Nullable<DateTime>() with get, set
 
 module DailyDeviations =
-    let AsyncExecute token common (req: DailyDeviationsRequest) =
+    let AsyncExecute token expansion (req: DailyDeviationsRequest) =
         seq {
             match Option.ofNullable req.Date with
             | Some d -> yield d.ToString("YYYY-MM-dd") |> sprintf "date=%s"
             | None -> ()
-            yield! QueryFor.commonParams common
+            yield! QueryFor.objectExpansion expansion
         }
         |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/browse/dailydeviations"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<Deviation>>
 
-    let ExecuteAsync token common req = AsyncExecute token common req |> Async.StartAsTask
+    let ExecuteAsync token expansion req = AsyncExecute token expansion req |> Async.StartAsTask

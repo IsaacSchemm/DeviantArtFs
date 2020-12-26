@@ -7,23 +7,21 @@ module internal QueryFor =
             yield sprintf "limit=%d" (min paging.Limit.Value maximum)
     }
 
-    let commonParams (p: DeviantArtCommonParams) =
+    let objectExpansion (p: DeviantArtObjectExpansion) =
         let expand = seq {
-            if p.Expand.HasFlag(DeviantArtObjectExpansion.UserDetails) then
+            if p.HasFlag(DeviantArtObjectExpansion.UserDetails) then
                 yield sprintf "user.details"
-            if p.Expand.HasFlag(DeviantArtObjectExpansion.UserGeo) then
+            if p.HasFlag(DeviantArtObjectExpansion.UserGeo) then
                 yield sprintf "user.geo"
-            if p.Expand.HasFlag(DeviantArtObjectExpansion.UserProfile) then
+            if p.HasFlag(DeviantArtObjectExpansion.UserProfile) then
                 yield sprintf "user.profile"
-            if p.Expand.HasFlag(DeviantArtObjectExpansion.UserStats) then
+            if p.HasFlag(DeviantArtObjectExpansion.UserStats) then
                 yield sprintf "user.stats"
-            if p.Expand.HasFlag(DeviantArtObjectExpansion.UserWatch) then
+            if p.HasFlag(DeviantArtObjectExpansion.UserWatch) then
                 yield sprintf "user.watch"
         }
         seq {
-            if p.MatureContent then
-                yield sprintf "mature_content=true"
-            if p.Expand <> DeviantArtObjectExpansion.None then
+            if p <> DeviantArtObjectExpansion.None then
                 yield expand |> String.concat "," |> sprintf "expand=%s"
         }
 

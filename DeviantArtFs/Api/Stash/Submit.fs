@@ -25,7 +25,7 @@ type SubmitRequest(filename: string, contentType: string, data: byte[]) =
     member val Stackid = Nullable<int64>() with get, set
 
 module Submit =
-    let AsyncExecute token (common: DeviantArtCommonParams) (ps: SubmitRequest) = async {
+    let AsyncExecute token (ps: SubmitRequest) = async {
         // multipart separators
         let h1 = sprintf "-----------------------------%d" DateTime.UtcNow.Ticks
         let h2 = sprintf "--%s" h1
@@ -109,15 +109,6 @@ module Submit =
             | None -> ()
 
             w h2
-            w "Content-Disposition: form-data; name=\"mature_content\""
-            w ""
-            match common.MatureContent with
-            | true ->
-                w "true"
-            | false ->
-                w "false"
-
-            w h2
             w (sprintf "Content-Disposition: form-data; name=\"submission\"; filename=\"%s\"" ps.Filename)
             w (sprintf "Content-Type: %s" ps.ContentType)
             w ""
@@ -135,6 +126,6 @@ module Submit =
         |> Dafs.thenParse<SubmitResponse>
     }
 
-    let ExecuteAsync token common ps =
-        AsyncExecute token common ps
+    let ExecuteAsync token ps =
+        AsyncExecute token ps
         |> Async.StartAsTask

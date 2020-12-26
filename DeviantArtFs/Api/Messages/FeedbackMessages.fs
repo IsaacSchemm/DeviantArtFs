@@ -15,7 +15,7 @@ type FeedbackMessagesRequest(``type``: FeedbackMessageType) =
     member val Stack = true with get, set
 
 module FeedbackMessages =
-    let AsyncExecute token common (req: FeedbackMessagesRequest) paging =
+    let AsyncExecute token (req: FeedbackMessagesRequest) paging =
         seq {
             match req.Type with
             | FeedbackMessageType.Comments -> yield "type=comments"
@@ -25,22 +25,21 @@ module FeedbackMessages =
             if req.Folderid.HasValue then
                 yield sprintf "folderid=%O" req.Folderid
             yield sprintf "stack=%b" req.Stack
-            yield! QueryFor.paging paging 50
-            yield! QueryFor.commonParams common
+            yield! QueryFor.paging paging 5
         }
         |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/messages/feedback"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
 
-    let ToAsyncSeq token common req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
+    let ToAsyncSeq token req offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token req)
 
-    let ToArrayAsync token common req offset limit =
-        ToAsyncSeq token common req offset
+    let ToArrayAsync token req offset limit =
+        ToAsyncSeq token req offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token common req paging =
-        AsyncExecute token common req paging
+    let ExecuteAsync token req paging =
+        AsyncExecute token req paging
         |> Async.StartAsTask

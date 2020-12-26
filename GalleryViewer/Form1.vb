@@ -14,7 +14,7 @@ Public Class Form1
             Dim t = AccessToken.ReadFrom("refresh_token.txt")
 
             Try
-                Dim user = Await Api.User.Whoami.ExecuteAsync(t, DeviantArtCommonParams.Default)
+                Dim user = Await Api.User.Whoami.ExecuteAsync(t, DeviantArtObjectExpansion.None)
                 If MsgBox($"Log in as {user.username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
                     Token = t
                 End If
@@ -36,7 +36,7 @@ Public Class Form1
         End If
 
         If Token IsNot Nothing Then
-            Dim user = Await Api.User.Whoami.ExecuteAsync(Token, DeviantArtCommonParams.Default)
+            Dim user = Await Api.User.Whoami.ExecuteAsync(Token, DeviantArtObjectExpansion.None)
             ToolStripStatusLabel1.Text = $"Logged in as {user.username}"
 
             CurrentUsername = user.username
@@ -59,7 +59,7 @@ Public Class Form1
 
         Dim paging = New DeviantArtPagingParams(NextOffset, TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount)
         Dim request As New Api.Gallery.GalleryAllViewRequest With {.Username = CurrentUsername}
-        Dim page = Await Api.Gallery.GalleryAllView.ExecuteAsync(Token, DeviantArtCommonParams.Default, request, paging)
+        Dim page = Await Api.Gallery.GalleryAllView.ExecuteAsync(Token, request, paging)
 
         NextOffset = page.next_offset.OrNull()
         For Each r In page.results
@@ -84,7 +84,7 @@ Public Class Form1
 
         WebBrowser1.Navigate("about:blank")
         Dim req = New Api.Deviation.MetadataRequest({deviation.deviationid})
-        Dim metadataResponse = Await Api.Deviation.MetadataById.ExecuteAsync(Token, DeviantArtCommonParams.Default, req)
+        Dim metadataResponse = Await Api.Deviation.MetadataById.ExecuteAsync(Token, req)
         Dim s = metadataResponse.metadata.Single()
         WebBrowser1.Document.Write(s.description)
     End Sub

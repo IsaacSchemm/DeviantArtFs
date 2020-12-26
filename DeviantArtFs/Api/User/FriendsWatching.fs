@@ -7,14 +7,12 @@ type FriendsWatchingResponse = {
 }
 
 module FriendsWatching =
-    let AsyncExecute token common username =
-        seq {
-            yield! QueryFor.commonParams common
-        }
+    let AsyncExecute token username =
+        Seq.empty
         |> Dafs.createRequest token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/watching/%s" username)
         |> Dafs.asyncRead
         |> Dafs.thenParse<FriendsWatchingResponse>
 
-    let ExecuteAsync token common username =
-        AsyncExecute token common username
+    let ExecuteAsync token username =
+        AsyncExecute token username
         |> Async.StartAsTask

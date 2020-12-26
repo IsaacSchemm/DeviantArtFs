@@ -7,17 +7,16 @@ type FriendsSearchRequest(query: string) =
     member val Username = null with get, set
 
 module FriendsSearch =
-    let AsyncExecute token common (req: FriendsSearchRequest) =
+    let AsyncExecute token (req: FriendsSearchRequest) =
         seq {
             yield req.Query |> Dafs.urlEncode |> sprintf "query=%s"
             if req.Username |> isNull |> not then
                 yield req.Username |> Dafs.urlEncode |> sprintf "username=%s"
-            yield! QueryFor.commonParams common
         }
         |> Dafs.createRequest token "https://www.deviantart.com/api/v1/oauth2/user/friends/search"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<DeviantArtUser>>
 
-    let ExecuteAsync token common req =
-        AsyncExecute token common req
+    let ExecuteAsync token req =
+        AsyncExecute token req
         |> Async.StartAsTask
