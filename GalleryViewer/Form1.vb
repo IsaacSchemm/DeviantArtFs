@@ -14,7 +14,7 @@ Public Class Form1
             Dim t = AccessToken.ReadFrom("refresh_token.txt")
 
             Try
-                Dim user = Await Api.User.Whoami.ExecuteAsync(t)
+                Dim user = Await Api.User.Whoami.ExecuteAsync(t, DeviantArtCommonParams.Default)
                 If MsgBox($"Log in as {user.username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
                     Token = t
                 End If
@@ -36,7 +36,7 @@ Public Class Form1
         End If
 
         If Token IsNot Nothing Then
-            Dim user = Await Api.User.Whoami.ExecuteAsync(Token)
+            Dim user = Await Api.User.Whoami.ExecuteAsync(Token, DeviantArtCommonParams.Default)
             ToolStripStatusLabel1.Text = $"Logged in as {user.username}"
 
             CurrentUsername = user.username

@@ -1,6 +1,5 @@
 ﻿namespace DeviantArtFs
 
-open System
 open System.Net
 open FSharp.Control
 open FSharp.Json
