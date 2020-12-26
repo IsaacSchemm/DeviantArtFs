@@ -4,7 +4,7 @@ open DeviantArtFs
 open FSharp.Control
 
 module Tags =
-    let AsyncExecute token common paging (tag: string) =
+    let AsyncExecute token common (tag: string) paging =
         seq {
             yield sprintf "tag=%s" (Dafs.urlEncode tag)
             yield! QueryFor.paging paging 50
@@ -14,15 +14,15 @@ module Tags =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtBrowsePagedResult>
 
-    let ToAsyncSeq token common offset req =
-        Dafs.toAsyncSeq3 offset (fun o -> AsyncExecute token common { Offset = o; Limit = DeviantArtPagingParams.Max } req)
+    let ToAsyncSeq token common tag offset =
+        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common tag)
 
-    let ToArrayAsync token common offset limit tag =
-        ToAsyncSeq token common offset tag
+    let ToArrayAsync token common tag offset limit =
+        ToAsyncSeq token common tag offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token common paging tag =
-        AsyncExecute token common paging tag
+    let ExecuteAsync token common tag paging =
+        AsyncExecute token common tag paging
         |> Async.StartAsTask

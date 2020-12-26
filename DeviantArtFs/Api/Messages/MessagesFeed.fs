@@ -9,7 +9,7 @@ type MessagesFeedRequest() =
     member val Stack = true with get, set
 
 module MessagesFeed =
-    let AsyncExecute token common (cursor: string option) (req: MessagesFeedRequest) =
+    let AsyncExecute token common (req: MessagesFeedRequest) (cursor: string option) =
         seq {
             if req.Folderid.HasValue then
                 yield sprintf "folderid=%O" req.Folderid
@@ -23,15 +23,15 @@ module MessagesFeed =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtMessageCursorResult>
 
-    let ToAsyncSeq token common cursor req =
-        Dafs.toAsyncSeq3 cursor (fun o -> AsyncExecute token common o req)
+    let ToAsyncSeq token common req cursor =
+        Dafs.toAsyncSeq3 cursor (AsyncExecute token common req)
 
     let ToArrayAsync token common req cursor limit =
-        ToAsyncSeq token common (Option.ofObj cursor) req
+        ToAsyncSeq token common req (Option.ofObj cursor)
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token common cursor req =
-        AsyncExecute token common (Option.ofObj cursor) req
+    let ExecuteAsync token common req cursor =
+        AsyncExecute token common req (Option.ofObj cursor)
         |> Async.StartAsTask

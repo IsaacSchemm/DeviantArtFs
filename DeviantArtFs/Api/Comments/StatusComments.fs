@@ -10,7 +10,7 @@ type StatusCommentsRequest(statusid: Guid) =
     member val Maxdepth = 0 with get, set
 
 module StatusComments =
-    let AsyncExecute token common paging (req: StatusCommentsRequest) =
+    let AsyncExecute token common (req: StatusCommentsRequest) paging =
         seq {
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s
@@ -23,15 +23,15 @@ module StatusComments =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtCommentPagedResult>
 
-    let ToAsyncSeq token common offset req =
-        Dafs.toAsyncSeq3 offset (fun o -> AsyncExecute token common { Offset = o; Limit = DeviantArtPagingParams.Max } req)
+    let ToAsyncSeq token common req offset =
+        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
 
-    let ToArrayAsync token common offset limit req =
-        ToAsyncSeq token common offset req
+    let ToArrayAsync token common req offset limit =
+        ToAsyncSeq token common req offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token common paging req =
-        AsyncExecute token common paging req
+    let ExecuteAsync token common req paging =
+        AsyncExecute token common req paging
         |> Async.StartAsTask

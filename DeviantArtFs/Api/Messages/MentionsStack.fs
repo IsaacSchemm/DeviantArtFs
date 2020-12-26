@@ -4,7 +4,7 @@ open DeviantArtFs
 open FSharp.Control
 
 module MentionsStack =
-    let AsyncExecute token common paging (stackid: string) =
+    let AsyncExecute token common (stackid: string) paging =
         seq {
             yield! QueryFor.paging paging 50
             yield! QueryFor.commonParams common
@@ -13,15 +13,15 @@ module MentionsStack =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
 
-    let ToAsyncSeq token common offset stackid =
-        Dafs.toAsyncSeq3 offset (fun o -> AsyncExecute token common { Offset = o; Limit = DeviantArtPagingParams.Max } stackid)
+    let ToAsyncSeq token common stackid offset =
+        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common stackid)
 
-    let ToArrayAsync token common offset limit stackid =
-        ToAsyncSeq token common offset stackid
+    let ToArrayAsync token common stackid offset limit =
+        ToAsyncSeq token common stackid offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token common paging stackid =
-        AsyncExecute token common paging stackid
+    let ExecuteAsync token common stackid paging =
+        AsyncExecute token common stackid paging
         |> Async.StartAsTask

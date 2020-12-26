@@ -36,8 +36,11 @@ let sandbox token_string = async {
     printfn ""
 
     let! first_deviation =
-        DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username)
-        |> DeviantArtFs.Api.Gallery.GalleryAllView.ToAsyncSeq token DeviantArtCommonParams.Default 0
+        DeviantArtFs.Api.Gallery.GalleryAllView.ToAsyncSeq
+            token
+            DeviantArtCommonParams.Default
+            (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
+            0
         |> AsyncSeq.filter (fun d -> not d.is_deleted)
         |> AsyncSeq.take 1
         |> AsyncSeq.tryFirst
@@ -56,7 +59,7 @@ let sandbox token_string = async {
             m.tags |> Seq.map (fun t -> sprintf "#%s" t.tag_name) |> String.concat " " |> printfn "%s"
 
         let! all_favorites =
-            DeviantArtFs.Api.Deviation.WhoFaved.ToAsyncSeq token DeviantArtCommonParams.Default 0 s.deviationid
+            DeviantArtFs.Api.Deviation.WhoFaved.ToAsyncSeq token DeviantArtCommonParams.Default s.deviationid 0
             |> AsyncSeq.toListAsync
         match all_favorites with
         | [] ->
@@ -69,8 +72,11 @@ let sandbox token_string = async {
         printfn ""
 
     let! recent_deviations =
-        DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username)
-        |> DeviantArtFs.Api.Gallery.GalleryAllView.AsyncExecute token DeviantArtCommonParams.Default (page 1 9)
+        DeviantArtFs.Api.Gallery.GalleryAllView.AsyncExecute
+            token
+            DeviantArtCommonParams.Default
+            (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
+            (page 1 9)
     printfn "Deviations 2-10:"
     for d in recent_deviations.results do
         match (d.title, d.published_time) with
@@ -82,8 +88,11 @@ let sandbox token_string = async {
     printfn ""
 
     let! old_deviations =
-        DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username)
-        |> DeviantArtFs.Api.Gallery.GalleryAllView.AsyncExecute token DeviantArtCommonParams.Default (page 100 5)
+        DeviantArtFs.Api.Gallery.GalleryAllView.AsyncExecute
+            token
+            DeviantArtCommonParams.Default
+            (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
+            (page 100 5)
     printfn "Deviations 100-105:"
     for d in old_deviations.results do
         match (d.title, d.published_time) with

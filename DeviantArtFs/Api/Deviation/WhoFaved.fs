@@ -5,7 +5,7 @@ open System
 open FSharp.Control
 
 module WhoFaved =
-    let AsyncExecute token common paging (deviationid: Guid) =
+    let AsyncExecute token common (deviationid: Guid) paging =
         seq {
             yield sprintf "deviationid=%O" deviationid
             yield! QueryFor.paging paging 50
@@ -15,8 +15,8 @@ module WhoFaved =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtWhoFavedUser>>
 
-    let ToAsyncSeq token common offset req =
-        Dafs.toAsyncSeq3 offset (fun o -> AsyncExecute token common { Offset = o; Limit = DeviantArtPagingParams.Max } req)
+    let ToAsyncSeq token common req offset =
+        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
 
     let ToArrayAsync token common offset limit deviationid =
         ToAsyncSeq token common offset deviationid
@@ -24,6 +24,6 @@ module WhoFaved =
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token common paging req =
-        AsyncExecute token common paging req
+    let ExecuteAsync token common req paging =
+        AsyncExecute token common req paging
         |> Async.StartAsTask

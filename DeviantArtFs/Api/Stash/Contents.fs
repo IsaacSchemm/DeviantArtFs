@@ -22,8 +22,7 @@ module Contents =
     }
 
     let ToAsyncSeq token offset stackid =
-        Dafs.getMax (AsyncExecute token)
-        |> Dafs.toAsyncSeq offset stackid
+        failwith "Not implemented"
 
     let ToArrayAsync token offset limit req =
         ToAsyncSeq token offset req

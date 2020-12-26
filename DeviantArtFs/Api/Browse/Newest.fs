@@ -8,7 +8,7 @@ type NewestRequest() =
     member val Q = null with get, set
 
 module Newest =
-    let AsyncExecute token common paging (req: NewestRequest) =
+    let AsyncExecute token common (req: NewestRequest) paging =
         seq {
             match Option.ofObj req.CategoryPath with
             | Some s -> yield sprintf "category_path=%s" (Dafs.urlEncode s)
@@ -23,15 +23,15 @@ module Newest =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtBrowsePagedResult>
 
-    let ToAsyncSeq token common offset req =
-        Dafs.toAsyncSeq3 offset (fun o -> AsyncExecute token common { Offset = o; Limit = DeviantArtPagingParams.Max } req)
+    let ToAsyncSeq token common req offset =
+        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
 
-    let ToArrayAsync token common offset limit req =
-        ToAsyncSeq token common offset req
+    let ToArrayAsync token common req offset limit =
+        ToAsyncSeq token common req offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token common paging req =
-        AsyncExecute token common paging req
+    let ExecuteAsync token common req paging =
+        AsyncExecute token common req paging
         |> Async.StartAsTask

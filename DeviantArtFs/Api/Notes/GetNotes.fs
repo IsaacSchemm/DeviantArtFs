@@ -24,8 +24,7 @@ module GetNotes =
     }
 
     let ToAsyncSeq token offset folderid =
-        Dafs.getMax (AsyncExecute token)
-        |> Dafs.toAsyncSeq offset folderid
+        failwith "Not implemented"
 
     let ToArrayAsync token folderid offset limit =
         folderid

@@ -9,7 +9,7 @@ type EmbeddedContentRequest(deviationid: Guid) =
     member val OffsetDeviationid = Nullable<Guid>() with get, set
 
 module EmbeddedContent =
-    let AsyncExecute token common paging (req: EmbeddedContentRequest) =
+    let AsyncExecute token common (req: EmbeddedContentRequest) paging =
         seq {
             yield sprintf "deviationid=%O" req.Deviationid
             match Option.ofNullable req.OffsetDeviationid with
@@ -22,15 +22,15 @@ module EmbeddedContent =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtEmbeddedContentPagedResult>
 
-    let ToAsyncSeq token common offset req =
-        Dafs.toAsyncSeq3 offset (fun o -> AsyncExecute token common { Offset = o; Limit = DeviantArtPagingParams.Max } req)
+    let ToAsyncSeq token common req offset =
+        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
 
-    let ToArrayAsync token common offset limit req =
-        ToAsyncSeq token common offset req
+    let ToArrayAsync token common req offset limit =
+        ToAsyncSeq token common req offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token common paging req =
-        AsyncExecute token common paging req
+    let ExecuteAsync token common req paging =
+        AsyncExecute token common req paging
         |> Async.StartAsTask

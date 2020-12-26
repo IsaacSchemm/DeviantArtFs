@@ -22,8 +22,7 @@ module Watchers =
     }
 
     let ToAsyncSeq token offset req =
-        Dafs.getMax (AsyncExecute token)
-        |> Dafs.toAsyncSeq offset req
+        failwith "Not implemented"
 
     let ToArrayAsync token offset limit req =
         ToAsyncSeq token offset req

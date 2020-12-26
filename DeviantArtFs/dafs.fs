@@ -45,22 +45,6 @@ module internal Dafs =
         workflow
         |> AsyncThen.map (fun x -> x.text)
 
-    /// Converts a paged function with offset and limit parameters to one that requests the maximum page size each time.
-    let getMax (f: DeviantArtPagingParams -> 'a) (offset: int) =
-        f ({ Offset = offset; Limit = Nullable Int32.MaxValue })
-
-    /// Converts a paged function that takes a "cursor" as one of its parameters into an AsyncSeq.
-    let toAsyncSeq (initial_cursor: 'cursor) (req: 'req) (f: 'cursor -> 'req -> Async<'b> when 'b :> IResultPage<'cursor, 'item>) = asyncSeq {
-        let mutable cursor = initial_cursor
-        let mutable has_more = true
-        while has_more do
-            let! resp = f cursor req
-            for r in resp.Items do
-                yield r
-            cursor <- resp.Cursor
-            has_more <- resp.HasMore
-    }
-
     let toAsyncSeq3 (cursor: 'a) (f: 'a -> Async<'b> when 'b :> IResultPage<'a, 'item>) = asyncSeq {
         let mutable cursor = cursor
         let mutable has_more = true

@@ -7,7 +7,7 @@ type RecommendedRequest() =
      member val Q = null with get, set
 
 module Recommended =
-    let AsyncExecute token common paging (req: RecommendedRequest) =
+    let AsyncExecute token common (req: RecommendedRequest) paging =
         seq {
             match Option.ofObj req.Q with
             | Some s -> yield sprintf "q=%s" (Dafs.urlEncode s)
@@ -19,15 +19,15 @@ module Recommended =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtRecommendedPagedResult>
 
-    let ToAsyncSeq token common offset req =
-        Dafs.toAsyncSeq3 offset (fun o -> AsyncExecute token common { Offset = o; Limit = DeviantArtPagingParams.Max } req)
+    let ToAsyncSeq token common req offset =
+        Dafs.toAsyncSeq3 (DeviantArtPagingParams.MaxFrom offset) (AsyncExecute token common req)
 
-    let ToArrayAsync token common offset limit req =
-        ToAsyncSeq token common offset req
+    let ToArrayAsync token common req offset limit =
+        ToAsyncSeq token common req offset
         |> AsyncSeq.take limit
         |> AsyncSeq.toArrayAsync
         |> Async.StartAsTask
 
-    let ExecuteAsync token common paging req =
-        AsyncExecute token common paging req
+    let ExecuteAsync token common req paging =
+        AsyncExecute token common req paging
         |> Async.StartAsTask

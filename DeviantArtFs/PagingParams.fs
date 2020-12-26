@@ -10,3 +10,4 @@ type DeviantArtPagingParams = {
     Limit: Nullable<int>
 } with
     static member Max = Nullable Int32.MaxValue
+    static member MaxFrom o = { Offset = o; Limit = Nullable Int32.MaxValue }
