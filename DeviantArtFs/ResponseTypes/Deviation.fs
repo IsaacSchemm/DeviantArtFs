@@ -29,21 +29,6 @@ type DailyDeviation = {
     suggester: DeviantArtUser option
 }
 
-//type PremiumFolderData = {
-//    ``type``: string
-//    has_access: bool
-//    gallery_id: Guid
-//    points_price: int option
-//    dollar_price: decimal option
-//    num_subscribers: int option
-//    subproductid: int option
-//}
-
-//type SuggestedReason =
-//| WatchingUser = 1
-//| SimilarToFavoritesOrHistory = 4
-//| DailyDeviation = 5
-
 type Deviation = {
     deviationid: Guid
     printid: Guid option
@@ -65,11 +50,8 @@ type Deviation = {
     videos: DeviationVideo list option
     flash: DeviationFlash option
     daily_deviation: DailyDeviation option
-    //premium_folder_data: PremiumFolderData option
-    //text_content: EditorText option
     excerpt: string option
     is_mature: bool option
     is_downloadable: bool option
     download_filesize: int option
-    //suggested_reasons: SuggestedReason list option
 }

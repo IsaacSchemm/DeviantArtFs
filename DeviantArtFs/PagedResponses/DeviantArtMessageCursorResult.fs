@@ -6,7 +6,7 @@ type DeviantArtMessageCursorResult = {
     has_more: bool
     results: DeviantArtMessage list
 } with
-    interface IResultPage<string option, DeviantArtMessage> with
+    interface IDeviantArtResultPage<string option, DeviantArtMessage> with
         member this.HasMore = this.has_more
         member this.Cursor = Option.ofObj this.cursor
         member this.Items = this.results |> Seq.ofList

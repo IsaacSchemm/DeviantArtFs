@@ -10,7 +10,7 @@ type DeviantArtCommentPagedResult = {
     total: int option
     thread: DeviantArtComment list
 } with
-    interface IResultPage<DeviantArtPagingParams, DeviantArtComment> with
+    interface IDeviantArtResultPage<DeviantArtPagingParams, DeviantArtComment> with
         member this.HasMore = this.has_more
         member this.Cursor = DeviantArtPagingParams.MaxFrom (this.next_offset |> Option.defaultValue 0)
         member this.Items = this.thread |> Seq.ofList

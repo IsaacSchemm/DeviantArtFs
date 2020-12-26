@@ -19,11 +19,11 @@
     <Compile Include="AssemblyAttributes.fs" />
     <Compile Include="Extensions\Extensions.fs" />
     <Compile Include="Transforms\DateTimeOffsetEpochAsString.fs" />
-    <Compile Include="IResultPage.fs" />
     <Compile Include="Tokens.fs" />
     <Compile Include="ObjectExpansion.fs" />
     <Compile Include="PagingParams.fs" />
     <Compile Include="ExtParams.fs" />
+    <Compile Include="IDeviantArtResultPage.fs" />
     <Compile Include="ResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtSuccessOrErrorResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtTextOnlyResponse.fs" />

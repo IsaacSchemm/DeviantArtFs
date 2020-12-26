@@ -2,8 +2,6 @@
 
 A .NET / F# library to interact with the [DeviantArt / Sta.sh API.](https://www.deviantart.com/developers/http/v1/20160316)
 
-If you're using this library in a .NET Framework project and it doesn't run, make sure that the dependencies (e.g. FSharp.Core, FSharp.Json, FSharp.Control.AsyncSeq) are installed via NuGet.
-
 ## Notes
 
 Each request that can be made to DeviantArt is represented by a module
@@ -14,17 +12,23 @@ methods that take one or more parameters:
   and provides the library with the API credentials)
 * `expansion` (on some requests; allows user object expansion)
 * A parameter specific to the request (if any)
-* `paging` / `cursor` / `offset` (for endpoints that ask the user to request a
-  particular range of results; `paging` will be a `DeviantArtPagingParams`
-  record, which contains an offset and an optional limit)
-    * To request the maximum page size that DeviantArt allows for a particular request, use `int.MaxValue` as the limit
+* A range specifier (for endpoints that ask the user to request a particular
+  range of results
+    * `paging`: a `DeviantArtPagingParams` record, which specifies an offset
+      and an optional limit / page size
+        * DeviantArtFs is aware of the maximum limits for each API request; to
+          request the maximum page size, use `int.MaxValue` as the limit
+    * `cursor`: a string provided in the previous page's result (use `null` to
+      start at the beginning)
+    * `offset` / `limit`: used in `ToAsyncSeq` and `ToArrayAsync` wrapper
+      methods in place of `paging` / `cursor`
 
 The main method is usually named `AsyncExecute` and returns an async workflow,
 the result of which is an F# record type that lines up with the original JSON.
 An `ExecuteAsync` method is also available that returns a .NET `Task` instead.
 
 For endpoints that allow paging, `ToAsyncSeq` and `ToArrayAsync` methods will
-be available as well; when using these, DeviantArtFs will perform multiple API
+be available as well; when using these, DeviantArtFs may perform multiple API
 calls, asking for the maximum amount of results in each. Be careful not to
 request too much data or you might hit API usage limits.
 
@@ -34,16 +38,13 @@ Many objects in the DeviantArt API have optional fields, which are difficult
 to represent in languages such as F# that expect a fixed schema. DeviantArtFs
 represents these optional fields with F# `option` types.
 
-The library provides
-extension methods in the namespace `DeviantArtFs.Extensions` for dealing with
-option types from outside F#:
+The library provides extension methods for dealing with option types from
+outside F#:
 
-    public string GetTitleCarefully(Deviation d) {
-        return d.title.ToObj() ?? "Could not find title!";
-	}
+    using DeviantArtFs.Extensions;
 
-    public string GetTitleRecklessly(Deviation d) {
-        return d.title.Value; // throws an exception if field is None
+    public string? GetTitle(Deviation d) {
+        return d.title.ToObj();
 	}
 
     public IEnumerable<DeviationPreview> GetThumbnails(Deviation d) {
@@ -83,13 +84,15 @@ Sta.sh stack, and this is represented by its own union case.
 ## Known issues
 
 * Mature content filtering is not supported (use the `is_mature` flag on the deviation instead).
+* The profile_pic field in the user.profile expansion is not supported due to circular type definitions. Get it from the full profile object instead.
 * The following fields in the deviation object are not supported:
   * challenge
   * challenge_entry
   * motion_book
-* The profile_pic field in the user.profile expansion is not supported due to circular type definitions. Get it from the full profile object instead.
-* Some of the newer fields on the deviation object (like premium_folder_data or text_content) are not currently supported.
-* The api_session return object is ignored.
+  * premium_folder_data
+  * text_content
+  * suggested_reasons
+* The api_session return object is not supported.
 
 ## Examples
 

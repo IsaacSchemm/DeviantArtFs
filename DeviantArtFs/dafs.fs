@@ -26,7 +26,7 @@ module internal Dafs =
         |> AsyncThen.map parse<'a>
 
     /// Builds an AsyncSeq from an initial cursor and a function that uses that cursor to generate an IResultPage with the same cursor type.
-    let toAsyncSeq (cursor: 'a) (f: 'a -> Async<'b> when 'b :> IResultPage<'a, 'item>) = asyncSeq {
+    let toAsyncSeq (cursor: 'a) (f: 'a -> Async<'b> when 'b :> IDeviantArtResultPage<'a, 'item>) = asyncSeq {
         let mutable cursor = cursor
         let mutable has_more = true
         while has_more do

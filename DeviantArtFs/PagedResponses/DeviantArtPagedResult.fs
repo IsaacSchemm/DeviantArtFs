@@ -7,7 +7,7 @@ type DeviantArtPagedResult<'a> = {
     error_code: int option
     results: 'a list
 } with
-    interface IResultPage<DeviantArtPagingParams, 'a> with
+    interface IDeviantArtResultPage<DeviantArtPagingParams, 'a> with
         member this.HasMore = this.has_more
         member this.Cursor = DeviantArtPagingParams.MaxFrom (this.next_offset |> Option.defaultValue 0)
         member this.Items = this.results |> Seq.ofList

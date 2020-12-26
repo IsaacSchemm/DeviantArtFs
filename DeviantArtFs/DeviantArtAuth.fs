@@ -21,7 +21,7 @@ type DeviantArtTokenResponse = {
 
 /// A module that provides methods to obtain tokens from the DeviantArt API.
 module DeviantArtAuth =
-    let UserAgent = "DeviantArtFs/5.0 (https://github.com/IsaacSchemm/DeviantArtFs)"
+    let UserAgent = "DeviantArtFs/6.0 (https://github.com/IsaacSchemm/DeviantArtFs)"
 
     /// Checks whether the given WebResponse has the given HTTP status code.
     let IsStatus (code: int) (response: WebResponse) =

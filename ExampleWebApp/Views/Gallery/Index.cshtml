@@ -1,6 +1,6 @@
 ﻿@using DeviantArtFs
 @using DeviantArtFs.Extensions
-@model ExampleWebApp.Controllers.GalleryController.Page
+@model IDeviantArtResultPage<DeviantArtPagingParams, Deviation>
 
 @{
     ViewData["Title"] = "View Gallery";
@@ -8,7 +8,7 @@
 
 <h2>@ViewData["Title"]</h2>
 
-@foreach (var d in Model.Results)
+@foreach (var d in Model.Items)
 {
     if (d.is_mature.IsTrue())
     {
@@ -39,7 +39,7 @@
         <a href="@Url.Action("Index", new {
             username = ViewBag.Username,
             folderId = ViewBag.FolderId,
-            offset = Model.NextOffset,
+            offset = Model.Cursor.Offset,
             limit = ViewBag.Limit
         })">Next</a>
     }
