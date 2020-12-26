@@ -12,14 +12,14 @@ methods that take one or more parameters:
 
 * `token` (an object that implements the `IDeviantArtAccessToken` interface
   and provides the library with the API credentials)
-* `common` (allows user object expansion and mature content filtering; you
-  can use `DeviantArtCommonParams.Default` to hide mature content and avoid
-  user object expansion)
+* `common` (allows user object expansion and mature content filtering;
+  `DeviantArtCommonParams.Default` will hide mature content and avoid
+  all user object expansion)
 * A parameter specific to the request (if any)
 * `paging` / `cursor` / `offset` (for endpoints that ask the user to request a
   particular range of results; `paging` will be a `DeviantArtPagingParams`
   record, which contains an offset and an optional limit)
-    * To request the maximum page size for a particular request, use `int.MaxValue` as the limit.
+    * To request the maximum page size that DeviantArt allows for a particular request, use `int.MaxValue` as the limit
 
 The main method is usually named `AsyncExecute` and returns an async workflow,
 the result of which is an F# record type that lines up with the original JSON.
