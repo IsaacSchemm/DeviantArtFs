@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs
 
 open System
-open FSharp.Json
 
 type DeviantArtUserDetails = {
     sex: string option
@@ -40,5 +39,4 @@ type DeviantArtUser = {
     geo: DeviantArtUserGeo option
     profile: DeviantArtUserProfile option
     stats: DeviantArtUserStats option
-} with
-    static member Parse json = Json.deserialize<DeviantArtUser> json
+}

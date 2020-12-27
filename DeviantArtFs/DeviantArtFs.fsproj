@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>5.0.0</Version>
+    <Version>6.0.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Isaac Schemm</Authors>
     <Company></Company>
@@ -10,26 +10,27 @@
     <PackageProjectUrl>https://github.com/IsaacSchemm/DeviantArtFs</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Description>An F# library to interact with the DeviantArt / Sta.sh API</Description>
-    <PackageReleaseNotes>5.0.0: Removed wrappers around option types; restructed other components</PackageReleaseNotes>
+    <PackageReleaseNotes>6.0.0: Updates for new version of DeviantArt API; refactoring for cleaner code</PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="AssemblyAttributes.fs" />
-    <Compile Include="Extensions.fs" />
-    <Compile Include="JsonTransforms.fs" />
-    <Compile Include="AccessTokens.fs" />
-    <Compile Include="CommonParameters.fs" />
-    <Compile Include="IResultPage.fs" />
-    <Compile Include="DeviantArtPagingParams.fs" />
-    <Compile Include="DeviantArtExtParams.fs" />
+    <Compile Include="Extensions\Extensions.fs" />
+    <Compile Include="Transforms\DateTimeOffsetEpochAsString.fs" />
+    <Compile Include="Tokens.fs" />
+    <Compile Include="ObjectExpansion.fs" />
+    <Compile Include="PagingParams.fs" />
+    <Compile Include="ExtParams.fs" />
+    <Compile Include="IDeviantArtResultPage.fs" />
     <Compile Include="ResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtSuccessOrErrorResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtTextOnlyResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtListOnlyResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtUser.fs" />
     <Compile Include="ResponseTypes\DeviantArtWhoFavedUser.fs" />
+    <Compile Include="ResponseTypes\DeviantArtGallection.fs" />
     <Compile Include="ResponseTypes\DeviationFile.fs" />
     <Compile Include="ResponseTypes\Deviation.fs" />
     <Compile Include="ResponseTypes\DeviantArtGalleryFolder.fs" />
@@ -43,6 +44,7 @@
     <Compile Include="ResponseTypes\DeviationMetadataStats.fs" />
     <Compile Include="ResponseTypes\DeviationMetadata.fs" />
     <Compile Include="ResponseTypes\DeviantArtStatus.fs" />
+    <Compile Include="ResponseTypes\DeviantArtPost.fs" />
     <Compile Include="ResponseTypes\DeviantArtProfileStats.fs" />
     <Compile Include="ResponseTypes\DeviantArtProfile.fs" />
     <Compile Include="ResponseTypes\StashStats.fs" />
@@ -56,115 +58,97 @@
     <Compile Include="ResponseTypes\StashPublishResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtRelationshipRecords.fs" />
     <Compile Include="ResponseTypes\DeviantArtComment.fs" />
-    <Compile Include="ResponseTypes\DeviantArtFeedItem.fs" />
-    <Compile Include="ResponseTypes\DeviantArtFeedSettings.fs" />
     <Compile Include="ResponseTypes\DeviantArtMessage.fs" />
-    <Compile Include="ResponseTypes\DeviantArtNote.fs" />
-    <Compile Include="ResponseTypes\DeviantArtNotesFolder.fs" />
-    <Compile Include="ResponseTypes\DeviantArtSendNoteResult.fs" />
+    <Compile Include="ResponseTypes\DeviantArtTopic.fs" />
     <Compile Include="PagedResponses\DeviantArtPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtEmbeddedContentPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtBrowsePagedResult.fs" />
+    <Compile Include="PagedResponses\DeviantArtRecommendedPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtFolderPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtCommentPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtCommentSiblingsPagedResult.fs" />
-    <Compile Include="PagedResponses\DeviantArtFeedCursorResult.fs" />
     <Compile Include="PagedResponses\DeviantArtMessageCursorResult.fs" />
     <Compile Include="Exceptions.fs" />
     <Compile Include="DeviantArtAuth.fs" />
     <Compile Include="DeviantArtRequest.fs" />
+    <Compile Include="AsyncThen.fs" />
     <Compile Include="Dafs.fs" />
     <Compile Include="QueryFor.fs" />
-    <Compile Include="AsyncThen.fs" />
-    <Compile Include="Requests\Browse\CategoryTree.fs" />
-    <Compile Include="Requests\Browse\DailyDeviations.fs" />
-    <Compile Include="Requests\Browse\Hot.fs" />
-    <Compile Include="Requests\Browse\MoreLikeThis.fs" />
-    <Compile Include="Requests\Browse\MoreLikeThisPreview.fs" />
-    <Compile Include="Requests\Browse\Newest.fs" />
-    <Compile Include="Requests\Browse\Popular.fs" />
-    <Compile Include="Requests\Browse\Tags.fs" />
-    <Compile Include="Requests\Browse\TagsSearch.fs" />
-    <Compile Include="Requests\Browse\Undiscovered.fs" />
-    <Compile Include="Requests\Browse\UserJournals.fs" />
-    <Compile Include="Requests\Collections\CollectionById.fs" />
-    <Compile Include="Requests\Collections\CollectionFolders.fs" />
-    <Compile Include="Requests\Collections\Fave.fs" />
-    <Compile Include="Requests\Collections\Unfave.fs" />
-    <Compile Include="Requests\Collections\CreateCollectionFolder.fs" />
-    <Compile Include="Requests\Collections\RemoveCollectionFolder.fs" />
-    <Compile Include="Requests\Comments\DeviationComments.fs" />
-    <Compile Include="Requests\Comments\StatusComments.fs" />
-    <Compile Include="Requests\Comments\ProfileComments.fs" />
-    <Compile Include="Requests\Comments\CommentSiblings.fs" />
-    <Compile Include="Requests\Comments\PostDeviationComment.fs" />
-    <Compile Include="Requests\Comments\PostStatusComment.fs" />
-    <Compile Include="Requests\Comments\PostProfileComment.fs" />
-    <Compile Include="Requests\Data\Countries.fs" />
-    <Compile Include="Requests\Data\Privacy.fs" />
-    <Compile Include="Requests\Data\Submission.fs" />
-    <Compile Include="Requests\Data\Tos.fs" />
-    <Compile Include="Requests\Deviation\DeviationById.fs" />
-    <Compile Include="Requests\Deviation\Content.fs" />
-    <Compile Include="Requests\Deviation\Download.fs" />
-    <Compile Include="Requests\Deviation\EmbeddedContent.fs" />
-    <Compile Include="Requests\Deviation\MetadataById.fs" />
-    <Compile Include="Requests\Deviation\WhoFaved.fs" />
-    <Compile Include="Requests\Feed\FeedHome.fs" />
-    <Compile Include="Requests\Feed\FeedHomeBucket.fs" />
-    <Compile Include="Requests\Feed\FeedNotifications.fs" />
-    <Compile Include="Requests\Feed\ProfileFeed.fs" />
-    <Compile Include="Requests\Feed\FeedSettings.fs" />
-    <Compile Include="Requests\Feed\FeedSettingsUpdate.fs" />
-    <Compile Include="Requests\Gallery\GalleryAllView.fs" />
-    <Compile Include="Requests\Gallery\GalleryById.fs" />
-    <Compile Include="Requests\Gallery\GalleryFolders.fs" />
-    <Compile Include="Requests\Gallery\CreateGalleryFolder.fs" />
-    <Compile Include="Requests\Gallery\RemoveGalleryFolder.fs" />
-    <Compile Include="Requests\Messages\MessagesFeed.fs" />
-    <Compile Include="Requests\Messages\DeleteMessage.fs" />
-    <Compile Include="Requests\Messages\FeedbackMessages.fs" />
-    <Compile Include="Requests\Messages\FeedbackStack.fs" />
-    <Compile Include="Requests\Messages\MentionsMessages.fs" />
-    <Compile Include="Requests\Messages\MentionsStack.fs" />
-    <Compile Include="Requests\Notes\GetNotes.fs" />
-    <Compile Include="Requests\Notes\GetNote.fs" />
-    <Compile Include="Requests\Notes\DeleteNotes.fs" />
-    <Compile Include="Requests\Notes\NotesFolders.fs" />
-    <Compile Include="Requests\Notes\CreateNotesFolder.fs" />
-    <Compile Include="Requests\Notes\RemoveNotesFolder.fs" />
-    <Compile Include="Requests\Notes\RenameNotesFolder.fs" />
-    <Compile Include="Requests\Notes\MarkNotes.fs" />
-    <Compile Include="Requests\Notes\MoveNotes.fs" />
-    <Compile Include="Requests\Notes\SendNote.fs" />
-    <Compile Include="Requests\Stash\Stack.fs" />
-    <Compile Include="Requests\Stash\Contents.fs" />
-    <Compile Include="Requests\Stash\Delete.fs" />
-    <Compile Include="Requests\Stash\Delta.fs" />
-    <Compile Include="Requests\Stash\Item.fs" />
-    <Compile Include="Requests\Stash\Move.fs" />
-    <Compile Include="Requests\Stash\Position.fs" />
-    <Compile Include="Requests\Stash\Publish.fs" />
-    <Compile Include="Requests\Stash\PublishCategoryTree.fs" />
-    <Compile Include="Requests\Stash\PublishUserdata.fs" />
-    <Compile Include="Requests\Stash\Space.fs" />
-    <Compile Include="Requests\Stash\Submit.fs" />
-    <Compile Include="Requests\Stash\Update.fs" />
-    <Compile Include="Requests\User\dAmnToken.fs" />
-    <Compile Include="Requests\User\Friends.fs" />
-    <Compile Include="Requests\User\FriendsSearch.fs" />
-    <Compile Include="Requests\User\FriendsUnwatch.fs" />
-    <Compile Include="Requests\User\FriendsWatch.fs" />
-    <Compile Include="Requests\User\FriendsWatching.fs" />
-    <Compile Include="Requests\User\ProfileByName.fs" />
-    <Compile Include="Requests\User\ProfileUpdate.fs" />
-    <Compile Include="Requests\User\StatusById.fs" />
-    <Compile Include="Requests\User\StatusesList.fs" />
-    <Compile Include="Requests\User\StatusesPost.fs" />
-    <Compile Include="Requests\User\Watchers.fs" />
-    <Compile Include="Requests\User\Whoami.fs" />
-    <Compile Include="Requests\User\Whois.fs" />
-    <Compile Include="Requests\Util\Placebo.fs" />
+    <Compile Include="Api\Browse\DailyDeviations.fs" />
+    <Compile Include="Api\Browse\DeviantsYouWatch.fs" />
+    <Compile Include="Api\Browse\MoreLikeThisPreview.fs" />
+    <Compile Include="Api\Browse\Newest.fs" />
+    <Compile Include="Api\Browse\Popular.fs" />
+    <Compile Include="Api\Browse\PostsByDeviantsYouWatch.fs" />
+    <Compile Include="Api\Browse\Recommended.fs" />
+    <Compile Include="Api\Browse\Tags.fs" />
+    <Compile Include="Api\Browse\TagsSearch.fs" />
+    <Compile Include="Api\Browse\Topic.fs" />
+    <Compile Include="Api\Browse\Topics.fs" />
+    <Compile Include="Api\Browse\TopTopics.fs" />
+    <Compile Include="Api\Browse\UserJournals.fs" />
+    <Compile Include="Api\Collections\CollectionById.fs" />
+    <Compile Include="Api\Collections\CollectionFolders.fs" />
+    <Compile Include="Api\Collections\Fave.fs" />
+    <Compile Include="Api\Collections\Unfave.fs" />
+    <Compile Include="Api\Collections\CreateCollectionFolder.fs" />
+    <Compile Include="Api\Collections\RemoveCollectionFolder.fs" />
+    <Compile Include="Api\Comments\DeviationComments.fs" />
+    <Compile Include="Api\Comments\StatusComments.fs" />
+    <Compile Include="Api\Comments\ProfileComments.fs" />
+    <Compile Include="Api\Comments\CommentSiblings.fs" />
+    <Compile Include="Api\Comments\PostDeviationComment.fs" />
+    <Compile Include="Api\Comments\PostStatusComment.fs" />
+    <Compile Include="Api\Comments\PostProfileComment.fs" />
+    <Compile Include="Api\Data\Countries.fs" />
+    <Compile Include="Api\Data\Privacy.fs" />
+    <Compile Include="Api\Data\Submission.fs" />
+    <Compile Include="Api\Data\Tos.fs" />
+    <Compile Include="Api\Deviation\DeviationById.fs" />
+    <Compile Include="Api\Deviation\Content.fs" />
+    <Compile Include="Api\Deviation\Download.fs" />
+    <Compile Include="Api\Deviation\EmbeddedContent.fs" />
+    <Compile Include="Api\Deviation\MetadataById.fs" />
+    <Compile Include="Api\Deviation\WhoFaved.fs" />
+    <Compile Include="Api\Gallery\GalleryAllView.fs" />
+    <Compile Include="Api\Gallery\GalleryById.fs" />
+    <Compile Include="Api\Gallery\GalleryFolders.fs" />
+    <Compile Include="Api\Gallery\CreateGalleryFolder.fs" />
+    <Compile Include="Api\Gallery\RemoveGalleryFolder.fs" />
+    <Compile Include="Api\Messages\MessagesFeed.fs" />
+    <Compile Include="Api\Messages\DeleteMessage.fs" />
+    <Compile Include="Api\Messages\FeedbackMessages.fs" />
+    <Compile Include="Api\Messages\FeedbackStack.fs" />
+    <Compile Include="Api\Messages\MentionsMessages.fs" />
+    <Compile Include="Api\Messages\MentionsStack.fs" />
+    <Compile Include="Api\Stash\Stack.fs" />
+    <Compile Include="Api\Stash\Contents.fs" />
+    <Compile Include="Api\Stash\Delete.fs" />
+    <Compile Include="Api\Stash\Delta.fs" />
+    <Compile Include="Api\Stash\Item.fs" />
+    <Compile Include="Api\Stash\Move.fs" />
+    <Compile Include="Api\Stash\Position.fs" />
+    <Compile Include="Api\Stash\Publish.fs" />
+    <Compile Include="Api\Stash\PublishCategoryTree.fs" />
+    <Compile Include="Api\Stash\PublishUserdata.fs" />
+    <Compile Include="Api\Stash\Space.fs" />
+    <Compile Include="Api\Stash\Submit.fs" />
+    <Compile Include="Api\Stash\Update.fs" />
+    <Compile Include="Api\User\dAmnToken.fs" />
+    <Compile Include="Api\User\Friends.fs" />
+    <Compile Include="Api\User\FriendsSearch.fs" />
+    <Compile Include="Api\User\FriendsUnwatch.fs" />
+    <Compile Include="Api\User\FriendsWatch.fs" />
+    <Compile Include="Api\User\FriendsWatching.fs" />
+    <Compile Include="Api\User\ProfileByName.fs" />
+    <Compile Include="Api\User\ProfileUpdate.fs" />
+    <Compile Include="Api\User\StatusById.fs" />
+    <Compile Include="Api\User\StatusesList.fs" />
+    <Compile Include="Api\User\StatusesPost.fs" />
+    <Compile Include="Api\User\Watchers.fs" />
+    <Compile Include="Api\User\Whoami.fs" />
+    <Compile Include="Api\User\Whois.fs" />
+    <Compile Include="Api\Util\Placebo.fs" />
   </ItemGroup>
 
   <ItemGroup>

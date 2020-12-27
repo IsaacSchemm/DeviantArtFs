@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs
 
 open System
-open FSharp.Json
 
 type DeviantArtGalleryFolder = {
     folderid: Guid
@@ -9,5 +8,4 @@ type DeviantArtGalleryFolder = {
     name: string
     size: int option
     deviations: Deviation list option
-} with
-    static member Parse json = Json.deserialize<DeviantArtGalleryFolder> json
+}

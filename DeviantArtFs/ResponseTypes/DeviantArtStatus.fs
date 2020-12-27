@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs
 
 open System
-open FSharp.Json
 
 type DeviantArtStatusItem = {
     ``type``: string
@@ -19,15 +18,4 @@ and DeviantArtStatus = {
     is_deleted: bool
     author: DeviantArtUser option
     items: DeviantArtStatusItem list option
-} with
-    static member internal Parse json = Json.deserialize<DeviantArtStatus> json
-
-    member this.GetEmbeddedDeviations() =
-        this.items
-        |> Option.defaultValue List.empty
-        |> Seq.choose (fun i -> i.deviation)
-
-    member this.GetEmbeddedStatuses() =
-        this.items
-        |> Option.defaultValue List.empty
-        |> Seq.choose (fun i -> i.status)
+}

@@ -1,8 +1,6 @@
 ﻿namespace DeviantArtFs
 
 open System
-open FSharp.Json
-open System.Collections.Generic
 
 type DeviationMetadata = {
     deviationid: Guid
@@ -20,11 +18,9 @@ type DeviationMetadata = {
     stats: DeviationMetadataStats option
     camera: Map<string, string> option
     collections: DeviantArtCollectionFolder list option
+    can_post_comment: bool
 }
 
 type DeviationMetadataResponse = {
     metadata: DeviationMetadata list
-} with
-    static member ParseList json =
-        let o = Json.deserialize<DeviationMetadataResponse> json
-        o.metadata
+}

@@ -2,7 +2,7 @@
 
 open System
 open FSharp.Json
-open DeviantArtFs.Json.Transforms
+open DeviantArtFs.Transforms
 
 type DeviationStats = {
     comments: int
@@ -38,6 +38,7 @@ type Deviation = {
     category_path: string option
     is_favourited: bool option
     is_deleted: bool
+    is_published: bool option
     author: DeviantArtUser option
     stats: DeviationStats option
     [<JsonField(Transform=typeof<DateTimeOffsetEpochAsString>)>]
@@ -53,5 +54,4 @@ type Deviation = {
     is_mature: bool option
     is_downloadable: bool option
     download_filesize: int option
-} with
-    static member Parse json = Json.deserialize<Deviation> json
+}

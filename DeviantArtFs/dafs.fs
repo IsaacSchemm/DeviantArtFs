@@ -1,58 +1,42 @@
 ﻿namespace DeviantArtFs
 
-open System
 open System.Net
 open FSharp.Control
+open FSharp.Json
 
 module internal Dafs =
     /// URL-encodes a string.
     let urlEncode = WebUtility.UrlEncode
 
-    /// Creates a DeviantArtRequest object, given a token object (possibly with common parameters such as user expansion parameters) and a URL.
-    let createRequest (token: IDeviantArtAccessToken) (url: string) =
-        let full_url =
-            match token with
-            | :? IDeviantArtAccessTokenWithCommonParameters as p ->
-                let expand = seq {
-                    if p.Expand.HasFlag(DeviantArtObjectExpansion.UserDetails) then
-                        yield sprintf "user.details"
-                    if p.Expand.HasFlag(DeviantArtObjectExpansion.UserGeo) then
-                        yield sprintf "user.geo"
-                    if p.Expand.HasFlag(DeviantArtObjectExpansion.UserProfile) then
-                        yield sprintf "user.profile"
-                    if p.Expand.HasFlag(DeviantArtObjectExpansion.UserStats) then
-                        yield sprintf "user.stats"
-                    if p.Expand.HasFlag(DeviantArtObjectExpansion.UserWatch) then
-                        yield sprintf "user.watch"
-                }
-                let query = seq {
-                    yield sprintf "mature_content=%b" p.MatureContent
-                    if p.Expand <> DeviantArtObjectExpansion.None then
-                        yield expand |> String.concat "," |> sprintf "expand=%s"
-                }
-                String.concat "" (seq {
-                    yield url
-                    if not (url.Contains("?")) then
-                        yield "?"
-                    yield query |> String.concat "&"
-                })
-            | _ -> url
-        new DeviantArtRequest(token, full_url)
+    [<RequireQualifiedAccess>]
+    type Method = GET | POST
+
+    /// Creates a DeviantArtRequest object, given a method, token object, common parameters, a URL, and a query string.
+    let createRequest method token url query =
+        let q = String.concat "&" query
+        match method with
+        | Method.GET ->
+            new DeviantArtRequest(token, sprintf "%s?%s" url q, Method = "GET")
+        | Method.POST ->
+            new DeviantArtRequest(token, url, Method = "POST", ContentType = "application/x-www-form-urlencoded", RequestBodyText = q)
 
     /// Executes a DeviantArtRequest and gets the response body.
     let asyncRead (req: DeviantArtRequest) = req.AsyncReadJson()
-    
-    /// Converts a paged function with offset and limit parameters to one that requests the maximum page size each time.
-    let getMax (f: IDeviantArtAccessToken -> IDeviantArtPagingParams -> 'a) (token: IDeviantArtAccessToken) (offset: int) =
-        new DeviantArtPagingParams(Offset = offset, Limit = Nullable Int32.MaxValue)
-        |> f token
 
-    /// Converts a paged function that takes a "cursor" as one of its parameters into an AsyncSeq.
-    let toAsyncSeq (initial_cursor: 'cursor) (req: 'req) (f: 'cursor -> 'req -> Async<'b> when 'b :> IResultPage<'cursor, 'item>) = asyncSeq {
-        let mutable cursor = initial_cursor
+    /// Parses a JSON string as the given type.
+    let parse<'a> str = Json.deserialize<'a> str
+
+    /// Takes an async workflow that returns a JSON string, and creates another async workflow that will deserialize it to the given type.
+    let thenParse<'a> workflow =
+        workflow
+        |> AsyncThen.map parse<'a>
+
+    /// Builds an AsyncSeq from an initial cursor and a function that uses that cursor to generate an IResultPage with the same cursor type.
+    let toAsyncSeq (cursor: 'a) (f: 'a -> Async<'b> when 'b :> IDeviantArtResultPage<'a, 'item>) = asyncSeq {
+        let mutable cursor = cursor
         let mutable has_more = true
         while has_more do
-            let! resp = f cursor req
+            let! resp = f cursor
             for r in resp.Items do
                 yield r
             cursor <- resp.Cursor

@@ -1,7 +1,5 @@
 ﻿namespace DeviantArtFs
 
-open FSharp.Json
-
 type DeviantArtCommentSiblingsContext = {
     parent: DeviantArtComment option
     item_profile: DeviantArtUser option
@@ -17,10 +15,7 @@ type DeviantArtCommentSiblingsPagedResult = {
     thread: DeviantArtComment list
     context: DeviantArtCommentSiblingsContext
 } with
-    static member Parse (json: string) =
-        json.Replace(""""context": list""", """"context":{}""")
-        |> Json.deserialize<DeviantArtCommentSiblingsPagedResult>
-    interface IResultPage<int, DeviantArtComment> with
-        member this.Cursor = this.next_offset |> Option.defaultValue 0
+    interface IDeviantArtResultPage<DeviantArtPagingParams, DeviantArtComment> with
+        member this.Cursor = DeviantArtPagingParams.MaxFrom (this.next_offset |> Option.defaultValue 0)
         member this.HasMore = this.has_more
         member this.Items = this.thread |> Seq.ofList

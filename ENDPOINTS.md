@@ -1,713 +1,620 @@
 This is a list of functions in the DeviantArtFs library that call DeviantArt / Sta.sh API endpoints.
 
-Methods that return an Async<T> or AsyncSeq<T> are intended for use from F#. Methods that return a Task<T> can be used from async methods in C# and VB.NET.
+Methods that return an Async<T> or AsyncSeq<T> are intended for F# consumers. Methods that return a Task<T> can be used from async methods in C# and VB.NET.
 
-"long" indicates a 64-bit integer, and a question mark (?) following a type name indicates a Nullable<T>, as in C#. "T list" indicates an FSharpList<T>, as in F#.
+A question mark (?) following a type name indicates a Nullable<T>, as in C#.
 
-### DeviantArtFs.DeviantArtAuth
-* AsyncGetToken `string` `Uri` -> `Async<IDeviantArtRefreshTokenFull>`
-* AsyncRefresh `string` -> `Async<IDeviantArtRefreshTokenFull>`
-* AsyncRevoke `string` `bool` -> `Async<unit>`
-* RevokeAsync `string` `bool` -> `Task`
-* GetTokenAsync `string` `Uri` -> `Task<IDeviantArtRefreshTokenFull>`
-* RefreshAsync `string` -> `Task<IDeviantArtRefreshTokenFull>`
-
-### DeviantArtFs.DeviantArtRequest
-* AsyncReadJson -> `Async<string>`
-
-### DeviantArtFs.Requests.Browse.CategoryTree
-* AsyncExecute `IDeviantArtAccessToken` `string` -> `Async<DeviantArtCategory list>`
-* ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task<DeviantArtCategory list>`
-
-### DeviantArtFs.Requests.Browse.DailyDeviations
-* AsyncExecute `IDeviantArtAccessToken` `DailyDeviationsRequest` -> `Async<Deviation list>`
-* ExecuteAsync `IDeviantArtAccessToken` `DailyDeviationsRequest` -> `Task<Deviation list>`
+### DeviantArtFs.Api.Browse.DailyDeviations
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DailyDeviationsRequest req` -> `AsyncSeq<FSharpList<Deviation>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DailyDeviationsRequest req` -> `Task<FSharpList<Deviation>>`
 
 **DailyDeviationsRequest:**
 
 * Date: `DateTime?`
 
-### DeviantArtFs.Requests.Browse.Hot
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `HotRequest` -> `Async<DeviantArtPagedResult<Deviation>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `HotRequest` -> `Task<DeviantArtPagedResult<Deviation>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `HotRequest` -> `AsyncSeq<Deviation>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `HotRequest` -> `Task<Deviation[]>`
+### DeviantArtFs.Api.Browse.DeviantsYouWatch
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<Deviation>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<Deviation>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int32 offset` -> `AsyncSeq<Deviation>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int32 offset` `Int32 limit` -> `Task<Deviation[]>`
 
-**HotRequest:**
+### DeviantArtFs.Api.Browse.MoreLikeThisPreview
+* AsyncExecute `IDeviantArtAccessToken token` `Guid seed` -> `AsyncSeq<DeviantArtMoreLikeThisPreviewResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `Guid seed` -> `Task<DeviantArtMoreLikeThisPreviewResult>`
 
-* CategoryPath: `string`
-
-### DeviantArtFs.Requests.Browse.MoreLikeThis
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `MoreLikeThisRequest` -> `Async<DeviantArtPagedResult<Deviation>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `MoreLikeThisRequest` -> `Task<DeviantArtPagedResult<Deviation>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `MoreLikeThisRequest` -> `AsyncSeq<Deviation>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `MoreLikeThisRequest` -> `Task<Deviation[]>`
-
-**MoreLikeThisRequest:**
-
-* Seed: `Guid`
-* Category: `string`
-
-### DeviantArtFs.Requests.Browse.MoreLikeThisPreview
-* AsyncExecute `IDeviantArtAccessToken` `Guid` -> `Async<DeviantArtMoreLikeThisPreviewResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `Guid` -> `Task<DeviantArtMoreLikeThisPreviewResult>`
-
-### DeviantArtFs.Requests.Browse.Newest
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `NewestRequest` -> `Async<DeviantArtBrowsePagedResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `NewestRequest` -> `Task<DeviantArtBrowsePagedResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `NewestRequest` -> `AsyncSeq<Deviation>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `NewestRequest` -> `Task<Deviation[]>`
+### DeviantArtFs.Api.Browse.Newest
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `NewestRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtBrowsePagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `NewestRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtBrowsePagedResult>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `NewestRequest req` `Int32 offset` -> `AsyncSeq<Deviation>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `NewestRequest req` `Int32 offset` `Int32 limit` -> `Task<Deviation[]>`
 
 **NewestRequest:**
 
-* CategoryPath: `string`
-* Q: `string`
+* CategoryPath: `String`
+* Q: `String`
 
-### DeviantArtFs.Requests.Browse.Popular
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `PopularRequest` -> `Async<DeviantArtBrowsePagedResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `PopularRequest` -> `Task<DeviantArtBrowsePagedResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `PopularRequest` -> `AsyncSeq<Deviation>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `PopularRequest` -> `Task<Deviation[]>`
+### DeviantArtFs.Api.Browse.Popular
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `PopularRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtBrowsePagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `PopularRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtBrowsePagedResult>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `PopularRequest req` `Int32 offset` -> `AsyncSeq<Deviation>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `PopularRequest req` `Int32 offset` `Int32 limit` -> `Task<Deviation[]>`
 
 **PopularRequest:**
 
-* CategoryPath: `string`
-* Q: `string`
+* CategoryPath: `String`
+* Q: `String`
 * Timerange: `PopularTimeRange` (EightHours, TwentyFourHours, ThreeDays, OneWeek, OneMonth, AllTime)
 
-### DeviantArtFs.Requests.Browse.Tags
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `string` -> `Async<DeviantArtBrowsePagedResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `string` -> `Task<DeviantArtBrowsePagedResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `string` -> `AsyncSeq<Deviation>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `string` -> `Task<Deviation[]>`
+### DeviantArtFs.Api.Browse.PostsByDeviantsYouWatch
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<DeviantArtPost>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<DeviantArtPost>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int32 offset` -> `AsyncSeq<DeviantArtPost>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int32 offset` `Int32 limit` -> `Task<DeviantArtPost[]>`
 
-### DeviantArtFs.Requests.Browse.TagsSearch
-* AsyncExecute `IDeviantArtAccessToken` `string` -> `Async<string list>`
-* ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task<IEnumerable<string>>`
+### DeviantArtFs.Api.Browse.Recommended
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `RecommendedRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtRecommendedPagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `RecommendedRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtRecommendedPagedResult>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `RecommendedRequest req` `Int32 offset` -> `AsyncSeq<Deviation>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `RecommendedRequest req` `Int32 offset` `Int32 limit` -> `Task<Deviation[]>`
 
-### DeviantArtFs.Requests.Browse.Undiscovered
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `UndiscoveredRequest` -> `Async<DeviantArtPagedResult<Deviation>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `UndiscoveredRequest` -> `Task<DeviantArtPagedResult<Deviation>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `UndiscoveredRequest` -> `AsyncSeq<Deviation>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `UndiscoveredRequest` -> `Task<Deviation[]>`
+**RecommendedRequest:**
 
-**UndiscoveredRequest:**
+* Q: `String`
 
-* CategoryPath: `string`
+### DeviantArtFs.Api.Browse.Tags
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String tag` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtBrowsePagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String tag` `DeviantArtPagingParams paging` -> `Task<DeviantArtBrowsePagedResult>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String tag` `Int32 offset` -> `AsyncSeq<Deviation>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String tag` `Int32 offset` `Int32 limit` -> `Task<Deviation[]>`
 
-### DeviantArtFs.Requests.Browse.UserJournals
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `UserJournalsRequest` -> `Async<DeviantArtPagedResult<Deviation>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `UserJournalsRequest` -> `Task<DeviantArtPagedResult<Deviation>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `UserJournalsRequest` -> `AsyncSeq<Deviation>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `UserJournalsRequest` -> `Task<Deviation[]>`
+### DeviantArtFs.Api.Browse.TagsSearch
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String tag_name` -> `AsyncSeq<IEnumerable<String>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String tag_name` -> `Task<IEnumerable<String>>`
+
+### DeviantArtFs.Api.Browse.Topic
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String topic` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<Deviation>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String topic` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<Deviation>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String topic` `Int32 offset` -> `AsyncSeq<Deviation>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String topic` `Int32 offset` `Int32 limit` -> `Task<Deviation[]>`
+
+### DeviantArtFs.Api.Browse.Topics
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `TopicsRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<DeviantArtTopic>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `TopicsRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<DeviantArtTopic>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `TopicsRequest req` `Int32 offset` -> `AsyncSeq<DeviantArtTopic>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `TopicsRequest req` `Int32 offset` `Int32 limit` -> `Task<DeviantArtTopic[]>`
+
+**TopicsRequest:**
+
+* NumDeviationsPerTopic: `Int32?`
+
+### DeviantArtFs.Api.Browse.TopTopics
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` -> `AsyncSeq<FSharpList<DeviantArtTopic>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` -> `Task<FSharpList<DeviantArtTopic>>`
+
+### DeviantArtFs.Api.Browse.UserJournals
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `UserJournalsRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<Deviation>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `UserJournalsRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<Deviation>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `UserJournalsRequest req` `Int32 offset` -> `AsyncSeq<Deviation>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `UserJournalsRequest req` `Int32 offset` `Int32 limit` -> `Task<Deviation[]>`
 
 **UserJournalsRequest:**
 
-* Username: `string`
-* Featured: `bool`
+* Username: `String`
+* Featured: `Boolean`
 
-### DeviantArtFs.Requests.Collections.CollectionById
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `CollectionByIdRequest` -> `Async<DeviantArtFolderPagedResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `CollectionByIdRequest` -> `Task<DeviantArtFolderPagedResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `CollectionByIdRequest` -> `AsyncSeq<Deviation>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `CollectionByIdRequest` -> `Task<Deviation[]>`
+### DeviantArtFs.Api.Collections.CollectionById
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `CollectionByIdRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtFolderPagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `CollectionByIdRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtFolderPagedResult>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `CollectionByIdRequest req` `Int32 offset` -> `AsyncSeq<Deviation>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `CollectionByIdRequest req` `Int32 offset` `Int32 limit` -> `Task<Deviation[]>`
 
 **CollectionByIdRequest:**
 
 * Folderid: `Guid`
-* Username: `string`
+* Username: `String`
 
-### DeviantArtFs.Requests.Collections.CollectionFolders
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `CollectionFoldersRequest` -> `Async<DeviantArtPagedResult<DeviantArtCollectionFolder>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `CollectionFoldersRequest` -> `Task<DeviantArtPagedResult<DeviantArtCollectionFolder>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `CollectionFoldersRequest` -> `AsyncSeq<DeviantArtCollectionFolder>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `CollectionFoldersRequest` -> `Task<DeviantArtCollectionFolder[]>`
+### DeviantArtFs.Api.Collections.CollectionFolders
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `CollectionFoldersRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<DeviantArtCollectionFolder>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `CollectionFoldersRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<DeviantArtCollectionFolder>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `CollectionFoldersRequest req` `DeviantArtPagingParams offset` -> `AsyncSeq<DeviantArtCollectionFolder>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `CollectionFoldersRequest req` `DeviantArtPagingParams offset` `Int32 limit` -> `Task<DeviantArtCollectionFolder[]>`
 
 **CollectionFoldersRequest:**
 
-* Username: `string`
-* CalculateSize: `bool`
-* ExtPreload: `bool`
+* Username: `String`
+* CalculateSize: `Boolean`
+* ExtPreload: `Boolean`
 
-### DeviantArtFs.Requests.Collections.CreateCollectionFolder
-* AsyncExecute `IDeviantArtAccessToken` `string` -> `Async<DeviantArtCollectionFolder>`
-* ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task<DeviantArtCollectionFolder>`
+### DeviantArtFs.Api.Collections.CreateCollectionFolder
+* AsyncExecute `IDeviantArtAccessToken token` `String folder` -> `AsyncSeq<DeviantArtCollectionFolder>`
+* ExecuteAsync `IDeviantArtAccessToken token` `String folder` -> `Task<DeviantArtCollectionFolder>`
 
-### DeviantArtFs.Requests.Collections.Fave
-* AsyncExecute `IDeviantArtAccessToken` `Guid` `IEnumerable<Guid>` -> `Async<int>`
-* ExecuteAsync `IDeviantArtAccessToken` `Guid` `IEnumerable<Guid>` -> `Task<int>`
+### DeviantArtFs.Api.Collections.Fave
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid deviationid` `IEnumerable<Guid> folderids` -> `AsyncSeq<FaveResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid deviationid` `IEnumerable<Guid> folderids` -> `Task<FaveResponse>`
 
-### DeviantArtFs.Requests.Collections.RemoveCollectionFolder
-* AsyncExecute `IDeviantArtAccessToken` `Guid` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `Guid` -> `Task`
+**Guid:**
 
-### DeviantArtFs.Requests.Collections.Unfave
-* AsyncExecute `IDeviantArtAccessToken` `Guid` `IEnumerable<Guid>` -> `Async<int>`
-* ExecuteAsync `IDeviantArtAccessToken` `Guid` `IEnumerable<Guid>` -> `Task<int>`
 
-### DeviantArtFs.Requests.Comments.CommentSiblings
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `CommentSiblingsRequest` -> `Async<DeviantArtCommentSiblingsPagedResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `CommentSiblingsRequest` -> `Task<DeviantArtCommentSiblingsPagedResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `CommentSiblingsRequest` -> `AsyncSeq<DeviantArtComment>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `CommentSiblingsRequest` -> `Task<DeviantArtComment[]>`
+### DeviantArtFs.Api.Collections.RemoveCollectionFolder
+* AsyncExecute `IDeviantArtAccessToken token` `Guid folderid` -> `AsyncSeq<DeviantArtSuccessOrErrorResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `Guid folderid` -> `Task<DeviantArtSuccessOrErrorResponse>`
+
+### DeviantArtFs.Api.Collections.Unfave
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid deviationid` `IEnumerable<Guid> folderids` -> `AsyncSeq<UnfaveResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid deviationid` `IEnumerable<Guid> folderids` -> `Task<UnfaveResponse>`
+
+**Guid:**
+
+
+### DeviantArtFs.Api.Comments.CommentSiblings
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `CommentSiblingsRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtCommentSiblingsPagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `CommentSiblingsRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtCommentSiblingsPagedResult>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `CommentSiblingsRequest req` `Int32 offset` -> `AsyncSeq<DeviantArtComment>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `CommentSiblingsRequest req` `Int32 offset` `Int32 limit` -> `Task<DeviantArtComment[]>`
 
 **CommentSiblingsRequest:**
 
 * Commentid: `Guid`
-* ExtItem: `bool`
+* ExtItem: `Boolean`
 
-### DeviantArtFs.Requests.Comments.DeviationComments
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `DeviationCommentsRequest` -> `Async<DeviantArtCommentPagedResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `DeviationCommentsRequest` -> `Task<DeviantArtCommentPagedResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `DeviationCommentsRequest` -> `AsyncSeq<DeviantArtComment>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `DeviationCommentsRequest` -> `Task<DeviantArtComment[]>`
+### DeviantArtFs.Api.Comments.DeviationComments
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DeviationCommentsRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtCommentPagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DeviationCommentsRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtCommentPagedResult>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DeviationCommentsRequest req` `Int32 offset` -> `AsyncSeq<DeviantArtComment>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DeviationCommentsRequest req` `Int32 offset` `Int32 limit` -> `Task<DeviantArtComment[]>`
 
 **DeviationCommentsRequest:**
 
 * Deviationid: `Guid`
 * Commentid: `Guid?`
-* Maxdepth: `int`
+* Maxdepth: `Int32`
 
-### DeviantArtFs.Requests.Comments.PostDeviationComment
-* AsyncExecute `IDeviantArtAccessToken` `PostDeviationCommentRequest` -> `Async<DeviantArtComment>`
-* ExecuteAsync `IDeviantArtAccessToken` `PostDeviationCommentRequest` -> `Task<DeviantArtComment>`
+### DeviantArtFs.Api.Comments.PostDeviationComment
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `PostDeviationCommentRequest req` -> `AsyncSeq<DeviantArtComment>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `PostDeviationCommentRequest req` -> `Task<DeviantArtComment>`
 
 **PostDeviationCommentRequest:**
 
 * Deviationid: `Guid`
-* Body: `string`
+* Body: `String`
 * Commentid: `Guid?`
 
-### DeviantArtFs.Requests.Comments.PostProfileComment
-* AsyncExecute `IDeviantArtAccessToken` `PostProfileCommentRequest` -> `Async<DeviantArtComment>`
-* ExecuteAsync `IDeviantArtAccessToken` `PostProfileCommentRequest` -> `Task<DeviantArtComment>`
+### DeviantArtFs.Api.Comments.PostProfileComment
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `PostProfileCommentRequest req` -> `AsyncSeq<DeviantArtComment>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `PostProfileCommentRequest req` -> `Task<DeviantArtComment>`
 
 **PostProfileCommentRequest:**
 
-* Username: `string`
-* Body: `string`
+* Username: `String`
+* Body: `String`
 * Commentid: `Guid?`
 
-### DeviantArtFs.Requests.Comments.PostStatusComment
-* AsyncExecute `IDeviantArtAccessToken` `PostStatusCommentRequest` -> `Async<DeviantArtComment>`
-* ExecuteAsync `IDeviantArtAccessToken` `PostStatusCommentRequest` -> `Task<DeviantArtComment>`
+### DeviantArtFs.Api.Comments.PostStatusComment
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `PostStatusCommentRequest req` -> `AsyncSeq<DeviantArtComment>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `PostStatusCommentRequest req` -> `Task<DeviantArtComment>`
 
 **PostStatusCommentRequest:**
 
 * Statusid: `Guid`
-* Body: `string`
+* Body: `String`
 * Commentid: `Guid?`
 
-### DeviantArtFs.Requests.Comments.ProfileComments
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `ProfileCommentsRequest` -> `Async<DeviantArtCommentPagedResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `ProfileCommentsRequest` -> `Task<DeviantArtCommentPagedResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `ProfileCommentsRequest` -> `AsyncSeq<DeviantArtComment>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `ProfileCommentsRequest` -> `Task<DeviantArtComment[]>`
+### DeviantArtFs.Api.Comments.ProfileComments
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `ProfileCommentsRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtCommentPagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `ProfileCommentsRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtCommentPagedResult>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `ProfileCommentsRequest req` `Int32 offset` -> `AsyncSeq<DeviantArtComment>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `ProfileCommentsRequest req` `Int32 offset` `Int32 limit` -> `Task<DeviantArtComment[]>`
 
 **ProfileCommentsRequest:**
 
-* Username: `string`
+* Username: `String`
 * Commentid: `Guid?`
-* Maxdepth: `int`
+* Maxdepth: `Int32`
 
-### DeviantArtFs.Requests.Comments.StatusComments
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `StatusCommentsRequest` -> `Async<DeviantArtCommentPagedResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `StatusCommentsRequest` -> `Task<DeviantArtCommentPagedResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `StatusCommentsRequest` -> `AsyncSeq<DeviantArtComment>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `StatusCommentsRequest` -> `Task<DeviantArtComment[]>`
+### DeviantArtFs.Api.Comments.StatusComments
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `StatusCommentsRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtCommentPagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `StatusCommentsRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtCommentPagedResult>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `StatusCommentsRequest req` `Int32 offset` -> `AsyncSeq<DeviantArtComment>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `StatusCommentsRequest req` `Int32 offset` `Int32 limit` -> `Task<DeviantArtComment[]>`
 
 **StatusCommentsRequest:**
 
 * Statusid: `Guid`
 * Commentid: `Guid?`
-* Maxdepth: `int`
+* Maxdepth: `Int32`
 
-### DeviantArtFs.Requests.Data.Countries
-* AsyncExecute `IDeviantArtAccessToken` -> `Async<IDictionary<int, string>>`
-* ExecuteAsync `IDeviantArtAccessToken` -> `Task<IDictionary<int, string>>`
+### DeviantArtFs.Api.Data.Countries
+* AsyncExecute `IDeviantArtAccessToken token` -> `AsyncSeq<FSharpList<CountriesElement>>`
+* ExecuteAsync `IDeviantArtAccessToken token` -> `Task<FSharpList<CountriesElement>>`
 
-### DeviantArtFs.Requests.Data.Privacy
-* AsyncExecute `IDeviantArtAccessToken` -> `Async<string>`
-* ExecuteAsync `IDeviantArtAccessToken` -> `Task<string>`
+### DeviantArtFs.Api.Data.Privacy
+* AsyncExecute `IDeviantArtAccessToken token` -> `AsyncSeq<String>`
+* ExecuteAsync `IDeviantArtAccessToken token` -> `Task<String>`
 
-### DeviantArtFs.Requests.Data.Submission
-* AsyncExecute `IDeviantArtAccessToken` -> `Async<string>`
-* ExecuteAsync `IDeviantArtAccessToken` -> `Task<string>`
+### DeviantArtFs.Api.Data.Submission
+* AsyncExecute `IDeviantArtAccessToken token` -> `AsyncSeq<String>`
+* ExecuteAsync `IDeviantArtAccessToken token` -> `Task<String>`
 
-### DeviantArtFs.Requests.Data.Tos
-* AsyncExecute `IDeviantArtAccessToken` -> `Async<string>`
-* ExecuteAsync `IDeviantArtAccessToken` -> `Task<string>`
+### DeviantArtFs.Api.Data.Tos
+* AsyncExecute `IDeviantArtAccessToken token` -> `AsyncSeq<String>`
+* ExecuteAsync `IDeviantArtAccessToken token` -> `Task<String>`
 
-### DeviantArtFs.Requests.Deviation.Content
-* AsyncExecute `IDeviantArtAccessToken` `Guid` -> `Async<DeviationTextContent>`
-* ExecuteAsync `IDeviantArtAccessToken` `Guid` -> `Task<DeviationTextContent>`
+### DeviantArtFs.Api.Deviation.Content
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid deviationid` -> `AsyncSeq<DeviationTextContent>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid deviationid` -> `Task<DeviationTextContent>`
 
-### DeviantArtFs.Requests.Deviation.DeviationById
-* AsyncExecute `IDeviantArtAccessToken` `Guid` -> `Async<Deviation>`
-* ExecuteAsync `IDeviantArtAccessToken` `Guid` -> `Task<Deviation>`
+### DeviantArtFs.Api.Deviation.DeviationById
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid id` -> `AsyncSeq<Deviation>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid id` -> `Task<Deviation>`
 
-### DeviantArtFs.Requests.Deviation.Download
-* AsyncExecute `IDeviantArtAccessToken` `Guid` -> `Async<DeviationDownload>`
-* ExecuteAsync `IDeviantArtAccessToken` `Guid` -> `Task<DeviationDownload>`
+### DeviantArtFs.Api.Deviation.Download
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid deviationid` -> `AsyncSeq<DeviationDownload>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid deviationid` -> `Task<DeviationDownload>`
 
-### DeviantArtFs.Requests.Deviation.EmbeddedContent
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `EmbeddedContentRequest` -> `Async<DeviantArtEmbeddedContentPagedResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `EmbeddedContentRequest` -> `Task<DeviantArtEmbeddedContentPagedResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `EmbeddedContentRequest` -> `AsyncSeq<Deviation>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `EmbeddedContentRequest` -> `Task<Deviation[]>`
+### DeviantArtFs.Api.Deviation.EmbeddedContent
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `EmbeddedContentRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtEmbeddedContentPagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `EmbeddedContentRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtEmbeddedContentPagedResult>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `EmbeddedContentRequest req` `Int32 offset` -> `AsyncSeq<Deviation>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `EmbeddedContentRequest req` `Int32 offset` `Int32 limit` -> `Task<Deviation[]>`
 
 **EmbeddedContentRequest:**
 
 * Deviationid: `Guid`
 * OffsetDeviationid: `Guid?`
 
-### DeviantArtFs.Requests.Deviation.MetadataById
-* AsyncExecute `IDeviantArtAccessToken` `MetadataRequest` -> `Async<DeviationMetadata list>`
-* ExecuteAsync `IDeviantArtAccessToken` `MetadataRequest` -> `Task<DeviationMetadata list>`
+### DeviantArtFs.Api.Deviation.MetadataById
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `MetadataRequest req` -> `AsyncSeq<FSharpList<DeviationMetadata>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `MetadataRequest req` -> `Task<FSharpList<DeviationMetadata>>`
 
 **MetadataRequest:**
 
 * Deviationids: `IEnumerable<Guid>`
-* ExtParams: `IDeviantArtExtParams`
-* ExtCollection: `bool`
+* ExtParams: `DeviantArtExtParams`
+* ExtCollection: `Boolean`
 
-### DeviantArtFs.Requests.Deviation.WhoFaved
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `Guid` -> `Async<DeviantArtPagedResult<DeviantArtWhoFavedUser>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `Guid` -> `Task<DeviantArtPagedResult<DeviantArtWhoFavedUser>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `Guid` -> `AsyncSeq<DeviantArtWhoFavedUser>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `Guid` -> `Task<DeviantArtWhoFavedUser[]>`
+### DeviantArtFs.Api.Deviation.WhoFaved
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid deviationid` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<DeviantArtWhoFavedUser>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid req` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<DeviantArtWhoFavedUser>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid req` `Int32 offset` -> `AsyncSeq<DeviantArtWhoFavedUser>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid offset` `Int32 limit` `Int32 deviationid` -> `Task<DeviantArtWhoFavedUser[]>`
 
-### DeviantArtFs.Requests.Feed.FeedHome
-* AsyncExecute `IDeviantArtAccessToken` `string option` -> `Async<DeviantArtFeedCursorResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task<DeviantArtFeedCursorResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `string option` -> `AsyncSeq<DeviantArtFeedItem>`
-* ToArrayAsync `IDeviantArtAccessToken` `string` `int` -> `Task<DeviantArtFeedItem[]>`
+### DeviantArtFs.Api.Gallery.CreateGalleryFolder
+* AsyncExecute `IDeviantArtAccessToken token` `String folder` -> `AsyncSeq<DeviantArtCollectionFolder>`
+* ExecuteAsync `IDeviantArtAccessToken token` `String folder` -> `Task<DeviantArtCollectionFolder>`
 
-### DeviantArtFs.Requests.Feed.FeedHomeBucket
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `Guid` -> `Async<DeviantArtPagedResult<Deviation>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `Guid` -> `Task<DeviantArtPagedResult<Deviation>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `Guid` -> `AsyncSeq<Deviation>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `Guid` -> `Task<Deviation[]>`
-
-### DeviantArtFs.Requests.Feed.FeedNotifications
-* AsyncExecute `IDeviantArtAccessToken` `string option` -> `Async<DeviantArtFeedCursorResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task<DeviantArtFeedCursorResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `string option` -> `AsyncSeq<DeviantArtFeedItem>`
-* ToArrayAsync `IDeviantArtAccessToken` `string` `int` -> `Task<DeviantArtFeedItem[]>`
-
-### DeviantArtFs.Requests.Feed.FeedSettings
-* AsyncExecute `IDeviantArtAccessToken` -> `Async<DeviantArtFeedSettings>`
-* ExecuteAsync `IDeviantArtAccessToken` -> `Task<DeviantArtFeedSettings>`
-
-### DeviantArtFs.Requests.Feed.FeedSettingsUpdate
-* AsyncExecute `IDeviantArtAccessToken` `FeedSettingsUpdateRequest` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `FeedSettingsUpdateRequest` -> `Task`
-
-**FeedSettingsUpdateRequest:**
-
-* Statuses: `bool?`
-* Deviations: `bool?`
-* Journals: `bool?`
-* GroupDeviations: `bool?`
-* Collections: `bool?`
-* Misc: `bool?`
-
-### DeviantArtFs.Requests.Feed.ProfileFeed
-* AsyncExecute `IDeviantArtAccessToken` `string option` -> `Async<DeviantArtFeedCursorResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task<DeviantArtFeedCursorResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `string option` -> `AsyncSeq<DeviantArtFeedItem>`
-* ToArrayAsync `IDeviantArtAccessToken` `string` `int` -> `Task<DeviantArtFeedItem[]>`
-
-### DeviantArtFs.Requests.Gallery.CreateGalleryFolder
-* AsyncExecute `IDeviantArtAccessToken` `string` -> `Async<DeviantArtGalleryFolder>`
-* ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task<DeviantArtGalleryFolder>`
-
-### DeviantArtFs.Requests.Gallery.GalleryAllView
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `GalleryAllViewRequest` -> `Async<DeviantArtPagedResult<Deviation>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `GalleryAllViewRequest` -> `Task<DeviantArtPagedResult<Deviation>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `GalleryAllViewRequest` -> `AsyncSeq<Deviation>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `GalleryAllViewRequest` -> `Task<Deviation[]>`
+### DeviantArtFs.Api.Gallery.GalleryAllView
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `GalleryAllViewRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<Deviation>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `GalleryAllViewRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<Deviation>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `GalleryAllViewRequest req` `Int32 offset` -> `AsyncSeq<Deviation>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `GalleryAllViewRequest req` `Int32 offset` `Int32 limit` -> `Task<Deviation[]>`
 
 **GalleryAllViewRequest:**
 
-* Username: `string`
+* Username: `String`
 
-### DeviantArtFs.Requests.Gallery.GalleryById
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `GalleryByIdRequest` -> `Async<DeviantArtFolderPagedResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `GalleryByIdRequest` -> `Task<DeviantArtFolderPagedResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `GalleryByIdRequest` -> `AsyncSeq<Deviation>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `GalleryByIdRequest` -> `Task<Deviation[]>`
+### DeviantArtFs.Api.Gallery.GalleryById
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `GalleryByIdRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtFolderPagedResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `GalleryByIdRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtFolderPagedResult>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `GalleryByIdRequest req` `Int32 offset` -> `AsyncSeq<Deviation>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `GalleryByIdRequest req` `Int32 offset` `Int32 limit` -> `Task<Deviation[]>`
 
 **GalleryByIdRequest:**
 
-* Folderid: `Guid`
-* Username: `string`
-* Mode: `GalleryRequestMode` (Popular, Newest)
+* Folderid: `Guid?`
+* Username: `String`
+* Mode: `GalleryRequestMode` (Popular | Newest)
 
-### DeviantArtFs.Requests.Gallery.GalleryFolders
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `GalleryFoldersRequest` -> `Async<DeviantArtPagedResult<DeviantArtGalleryFolder>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `GalleryFoldersRequest` -> `Task<DeviantArtPagedResult<DeviantArtGalleryFolder>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `GalleryFoldersRequest` -> `AsyncSeq<DeviantArtGalleryFolder>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `GalleryFoldersRequest` -> `Task<DeviantArtGalleryFolder[]>`
+### DeviantArtFs.Api.Gallery.GalleryFolders
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `GalleryFoldersRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<DeviantArtGalleryFolder>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `GalleryFoldersRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<DeviantArtGalleryFolder>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `GalleryFoldersRequest req` `Int32 offset` -> `AsyncSeq<DeviantArtGalleryFolder>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `GalleryFoldersRequest req` `Int32 offset` `Int32 limit` -> `Task<DeviantArtGalleryFolder[]>`
 
 **GalleryFoldersRequest:**
 
-* Username: `string`
-* CalculateSize: `bool`
-* ExtPreload: `bool`
+* Username: `String`
+* CalculateSize: `Boolean`
+* ExtPreload: `Boolean`
 
-### DeviantArtFs.Requests.Gallery.RemoveGalleryFolder
-* AsyncExecute `IDeviantArtAccessToken` `Guid` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `Guid` -> `Task`
+### DeviantArtFs.Api.Gallery.RemoveGalleryFolder
+* AsyncExecute `IDeviantArtAccessToken token` `Guid folderid` -> `AsyncSeq<DeviantArtSuccessOrErrorResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `Guid folderid` -> `Task<DeviantArtSuccessOrErrorResponse>`
 
-### DeviantArtFs.Requests.Messages.DeleteMessage
-* AsyncExecute `IDeviantArtAccessToken` `DeleteMessageRequest` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `DeleteMessageRequest` -> `Task`
+### DeviantArtFs.Api.Messages.DeleteMessage
+* AsyncExecute `IDeviantArtAccessToken token` `DeleteMessageRequest req` -> `AsyncSeq<DeviantArtSuccessOrErrorResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeleteMessageRequest req` -> `Task<DeviantArtSuccessOrErrorResponse>`
 
 **DeleteMessageRequest:**
 
 * Folderid: `Guid?`
-* Messageid: `string`
-* Stackid: `string`
+* Messageid: `String`
+* Stackid: `String`
 
-### DeviantArtFs.Requests.Messages.FeedbackMessages
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `FeedbackMessagesRequest` -> `Async<DeviantArtPagedResult<DeviantArtMessage>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `FeedbackMessagesRequest` -> `Task<DeviantArtPagedResult<DeviantArtMessage>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `FeedbackMessagesRequest` -> `AsyncSeq<DeviantArtMessage>`
-* ToArrayAsync `IDeviantArtAccessToken` `FeedbackMessagesRequest` `int` `int` -> `Task<DeviantArtMessage[]>`
+### DeviantArtFs.Api.Messages.FeedbackMessages
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FeedbackMessagesRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<DeviantArtMessage>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FeedbackMessagesRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<DeviantArtMessage>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FeedbackMessagesRequest req` `Int32 offset` -> `AsyncSeq<DeviantArtMessage>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FeedbackMessagesRequest req` `Int32 offset` `Int32 limit` -> `Task<DeviantArtMessage[]>`
 
 **FeedbackMessagesRequest:**
 
 * Type: `FeedbackMessageType` (Comments, Replies, Activity)
 * Folderid: `Guid?`
-* Stack: `bool`
+* Stack: `Boolean`
 
-### DeviantArtFs.Requests.Messages.FeedbackStack
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `string` -> `Async<DeviantArtPagedResult<DeviantArtMessage>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `string` -> `Task<DeviantArtPagedResult<DeviantArtMessage>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `string` -> `AsyncSeq<DeviantArtMessage>`
-* ToArrayAsync `IDeviantArtAccessToken` `string` `int` `int` -> `Task<DeviantArtMessage[]>`
+### DeviantArtFs.Api.Messages.FeedbackStack
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String stackid` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<DeviantArtMessage>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String stackid` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<DeviantArtMessage>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int32 offset` `String stackid` -> `AsyncSeq<DeviantArtMessage>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int32 stackid` `String offset` `Int32 limit` -> `Task<DeviantArtMessage[]>`
 
-### DeviantArtFs.Requests.Messages.MentionsMessages
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `MentionsMessagesRequest` -> `Async<DeviantArtPagedResult<DeviantArtMessage>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `MentionsMessagesRequest` -> `Task<DeviantArtPagedResult<DeviantArtMessage>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `MentionsMessagesRequest` -> `AsyncSeq<DeviantArtMessage>`
-* ToArrayAsync `IDeviantArtAccessToken` `MentionsMessagesRequest` `int` `int` -> `Task<DeviantArtMessage[]>`
+### DeviantArtFs.Api.Messages.MentionsMessages
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `MentionsMessagesRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<DeviantArtMessage>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `MentionsMessagesRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<DeviantArtMessage>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `MentionsMessagesRequest req` `Int32 offset` -> `AsyncSeq<DeviantArtMessage>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `MentionsMessagesRequest req` `Int32 offset` `Int32 limit` -> `Task<DeviantArtMessage[]>`
 
 **MentionsMessagesRequest:**
 
 * Folderid: `Guid?`
-* Stack: `bool`
+* Stack: `Boolean`
 
-### DeviantArtFs.Requests.Messages.MentionsStack
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `string` -> `Async<DeviantArtPagedResult<DeviantArtMessage>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `string` -> `Task<DeviantArtPagedResult<DeviantArtMessage>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `string` -> `AsyncSeq<DeviantArtMessage>`
-* ToArrayAsync `IDeviantArtAccessToken` `string` `int` `int` -> `Task<DeviantArtMessage[]>`
+### DeviantArtFs.Api.Messages.MentionsStack
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String stackid` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<DeviantArtMessage>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String stackid` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<DeviantArtMessage>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String stackid` `Int32 offset` -> `AsyncSeq<DeviantArtMessage>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String stackid` `Int32 offset` `Int32 limit` -> `Task<DeviantArtMessage[]>`
 
-### DeviantArtFs.Requests.Messages.MessagesFeed
-* AsyncExecute `IDeviantArtAccessToken` `string option` `MessagesFeedRequest` -> `Async<DeviantArtMessageCursorResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `string` `MessagesFeedRequest` -> `Task<DeviantArtMessageCursorResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `string option` `MessagesFeedRequest` -> `AsyncSeq<DeviantArtMessage>`
-* ToArrayAsync `IDeviantArtAccessToken` `MessagesFeedRequest` `string` `int` -> `Task<DeviantArtMessage[]>`
+### DeviantArtFs.Api.Messages.MessagesFeed
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `MessagesFeedRequest req` `FSharpOption<String> cursor` -> `AsyncSeq<DeviantArtMessageCursorResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `MessagesFeedRequest req` `String cursor` -> `Task<DeviantArtMessageCursorResult>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `MessagesFeedRequest req` `FSharpOption<String> cursor` -> `AsyncSeq<DeviantArtMessage>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `MessagesFeedRequest req` `String cursor` `Int32 limit` -> `Task<DeviantArtMessage[]>`
 
 **MessagesFeedRequest:**
 
 * Folderid: `Guid?`
-* Stack: `bool`
+* Stack: `Boolean`
 
-### DeviantArtFs.Requests.Notes.CreateNotesFolder
-* AsyncExecute `IDeviantArtAccessToken` `CreateNotesFolderRequest` -> `Async<DeviantArtNewNotesFolder>`
-* ExecuteAsync `IDeviantArtAccessToken` `CreateNotesFolderRequest` -> `Task<DeviantArtNewNotesFolder>`
+**String:**
 
-**CreateNotesFolderRequest:**
+* Chars: `Char`
+* Length: `Int32`
 
-* Title: `string`
-* Parentid: `Guid?`
+### DeviantArtFs.Api.Stash.Contents
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int64 stackid` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<StashMetadata>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int64 stackid` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<StashMetadata>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int64 stackid` `Int32 offset` -> `AsyncSeq<StashMetadata>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int64 stackid` `Int32 offset` `Int32 limit` -> `Task<StashMetadata[]>`
 
-### DeviantArtFs.Requests.Notes.DeleteNotes
-* AsyncExecute `IDeviantArtAccessToken` `IEnumerable<Guid>` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `IEnumerable<Guid>` -> `Task`
+### DeviantArtFs.Api.Stash.Delete
+* AsyncExecute `IDeviantArtAccessToken token` `Int64 itemid` -> `AsyncSeq<DeviantArtSuccessOrErrorResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `Int64 itemid` -> `Task<DeviantArtSuccessOrErrorResponse>`
 
-### DeviantArtFs.Requests.Notes.GetNote
-* AsyncExecute `IDeviantArtAccessToken` `Guid` -> `Async<DeviantArtNote>`
-* ExecuteAsync `IDeviantArtAccessToken` `Guid` -> `Task<DeviantArtNote>`
-
-### DeviantArtFs.Requests.Notes.GetNotes
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `Guid option` -> `Async<DeviantArtPagedResult<DeviantArtNote>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `Guid?` -> `Task<DeviantArtPagedResult<DeviantArtNote>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `Guid option` -> `AsyncSeq<DeviantArtNote>`
-* ToArrayAsync `IDeviantArtAccessToken` `Guid?` `int` `int` -> `Task<DeviantArtNote[]>`
-
-### DeviantArtFs.Requests.Notes.MarkNotes
-* AsyncExecute `IDeviantArtAccessToken` `MarkNotesRequest` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `MarkNotesRequest` -> `Task`
-
-**MarkNotesRequest:**
-
-* Noteids: `IEnumerable<Guid>`
-* MarkAs: `MarkAs` (Read, Unread, Starred, NotStarred, Spam)
-
-### DeviantArtFs.Requests.Notes.MoveNotes
-* AsyncExecute `IDeviantArtAccessToken` `MoveNotesRequest` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `MoveNotesRequest` -> `Task`
-
-**MoveNotesRequest:**
-
-* Noteids: `IEnumerable<Guid>`
-* Folderid: `Guid`
-
-### DeviantArtFs.Requests.Notes.NotesFolders
-* AsyncExecute `IDeviantArtAccessToken` -> `Async<DeviantArtNotesFolder list>`
-* ExecuteAsync `IDeviantArtAccessToken` -> `Task<DeviantArtNotesFolder list>`
-
-### DeviantArtFs.Requests.Notes.RemoveNotesFolder
-* AsyncExecute `IDeviantArtAccessToken` `Guid` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `Guid` -> `Task`
-
-### DeviantArtFs.Requests.Notes.RenameNotesFolder
-* AsyncExecute `IDeviantArtAccessToken` `RenameNotesFolderRequest` -> `Async<DeviantArtRenamedNotesFolder>`
-* ExecuteAsync `IDeviantArtAccessToken` `RenameNotesFolderRequest` -> `Task<DeviantArtRenamedNotesFolder>`
-
-**RenameNotesFolderRequest:**
-
-* Folderid: `Guid`
-* Title: `string`
-
-### DeviantArtFs.Requests.Notes.SendNote
-* AsyncExecute `IDeviantArtAccessToken` `SendNoteRequest` -> `Async<DeviantArtSendNoteResult list>`
-* ExecuteAsync `IDeviantArtAccessToken` `SendNoteRequest` -> `Task<DeviantArtSendNoteResult list>`
-
-**SendNoteRequest:**
-
-* To: `IEnumerable<string>`
-* Subject: `string`
-* Body: `string`
-* Noteid: `Guid?`
-
-### DeviantArtFs.Requests.Stash.Contents
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `long` -> `Async<DeviantArtPagedResult<StashMetadata>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `long` -> `Task<DeviantArtPagedResult<StashMetadata>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `long` -> `AsyncSeq<StashMetadata>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `long` -> `Task<StashMetadata[]>`
-
-### DeviantArtFs.Requests.Stash.Delete
-* AsyncExecute `IDeviantArtAccessToken` `long` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `long` -> `Task`
-
-### DeviantArtFs.Requests.Stash.Delta
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `DeltaRequest` -> `Async<StashDeltaResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `DeltaRequest` -> `Task<StashDeltaResult>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `DeltaRequest` -> `AsyncSeq<StashDeltaEntry>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `DeltaRequest` -> `Task<StashDeltaEntry[]>`
+### DeviantArtFs.Api.Stash.Delta
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DeltaRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<StashDeltaResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DeltaRequest req` `DeviantArtPagingParams paging` -> `Task<StashDeltaResult>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DeltaRequest req` `Int32 offset` -> `AsyncSeq<StashDeltaEntry>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `DeltaRequest req` `Int32 offset` `Int32 limit` -> `Task<StashDeltaEntry[]>`
 
 **DeltaRequest:**
 
-* Cursor: `string`
-* ExtParams: `IDeviantArtExtParams`
+* Cursor: `String`
+* ExtParams: `DeviantArtExtParams`
 
-### DeviantArtFs.Requests.Stash.Item
-* AsyncExecute `IDeviantArtAccessToken` `ItemRequest` -> `Async<StashMetadata>`
-* ExecuteAsync `IDeviantArtAccessToken` `ItemRequest` -> `Task<StashMetadata>`
+### DeviantArtFs.Api.Stash.Item
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `ItemRequest req` -> `AsyncSeq<StashMetadata>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `ItemRequest req` -> `Task<StashMetadata>`
 
 **ItemRequest:**
 
-* Itemid: `long`
-* ExtParams: `IDeviantArtExtParams`
+* Itemid: `Int64`
+* ExtParams: `DeviantArtExtParams`
 
-### DeviantArtFs.Requests.Stash.Move
-* AsyncExecute `IDeviantArtAccessToken` `long` `long` -> `Async<StashMoveResult>`
-* ExecuteAsync `IDeviantArtAccessToken` `long` `long` -> `Task<StashMoveResult>`
+### DeviantArtFs.Api.Stash.Move
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int64 stackid` `Int64 targetid` -> `AsyncSeq<StashMoveResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int64 stackid` `Int64 targetid` -> `Task<StashMoveResult>`
 
-### DeviantArtFs.Requests.Stash.Position
-* AsyncExecute `IDeviantArtAccessToken` `long` `int` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `long` `int` -> `Task`
+### DeviantArtFs.Api.Stash.Position
+* AsyncExecute `IDeviantArtAccessToken token` `Int64 stackid` `Int32 position` -> `AsyncSeq<DeviantArtSuccessOrErrorResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `Int64 stackid` `Int32 position` -> `Task<DeviantArtSuccessOrErrorResponse>`
 
-### DeviantArtFs.Requests.Stash.Publish
-* AsyncExecute `IDeviantArtAccessToken` `PublishRequest` -> `Async<StashPublishResponse>`
-* ExecuteAsync `IDeviantArtAccessToken` `PublishRequest` -> `Task<StashPublishResponse>`
+### DeviantArtFs.Api.Stash.Publish
+* AsyncExecute `IDeviantArtAccessToken token` `PublishRequest req` -> `AsyncSeq<StashPublishResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `PublishRequest req` -> `Task<StashPublishResponse>`
 
 **PublishRequest:**
 
-* IsMature: `bool`
-* MatureLevel: `MatureLevel` (None, Strict, Moderate)
-* MatureClassification: `MatureClassification` (None, Nudity, Sexual, Gore, Language, Ideology)
-* AgreeSubmission: `bool`
-* AgreeTos: `bool`
-* Catpath: `string`
-* Feature: `bool`
-* AllowComments: `bool`
-* RequestCritique: `bool`
-* DisplayResolution: `DisplayResolution` (Original, Max400Px, Max600px, Max800px, Max900px, Max1024px, Max1280px, Max1600px)
-* Sharing: `Sharing` (Allow, HideShareButtons, HideAndMembersOnly)
+* IsMature: `Boolean`
+* MatureLevel: `MatureLevel` (None | Strict | Moderate)
+* MatureClassification: `IEnumerable<MatureClassification>`
+* AgreeSubmission: `Boolean`
+* AgreeTos: `Boolean`
+* Catpath: `String`
+* Feature: `Boolean`
+* AllowComments: `Boolean`
+* RequestCritique: `Boolean`
+* DisplayResolution: `DisplayResolution` (Original, Max400Px, Max600px, Max800px, Max900px, Max1024px, Max1280px, Max1600px, Max1920px)
+* Sharing: `Sharing` (Allow | HideShareButtons | HideAndMembersOnly)
 * LicenseOptions: `LicenseOptions`
 * Galleryids: `IEnumerable<Guid>`
-* AllowFreeDownload: `bool`
-* AddWatermark: `bool`
-* Itemid: `long`
+* AllowFreeDownload: `Boolean`
+* AddWatermark: `Boolean`
+* Itemid: `Int64`
 
-### DeviantArtFs.Requests.Stash.PublishCategoryTree
-* AsyncExecute `IDeviantArtAccessToken` `PublishCategoryTreeRequest` -> `Async<DeviantArtCategory list>`
-* ExecuteAsync `IDeviantArtAccessToken` `PublishCategoryTreeRequest` -> `Task<DeviantArtCategory list>`
+### DeviantArtFs.Api.Stash.PublishCategoryTree
+* AsyncExecute `IDeviantArtAccessToken token` `PublishCategoryTreeRequest req` -> `AsyncSeq<DeviantArtCategoryList>`
+* ExecuteAsync `IDeviantArtAccessToken token` `PublishCategoryTreeRequest req` -> `Task<DeviantArtCategoryList>`
 
 **PublishCategoryTreeRequest:**
 
-* Catpath: `string`
-* Filetype: `string`
-* Frequent: `bool`
+* Catpath: `String`
+* Filetype: `String`
+* Frequent: `Boolean`
 
-### DeviantArtFs.Requests.Stash.PublishUserdata
-* AsyncExecute `IDeviantArtAccessToken` -> `Async<StashPublishUserdataResult>`
-* ExecuteAsync `IDeviantArtAccessToken` -> `Task<StashPublishUserdataResult>`
+### DeviantArtFs.Api.Stash.PublishUserdata
+* AsyncExecute `IDeviantArtAccessToken token` -> `AsyncSeq<StashPublishUserdataResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` -> `Task<StashPublishUserdataResult>`
 
-### DeviantArtFs.Requests.Stash.Space
-* AsyncExecute `IDeviantArtAccessToken` -> `Async<StashSpaceResult>`
-* ExecuteAsync `IDeviantArtAccessToken` -> `Task<StashSpaceResult>`
+### DeviantArtFs.Api.Stash.Space
+* AsyncExecute `IDeviantArtAccessToken token` -> `AsyncSeq<StashSpaceResult>`
+* ExecuteAsync `IDeviantArtAccessToken token` -> `Task<StashSpaceResult>`
 
-### DeviantArtFs.Requests.Stash.Stack
-* AsyncExecute `IDeviantArtAccessToken` `long` -> `Async<StashMetadata>`
-* ExecuteAsync `IDeviantArtAccessToken` `long` -> `Task<StashMetadata>`
+### DeviantArtFs.Api.Stash.Stack
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int64 stackid` -> `AsyncSeq<StashMetadata>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Int64 stackid` -> `Task<StashMetadata>`
 
-### DeviantArtFs.Requests.Stash.Submit
-* AsyncExecute `IDeviantArtAccessToken` `SubmitRequest` -> `Async<long>`
-* ExecuteAsync `IDeviantArtAccessToken` `SubmitRequest` -> `Task<long>`
+### DeviantArtFs.Api.Stash.Submit
+* AsyncExecute `IDeviantArtAccessToken token` `SubmitRequest ps` -> `AsyncSeq<SubmitResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `SubmitRequest ps` -> `Task<SubmitResponse>`
 
 **SubmitRequest:**
 
-* Filename: `string`
-* ContentType: `string`
-* Data: `byte[]`
-* Title: `string`
-* ArtistComments: `string`
-* Tags: `IEnumerable<string>`
-* OriginalUrl: `string`
-* IsDirty: `bool?`
-* Itemid: `long?`
-* Stack: `string`
-* Stackid: `long?`
+* Filename: `String`
+* ContentType: `String`
+* Data: `Byte[]`
+* Title: `String`
+* ArtistComments: `String`
+* Tags: `IEnumerable<String>`
+* OriginalUrl: `String`
+* IsDirty: `Boolean?`
+* Itemid: `Int64?`
+* Stack: `String`
+* Stackid: `Int64?`
 
-### DeviantArtFs.Requests.Stash.Update
-* AsyncExecute `IDeviantArtAccessToken` `UpdateRequest` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `UpdateRequest` -> `Task`
+### DeviantArtFs.Api.Stash.Update
+* AsyncExecute `IDeviantArtAccessToken token` `Int64 stackid` `IEnumerable<UpdateField> updates` -> `AsyncSeq<DeviantArtSuccessOrErrorResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `Int64 stackid` `IEnumerable<UpdateField> updates` -> `Task<DeviantArtSuccessOrErrorResponse>`
 
-**UpdateRequest:**
+**UpdateField** (Title | Description | ClearDescription)
 
-* Stackid: `long`
-* Title: `DeviantArtFieldChange<string>`
-* Description: `DeviantArtFieldChange<string>`
 
-### DeviantArtFs.Requests.User.dAmnToken
-* AsyncExecute `IDeviantArtAccessToken` -> `Async<string>`
-* ExecuteAsync `IDeviantArtAccessToken` -> `Task<string>`
+### DeviantArtFs.Api.User.dAmnToken
+* AsyncExecute `IDeviantArtAccessToken token` -> `AsyncSeq<dAmnTokenResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` -> `Task<dAmnTokenResponse>`
 
-### DeviantArtFs.Requests.User.Friends
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `FriendsRequest` -> `Async<DeviantArtPagedResult<DeviantArtFriendRecord>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `FriendsRequest` -> `Task<DeviantArtPagedResult<DeviantArtFriendRecord>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `FriendsRequest` -> `AsyncSeq<DeviantArtFriendRecord>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `FriendsRequest` -> `Task<DeviantArtFriendRecord[]>`
+### DeviantArtFs.Api.User.Friends
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FriendsRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<DeviantArtFriendRecord>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FriendsRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<DeviantArtFriendRecord>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FriendsRequest req` `Int32 offset` -> `AsyncSeq<DeviantArtFriendRecord>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FriendsRequest req` `Int32 offset` `Int32 limit` -> `Task<DeviantArtFriendRecord[]>`
 
 **FriendsRequest:**
 
-* Username: `string`
+* Username: `String`
 
-### DeviantArtFs.Requests.User.FriendsSearch
-* AsyncExecute `IDeviantArtAccessToken` `FriendsSearchRequest` -> `Async<DeviantArtUser list>`
-* ExecuteAsync `IDeviantArtAccessToken` `FriendsSearchRequest` -> `Task<DeviantArtUser list>`
+### DeviantArtFs.Api.User.FriendsSearch
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FriendsSearchRequest req` -> `AsyncSeq<DeviantArtListOnlyResponse<DeviantArtUser>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FriendsSearchRequest req` -> `Task<DeviantArtListOnlyResponse<DeviantArtUser>>`
 
 **FriendsSearchRequest:**
 
-* Query: `string`
-* Username: `string`
+* Query: `String`
+* Username: `String`
 
-### DeviantArtFs.Requests.User.FriendsUnwatch
-* AsyncExecute `IDeviantArtAccessToken` `string` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task`
+### DeviantArtFs.Api.User.FriendsUnwatch
+* AsyncExecute `IDeviantArtAccessToken token` `String username` -> `AsyncSeq<DeviantArtSuccessOrErrorResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `String username` -> `Task<DeviantArtSuccessOrErrorResponse>`
 
-### DeviantArtFs.Requests.User.FriendsWatch
-* AsyncExecute `IDeviantArtAccessToken` `FriendsWatchRequest` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `FriendsWatchRequest` -> `Task`
+### DeviantArtFs.Api.User.FriendsWatch
+* AsyncExecute `IDeviantArtAccessToken token` `FriendsWatchRequest ps` -> `AsyncSeq<DeviantArtSuccessOrErrorResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `FriendsWatchRequest ps` -> `Task<DeviantArtSuccessOrErrorResponse>`
 
 **FriendsWatchRequest:**
 
-* Username: `string`
-* Friend: `bool`
-* Deviations: `bool`
-* Journals: `bool`
-* ForumThreads: `bool`
-* Critiques: `bool`
-* Scraps: `bool`
-* Activity: `bool`
-* Collections: `bool`
+* Username: `String`
+* Friend: `Boolean`
+* Deviations: `Boolean`
+* Journals: `Boolean`
+* ForumThreads: `Boolean`
+* Critiques: `Boolean`
+* Scraps: `Boolean`
+* Activity: `Boolean`
+* Collections: `Boolean`
 
-### DeviantArtFs.Requests.User.FriendsWatching
-* AsyncExecute `IDeviantArtAccessToken` `string` -> `Async<bool>`
-* ExecuteAsync `IDeviantArtAccessToken` `string` -> `Task<bool>`
+### DeviantArtFs.Api.User.FriendsWatching
+* AsyncExecute `IDeviantArtAccessToken token` `String username` -> `AsyncSeq<FriendsWatchingResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `String username` -> `Task<FriendsWatchingResponse>`
 
-### DeviantArtFs.Requests.User.ProfileByName
-* AsyncExecute `IDeviantArtAccessToken` `ProfileByNameRequest` -> `Async<DeviantArtProfile>`
-* ExecuteAsync `IDeviantArtAccessToken` `ProfileByNameRequest` -> `Task<DeviantArtProfile>`
+### DeviantArtFs.Api.User.ProfileByName
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `ProfileByNameRequest req` -> `AsyncSeq<DeviantArtProfile>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `ProfileByNameRequest req` -> `Task<DeviantArtProfile>`
 
 **ProfileByNameRequest:**
 
-* Username: `string`
-* ExtCollections: `bool`
-* ExtGalleries: `bool`
+* Username: `String`
+* ExtCollections: `Boolean`
+* ExtGalleries: `Boolean`
 
-### DeviantArtFs.Requests.User.ProfileUpdate
-* AsyncExecute `IDeviantArtAccessToken` `ProfileUpdateRequest` -> `Async<unit>`
-* ExecuteAsync `IDeviantArtAccessToken` `ProfileUpdateRequest` -> `Task`
+### DeviantArtFs.Api.User.ProfileUpdate
+* AsyncExecute `IDeviantArtAccessToken token` `IEnumerable<ProfileUpdateField> updates` -> `AsyncSeq<DeviantArtSuccessOrErrorResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `IEnumerable<ProfileUpdateField> updates` -> `Task<DeviantArtSuccessOrErrorResponse>`
 
-**ProfileUpdateRequest:**
+**ProfileUpdateField** (UserIsArtist | ArtistLevel | ArtistSpecialty | Tagline | Countryid | Website)
 
-* UserIsArtist: `DeviantArtFieldChange<bool>`
-* ArtistLevel: `DeviantArtFieldChange<ArtistLevel>`
-* ArtistSpecialty: `DeviantArtFieldChange<ArtistSpecialty>`
-* RealName: `DeviantArtFieldChange<string>`
-* Tagline: `DeviantArtFieldChange<string>`
-* Countryid: `DeviantArtFieldChange<int>`
-* Website: `DeviantArtFieldChange<string>`
-* Bio: `DeviantArtFieldChange<string>`
 
-### DeviantArtFs.Requests.User.StatusById
-* AsyncExecute `IDeviantArtAccessToken` `Guid` -> `Async<DeviantArtStatus>`
-* ExecuteAsync `IDeviantArtAccessToken` `Guid` -> `Task<DeviantArtStatus>`
+### DeviantArtFs.Api.User.StatusById
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid id` -> `AsyncSeq<DeviantArtStatus>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `Guid id` -> `Task<DeviantArtStatus>`
 
-### DeviantArtFs.Requests.User.StatusesList
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `string` -> `Async<DeviantArtPagedResult<DeviantArtStatus>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `string` -> `Task<DeviantArtPagedResult<DeviantArtStatus>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `string` -> `AsyncSeq<DeviantArtStatus>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `string` -> `Task<DeviantArtStatus[]>`
+### DeviantArtFs.Api.User.StatusesList
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String username` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<DeviantArtStatus>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String username` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<DeviantArtStatus>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String username` `Int32 offset` -> `AsyncSeq<DeviantArtStatus>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `String username` `Int32 offset` `Int32 limit` -> `Task<DeviantArtStatus[]>`
 
-### DeviantArtFs.Requests.User.StatusPost
-* AsyncExecute `IDeviantArtAccessToken` `StatusPostRequest` -> `Async<Guid>`
-* ExecuteAsync `IDeviantArtAccessToken` `StatusPostRequest` -> `Task<Guid>`
+### DeviantArtFs.Api.User.StatusPost
+* AsyncExecute `IDeviantArtAccessToken token` `StatusPostRequest ps` -> `AsyncSeq<StatusPostResponse>`
+* ExecuteAsync `IDeviantArtAccessToken token` `StatusPostRequest ps` -> `Task<StatusPostResponse>`
 
 **StatusPostRequest:**
 
-* Body: `string`
+* Body: `String`
 * Statusid: `Guid?`
 * Parentid: `Guid?`
-* Stashid: `long?`
+* Stashid: `Int64?`
 
-### DeviantArtFs.Requests.User.Watchers
-* AsyncExecute `IDeviantArtAccessToken` `IDeviantArtPagingParams` `WatchersRequest` -> `Async<DeviantArtPagedResult<DeviantArtWatcherRecord>>`
-* ExecuteAsync `IDeviantArtAccessToken` `IDeviantArtPagingParams` `WatchersRequest` -> `Task<DeviantArtPagedResult<DeviantArtWatcherRecord>>`
-* ToAsyncSeq `IDeviantArtAccessToken` `int` `WatchersRequest` -> `AsyncSeq<DeviantArtWatcherRecord>`
-* ToArrayAsync `IDeviantArtAccessToken` `int` `int` `WatchersRequest` -> `Task<DeviantArtWatcherRecord[]>`
+### DeviantArtFs.Api.User.Watchers
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FriendsRequest req` `DeviantArtPagingParams paging` -> `AsyncSeq<DeviantArtPagedResult<DeviantArtWatcherRecord>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FriendsRequest req` `DeviantArtPagingParams paging` -> `Task<DeviantArtPagedResult<DeviantArtWatcherRecord>>`
+* ToAsyncSeq `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FriendsRequest req` `Int32 offset` -> `AsyncSeq<DeviantArtWatcherRecord>`
+* ToArrayAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `FriendsRequest req` `Int32 offset` `Int32 limit` -> `Task<DeviantArtWatcherRecord[]>`
 
-**WatchersRequest:**
+**FriendsRequest:**
 
-* Username: `string`
+* Username: `String`
 
-### DeviantArtFs.Requests.User.Whoami
-* AsyncExecute `IDeviantArtAccessToken` -> `Async<DeviantArtUser>`
-* ExecuteAsync `IDeviantArtAccessToken` -> `Task<DeviantArtUser>`
+### DeviantArtFs.Api.User.Whoami
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` -> `AsyncSeq<DeviantArtUser>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` -> `Task<DeviantArtUser>`
 
-### DeviantArtFs.Requests.User.Whois
-* AsyncExecute `IDeviantArtAccessToken` `IEnumerable<string>` -> `Async<DeviantArtUser list>`
-* ExecuteAsync `IDeviantArtAccessToken` `IEnumerable<string>` -> `Task<DeviantArtUser list>`
+### DeviantArtFs.Api.User.Whois
+* AsyncExecute `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `IEnumerable<String> usernames` -> `AsyncSeq<DeviantArtListOnlyResponse<DeviantArtUser>>`
+* ExecuteAsync `IDeviantArtAccessToken token` `DeviantArtCommonParams common` `IEnumerable<String> usernames` -> `Task<DeviantArtListOnlyResponse<DeviantArtUser>>`
 
-### DeviantArtFs.Requests.Util.Placebo
-* AsyncIsValid `IDeviantArtAccessToken` -> `Async<bool>`
-* IsValidAsync `IDeviantArtAccessToken` -> `Task<bool>`
+**String:**
+
+* Chars: `Char`
+* Length: `Int32`
+
+### DeviantArtFs.Api.Util.Placebo
+* AsyncIsValid `IDeviantArtAccessToken token` -> `AsyncSeq<Boolean>`
+* IsValidAsync `IDeviantArtAccessToken token` -> `Task<Boolean>`
+
+### DeviantArtFs.DeviantArtAuth
+* AsyncGetToken `DeviantArtApp app` `String code` `Uri redirect_uri` -> `AsyncSeq<DeviantArtTokenResponse>`
+* AsyncRefresh `DeviantArtApp app` `String refresh_token` -> `AsyncSeq<DeviantArtTokenResponse>`
+* AsyncRevoke `String token` `Boolean revoke_refresh_only` -> `AsyncSeq<Unit>`
+* RevokeAsync `String token` `Boolean revoke_refresh_only` -> `Task`
+* GetTokenAsync `DeviantArtApp app` `String code` `Uri redirect_uri` -> `Task<DeviantArtTokenResponse>`
+* RefreshAsync `DeviantArtApp app` `String refresh_token` -> `Task<DeviantArtTokenResponse>`
+
+**DeviantArtApp:**
+
+* client_id: `String`
+* client_secret: `String`
+
+### DeviantArtFs.DeviantArtRequest
+* AsyncReadJson -> `AsyncSeq<String>`
 

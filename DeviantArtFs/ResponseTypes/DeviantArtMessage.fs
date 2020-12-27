@@ -18,6 +18,7 @@ type DeviantArtMessage = {
     ts: DateTimeOffset option
     stackid: string option
     stack_count: int option
+    is_new: bool
     originator: DeviantArtUser option
     subject: DeviantArtMessageSubject option
     html: string option
