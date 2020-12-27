@@ -58,12 +58,7 @@
     <Compile Include="ResponseTypes\StashPublishResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtRelationshipRecords.fs" />
     <Compile Include="ResponseTypes\DeviantArtComment.fs" />
-    <Compile Include="ResponseTypes\DeviantArtFeedItem.fs" />
-    <Compile Include="ResponseTypes\DeviantArtFeedSettings.fs" />
     <Compile Include="ResponseTypes\DeviantArtMessage.fs" />
-    <Compile Include="ResponseTypes\DeviantArtNote.fs" />
-    <Compile Include="ResponseTypes\DeviantArtNotesFolder.fs" />
-    <Compile Include="ResponseTypes\DeviantArtSendNoteResult.fs" />
     <Compile Include="ResponseTypes\DeviantArtTopic.fs" />
     <Compile Include="PagedResponses\DeviantArtPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtEmbeddedContentPagedResult.fs" />
