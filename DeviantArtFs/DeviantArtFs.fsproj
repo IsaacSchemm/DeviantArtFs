@@ -67,7 +67,6 @@
     <Compile Include="PagedResponses\DeviantArtFolderPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtCommentPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtCommentSiblingsPagedResult.fs" />
-    <Compile Include="PagedResponses\DeviantArtFeedCursorResult.fs" />
     <Compile Include="PagedResponses\DeviantArtMessageCursorResult.fs" />
     <Compile Include="Exceptions.fs" />
     <Compile Include="DeviantArtAuth.fs" />
