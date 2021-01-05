@@ -13,10 +13,8 @@ module MetadataById =
         seq {
             yield! QueryFor.extParams req.ExtParams
             yield sprintf "ext_collection=%b" req.ExtCollection
-            yield req.Deviationids
-                |> Seq.map (fun o -> o.ToString())
-                |> String.concat ","
-                |> sprintf "deviationids[]=%s"
+            for id in req.Deviationids do
+                yield sprintf "deviationids[]=%O" id
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/deviation/metadata"
         |> Dafs.asyncRead
