@@ -36,7 +36,7 @@ let sandbox token_string = async {
     printfn ""
 
     let! first_deviation =
-        DeviantArtFs.Api.Gallery.GalleryAllView.ToAsyncSeq
+        DeviantArtFs.Api.Gallery.AsyncGetAllView
             token
             (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
             0
@@ -71,7 +71,7 @@ let sandbox token_string = async {
         printfn ""
 
     let! recent_deviations =
-        DeviantArtFs.Api.Gallery.GalleryAllView.AsyncExecute
+        DeviantArtFs.Api.Gallery.AsyncPageAllView
             token
             (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
             (page 1 9)
@@ -86,7 +86,7 @@ let sandbox token_string = async {
     printfn ""
 
     let! old_deviations =
-        DeviantArtFs.Api.Gallery.GalleryAllView.AsyncExecute
+        DeviantArtFs.Api.Gallery.AsyncPageAllView
             token
             (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
             (page 100 5)

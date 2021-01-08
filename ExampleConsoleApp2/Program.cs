@@ -15,11 +15,15 @@ namespace ExampleConsoleApp2 {
             Console.Write("Please enter a DeviantArt access token: ");
             var token = new Token { AccessToken = Console.ReadLine() };
 
+            var allStashItems = await DeviantArtFs.Api.Stash.Delta.ToArrayAsync(token, new DeviantArtFs.Api.Stash.DeltaRequest(), 0, int.MaxValue);
+            Console.WriteLine($"{allStashItems.Length} sta.sh items");
+            Console.WriteLine();
+
             var req = new DeviantArtFs.Api.Gallery.GalleryAllViewRequest();
             int i = 0;
             Stopwatch st = new Stopwatch();
             st.Start();
-            await foreach (var deviation in DeviantArtFs.Api.Gallery.GalleryAllView.ToAsyncSeq(token, req, 0).ToAsyncEnumerable()) {
+            await foreach (var deviation in DeviantArtFs.Api.Gallery.AsyncGetAllView(token, req, 0).ToAsyncEnumerable()) {
                 Console.WriteLine($"[{st.Elapsed}] {i + 1}. {deviation.title}");
                 i++;
                 if (i > 100) break;

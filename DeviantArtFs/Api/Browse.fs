@@ -7,7 +7,7 @@ module Browse =
     type DailyDeviationsRequest() = 
         member val Date = Nullable<DateTime>() with get, set
 
-    let GetDailyDeviations token expansion (req: DailyDeviationsRequest) =
+    let AsyncGetDailyDeviations token expansion (req: DailyDeviationsRequest) =
         seq {
             match Option.ofNullable req.Date with
             | Some d -> yield d.ToString("YYYY-MM-dd") |> sprintf "date=%s"
@@ -18,7 +18,7 @@ module Browse =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<Deviation>>
 
-    let PageDeviantsYouWatch token paging =
+    let AsyncPageDeviantsYouWatch token paging =
         seq {
             yield! QueryFor.paging paging 50
         }
@@ -26,10 +26,10 @@ module Browse =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<Deviation>>
 
-    let GetDeviantsYouWatch token offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (PageDeviantsYouWatch token)
+    let AsyncGetDeviantsYouWatch token offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageDeviantsYouWatch token)
 
-    let GetMoreLikeThis token expansion (seed: Guid) =
+    let AsyncGetMoreLikeThis token expansion (seed: Guid) =
         seq {
             yield sprintf "seed=%O" seed
             yield! QueryFor.objectExpansion expansion
@@ -42,7 +42,7 @@ module Browse =
         member val CategoryPath = null with get, set
         member val Q = null with get, set
 
-    let PageNewest token expansion (req: NewestRequest) paging =
+    let AsyncPageNewest token expansion (req: NewestRequest) paging =
         seq {
             match Option.ofObj req.CategoryPath with
             | Some s -> yield sprintf "category_path=%s" (Dafs.urlEncode s)
@@ -57,8 +57,8 @@ module Browse =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtBrowsePagedResult>
 
-    let GetNewest token expansion req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (PageNewest token expansion req)
+    let AsyncGetNewest token expansion req offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageNewest token expansion req)
 
     type PopularTimeRange =
         | EightHours = 1
@@ -73,7 +73,7 @@ module Browse =
         member val Q = null with get, set
         member val Timerange = PopularTimeRange.TwentyFourHours with get, set
 
-    let PagePopular token expansion (req: PopularRequest) paging =
+    let AsyncPagePopular token expansion (req: PopularRequest) paging =
         seq {
             match Option.ofObj req.CategoryPath with
             | Some s -> yield sprintf "category_path=%s" (Dafs.urlEncode s)
@@ -96,10 +96,10 @@ module Browse =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtBrowsePagedResult>
 
-    let GetPopular token expansion req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (PagePopular token expansion req)
+    let AsyncGetPopular token expansion req offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPagePopular token expansion req)
 
-    let PagePostsByDeviantsYouWatch token paging =
+    let AsyncPagePostsByDeviantsYouWatch token paging =
         seq {
             yield! QueryFor.paging paging 50
         }
@@ -107,13 +107,13 @@ module Browse =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtPost>>
 
-    let GetPostsByDeviantsYouWatch token offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (PagePostsByDeviantsYouWatch token)
+    let AsyncGetPostsByDeviantsYouWatch token offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPagePostsByDeviantsYouWatch token)
 
     type RecommendedRequest() =
          member val Q = null with get, set
 
-    let PageRecommended token expansion (req: RecommendedRequest) paging =
+    let AsyncPageRecommended token expansion (req: RecommendedRequest) paging =
         seq {
             match Option.ofObj req.Q with
             | Some s -> yield sprintf "q=%s" (Dafs.urlEncode s)
@@ -125,10 +125,10 @@ module Browse =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtRecommendedPagedResult>
 
-    let GetRecommended token expansion req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (PageRecommended token expansion req)
+    let AsyncGetRecommended token expansion req offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageRecommended token expansion req)
 
-    let PageTags token expansion (tag: string) paging =
+    let AsyncPageTags token expansion (tag: string) paging =
         seq {
             yield sprintf "tag=%s" (Dafs.urlEncode tag)
             yield! QueryFor.paging paging 50
@@ -138,10 +138,10 @@ module Browse =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtBrowsePagedResult>
 
-    let GetTags token expansion tag offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (PageTags token expansion tag)
+    let AsyncGetTags token expansion tag offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageTags token expansion tag)
 
-    let SearchTags token (tag_name: string) =
+    let AsyncSearchTags token (tag_name: string) =
         seq {
             yield sprintf "tag_name=%s" (Dafs.urlEncode tag_name)
         }
@@ -149,7 +149,7 @@ module Browse =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<DeviationTagSearchResult>>
 
-    let PageTopic token expansion (topic: string) paging =
+    let AsyncPageTopic token expansion (topic: string) paging =
         seq {
             match Option.ofObj topic with
             | Some s -> yield sprintf "topic=%s" (Dafs.urlEncode s)
@@ -161,13 +161,13 @@ module Browse =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<Deviation>>
 
-    let GetTopic token expansion topic offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (PageTopic token expansion topic)
+    let AsyncGetTopic token expansion topic offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageTopic token expansion topic)
 
     type TopicsRequest() =
         member val NumDeviationsPerTopic = Nullable() with get, set
 
-    let PageTopics token (req: TopicsRequest) paging =
+    let AsyncPageTopics token (req: TopicsRequest) paging =
         seq {
             match Option.ofNullable req.NumDeviationsPerTopic with
             | Some s -> yield sprintf "topic=%d" s
@@ -178,10 +178,10 @@ module Browse =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtTopic>>
 
-    let GetTopics token req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (PageTopics token req)
+    let AsyncGetTopics token req offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageTopics token req)
 
-    let GetTopTopics token =
+    let AsyncGetTopTopics token =
         Seq.empty
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/toptopics"
         |> Dafs.asyncRead
@@ -191,7 +191,7 @@ module Browse =
         member __.Username = username
         member val Featured = true with get, set
 
-    let PageUserJournals token expansion (req: UserJournalsRequest) paging =
+    let AsyncPageUserJournals token expansion (req: UserJournalsRequest) paging =
         seq {
             yield sprintf "username=%s" (Dafs.urlEncode req.Username)
             yield sprintf "featured=%b" req.Featured
@@ -202,5 +202,5 @@ module Browse =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<Deviation>>
 
-    let GetUserJournals token expansion req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (PageUserJournals token expansion req)
+    let AsyncGetUserJournals token expansion req offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageUserJournals token expansion req)

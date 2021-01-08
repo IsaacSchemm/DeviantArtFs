@@ -99,11 +99,7 @@
     <Compile Include="Api\Deviation\EmbeddedContent.fs" />
     <Compile Include="Api\Deviation\MetadataById.fs" />
     <Compile Include="Api\Deviation\WhoFaved.fs" />
-    <Compile Include="Api\Gallery\GalleryAllView.fs" />
-    <Compile Include="Api\Gallery\GalleryById.fs" />
-    <Compile Include="Api\Gallery\GalleryFolders.fs" />
-    <Compile Include="Api\Gallery\CreateGalleryFolder.fs" />
-    <Compile Include="Api\Gallery\RemoveGalleryFolder.fs" />
+    <Compile Include="Api\Gallery.fs" />
     <Compile Include="Api\Messages\MessagesFeed.fs" />
     <Compile Include="Api\Messages\DeleteMessage.fs" />
     <Compile Include="Api\Messages\FeedbackMessages.fs" />

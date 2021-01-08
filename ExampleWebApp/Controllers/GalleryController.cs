@@ -5,6 +5,7 @@ using ExampleWebApp.Data;
 using DeviantArtFs.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using DeviantArtFs;
+using System.Threading;
 
 namespace ExampleWebApp.Controllers
 {
@@ -12,7 +13,7 @@ namespace ExampleWebApp.Controllers
     {
         public GalleryController(ExampleDbContext context, DeviantArtApp appReg) : base(context, appReg) { }
 
-        public async Task<IActionResult> Index(string username = null, Guid? folderId = null, int offset = 0, int? limit = null)
+        public async Task<IActionResult> Index(CancellationToken cancellationToken, string username = null, Guid? folderId = null, int offset = 0, int? limit = null)
         {
             var token = await GetAccessTokenAsync();
             if (token == null) return Forbid();
@@ -20,16 +21,16 @@ namespace ExampleWebApp.Controllers
             var paging = new DeviantArtPagingParams(offset, limit);
             IDeviantArtResultPage<DeviantArtPagingParams, Deviation> resp;
             if (folderId is Guid f) {
-                resp = await DeviantArtFs.Api.Gallery.GalleryById.ExecuteAsync(
+                resp = await DeviantArtFs.Api.Gallery.AsyncPageGallery(
                     token,
                     DeviantArtObjectExpansion.None,
-                    new DeviantArtFs.Api.Gallery.GalleryByIdRequest { Folderid = f, Username = username },
-                    paging);
+                    new DeviantArtFs.Api.Gallery.GalleryRequest { Folderid = f, Username = username },
+                    paging).StartAsTask(cancellationToken: cancellationToken);
             } else {
-                resp = await DeviantArtFs.Api.Gallery.GalleryAllView.ExecuteAsync(
+                resp = await DeviantArtFs.Api.Gallery.AsyncPageAllView(
                     token,
                     new DeviantArtFs.Api.Gallery.GalleryAllViewRequest { Username = username },
-                    paging);
+                    paging).StartAsTask(cancellationToken: cancellationToken);
             }
 
             ViewBag.Username = username;
@@ -38,16 +39,15 @@ namespace ExampleWebApp.Controllers
             return View(resp);
         }
 
-        public async Task<IActionResult> List(string username = null)
+        public async Task<IActionResult> List(CancellationToken cancellationToken, string username = null)
         {
             var token = await GetAccessTokenAsync();
             if (token == null) return Forbid();
 
-            var list = await DeviantArtFs.Api.Gallery.GalleryFolders.ToArrayAsync(
+            var list = await DeviantArtFs.Api.Gallery.AsyncGetFolders(
                 token,
                 new DeviantArtFs.Api.Gallery.GalleryFoldersRequest { CalculateSize = true, Username = username },
-                0,
-                100);
+                0).ToArrayAsync(cancellationToken: cancellationToken);
 
             ViewBag.Username = username;
             return View(list);

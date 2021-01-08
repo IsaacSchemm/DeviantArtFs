@@ -59,7 +59,7 @@ Public Class Form1
 
         Dim paging = New DeviantArtPagingParams(NextOffset, TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount)
         Dim request As New Api.Gallery.GalleryAllViewRequest With {.Username = CurrentUsername}
-        Dim page = Await Api.Gallery.GalleryAllView.ExecuteAsync(Token, request, paging)
+        Dim page = Await Api.Gallery.AsyncPageAllView(Token, request, paging).StartAsTask()
 
         NextOffset = page.next_offset.OrNull()
         For Each r In page.results
