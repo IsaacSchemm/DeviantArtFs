@@ -53,12 +53,12 @@ let sandbox token_string = async {
 
         let! metadata_response =
             new DeviantArtFs.Api.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = DeviantArtExtParams.All)
-            |> DeviantArtFs.Api.Deviation.MetadataById.AsyncExecute token
+            |> DeviantArtFs.Api.Deviation.AsyncGetMetadata token
         for m in metadata_response.metadata do
             m.tags |> Seq.map (fun t -> sprintf "#%s" t.tag_name) |> String.concat " " |> printfn "%s"
 
         let! all_favorites =
-            DeviantArtFs.Api.Deviation.WhoFaved.ToAsyncSeq token DeviantArtObjectExpansion.None s.deviationid 0
+            DeviantArtFs.Api.Deviation.AsyncGetWhoFaved token DeviantArtObjectExpansion.None s.deviationid 0
             |> AsyncSeq.toListAsync
         match all_favorites with
         | [] ->

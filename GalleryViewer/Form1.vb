@@ -84,7 +84,7 @@ Public Class Form1
 
         WebBrowser1.Navigate("about:blank")
         Dim req = New Api.Deviation.MetadataRequest({deviation.deviationid})
-        Dim metadataResponse = Await Api.Deviation.MetadataById.ExecuteAsync(Token, req)
+        Dim metadataResponse = Await Api.Deviation.AsyncGetMetadata(Token, req).StartAsTask()
         Dim s = metadataResponse.metadata.Single()
         WebBrowser1.Document.Write(s.description)
     End Sub

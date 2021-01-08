@@ -82,12 +82,7 @@
     <Compile Include="Api\Collections.fs" />
     <Compile Include="Api\Comments.fs" />
     <Compile Include="Api\Data.fs" />
-    <Compile Include="Api\Deviation\DeviationById.fs" />
-    <Compile Include="Api\Deviation\Content.fs" />
-    <Compile Include="Api\Deviation\Download.fs" />
-    <Compile Include="Api\Deviation\EmbeddedContent.fs" />
-    <Compile Include="Api\Deviation\MetadataById.fs" />
-    <Compile Include="Api\Deviation\WhoFaved.fs" />
+    <Compile Include="Api\Deviation.fs" />
     <Compile Include="Api\Gallery.fs" />
     <Compile Include="Api\Messages\MessagesFeed.fs" />
     <Compile Include="Api\Messages\DeleteMessage.fs" />
