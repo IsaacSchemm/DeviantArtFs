@@ -1,4 +1,4 @@
-﻿namespace DeivantArtFs.Api
+﻿namespace DeviantArtFs.Api
 
 open System
 open DeviantArtFs

@@ -84,12 +84,7 @@
     <Compile Include="Api\Data.fs" />
     <Compile Include="Api\Deviation.fs" />
     <Compile Include="Api\Gallery.fs" />
-    <Compile Include="Api\Messages\MessagesFeed.fs" />
-    <Compile Include="Api\Messages\DeleteMessage.fs" />
-    <Compile Include="Api\Messages\FeedbackMessages.fs" />
-    <Compile Include="Api\Messages\FeedbackStack.fs" />
-    <Compile Include="Api\Messages\MentionsMessages.fs" />
-    <Compile Include="Api\Messages\MentionsStack.fs" />
+    <Compile Include="Api\Messages.fs" />
     <Compile Include="Api\Stash.fs" />
     <Compile Include="Api\User\dAmnToken.fs" />
     <Compile Include="Api\User\Friends.fs" />
