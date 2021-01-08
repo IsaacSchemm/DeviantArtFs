@@ -64,6 +64,9 @@
     <Compile Include="ResponseTypes\DeviantArtMessage.fs" />
     <Compile Include="ResponseTypes\DeviantArtTopic.fs" />
     <Compile Include="ResponseTypes\DeviantArtCountry.fs" />
+    <Compile Include="ResponseTypes\DeviantArtMessagingNetworkToken.fs" />
+    <Compile Include="ResponseTypes\DeviantArtWatchingResponse.fs" />
+    <Compile Include="ResponseTypes\DeviantArtStatusPostResponse.fs" />
     <Compile Include="PagedResponses\DeviantArtPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtEmbeddedContentPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtBrowsePagedResult.fs" />
@@ -86,21 +89,8 @@
     <Compile Include="Api\Gallery.fs" />
     <Compile Include="Api\Messages.fs" />
     <Compile Include="Api\Stash.fs" />
-    <Compile Include="Api\User\dAmnToken.fs" />
-    <Compile Include="Api\User\Friends.fs" />
-    <Compile Include="Api\User\FriendsSearch.fs" />
-    <Compile Include="Api\User\FriendsUnwatch.fs" />
-    <Compile Include="Api\User\FriendsWatch.fs" />
-    <Compile Include="Api\User\FriendsWatching.fs" />
-    <Compile Include="Api\User\ProfileByName.fs" />
-    <Compile Include="Api\User\ProfileUpdate.fs" />
-    <Compile Include="Api\User\StatusById.fs" />
-    <Compile Include="Api\User\StatusesList.fs" />
-    <Compile Include="Api\User\StatusesPost.fs" />
-    <Compile Include="Api\User\Watchers.fs" />
-    <Compile Include="Api\User\Whoami.fs" />
-    <Compile Include="Api\User\Whois.fs" />
-    <Compile Include="Api\Util\Placebo.fs" />
+    <Compile Include="Api\User.fs" />
+    <Compile Include="Api\Util.fs" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' != 'net5.0' ">

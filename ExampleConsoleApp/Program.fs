@@ -17,7 +17,7 @@ let sandbox token_string = async {
     let read = Console.ReadLine()
     printfn ""
 
-    let! me = DeviantArtFs.Api.User.Whoami.AsyncExecute token DeviantArtObjectExpansion.None
+    let! me = DeviantArtFs.Api.User.AsyncWhoami token DeviantArtObjectExpansion.None
 
     let username =
         match read with
@@ -26,8 +26,8 @@ let sandbox token_string = async {
 
     let! profile =
         username
-        |> DeviantArtFs.Api.User.ProfileByNameRequest
-        |> DeviantArtFs.Api.User.ProfileByName.AsyncExecute token DeviantArtObjectExpansion.None
+        |> DeviantArtFs.Api.User.ProfileRequest
+        |> DeviantArtFs.Api.User.AsyncGetProfile token DeviantArtObjectExpansion.None
     printfn "%s" profile.real_name
     if not (String.IsNullOrEmpty profile.tagline) then
         printfn "%s" profile.tagline
