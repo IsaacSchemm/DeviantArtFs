@@ -63,6 +63,7 @@
     <Compile Include="ResponseTypes\DeviantArtComment.fs" />
     <Compile Include="ResponseTypes\DeviantArtMessage.fs" />
     <Compile Include="ResponseTypes\DeviantArtTopic.fs" />
+    <Compile Include="ResponseTypes\DeviantArtCountry.fs" />
     <Compile Include="PagedResponses\DeviantArtPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtEmbeddedContentPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtBrowsePagedResult.fs" />
@@ -80,13 +81,7 @@
     <Compile Include="Api\Browse.fs" />
     <Compile Include="Api\Collections.fs" />
     <Compile Include="Api\Comments.fs" />
-    <Compile Include="Api\Comments\PostDeviationComment.fs" />
-    <Compile Include="Api\Comments\PostStatusComment.fs" />
-    <Compile Include="Api\Comments\PostProfileComment.fs" />
-    <Compile Include="Api\Data\Countries.fs" />
-    <Compile Include="Api\Data\Privacy.fs" />
-    <Compile Include="Api\Data\Submission.fs" />
-    <Compile Include="Api\Data\Tos.fs" />
+    <Compile Include="Api\Data.fs" />
     <Compile Include="Api\Deviation\DeviationById.fs" />
     <Compile Include="Api\Deviation\Content.fs" />
     <Compile Include="Api\Deviation\Download.fs" />
