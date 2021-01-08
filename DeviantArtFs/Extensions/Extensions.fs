@@ -52,9 +52,12 @@ module AsyncSeqExtensions =
         AsyncSeq.take count this
 
     [<Extension>]
-    let ToArrayAsync (this, [<Optional; DefaultParameterValue(TaskCreationOptions.None)>]taskCreationOptions, [<Optional; DefaultParameterValue(Nullable())>]cancellationToken) =
-        let x = AsyncSeq.toArrayAsync this
-        Async.StartAsTask (x, taskCreationOptions, cancellationToken |> Option.ofNullable |> Option.defaultValue CancellationToken.None)
+    let ThenToArray this =
+        AsyncSeq.toArrayAsync this
+
+    [<Extension>]
+    let ThenToList this =
+        AsyncSeq.toListAsync this
 
 #if NET5_0
     [<Extension>]

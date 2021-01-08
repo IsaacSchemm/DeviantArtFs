@@ -47,7 +47,7 @@ namespace ExampleWebApp.Controllers
             var list = await DeviantArtFs.Api.Gallery.AsyncGetFolders(
                 token,
                 new DeviantArtFs.Api.Gallery.GalleryFoldersRequest { CalculateSize = true, Username = username },
-                0).ToArrayAsync(cancellationToken: cancellationToken);
+                0).ThenToList().StartAsTask(cancellationToken: cancellationToken);
 
             ViewBag.Username = username;
             return View(list);
