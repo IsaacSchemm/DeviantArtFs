@@ -35,6 +35,7 @@
     <Compile Include="ResponseTypes\Deviation.fs" />
     <Compile Include="ResponseTypes\DeviantArtGalleryFolder.fs" />
     <Compile Include="ResponseTypes\DeviantArtCollectionFolder.fs" />
+    <Compile Include="ResponseTypes\DeviantArtFaveResult.fs" />
     <Compile Include="ResponseTypes\DeviantArtCategory.fs" />
     <Compile Include="ResponseTypes\DeviantArtMoreLikeThisPreviewResult.fs" />
     <Compile Include="ResponseTypes\DeviationTextContent.fs" />
@@ -77,16 +78,8 @@
     <Compile Include="Dafs.fs" />
     <Compile Include="QueryFor.fs" />
     <Compile Include="Api\Browse.fs" />
-    <Compile Include="Api\Collections\CollectionById.fs" />
-    <Compile Include="Api\Collections\CollectionFolders.fs" />
-    <Compile Include="Api\Collections\Fave.fs" />
-    <Compile Include="Api\Collections\Unfave.fs" />
-    <Compile Include="Api\Collections\CreateCollectionFolder.fs" />
-    <Compile Include="Api\Collections\RemoveCollectionFolder.fs" />
-    <Compile Include="Api\Comments\DeviationComments.fs" />
-    <Compile Include="Api\Comments\StatusComments.fs" />
-    <Compile Include="Api\Comments\ProfileComments.fs" />
-    <Compile Include="Api\Comments\CommentSiblings.fs" />
+    <Compile Include="Api\Collections.fs" />
+    <Compile Include="Api\Comments.fs" />
     <Compile Include="Api\Comments\PostDeviationComment.fs" />
     <Compile Include="Api\Comments\PostStatusComment.fs" />
     <Compile Include="Api\Comments\PostProfileComment.fs" />
