@@ -103,9 +103,9 @@ let sandbox token_string = async {
     printfn "Sta.sh stacks:"
 
     let! all_stacks =
-        DeviantArtFs.Api.Stash.Contents.ToAsyncSeq
+        DeviantArtFs.Api.Stash.AsyncGetContents
             token
-            DeviantArtFs.Api.Stash.Contents.RootStack
+            DeviantArtFs.Api.Stash.RootStack
             0
         |> AsyncSeq.toListAsync
     for s in all_stacks do
@@ -118,7 +118,7 @@ let sandbox token_string = async {
             printfn ""
             printfn "Stack %d:" stackid
             let! contents =
-                DeviantArtFs.Api.Stash.Contents.ToAsyncSeq
+                DeviantArtFs.Api.Stash.AsyncGetContents
                     token
                     stackid
                     0

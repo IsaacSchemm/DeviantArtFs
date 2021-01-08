@@ -15,7 +15,7 @@ namespace ExampleConsoleApp2 {
             Console.Write("Please enter a DeviantArt access token: ");
             var token = new Token { AccessToken = Console.ReadLine() };
 
-            var allStashItems = await DeviantArtFs.Api.Stash.Delta.ToArrayAsync(token, new DeviantArtFs.Api.Stash.DeltaRequest(), 0, int.MaxValue);
+            var allStashItems = await DeviantArtFs.Api.Stash.AsyncGetDelta(token, new DeviantArtFs.Api.Stash.DeltaRequest(), 0).ThenToList().StartAsTask();
             Console.WriteLine($"{allStashItems.Length} sta.sh items");
             Console.WriteLine();
 
