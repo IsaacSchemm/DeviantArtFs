@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net5.0;netstandard2.0</TargetFrameworks>
-    <Version>7.0.0</Version>
+    <Version>7.0.0-beta1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Isaac Schemm</Authors>
     <Company></Company>
@@ -13,6 +13,7 @@
     <PackageReleaseNotes>7.0.0: New refactoring to remove repeated boilerplate</PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>(C) 2021 Isaac Schemm</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
