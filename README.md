@@ -1,12 +1,12 @@
 # DeviantArtFs
 
-A .NET / F# library to interact with the [DeviantArt / Sta.sh API.](https://www.deviantart.com/developers/http/v1/20160316)
+A .NET / F# library to interact with the [DeviantArt / Sta.sh API.](https://www.deviantart.com/developers/http/v1/20200519)
 
-## Notes
+## Design
 
-Each request that can be made to DeviantArt is represented by a module
-somewhere in the DeviantArtFs.Api namespace. These modules have static
-methods that take one or more parameters:
+Each request that can be made to DeviantArt is represented by a function
+in one of the modules (static classes) in the `DeviantArtFs.Api` namespace.
+Each static method takes one or more parameters:
 
 * `token` (an object that implements the `IDeviantArtAccessToken` interface
   and provides the library with the API credentials)
@@ -17,43 +17,45 @@ methods that take one or more parameters:
     * `paging`: a `DeviantArtPagingParams` record, which specifies an offset
       and an optional limit / page size
         * DeviantArtFs is aware of the maximum limits for each API request; to
-          request the maximum page size, use `int.MaxValue` as the limit
+          request the maximum page size, use `DeviantArtPagingParams.MaxFrom`
     * `cursor`: a string provided in the previous page's result (use `null` to
       start at the beginning)
-    * `offset` / `limit`: used in `ToAsyncSeq` and `ToArrayAsync` wrapper
-      methods in place of `paging` / `cursor`
+    * `offset` / `limit`: used in place of `paging` or `cursor` in methods
+      which return `AsyncSeq<T>`
 
-The main method is usually named `AsyncExecute` and returns an async workflow,
-the result of which is an F# record type that lines up with the original JSON.
-An `ExecuteAsync` method is also available that returns a .NET `Task` instead.
+In some cases, two methods are available for an API call. Functions whose
+names begin with `Page` will return a single page of results, while the
+corresponding `Get` function will return an asynchronous sequence which
+begins at the offset you specify (see "Interoperability" below). Be careful
+not to request too much data or you might hit API usage limits.
 
-For endpoints that allow paging, `ToAsyncSeq` and `ToArrayAsync` methods will
-be available as well; when using these, DeviantArtFs may perform multiple API
-calls, asking for the maximum amount of results in each. Be careful not to
-request too much data or you might hit API usage limits.
+## Interoperability
 
-### Optional types
+All return types from API calls are wrapped in either F# asynchronous
+workflows (`FSharpAsync<T>`) or F# asynchronous sequences (using the package
+[FSharp.Control.AsyncSeq](https://www.nuget.org/packages/FSharp.Control.AsyncSeq)),
+and the `FSharpOption<T>` type is used extensively in object models. To help
+you work with these types in C# or VB.NET, DeviantArtFs provides extension
+methods in the namespace `DeviantArtFs.Extensions`:
 
-Many objects in the DeviantArt API have optional fields, which are difficult
-to represent in languages such as F# that expect a fixed schema. DeviantArtFs
-represents these optional fields with F# `option` types.
+* Option types
+    * `.OrNull()`: converts any option type to an equivalent nullable type
+    * `.IsTrue()`: checks whether a `bool option` type (which might be `true`, `false`, or `None`) is true
+    * `.IsFalse()`: checks whether a `bool option` type (which might be `true`, `false`, or `None`) is false
+    * `.OrEmpty()`: returns the items contained by a `list option` type, or an empty list if the field is `None`
+* Asynchronous types
+    * `.Take(int count)`: sets a limit on the amount of items returned by an F# asynchronous sequence
+    * `.ThenToArray()`: converts an F# asynchronous sequence into an asynchronous workflow that collects all items in a single array
+    * `.ThenToList()`: converts an F# asynchronous sequence into an asynchronous workflow that collects all items in a single immutable list
+    * `.ToAsyncEnumerable()`: converts an F# asynchronous sequence into a .NET `IAsyncEnumerable<T>` (.NET 5.0+ only)
+    * `.StartAsTask(TaskCreationOptions options = null, CancellationToken? token = null)`: executes a "cool" F# asynchronous workflow by creating a "hot" .NET task that can be awaited
 
-The library provides extension methods for dealing with option types from
-outside F#:
+The `FSharpList<T>` type also appears often, but this type implements
+`IEnumerable<T>` and can be converted to a normal list or array using LINQ.
 
-    using DeviantArtFs.Extensions;
-
-    public string? GetTitle(Deviation d) {
-        return d.title.ToObj();
-	}
-
-    public IEnumerable<DeviationPreview> GetThumbnails(Deviation d) {
-        return d.thumbs.OrEmpty();
-	}
-
-    public bool CheckIfFavorited(Deviation d) {
-        return d.is_favourited.IsTrue();
-	}
+Any C# or VB.NET code that uses this library to call the DeviantArt API is
+expected to use either `.ToAsyncEnumerable()` or `.StartAsTask()` on each API
+call.
 
 ### Deleted deviations and status updates
 
@@ -102,7 +104,7 @@ Sta.sh stack, and this is represented by its own union case.
 * **GalleryViewer**: A VB.NET app that lets you see the "All" view of
   someone's gallery and read the descriptions of individual submissions.
   Uses the Client Credentials grant and stores tokens in a file.
-* **WebApp**: An ASP.NET Core 2.1 app written in C# that lets you view
+* **WebApp**: An ASP.NET Core app written in C# that lets you view
   someone's gallery folders and corresponding submission thumbnails.
   Uses the Client Credentials grant and stores tokens in a database.
 

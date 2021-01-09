@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "DeviantArtFs", "DeviantArtFs\DeviantArtFs.fsproj", "{32448E41-C600-46D2-98C4-F9DDB4118691}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviantArtFs.WinForms", "DeviantArtFs.WinForms\DeviantArtFs.WinForms.csproj", "{9A66E829-3D74-4AE9-A200-21B5C9F170B6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C6199353-1198-47B7-ABF7-625A5B939F45}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE.txt = LICENSE.txt
@@ -19,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleWebApp", "ExampleWeb
 EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "GalleryViewer", "GalleryViewer\GalleryViewer.vbproj", "{4E9F4FB6-7DA2-4C22-B807-401B1B751FEB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleConsoleApp2", "ExampleConsoleApp2\ExampleConsoleApp2.csproj", "{D16EE00F-33E3-4B06-950A-AA41F523EDCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviantArtFs.WinForms", "DeviantArtFs.WinForms\DeviantArtFs.WinForms.csproj", "{75B54961-2B75-460A-A13F-92003092F956}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +31,6 @@ Global
 		{32448E41-C600-46D2-98C4-F9DDB4118691}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32448E41-C600-46D2-98C4-F9DDB4118691}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32448E41-C600-46D2-98C4-F9DDB4118691}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9A66E829-3D74-4AE9-A200-21B5C9F170B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9A66E829-3D74-4AE9-A200-21B5C9F170B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9A66E829-3D74-4AE9-A200-21B5C9F170B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9A66E829-3D74-4AE9-A200-21B5C9F170B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6AD4E98A-8A8F-409E-8B98-8741354BFFBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6AD4E98A-8A8F-409E-8B98-8741354BFFBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AD4E98A-8A8F-409E-8B98-8741354BFFBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +43,14 @@ Global
 		{4E9F4FB6-7DA2-4C22-B807-401B1B751FEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E9F4FB6-7DA2-4C22-B807-401B1B751FEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E9F4FB6-7DA2-4C22-B807-401B1B751FEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D16EE00F-33E3-4B06-950A-AA41F523EDCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D16EE00F-33E3-4B06-950A-AA41F523EDCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D16EE00F-33E3-4B06-950A-AA41F523EDCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D16EE00F-33E3-4B06-950A-AA41F523EDCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75B54961-2B75-460A-A13F-92003092F956}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75B54961-2B75-460A-A13F-92003092F956}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75B54961-2B75-460A-A13F-92003092F956}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75B54961-2B75-460A-A13F-92003092F956}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

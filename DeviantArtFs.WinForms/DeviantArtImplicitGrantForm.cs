@@ -2,18 +2,12 @@
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DeviantArtFs.WinForms {
 	public class DeviantArtImplicitGrantForm : Form {
-		[DllImport("wininet.dll", SetLastError = true)]
-		private static extern bool InternetSetOption(IntPtr hInternet, int dwOption, IntPtr lpBuffer, int lpdwBufferLength);
-
 		private readonly string _state;
 
 		public string AccessToken { get; private set; }
@@ -24,8 +18,6 @@ namespace DeviantArtFs.WinForms {
 
 			this.Width = 435;
 			this.Height = 750;
-
-			InternetSetOption(IntPtr.Zero, 42, IntPtr.Zero, 0);
 
 			var webBrowser1 = new WebBrowser {
 				Dock = DockStyle.Fill,

@@ -17,7 +17,7 @@ let sandbox token_string = async {
     let read = Console.ReadLine()
     printfn ""
 
-    let! me = DeviantArtFs.Api.User.Whoami.AsyncExecute token DeviantArtObjectExpansion.None
+    let! me = DeviantArtFs.Api.User.AsyncWhoami token DeviantArtObjectExpansion.None
 
     let username =
         match read with
@@ -26,8 +26,8 @@ let sandbox token_string = async {
 
     let! profile =
         username
-        |> DeviantArtFs.Api.User.ProfileByNameRequest
-        |> DeviantArtFs.Api.User.ProfileByName.AsyncExecute token DeviantArtObjectExpansion.None
+        |> DeviantArtFs.Api.User.ProfileRequest
+        |> DeviantArtFs.Api.User.AsyncGetProfile token DeviantArtObjectExpansion.None
     printfn "%s" profile.real_name
     if not (String.IsNullOrEmpty profile.tagline) then
         printfn "%s" profile.tagline
@@ -36,7 +36,7 @@ let sandbox token_string = async {
     printfn ""
 
     let! first_deviation =
-        DeviantArtFs.Api.Gallery.GalleryAllView.ToAsyncSeq
+        DeviantArtFs.Api.Gallery.AsyncGetAllView
             token
             (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
             0
@@ -53,12 +53,12 @@ let sandbox token_string = async {
 
         let! metadata_response =
             new DeviantArtFs.Api.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = DeviantArtExtParams.All)
-            |> DeviantArtFs.Api.Deviation.MetadataById.AsyncExecute token
+            |> DeviantArtFs.Api.Deviation.AsyncGetMetadata token
         for m in metadata_response.metadata do
             m.tags |> Seq.map (fun t -> sprintf "#%s" t.tag_name) |> String.concat " " |> printfn "%s"
 
         let! all_favorites =
-            DeviantArtFs.Api.Deviation.WhoFaved.ToAsyncSeq token DeviantArtObjectExpansion.None s.deviationid 0
+            DeviantArtFs.Api.Deviation.AsyncGetWhoFaved token DeviantArtObjectExpansion.None s.deviationid 0
             |> AsyncSeq.toListAsync
         match all_favorites with
         | [] ->
@@ -71,7 +71,7 @@ let sandbox token_string = async {
         printfn ""
 
     let! recent_deviations =
-        DeviantArtFs.Api.Gallery.GalleryAllView.AsyncExecute
+        DeviantArtFs.Api.Gallery.AsyncPageAllView
             token
             (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
             (page 1 9)
@@ -86,7 +86,7 @@ let sandbox token_string = async {
     printfn ""
 
     let! old_deviations =
-        DeviantArtFs.Api.Gallery.GalleryAllView.AsyncExecute
+        DeviantArtFs.Api.Gallery.AsyncPageAllView
             token
             (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
             (page 100 5)
@@ -103,9 +103,9 @@ let sandbox token_string = async {
     printfn "Sta.sh stacks:"
 
     let! all_stacks =
-        DeviantArtFs.Api.Stash.Contents.ToAsyncSeq
+        DeviantArtFs.Api.Stash.AsyncGetContents
             token
-            DeviantArtFs.Api.Stash.Contents.RootStack
+            DeviantArtFs.Api.Stash.RootStack
             0
         |> AsyncSeq.toListAsync
     for s in all_stacks do
@@ -118,7 +118,7 @@ let sandbox token_string = async {
             printfn ""
             printfn "Stack %d:" stackid
             let! contents =
-                DeviantArtFs.Api.Stash.Contents.ToAsyncSeq
+                DeviantArtFs.Api.Stash.AsyncGetContents
                     token
                     stackid
                     0

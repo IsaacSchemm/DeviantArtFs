@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using DeviantArtFs;
+using DeviantArtFs.Extensions;
 using ExampleWebApp.Data;
 using ExampleWebApp.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -32,7 +33,7 @@ namespace ExampleWebApp.Controllers
         public async Task<IActionResult> Callback(string code, string state = null)
         {
             IDeviantArtRefreshToken result = await DeviantArtAuth.GetTokenAsync(_appReg, code, new Uri($"https://{HttpContext.Request.Host}/Home/Callback"));
-            var me = await DeviantArtFs.Api.User.Whoami.ExecuteAsync(result, DeviantArtObjectExpansion.None);
+            var me = await DeviantArtFs.Api.User.AsyncWhoami(result, DeviantArtObjectExpansion.None).StartAsTask();
             var token = new Token
             {
                 Id = Guid.NewGuid(),
@@ -60,7 +61,7 @@ namespace ExampleWebApp.Controllers
             if (t == null)
                 return RedirectToAction("Login");
 
-            var me = await DeviantArtFs.Api.User.Whoami.ExecuteAsync(t, DeviantArtObjectExpansion.None);
+            var me = await DeviantArtFs.Api.User.AsyncWhoami(t, DeviantArtObjectExpansion.None).StartAsTask();
             return Json(me);
         }
 
