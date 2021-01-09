@@ -17,26 +17,26 @@ Each static method takes one or more parameters:
     * `paging`: a `DeviantArtPagingParams` record, which specifies an offset
       and an optional limit / page size
         * DeviantArtFs is aware of the maximum limits for each API request; to
-          request the maximum page size, use `int.MaxValue` as the limit
+          request the maximum page size, use `DeviantArtPagingParams.MaxFrom`
     * `cursor`: a string provided in the previous page's result (use `null` to
       start at the beginning)
-    * `offset` / `limit`: used in `ToAsyncSeq` and `ToArrayAsync` wrapper
-      methods in place of `paging` / `cursor`
+    * `offset` / `limit`: used in place of `paging` or `cursor` in methods
+      which return `AsyncSeq<T>`
 
 In some cases, two methods are available for an API call. Functions whose
 names begin with `Page` will return a single page of results, while the
-corresponding `Get` function will return an asynchronous enumerable which
+corresponding `Get` function will return an asynchronous sequence which
 begins at the offset you specify (see "Interoperability" below). Be careful
 not to request too much data or you might hit API usage limits.
 
 ## Interoperability
 
 All return types from API calls are wrapped in either F# asynchronous
-workflows (`FSharpAsync<T>`) or F# asynchronous sequences (`IAsyncEnumerable<T>` from the
-package [FSharp.Control.AsyncSeq](https://www.nuget.org/packages/FSharp.Control.AsyncSeq)),
-and the `FSharpOption<T>` type is used extensively in objct models. To help you work
-with these types in C# or VB.NET, DeviantArtFs provides extension methods in
-the namespace `DeviantArtFs.Extensions`:
+workflows (`FSharpAsync<T>`) or F# asynchronous sequences (using the package
+[FSharp.Control.AsyncSeq](https://www.nuget.org/packages/FSharp.Control.AsyncSeq)),
+and the `FSharpOption<T>` type is used extensively in object models. To help
+you work with these types in C# or VB.NET, DeviantArtFs provides extension
+methods in the namespace `DeviantArtFs.Extensions`:
 
 * Option types
     * `.OrNull()`: converts any option type to an equivalent nullable type
@@ -104,7 +104,7 @@ Sta.sh stack, and this is represented by its own union case.
 * **GalleryViewer**: A VB.NET app that lets you see the "All" view of
   someone's gallery and read the descriptions of individual submissions.
   Uses the Client Credentials grant and stores tokens in a file.
-* **WebApp**: An ASP.NET Core 2.1 app written in C# that lets you view
+* **WebApp**: An ASP.NET Core app written in C# that lets you view
   someone's gallery folders and corresponding submission thumbnails.
   Uses the Client Credentials grant and stores tokens in a database.
 
