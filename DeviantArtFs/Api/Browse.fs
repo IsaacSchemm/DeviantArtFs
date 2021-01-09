@@ -18,7 +18,7 @@ module Browse =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtListOnlyResponse<Deviation>>
 
-    let AsyncPageDeviantsYouWatch token paging =
+    let AsyncPageByDeviantsYouWatch token paging =
         seq {
             yield! QueryFor.paging paging 50
         }
@@ -26,8 +26,8 @@ module Browse =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<Deviation>>
 
-    let AsyncGetDeviantsYouWatch token offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageDeviantsYouWatch token)
+    let AsyncGetByDeviantsYouWatch token offset =
+        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageByDeviantsYouWatch token)
 
     let AsyncGetMoreLikeThis token expansion (seed: Guid) =
         seq {
