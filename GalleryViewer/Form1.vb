@@ -62,7 +62,7 @@ Public Class Form1
         Dim page = Await Api.Gallery.AsyncPageAllView(Token, request, paging).StartAsTask()
 
         NextOffset = page.next_offset.OrNull()
-        For Each r In page.results
+        For Each r In page.results.OrEmpty()
             Dim thumbUrl = r.thumbs.OrEmpty().Select(Function(t) t.src).FirstOrDefault()
             Dim pic As New PictureBox With {.ImageLocation = thumbUrl, .SizeMode = PictureBoxSizeMode.Zoom, .Dock = DockStyle.Fill}
             AddHandler pic.Click, Sub(sender, e)

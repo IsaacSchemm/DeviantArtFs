@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net5.0;netstandard2.0</TargetFrameworks>
-    <Version>7.0.0</Version>
+    <Version>7.0.1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Isaac Schemm</Authors>
     <Company></Company>
@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/IsaacSchemm/DeviantArtFs</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Description>An F# library to interact with the DeviantArt / Sta.sh API</Description>
-    <PackageReleaseNotes>7.0.0: New refactoring to remove repeated boilerplate</PackageReleaseNotes>
+    <PackageReleaseNotes>7.0.1: Allow results in paged response to be None (null) due to an error code being provided by the API</PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>(C) 2021 Isaac Schemm</Copyright>

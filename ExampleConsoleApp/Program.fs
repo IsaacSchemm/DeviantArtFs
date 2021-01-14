@@ -76,7 +76,7 @@ let sandbox token_string = async {
             (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
             (page 1 9)
     printfn "Deviations 2-10:"
-    for d in recent_deviations.results do
+    for d in recent_deviations.results |> Option.defaultValue List.empty do
         match (d.title, d.published_time) with
         | Some title, Some published_time ->
             printfn "%s (%s)" title (published_time.Date.ToLongDateString())
@@ -91,7 +91,7 @@ let sandbox token_string = async {
             (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
             (page 100 5)
     printfn "Deviations 100-105:"
-    for d in old_deviations.results do
+    for d in old_deviations.results |> Option.defaultValue List.empty do
         match (d.title, d.published_time) with
         | Some title, Some published_time ->
             printfn "%s (%s)" title (published_time.Date.ToLongDateString())
