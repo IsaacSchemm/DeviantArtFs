@@ -1,6 +1,5 @@
 ﻿namespace DeviantArtFs.Api
 
-open System
 open DeviantArtFs
 open DeviantArtFs.ParameterTypes
 
@@ -27,9 +26,9 @@ module Browse =
     let AsyncGetByDeviantsYouWatch token offset =
         Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageByDeviantsYouWatch token)
 
-    let AsyncGetMoreLikeThis token expansion (seed: Guid) =
+    let AsyncGetMoreLikeThis token expansion seed =
         seq {
-            yield sprintf "seed=%O" seed
+            yield sprintf "seed=%s" (Dafs.guid2str seed)
             yield! QueryFor.objectExpansion expansion
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/morelikethis/preview"

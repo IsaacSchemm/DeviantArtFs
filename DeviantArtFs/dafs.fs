@@ -5,6 +5,9 @@ open FSharp.Control
 open FSharp.Json
 
 module internal Dafs =
+    /// Converts a guid (and only a guid) to a string.
+    let guid2str (g: System.Guid) = g.ToString()
+
     /// URL-encodes a string.
     let urlEncode = WebUtility.UrlEncode
 
