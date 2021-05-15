@@ -2,9 +2,9 @@
 
 open System
 
-type ObjectExpansion = UserDetails | UserGeo | UserProfile | UserStats | UserWatch
+type ObjectExpansion = StatusFullText | UserDetails | UserGeo | UserProfile | UserStats | UserWatch
 with
-    static member All = [UserDetails; UserGeo; UserProfile; UserStats; UserWatch]
+    static member All = [StatusFullText; UserDetails; UserGeo; UserProfile; UserStats; UserWatch]
     static member None = List.empty<ObjectExpansion>
 
 type ExtParams = ExtSubmission | ExtCamera | ExtStats

@@ -13,14 +13,16 @@ module internal QueryFor =
         let to_include = List.distinct [
             for x in Seq.distinct objectExpansion do
                 match x with
+                | StatusFullText -> "status.fulltext"
                 | UserDetails -> "user.details"
                 | UserGeo -> "user.geo"
                 | UserProfile -> "user.profile"
                 | UserStats -> "user.stats"
                 | UserWatch -> "user.watch"
         ]
-        if not (List.isEmpty to_include) then
-            yield to_include |> String.concat "," |> sprintf "expand=%s"
+        match to_include with
+        | [] -> ()
+        | list -> sprintf "expand=%s" (String.concat "," list)
     }
 
     let extParams extParams = seq {

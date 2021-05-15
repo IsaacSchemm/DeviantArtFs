@@ -21,7 +21,7 @@
     <Compile Include="Extensions\Extensions.fs" />
     <Compile Include="Transforms\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Tokens.fs" />
-    <Compile Include="ParameterTypes\Unions.fs" />
+    <Compile Include="ParameterTypes.fs" />
     <Compile Include="PagingParams.fs" />
     <Compile Include="IDeviantArtResultPage.fs" />
     <Compile Include="ResponseTypes\DeviantArtBaseResponse.fs" />
@@ -78,9 +78,9 @@
     <Compile Include="Exceptions.fs" />
     <Compile Include="DeviantArtAuth.fs" />
     <Compile Include="DeviantArtRequest.fs" />
-    <Compile Include="AsyncThen.fs" />
-    <Compile Include="Dafs.fs" />
-    <Compile Include="QueryFor.fs" />
+    <Compile Include="Utility\AsyncThen.fs" />
+    <Compile Include="Utility\Dafs.fs" />
+    <Compile Include="Utility\QueryFor.fs" />
     <Compile Include="Api\Browse.fs" />
     <Compile Include="Api\Collections.fs" />
     <Compile Include="Api\Comments.fs" />
