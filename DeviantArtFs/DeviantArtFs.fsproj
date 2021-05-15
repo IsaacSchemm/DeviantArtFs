@@ -21,6 +21,7 @@
     <Compile Include="Extensions\Extensions.fs" />
     <Compile Include="Transforms\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Tokens.fs" />
+    <Compile Include="ParameterTypes\Unions.fs" />
     <Compile Include="ObjectExpansion.fs" />
     <Compile Include="PagingParams.fs" />
     <Compile Include="ExtParams.fs" />

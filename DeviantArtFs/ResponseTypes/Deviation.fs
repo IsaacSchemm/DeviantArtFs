@@ -29,6 +29,10 @@ type DailyDeviation = {
     suggester: DeviantArtUser option
 }
 
+type DeviationSuggestedReason =
+| WatchingUser = 1
+| SimilarToRecentEngagement = 4
+
 type Deviation = {
     deviationid: Guid
     printid: Guid option
@@ -54,4 +58,5 @@ type Deviation = {
     is_mature: bool option
     is_downloadable: bool option
     download_filesize: int option
+    suggested_reasons: DeviationSuggestedReason list option
 }
