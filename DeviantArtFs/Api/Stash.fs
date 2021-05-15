@@ -34,7 +34,7 @@ module Stash =
 
     type DeltaRequest() = 
         member val Cursor = null with get, set
-        member val ExtParams = DeviantArtExtParams.None with get, set
+        member val ExtParams = ParameterTypes.ExtParams.None with get, set
 
     let AsyncPageDelta token (req: DeltaRequest) paging =
         seq {
@@ -53,7 +53,7 @@ module Stash =
 
     type ItemRequest(itemid: int64) = 
         member __.Itemid = itemid
-        member val ExtParams = DeviantArtExtParams.None with get, set
+        member val ExtParams = ParameterTypes.ExtParams.None with get, set
 
     let AsyncGetItem token (req: ItemRequest) =
         seq {

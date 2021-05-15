@@ -45,7 +45,7 @@ module Deviation =
 
     type MetadataRequest(deviationids: seq<Guid>) =
         member __.Deviationids = deviationids
-        member val ExtParams = DeviantArtExtParams.None with get, set
+        member val ExtParams = ParameterTypes.ExtParams.None with get, set
         member val ExtCollection = false with get, set
 
     let AsyncGetMetadata token (req: MetadataRequest) =

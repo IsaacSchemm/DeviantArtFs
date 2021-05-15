@@ -2,6 +2,16 @@
 
 open System
 
+type ObjectExpansion = UserDetails | UserGeo | UserProfile | UserStats | UserWatch
+with
+    static member All = [UserDetails; UserGeo; UserProfile; UserStats; UserWatch]
+    static member None = List.empty<ObjectExpansion>
+
+type ExtParams = ExtSubmission | ExtCamera | ExtStats
+with
+    static member All = [ExtSubmission; ExtCamera; ExtStats]
+    static member None = List.empty<ExtParams>
+
 type DailyDeviationDate = DailyDeviationsToday | DailyDeviationsFor of DateTime
 with static member Default = DailyDeviationsToday
 
