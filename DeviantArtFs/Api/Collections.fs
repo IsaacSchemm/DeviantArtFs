@@ -2,41 +2,35 @@
 
 open DeviantArtFs
 open DeviantArtFs.ParameterTypes
+open DeviantArtFs.ResponseTypes
+open DeviantArtFs.Pages
 
 module Collections =
     let AsyncPageCollection token expansion user folderid limit offset =
         seq {
-            match user with
-            | CollectionsForUser s -> yield sprintf "username=%s" (Dafs.urlEncode s)
-            | CollectionsForCurrentUser -> ()
+            yield! QueryFor.collectionsUser user
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 24
             yield! QueryFor.objectExpansion expansion
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/collections/%s" (Dafs.guid2str folderid))
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtFolderPagedResult>
+        |> Dafs.thenParse<FolderPage>
 
     let AsyncGetCollection token expansion user folderid batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageCollection token expansion user folderid batchsize)
 
     let AsyncPageFolders token calculateSize extPreload username limit offset =
         seq {
-            match username with
-            | CollectionsForUser s -> yield sprintf "username=%s" (Dafs.urlEncode s)
-            | CollectionsForCurrentUser -> ()
-            match calculateSize with
-            | CollectionsFolderCalculateSize true -> yield "calculate_size=1"
-            | CollectionsFolderCalculateSize false -> yield "calculate_size=0"
-            match extPreload with
-            | CollectionsFolderPreload true -> yield "ext_preload=1"
-            | CollectionsFolderPreload false -> yield "ext_preload=0"
+            yield! QueryFor.collectionsUser username
+            yield! QueryFor.collectionsFolderCalculateSize calculateSize
+            yield! QueryFor.collectionsFolderPreload extPreload
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/collections/folders"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtCollectionFolder>>
+        |> Dafs.thenParse<Page<CollectionFolder>>
 
     let AsyncGetFolders token extPreload calculateSize username batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageFolders token extPreload calculateSize username batchsize)
@@ -51,7 +45,7 @@ module Collections =
         }
         |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/collections/fave"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtFaveResult>
+        |> Dafs.thenParse<FaveResult>
 
     let AsyncUnfave token deviationid folderids =
         seq {
@@ -63,18 +57,18 @@ module Collections =
         }
         |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/collections/unfave"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtFaveResult>
+        |> Dafs.thenParse<FaveResult>
 
     let AsyncCreateFolder token folder =
         seq {
-            yield sprintf "folder=%s" (Dafs.urlEncode folder)
+            yield sprintf "folder=%s" (System.Uri.EscapeDataString folder)
         }
         |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/collections/folders/create"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtCollectionFolder>
+        |> Dafs.thenParse<CollectionFolder>
 
     let AsyncRemoveFolder token folderid =
         Seq.empty
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/collections/folders/remove/%s" (Dafs.guid2str folderid))
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
+        |> Dafs.thenParse<SuccessOrErrorResponse>

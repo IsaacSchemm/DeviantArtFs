@@ -1,8 +1,11 @@
 ﻿namespace DeviantArtFs.Api
 
-open DeviantArtFs
 open System
 open System.IO
+open DeviantArtFs
+open DeviantArtFs.ParameterTypes
+open DeviantArtFs.ResponseTypes
+open DeviantArtFs.Pages
 
 module Stash =
     let AsyncGetStack token (stackid: int64) =
@@ -20,7 +23,7 @@ module Stash =
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d/contents" stackid)
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtPagedResult<StashMetadata>>
+        |> Dafs.thenParse<Page<StashMetadata>>
 
     let AsyncGetContents token stackid batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageContents token stackid batchsize)
@@ -31,7 +34,7 @@ module Stash =
         }
         |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/stash/delete"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
+        |> Dafs.thenParse<SuccessOrErrorResponse>
 
     type DeltaRequest() = 
         member val Cursor = null with get, set
@@ -40,7 +43,7 @@ module Stash =
     let AsyncPageDelta token (req: DeltaRequest) limit offset =
         seq {
             match Option.ofObj req.Cursor with
-            | Some s -> yield sprintf "cursor=%s" (Dafs.urlEncode s)
+            | Some s -> yield sprintf "cursor=%s" (Uri.EscapeDataString s)
             | None -> ()
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 120
@@ -48,7 +51,7 @@ module Stash =
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/stash/delta"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<StashDeltaResult>
+        |> Dafs.thenParse<StashDelta>
 
     let AsyncGetDelta token req batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageDelta token req batchsize)
@@ -79,7 +82,7 @@ module Stash =
         }
         |> Dafs.createRequest Dafs.Method.POST token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/position/%d" stackid)
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
+        |> Dafs.thenParse<SuccessOrErrorResponse>
 
     [<RequireQualifiedAccess>]
     type LicenseModifyOption = No | Yes | ShareAlike
@@ -137,7 +140,7 @@ module Stash =
                 yield "mature_classification[]=ideology"
             yield sprintf "agree_submission=%b" req.AgreeSubmission
             yield sprintf "agree_tos=%b" req.AgreeTos
-            yield sprintf "catpath=%s" (Dafs.urlEncode req.Catpath)
+            yield sprintf "catpath=%s" (Uri.EscapeDataString req.Catpath)
             yield sprintf "feature=%b" req.Feature
             yield sprintf "allow_comments=%b" req.AllowComments
             yield sprintf "request_critique=%b" req.RequestCritique
@@ -169,14 +172,14 @@ module Stash =
 
     let AsyncGetPublishCategoryTree token (req: PublishCategoryTreeRequest) =
         seq {
-            yield sprintf "catpath=%s" (Dafs.urlEncode req.Catpath)
+            yield sprintf "catpath=%s" (Uri.EscapeDataString req.Catpath)
             if not (isNull req.Filetype) then
-                yield sprintf "filetype=%s" (Dafs.urlEncode req.Filetype)
+                yield sprintf "filetype=%s" (Uri.EscapeDataString req.Filetype)
             yield sprintf "frequent=%b" req.Frequent
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/stash/publish/categorytree"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtCategoryList>
+        |> Dafs.thenParse<CategoryList>
 
     let AsyncGetPublishUserdata token =
         Seq.empty
@@ -311,10 +314,10 @@ module Stash =
         seq {
             for update in updates do
                 match update with
-                | UpdateField.Title v -> yield sprintf "title=%s" (Dafs.urlEncode v)
-                | UpdateField.Description v -> yield sprintf "description=%s" (Dafs.urlEncode v)
+                | UpdateField.Title v -> yield sprintf "title=%s" (Uri.EscapeDataString v)
+                | UpdateField.Description v -> yield sprintf "description=%s" (Uri.EscapeDataString v)
                 | UpdateField.ClearDescription -> yield "description=null"
         }
         |> Dafs.createRequest Dafs.Method.POST token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/update/%d" stackid)
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
+        |> Dafs.thenParse<SuccessOrErrorResponse>

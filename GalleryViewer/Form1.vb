@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports DeviantArtFs
 Imports DeviantArtFs.Extensions
+Imports DeviantArtFs.ResponseTypes
 Imports DeviantArtFs.WinForms
 
 Public Class Form1

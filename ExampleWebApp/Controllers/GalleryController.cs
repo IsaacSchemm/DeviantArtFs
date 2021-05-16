@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using ExampleWebApp.Data;
 using DeviantArtFs.Extensions;
@@ -7,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using DeviantArtFs;
 using System.Threading;
 using DeviantArtFs.ParameterTypes;
+using DeviantArtFs.ResponseTypes;
+using DeviantArtFs.Pages;
 
 namespace ExampleWebApp.Controllers
 {
@@ -23,7 +24,7 @@ namespace ExampleWebApp.Controllers
             var limit_param = limit is int l
                 ? PagingLimit.NewPagingLimit(l)
                 : PagingLimit.MaximumPagingLimit;
-            object resp;
+            ILinearPage<Deviation> resp;
             if (folderId is Guid f) {
                 resp = await DeviantArtFs.Api.Gallery.AsyncPageGallery(
                     token,

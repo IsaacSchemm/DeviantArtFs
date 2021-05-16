@@ -1,4 +1,4 @@
-﻿namespace DeviantArtFs
+﻿namespace DeviantArtFs.ResponseTypes
 
 open System
   

@@ -6,7 +6,7 @@ module Util =
     let AsyncPlacebo token =
         Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/placebo" Seq.empty
         |> Dafs.asyncRead
-        |> AsyncThen.map ignore
+        |> Dafs.thenMap ignore
 
     let AsyncIsValid token = async {
         try

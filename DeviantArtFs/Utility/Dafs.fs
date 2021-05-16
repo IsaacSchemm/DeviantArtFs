@@ -1,18 +1,15 @@
 ﻿namespace DeviantArtFs
 
-open System.Net
 open FSharp.Control
 open FSharp.Json
+open DeviantArtFs.Pages
 
 module internal Dafs =
-    /// Converts a guid (and only a guid) to a string.
-    let guid2str (g: System.Guid) = g.ToString()
-
-    /// URL-encodes a string.
-    let urlEncode = WebUtility.UrlEncode
-
     [<RequireQualifiedAccess>]
     type Method = GET | POST
+
+    /// Converts a guid (and only a guid) to a string.
+    let guid2str (g: System.Guid) = g.ToString()
 
     /// Creates a DeviantArtRequest object, given a method, token object, common parameters, a URL, and a query string.
     let createRequest method token url query =
@@ -29,13 +26,19 @@ module internal Dafs =
     /// Parses a JSON string as the given type.
     let parse<'a> str = Json.deserialize<'a> str
 
+    /// Takes an async workflow, and returns another that executes it and then applies the given function to the result
+    let thenMap f a = async {
+        let! o = a
+        return f o
+    }
+
     /// Takes an async workflow that returns a JSON string, and creates another async workflow that will deserialize it to the given type.
     let thenParse<'a> workflow =
         workflow
-        |> AsyncThen.map parse<'a>
+        |> thenMap parse<'a>
 
     /// Builds an AsyncSeq from an initial cursor and a function that uses that cursor to generate an IResultPage with the same cursor type.
-    let toAsyncSeq (cursor: 'a) (f: 'a -> Async<'b> when 'b :> IDeviantArtResultPage<'a, 'item>) = asyncSeq {
+    let toAsyncSeq (cursor: 'a) (f: 'a -> Async<'b> when 'b :> IPage<'a, 'item>) = asyncSeq {
         let mutable cursor = cursor
         let mutable has_more = true
         while has_more do

@@ -2,6 +2,9 @@
 
 open System
 open DeviantArtFs
+open DeviantArtFs.ParameterTypes
+open DeviantArtFs.ResponseTypes
+open DeviantArtFs.Pages
 
 module Messages =
     type MessagesFeedRequest() =
@@ -19,7 +22,7 @@ module Messages =
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/messages/feed"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtMessageCursorResult>
+        |> Dafs.thenParse<MessageCursorResult>
 
     let AsyncGetFeed token req cursor =
         Dafs.toAsyncSeq cursor (AsyncPageFeed token req)
@@ -40,7 +43,7 @@ module Messages =
         }
         |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/messages/delete"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
+        |> Dafs.thenParse<SuccessOrErrorResponse>
 
     type FeedbackMessageType =
     | Comments = 1
@@ -67,7 +70,7 @@ module Messages =
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/messages/feedback"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
+        |> Dafs.thenParse<Page<Message>>
 
     let AsyncGetFeedbackMessages token req batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageFeedbackMessages token req batchsize)
@@ -77,9 +80,9 @@ module Messages =
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/messages/feedback/%s" (Dafs.urlEncode stackid))
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/messages/feedback/%s" (Uri.EscapeDataString stackid))
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
+        |> Dafs.thenParse<Page<Message>>
 
     let AsyncGetFeedbackStack token stackid batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageFeedbackStack token stackid batchsize)
@@ -98,7 +101,7 @@ module Messages =
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/messages/mentions"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
+        |> Dafs.thenParse<Page<Message>>
 
     let AsyncGetMentions token req batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageMentions token req batchsize)
@@ -108,9 +111,9 @@ module Messages =
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/messages/mentions/%s" (Dafs.urlEncode stackid))
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/messages/mentions/%s" (Uri.EscapeDataString stackid))
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
+        |> Dafs.thenParse<Page<Message>>
 
     let AsyncGetMentionsStack token stackid batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageMentionsStack token stackid batchsize)

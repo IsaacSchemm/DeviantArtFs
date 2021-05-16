@@ -2,6 +2,9 @@
 
 open DeviantArtFs
 open System
+open DeviantArtFs.ParameterTypes
+open DeviantArtFs.ResponseTypes
+open DeviantArtFs.Pages
 
 module Deviation =
     let AsyncGet token expansion (id: Guid) =
@@ -16,13 +19,13 @@ module Deviation =
         Seq.empty
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/content?deviationid=%O" deviationid)
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviationTextContent>
+        |> Dafs.thenParse<TextContent>
 
     let AsyncDownload token (deviationid: Guid) =
         Seq.empty
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/download/%O" deviationid)
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviationDownload>
+        |> Dafs.thenParse<Download>
 
     type EmbeddedContentRequest(deviationid: Guid) =
         member __.Deviationid = deviationid
@@ -39,7 +42,7 @@ module Deviation =
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/deviation/embeddedcontent"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtEmbeddedContentPagedResult>
+        |> Dafs.thenParse<EmbeddedContentPage>
 
     let AsyncGetEmbeddedContent token req batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageEmbeddedContent token req batchsize)
@@ -58,7 +61,7 @@ module Deviation =
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/deviation/metadata"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviationMetadataResponse>
+        |> Dafs.thenParse<MetadataResponse>
 
     let AsyncPageWhoFaved token expansion (deviationid: Guid) limit offset =
         seq {
@@ -69,7 +72,7 @@ module Deviation =
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/deviation/whofaved"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtWhoFavedUser>>
+        |> Dafs.thenParse<Page<WhoFavedUser>>
 
     let AsyncGetWhoFaved token expansion req batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageWhoFaved token expansion req batchsize)

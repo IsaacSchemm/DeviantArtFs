@@ -1,52 +1,40 @@
-﻿@using DeviantArtFs
-@using DeviantArtFs.ParameterTypes
+﻿@using DeviantArtFs.Pages
+@using DeviantArtFs.ResponseTypes
 @using DeviantArtFs.Extensions
-
+@model ILinearPage<Deviation>
 @{
     ViewData["Title"] = "View Gallery";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-@if (Model is IDeviantArtResultPage<PagingOffset, Deviation> m) {
-    @foreach (var d in m.Items) {
-        if (d.is_mature.IsTrue()) {
-            <div>Mature content hidden - edit Views/Gallery/Index.cshtml to show</div>
-            continue;
-        }
-
-        var thumb = d.thumbs.OrEmpty()
-            .OrderBy(x => x.width >= 128 && x.height >= 128 ? 0 : 1)
-            .ThenBy(x => x.width * x.height)
-            .Select(x => x.src)
-            .FirstOrDefault();
-        <div>
-            @if (thumb != null) {
-                <img align="left" src="@thumb" style="max-width: 128px; max-height: 128px" />
-            }
-            <h3><a href="@d.url.OrNull()">@d.title.OrNull()</a></h3>
-            <p>@d.published_time.OrNull()</p>
-        </div>
-        <div style="clear: both"></div>
-        <hr />
+@foreach (var d in Model.Items) {
+    if (d.is_mature.IsTrue()) {
+        <div>Mature content hidden - edit Views/Gallery/Index.cshtml to show</div>
+        continue;
     }
+
+    var thumb = d.thumbs.OrEmpty()
+        .OrderBy(x => x.width >= 128 && x.height >= 128 ? 0 : 1)
+        .ThenBy(x => x.width * x.height)
+        .Select(x => x.src)
+        .FirstOrDefault();
+    <div>
+        @if (thumb != null) {
+            <img align="left" src="@thumb" style="max-width: 128px; max-height: 128px" />
+        }
+        <h3><a href="@d.url.OrNull()">@d.title.OrNull()</a></h3>
+        <p>@d.published_time.OrNull()</p>
+    </div>
+    <div style="clear: both"></div>
+    <hr />
 }
 
 <div style="text-align: center">
-    @if (Model is DeviantArtPagedResult<Deviation> r1 && r1.next_offset.OrNull() is int n1)
-    {
-        <a href="@Url.Action("Index", new {
-            username = ViewBag.Username,
-            folderId = ViewBag.FolderId,
-            offset = n1,
-            limit = ViewBag.Limit
-        })">Next</a>
-    } else if (Model is DeviantArtFolderPagedResult r2 && r2.next_offset.OrNull() is int n2) {
-        <a href="@Url.Action("Index", new {
-            username = ViewBag.Username,
-            folderId = ViewBag.FolderId,
-            offset = n2,
-            limit = ViewBag.Limit
-        })">Next</a>
-    }
+    <a href="@Url.Action("Index", new {
+        username = ViewBag.Username,
+        folderId = ViewBag.FolderId,
+        offset = Model.NextOffset.OrNull(),
+        limit = ViewBag.Limit
+    })">Next</a>
 </div>

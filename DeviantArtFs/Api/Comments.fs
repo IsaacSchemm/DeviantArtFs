@@ -2,6 +2,9 @@
 
 open System
 open DeviantArtFs
+open DeviantArtFs.ParameterTypes
+open DeviantArtFs.ResponseTypes
+open DeviantArtFs.Pages
 
 module Comments =
     type DeviationCommentsRequest(deviationid: Guid) =
@@ -20,7 +23,7 @@ module Comments =
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/deviation/%O" req.Deviationid)
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtCommentPagedResult>
+        |> Dafs.thenParse<CommentPage>
 
     let AsyncGetDeviationComments token req batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageDeviationComments token req batchsize)
@@ -41,7 +44,7 @@ module Comments =
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/status/%O" req.Statusid)
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtCommentPagedResult>
+        |> Dafs.thenParse<CommentPage>
 
     let AsyncGetStatusComments token req batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageStatusComments token req batchsize)
@@ -62,7 +65,7 @@ module Comments =
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/profile/%s" req.Username)
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtCommentPagedResult>
+        |> Dafs.thenParse<CommentPage>
         
     let AsyncGetProfileComments token req batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageProfileComments token req batchsize)
@@ -79,8 +82,8 @@ module Comments =
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/%O/siblings" req.Commentid)
         |> Dafs.asyncRead
-        |> AsyncThen.map (fun str -> str.Replace(""""context": list""", """"context":{}"""))
-        |> Dafs.thenParse<DeviantArtCommentSiblingsPagedResult>
+        |> Dafs.thenMap (fun str -> str.Replace(""""context": list""", """"context":{}"""))
+        |> Dafs.thenParse<CommentSiblingsPage>
 
     let AsyncGetCommentSiblings token req batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageCommentSiblings token req batchsize)
@@ -95,11 +98,11 @@ module Comments =
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s
             | None -> ()
-            yield sprintf "body=%s" (Dafs.urlEncode req.Body)
+            yield sprintf "body=%s" (Uri.EscapeDataString req.Body)
         }
         |> Dafs.createRequest Dafs.Method.POST token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/post/deviation/%O" req.Deviationid)
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtComment>
+        |> Dafs.thenParse<Comment>
 
     type PostStatusCommentRequest(statusid: Guid, body: string) =
         member __.Statusid = statusid
@@ -111,11 +114,11 @@ module Comments =
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s
             | None -> ()
-            yield sprintf "body=%s" (Dafs.urlEncode req.Body)
+            yield sprintf "body=%s" (Uri.EscapeDataString req.Body)
         }
         |> Dafs.createRequest Dafs.Method.POST token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/post/status/%O" req.Statusid)
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtComment>
+        |> Dafs.thenParse<Comment>
 
     type PostProfileCommentRequest(username: string, body: string) =
         member __.Username = username
@@ -127,8 +130,8 @@ module Comments =
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s
             | None -> ()
-            yield sprintf "body=%s" (Dafs.urlEncode req.Body)
+            yield sprintf "body=%s" (Uri.EscapeDataString req.Body)
         }
         |> Dafs.createRequest Dafs.Method.POST token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/post/profile/%s" req.Username)
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtComment>
+        |> Dafs.thenParse<Comment>

@@ -1,4 +1,4 @@
-﻿namespace DeviantArtFs
+﻿namespace DeviantArtFs.ResponseTypes
 
 open System
 open FSharp.Json
@@ -10,13 +10,13 @@ type StashMetadata = {
     size: int option
     description: string option
     parentid: int64 option
-    thumb: DeviationPreview option
+    thumb: Preview option
     artist_comments: string option
     original_url: string option
     category: string option
     [<JsonField(Transform=typeof<Transforms.DateTimeOffsetEpoch>)>]
     creation_time: DateTimeOffset option
-    files: DeviationPreview list option
+    files: Preview list option
     submission: StashSubmission option
     stats: StashStats option
     camera: Map<string, string> option
