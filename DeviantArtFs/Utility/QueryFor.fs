@@ -3,10 +3,21 @@
 open DeviantArtFs.ParameterTypes
 
 module internal QueryFor =
-    let paging paging maximum = seq {
-        yield sprintf "offset=%d" paging.Offset
-        if paging.Limit.HasValue then
-            yield sprintf "limit=%d" (min paging.Limit.Value maximum)
+    let offset offset = seq {
+        match offset with
+        | PagingOffset o -> sprintf "offset=%d" o
+    }
+
+    let limit limit maximum = seq {
+        match limit with
+        | PagingLimit l -> sprintf "limit=%d" (min l maximum)
+        | MaximumPagingLimit -> sprintf "limit=%d" maximum
+        | DefaultPagingLimit -> ()
+    }
+
+    let paging (offset_p, limit_p) maximum = seq {
+        yield! offset offset_p
+        yield! limit limit_p maximum
     }
 
     let objectExpansion objectExpansion = seq {

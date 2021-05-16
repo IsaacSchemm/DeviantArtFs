@@ -22,8 +22,8 @@
     <Compile Include="Transforms\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Tokens.fs" />
     <Compile Include="ParameterTypes.fs" />
-    <Compile Include="PagingParams.fs" />
     <Compile Include="IDeviantArtResultPage.fs" />
+    <Compile Include="Compat.fs" />
     <Compile Include="ResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtSuccessOrErrorResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtTextOnlyResponse.fs" />

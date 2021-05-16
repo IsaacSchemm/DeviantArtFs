@@ -8,8 +8,6 @@ let get_token =
     printf "Please enter a DeviantArt access token: "
     Console.ReadLine()
 
-let page offset limit = { Offset = offset; Limit = Nullable limit }
-
 let sandbox token_string = async {
     let token = create_token_obj token_string
 
@@ -17,7 +15,7 @@ let sandbox token_string = async {
     let read = Console.ReadLine()
     printfn ""
 
-    let! me = DeviantArtFs.Api.User.AsyncWhoami token DeviantArtObjectExpansion.None
+    let! me = DeviantArtFs.Api.User.AsyncWhoami token []
 
     let username =
         match read with
@@ -27,7 +25,7 @@ let sandbox token_string = async {
     let! profile =
         username
         |> DeviantArtFs.Api.User.ProfileRequest
-        |> DeviantArtFs.Api.User.AsyncGetProfile token DeviantArtObjectExpansion.None
+        |> DeviantArtFs.Api.User.AsyncGetProfile token []
     printfn "%s" profile.real_name
     if not (String.IsNullOrEmpty profile.tagline) then
         printfn "%s" profile.tagline
@@ -52,13 +50,13 @@ let sandbox token_string = async {
         | _ -> printfn "Not downloadable"
 
         let! metadata_response =
-            new DeviantArtFs.Api.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = DeviantArtExtParams.All)
+            new DeviantArtFs.Api.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = [])
             |> DeviantArtFs.Api.Deviation.AsyncGetMetadata token
         for m in metadata_response.metadata do
             m.tags |> Seq.map (fun t -> sprintf "#%s" t.tag_name) |> String.concat " " |> printfn "%s"
 
         let! all_favorites =
-            DeviantArtFs.Api.Deviation.AsyncGetWhoFaved token DeviantArtObjectExpansion.None s.deviationid 0
+            DeviantArtFs.Api.Deviation.AsyncGetWhoFaved token [] s.deviationid 0
             |> AsyncSeq.toListAsync
         match all_favorites with
         | [] ->
@@ -74,7 +72,7 @@ let sandbox token_string = async {
         DeviantArtFs.Api.Gallery.AsyncPageAllView
             token
             (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
-            (page 1 9)
+            (ParameterTypes.PagingOffset 1, ParameterTypes.PagingLimit 9)
     printfn "Deviations 2-10:"
     for d in recent_deviations.results |> Option.defaultValue List.empty do
         match (d.title, d.published_time) with
@@ -89,7 +87,7 @@ let sandbox token_string = async {
         DeviantArtFs.Api.Gallery.AsyncPageAllView
             token
             (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
-            (page 100 5)
+            (ParameterTypes.PagingOffset 100, ParameterTypes.PagingLimit 5)
     printfn "Deviations 100-105:"
     for d in old_deviations.results |> Option.defaultValue List.empty do
         match (d.title, d.published_time) with

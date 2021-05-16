@@ -14,7 +14,7 @@ Public Class Form1
             Dim t = AccessToken.ReadFrom("refresh_token.txt")
 
             Try
-                Dim user = Await Api.User.AsyncWhoami(t, DeviantArtObjectExpansion.None).StartAsTask()
+                Dim user = Await Api.User.AsyncWhoami(t, ParameterTypes.ObjectExpansion.None).StartAsTask()
                 If MsgBox($"Log in as {user.username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
                     Token = t
                 End If
@@ -36,7 +36,7 @@ Public Class Form1
         End If
 
         If Token IsNot Nothing Then
-            Dim user = Await Api.User.AsyncWhoami(Token, DeviantArtObjectExpansion.None).StartAsTask()
+            Dim user = Await Api.User.AsyncWhoami(Token, ParameterTypes.ObjectExpansion.None).StartAsTask()
             ToolStripStatusLabel1.Text = $"Logged in as {user.username}"
 
             CurrentUsername = user.username
@@ -57,9 +57,12 @@ Public Class Form1
         TableLayoutPanel1.Controls.Clear()
         PictureBox1.ImageLocation = Nothing
 
-        Dim paging = New DeviantArtPagingParams(NextOffset, TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount)
         Dim request As New Api.Gallery.GalleryAllViewRequest With {.Username = CurrentUsername}
-        Dim page = Await Api.Gallery.AsyncPageAllView(Token, request, paging).StartAsTask()
+        Dim page = Await Api.Gallery.AsyncPageAllView(
+            Token,
+            request,
+            ParameterTypes.PagingOffset.NewPagingOffset(NextOffset),
+            ParameterTypes.PagingLimit.NewPagingLimit(TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount)).StartAsTask()
 
         NextOffset = page.next_offset.OrNull()
         For Each r In page.results.OrEmpty()
