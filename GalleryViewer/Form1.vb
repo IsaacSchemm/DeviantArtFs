@@ -61,8 +61,8 @@ Public Class Form1
         Dim page = Await Api.Gallery.AsyncPageAllView(
             Token,
             request,
-            ParameterTypes.PagingOffset.NewPagingOffset(NextOffset),
-            ParameterTypes.PagingLimit.NewPagingLimit(TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount)).StartAsTask()
+            ParameterTypes.PagingLimit.NewPagingLimit(TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount),
+            ParameterTypes.PagingOffset.NewPagingOffset(NextOffset)).StartAsTask()
 
         NextOffset = page.next_offset.OrNull()
         For Each r In page.results.OrEmpty()

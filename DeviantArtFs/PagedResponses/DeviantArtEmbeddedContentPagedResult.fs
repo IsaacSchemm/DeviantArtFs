@@ -8,7 +8,7 @@ type DeviantArtEmbeddedContentPagedResult = {
     prev_offset: int option
     results: Deviation list
 } with
-    interface IDeviantArtResultPage<DeviantArtPagingParams, Deviation> with
+    interface IDeviantArtResultPage<ParameterTypes.PagingOffset, Deviation> with
         member this.HasMore = this.has_more
-        member this.Cursor = DeviantArtPagingParams.MaxFrom (this.next_offset |> Option.defaultValue 0)
+        member this.Cursor = this.next_offset |> Option.map ParameterTypes.PagingOffset |> Option.defaultValue ParameterTypes.FromStart
         member this.Items = this.results |> Seq.ofList

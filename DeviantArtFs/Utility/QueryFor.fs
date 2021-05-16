@@ -5,6 +5,7 @@ open DeviantArtFs.ParameterTypes
 module internal QueryFor =
     let offset offset = seq {
         match offset with
+        | FromStart -> ()
         | PagingOffset o -> sprintf "offset=%d" o
     }
 

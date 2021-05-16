@@ -13,17 +13,18 @@ module User =
     type FriendsRequest() =
         member val Username: string = null with get, set
 
-    let AsyncPageFriends token expansion (req: FriendsRequest) paging =
+    let AsyncPageFriends token expansion (req: FriendsRequest) limit offset =
         seq {
-            yield! QueryFor.paging paging 50
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
             yield! QueryFor.objectExpansion expansion
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/%s" (Dafs.urlEncode req.Username))
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtFriendRecord>>
 
-    let AsyncGetFriends token expansion req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageFriends token expansion req)
+    let AsyncGetFriends token expansion req batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageFriends token expansion req batchsize)
 
     type FriendsSearchRequest(query: string) =
         member __.Query = query
@@ -140,17 +141,18 @@ module User =
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtStatus>
 
-    let AsyncPageStatuses token (username: string) paging =
+    let AsyncPageStatuses token (username: string) limit offset =
         seq {
             yield sprintf "username=%s" (Dafs.urlEncode username)
-            yield! QueryFor.paging paging 50
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/user/statuses"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtStatus>>
 
-    let AsyncGetStatuses token username offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageStatuses token username)
+    let AsyncGetStatuses token username batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageStatuses token username batchsize)
 
     type StatusPostRequest(body: string) =
         member __.Body = body
@@ -180,17 +182,18 @@ module User =
     type WatchersRequest() =
         member val Username: string = null with get, set
 
-    let AsyncPageWatchers token expansion (req: FriendsRequest) paging =
+    let AsyncPageWatchers token expansion (req: FriendsRequest) limit offset =
         seq {
-            yield! QueryFor.paging paging 50
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
             yield! QueryFor.objectExpansion expansion
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/watchers/%s" (Dafs.urlEncode req.Username))
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtWatcherRecord>>
 
-    let AsyncGetWatchers token expansion req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageWatchers token expansion req)
+    let AsyncGetWatchers token expansion req batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageWatchers token expansion req batchsize)
 
     let AsyncWhoami token expansion =
         seq {

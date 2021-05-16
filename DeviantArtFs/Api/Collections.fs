@@ -4,22 +4,23 @@ open DeviantArtFs
 open DeviantArtFs.ParameterTypes
 
 module Collections =
-    let AsyncPageCollection token expansion user folderid paging =
+    let AsyncPageCollection token expansion user folderid limit offset =
         seq {
             match user with
             | CollectionsForUser s -> yield sprintf "username=%s" (Dafs.urlEncode s)
             | CollectionsForCurrentUser -> ()
-            yield! QueryFor.paging paging 24
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 24
             yield! QueryFor.objectExpansion expansion
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/collections/%s" (Dafs.guid2str folderid))
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtFolderPagedResult>
 
-    let AsyncGetCollection token expansion user folderid offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageCollection token expansion user folderid)
+    let AsyncGetCollection token expansion user folderid batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageCollection token expansion user folderid batchsize)
 
-    let AsyncPageFolders token calculateSize extPreload username paging =
+    let AsyncPageFolders token calculateSize extPreload username limit offset =
         seq {
             match username with
             | CollectionsForUser s -> yield sprintf "username=%s" (Dafs.urlEncode s)
@@ -30,14 +31,15 @@ module Collections =
             match extPreload with
             | CollectionsFolderPreload true -> yield "ext_preload=1"
             | CollectionsFolderPreload false -> yield "ext_preload=0"
-            yield! QueryFor.paging paging 50
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/collections/folders"
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtCollectionFolder>>
 
-    let AsyncGetFolders token extPreload calculateSize username offset =
-        Dafs.toAsyncSeq offset (AsyncPageFolders token extPreload calculateSize username)
+    let AsyncGetFolders token extPreload calculateSize username batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageFolders token extPreload calculateSize username batchsize)
 
     let AsyncFave token deviationid folderids =
         seq {

@@ -9,77 +9,81 @@ module Comments =
         member val Commentid = Nullable<Guid>() with get, set
         member val Maxdepth = 0 with get, set
 
-    let AsyncPageDeviationComments token (req: DeviationCommentsRequest) paging =
+    let AsyncPageDeviationComments token (req: DeviationCommentsRequest) limit offset =
         seq {
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s
             | None -> ()
             yield sprintf "maxdepth=%d" req.Maxdepth
-            yield! QueryFor.paging paging 50
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/deviation/%O" req.Deviationid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtCommentPagedResult>
 
-    let AsyncGetDeviationComments token req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageDeviationComments token req)
+    let AsyncGetDeviationComments token req batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageDeviationComments token req batchsize)
 
     type StatusCommentsRequest(statusid: Guid) =
         member __.Statusid = statusid
         member val Commentid = Nullable<Guid>() with get, set
         member val Maxdepth = 0 with get, set
 
-    let AsyncPageStatusComments token  (req: StatusCommentsRequest) paging =
+    let AsyncPageStatusComments token  (req: StatusCommentsRequest) limit offset =
         seq {
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s
             | None -> ()
             yield sprintf "maxdepth=%d" req.Maxdepth
-            yield! QueryFor.paging paging 50
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/status/%O" req.Statusid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtCommentPagedResult>
 
-    let AsyncGetStatusComments token req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageStatusComments token req)
+    let AsyncGetStatusComments token req batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageStatusComments token req batchsize)
 
     type ProfileCommentsRequest(username: string) =
         member __.Username = username
         member val Commentid = Nullable<Guid>() with get, set
         member val Maxdepth = 0 with get, set
 
-    let AsyncPageProfileComments token (req: ProfileCommentsRequest) paging =
+    let AsyncPageProfileComments token (req: ProfileCommentsRequest) limit offset =
         seq {
             match Option.ofNullable req.Commentid with
             | Some s -> yield sprintf "commentid=%O" s
             | None -> ()
             yield sprintf "maxdepth=%d" req.Maxdepth
-            yield! QueryFor.paging paging 50
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/profile/%s" req.Username)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtCommentPagedResult>
         
-    let AsyncGetProfileComments token req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageProfileComments token req)
+    let AsyncGetProfileComments token req batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageProfileComments token req batchsize)
 
     type CommentSiblingsRequest(commentid: Guid) =
         member __.Commentid = commentid
         member val ExtItem = false with get, set
 
-    let AsyncPageCommentSiblings token (req: CommentSiblingsRequest) paging =
+    let AsyncPageCommentSiblings token (req: CommentSiblingsRequest) limit offset =
         seq {
             yield sprintf "ext_item=%b" req.ExtItem
-            yield! QueryFor.paging paging 50
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/%O/siblings" req.Commentid)
         |> Dafs.asyncRead
         |> AsyncThen.map (fun str -> str.Replace(""""context": list""", """"context":{}"""))
         |> Dafs.thenParse<DeviantArtCommentSiblingsPagedResult>
 
-    let AsyncGetCommentSiblings token req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageCommentSiblings token req)
+    let AsyncGetCommentSiblings token req batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageCommentSiblings token req batchsize)
 
     type PostDeviationCommentRequest(deviationid: Guid, body: string) =
         member __.Deviationid = deviationid

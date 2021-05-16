@@ -2,13 +2,11 @@
 
 open System
 
-type PagingOffset = PagingOffset of int
-with static member Default = PagingOffset 0
+type PagingOffset = FromStart | PagingOffset of int
+with static member Default = FromStart
 
 type PagingLimit = PagingLimit of int | MaximumPagingLimit | DefaultPagingLimit
 with static member Default = DefaultPagingLimit
-
-type Paging = PagingOffset * PagingLimit
 
 type ObjectExpansion = StatusFullText | UserDetails | UserGeo | UserProfile | UserStats | UserWatch
 with

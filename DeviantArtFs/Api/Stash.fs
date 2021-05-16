@@ -13,16 +13,17 @@ module Stash =
 
     let RootStack = 0L
 
-    let AsyncPageContents token (stackid: int64) paging =
+    let AsyncPageContents token (stackid: int64) limit offset =
         seq {
-            yield! QueryFor.paging paging 50
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
         }
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d/contents" stackid)
         |> Dafs.asyncRead
         |> Dafs.thenParse<DeviantArtPagedResult<StashMetadata>>
 
-    let AsyncGetContents token stackid offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageContents token stackid)
+    let AsyncGetContents token stackid batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageContents token stackid batchsize)
 
     let AsyncDelete token (itemid: int64) =
         seq {
@@ -36,20 +37,21 @@ module Stash =
         member val Cursor = null with get, set
         member val ExtParams = ParameterTypes.ExtParams.None with get, set
 
-    let AsyncPageDelta token (req: DeltaRequest) paging =
+    let AsyncPageDelta token (req: DeltaRequest) limit offset =
         seq {
             match Option.ofObj req.Cursor with
             | Some s -> yield sprintf "cursor=%s" (Dafs.urlEncode s)
             | None -> ()
-            yield! QueryFor.paging paging 120
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 120
             yield! QueryFor.extParams req.ExtParams
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/stash/delta"
         |> Dafs.asyncRead
         |> Dafs.thenParse<StashDeltaResult>
 
-    let AsyncGetDelta token req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageDelta token req)
+    let AsyncGetDelta token req batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageDelta token req batchsize)
 
     type ItemRequest(itemid: int64) = 
         member __.Itemid = itemid

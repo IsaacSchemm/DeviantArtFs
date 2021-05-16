@@ -1,6 +1,7 @@
 ﻿@using DeviantArtFs
+@using DeviantArtFs.ParameterTypes
 @using DeviantArtFs.Extensions
-@model IDeviantArtResultPage<DeviantArtPagingParams, Deviation>
+@model IDeviantArtResultPage<PagingOffset, Deviation>
 
 @{
     ViewData["Title"] = "View Gallery";
@@ -39,7 +40,7 @@
         <a href="@Url.Action("Index", new {
             username = ViewBag.Username,
             folderId = ViewBag.FolderId,
-            offset = Model.Cursor.Offset,
+            offset = Model.Cursor,
             limit = ViewBag.Limit
         })">Next</a>
     }

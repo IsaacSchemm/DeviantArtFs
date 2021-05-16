@@ -6,6 +6,7 @@ using DeviantArtFs.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using DeviantArtFs;
 using System.Threading;
+using DeviantArtFs.ParameterTypes;
 
 namespace ExampleWebApp.Controllers
 {
@@ -18,19 +19,24 @@ namespace ExampleWebApp.Controllers
             var token = await GetAccessTokenAsync();
             if (token == null) return Forbid();
 
-            var paging = new DeviantArtPagingParams(offset, limit);
-            IDeviantArtResultPage<DeviantArtPagingParams, Deviation> resp;
+            var offset_param = PagingOffset.NewPagingOffset(offset);
+            var limit_param = limit is int l
+                ? PagingLimit.NewPagingLimit(l)
+                : PagingLimit.MaximumPagingLimit;
+            IDeviantArtResultPage<PagingOffset, Deviation> resp;
             if (folderId is Guid f) {
                 resp = await DeviantArtFs.Api.Gallery.AsyncPageGallery(
                     token,
-                    DeviantArtObjectExpansion.None,
+                    ObjectExpansion.None,
                     new DeviantArtFs.Api.Gallery.GalleryRequest { Folderid = f, Username = username },
-                    paging).StartAsTask(cancellationToken: cancellationToken);
+                    limit_param,
+                    offset_param).StartAsTask(cancellationToken: cancellationToken);
             } else {
                 resp = await DeviantArtFs.Api.Gallery.AsyncPageAllView(
                     token,
                     new DeviantArtFs.Api.Gallery.GalleryAllViewRequest { Username = username },
-                    paging).StartAsTask(cancellationToken: cancellationToken);
+                    limit_param,
+                    offset_param).StartAsTask(cancellationToken: cancellationToken);
             }
 
             ViewBag.Username = username;
@@ -47,7 +53,8 @@ namespace ExampleWebApp.Controllers
             var list = await DeviantArtFs.Api.Gallery.AsyncGetFolders(
                 token,
                 new DeviantArtFs.Api.Gallery.GalleryFoldersRequest { CalculateSize = true, Username = username },
-                0).ThenToList().StartAsTask(cancellationToken: cancellationToken);
+                PagingLimit.MaximumPagingLimit,
+                PagingOffset.FromStart).ThenToList().StartAsTask(cancellationToken: cancellationToken);
 
             ViewBag.Username = username;
             return View(list);

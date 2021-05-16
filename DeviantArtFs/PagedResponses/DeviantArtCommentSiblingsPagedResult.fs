@@ -15,7 +15,7 @@ type DeviantArtCommentSiblingsPagedResult = {
     thread: DeviantArtComment list
     context: DeviantArtCommentSiblingsContext
 } with
-    interface IDeviantArtResultPage<DeviantArtPagingParams, DeviantArtComment> with
-        member this.Cursor = DeviantArtPagingParams.MaxFrom (this.next_offset |> Option.defaultValue 0)
+    interface IDeviantArtResultPage<ParameterTypes.PagingOffset, DeviantArtComment> with
+        member this.Cursor = this.next_offset |> Option.map ParameterTypes.PagingOffset |> Option.defaultValue ParameterTypes.FromStart
         member this.HasMore = this.has_more
         member this.Items = this.thread |> Seq.ofList
