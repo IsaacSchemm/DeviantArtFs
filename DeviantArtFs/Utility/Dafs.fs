@@ -42,6 +42,7 @@ module internal Dafs =
             let! resp = f cursor
             for r in resp.Items do
                 yield r
-            cursor <- resp.Cursor
-            has_more <- resp.HasMore
+            match resp.Cursor with
+            | Some c -> cursor <- c
+            | None -> has_more <- false
     }

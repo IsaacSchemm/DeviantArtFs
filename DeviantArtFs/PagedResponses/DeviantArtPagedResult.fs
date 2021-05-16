@@ -1,5 +1,7 @@
 ﻿namespace DeviantArtFs
 
+open DeviantArtFs.ParameterTypes
+
 /// A single page of results from a DeviantArt API endpoint.
 type DeviantArtPagedResult<'a> = {
     has_more: bool
@@ -8,6 +10,8 @@ type DeviantArtPagedResult<'a> = {
     results: 'a list option
 } with
     interface IDeviantArtResultPage<ParameterTypes.PagingOffset, 'a> with
-        member this.HasMore = this.has_more
-        member this.Cursor = this.next_offset |> Option.map ParameterTypes.PagingOffset |> Option.defaultValue ParameterTypes.FromStart
+        member this.Cursor =
+            match (this.next_offset, this.has_more) with
+            | (Some offset, true) -> Some (PagingOffset offset)
+            | _ -> None
         member this.Items = this.results |> Option.defaultValue List.empty |> Seq.ofList

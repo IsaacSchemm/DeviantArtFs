@@ -7,6 +7,8 @@ type DeviantArtMessageCursorResult = {
     results: DeviantArtMessage list
 } with
     interface IDeviantArtResultPage<string option, DeviantArtMessage> with
-        member this.HasMore = this.has_more
-        member this.Cursor = Option.ofObj this.cursor
+        member this.Cursor =
+            match this.has_more with
+            | true -> Some (Some this.cursor)
+            | false -> None
         member this.Items = this.results |> Seq.ofList

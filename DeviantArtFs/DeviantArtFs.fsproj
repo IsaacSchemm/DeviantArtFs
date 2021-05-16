@@ -21,7 +21,6 @@
     <Compile Include="Extensions\Extensions.fs" />
     <Compile Include="Transforms\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Tokens.fs" />
-    <Compile Include="IDeviantArtResultPage.fs" />
     <Compile Include="ParameterTypes\ParameterTypes.fs" />
     <Compile Include="ResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtSuccessOrErrorResponse.fs" />
@@ -53,7 +52,6 @@
     <Compile Include="ResponseTypes\StashMetadata.fs" />
     <Compile Include="ResponseTypes\StashMoveResult.fs" />
     <Compile Include="ResponseTypes\StashDeltaEntry.fs" />
-    <Compile Include="ResponseTypes\StashDeltaResult.fs" />
     <Compile Include="ResponseTypes\StashSpaceResult.fs" />
     <Compile Include="ResponseTypes\StashSubmitResult.fs" />
     <Compile Include="ResponseTypes\StashPublishUserdataResult.fs" />
@@ -66,11 +64,13 @@
     <Compile Include="ResponseTypes\DeviantArtMessagingNetworkToken.fs" />
     <Compile Include="ResponseTypes\DeviantArtWatchingResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtStatusPostResponse.fs" />
+    <Compile Include="IDeviantArtResultPage.fs" />
     <Compile Include="PagedResponses\DeviantArtPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtEmbeddedContentPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtBrowsePagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtRecommendedPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtFolderPagedResult.fs" />
+    <Compile Include="PagedResponses\StashDeltaResult.fs" />
     <Compile Include="PagedResponses\DeviantArtCommentPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtCommentSiblingsPagedResult.fs" />
     <Compile Include="PagedResponses\DeviantArtMessageCursorResult.fs" />

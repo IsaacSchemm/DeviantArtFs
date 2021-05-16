@@ -1,5 +1,7 @@
 ﻿namespace DeviantArtFs
 
+open DeviantArtFs.ParameterTypes
+
 type DeviantArtCommentSiblingsContext = {
     parent: DeviantArtComment option
     item_profile: DeviantArtUser option
@@ -15,7 +17,9 @@ type DeviantArtCommentSiblingsPagedResult = {
     thread: DeviantArtComment list
     context: DeviantArtCommentSiblingsContext
 } with
-    interface IDeviantArtResultPage<ParameterTypes.PagingOffset, DeviantArtComment> with
-        member this.Cursor = this.next_offset |> Option.map ParameterTypes.PagingOffset |> Option.defaultValue ParameterTypes.FromStart
-        member this.HasMore = this.has_more
+    interface IDeviantArtResultPage<PagingOffset, DeviantArtComment> with
+        member this.Cursor =
+            match (this.next_offset, this.has_more) with
+            | (Some offset, true) -> Some (PagingOffset offset)
+            | _ -> None
         member this.Items = this.thread |> Seq.ofList

@@ -1,5 +1,7 @@
 ﻿namespace DeviantArtFs
 
+open DeviantArtFs.ParameterTypes
+
 /// A single page of results from a DeviantArt API endpoint that fetches
 /// comments.
 type DeviantArtCommentPagedResult = {
@@ -10,7 +12,9 @@ type DeviantArtCommentPagedResult = {
     total: int option
     thread: DeviantArtComment list
 } with
-    interface IDeviantArtResultPage<ParameterTypes.PagingOffset, DeviantArtComment> with
-        member this.HasMore = this.has_more
-        member this.Cursor = this.next_offset |> Option.map ParameterTypes.PagingOffset |> Option.defaultValue ParameterTypes.FromStart
+    interface IDeviantArtResultPage<PagingOffset, DeviantArtComment> with
+        member this.Cursor =
+            match (this.next_offset, this.has_more) with
+            | (Some offset, true) -> Some (PagingOffset offset)
+            | _ -> None
         member this.Items = this.thread |> Seq.ofList
