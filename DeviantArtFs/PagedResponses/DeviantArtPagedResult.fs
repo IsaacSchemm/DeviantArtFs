@@ -10,7 +10,7 @@ type DeviantArtPagedResult<'a> = {
     results: 'a list option
 } with
     interface IDeviantArtResultPage<ParameterTypes.PagingOffset, 'a> with
-        member this.Cursor =
+        member this.NextPage =
             match (this.next_offset, this.has_more) with
             | (Some offset, true) -> Some (PagingOffset offset)
             | _ -> None

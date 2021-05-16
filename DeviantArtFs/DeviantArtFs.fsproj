@@ -21,7 +21,9 @@
     <Compile Include="Extensions\Extensions.fs" />
     <Compile Include="Transforms\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Tokens.fs" />
-    <Compile Include="ParameterTypes\ParameterTypes.fs" />
+    <Compile Include="ParameterTypes\Shared.fs" />
+    <Compile Include="ParameterTypes\Browse.fs" />
+    <Compile Include="ParameterTypes\Collections.fs" />
     <Compile Include="ResponseTypes\DeviantArtBaseResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtSuccessOrErrorResponse.fs" />
     <Compile Include="ResponseTypes\DeviantArtTextOnlyResponse.fs" />

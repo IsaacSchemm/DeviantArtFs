@@ -23,7 +23,7 @@ namespace ExampleWebApp.Controllers
             var limit_param = limit is int l
                 ? PagingLimit.NewPagingLimit(l)
                 : PagingLimit.MaximumPagingLimit;
-            IDeviantArtResultPage<PagingOffset, Deviation> resp;
+            object resp;
             if (folderId is Guid f) {
                 resp = await DeviantArtFs.Api.Gallery.AsyncPageGallery(
                     token,

@@ -10,7 +10,7 @@ type StashDeltaResult = {
     entries: StashDeltaEntry list
 } with
     interface IDeviantArtResultPage<PagingOffset, StashDeltaEntry> with
-        member this.Cursor =
+        member this.NextPage =
             match (this.next_offset, this.has_more) with
             | (Some offset, true) -> Some (PagingOffset offset)
             | _ -> None

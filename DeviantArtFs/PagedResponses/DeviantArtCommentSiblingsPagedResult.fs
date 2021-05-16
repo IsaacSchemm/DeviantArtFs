@@ -18,7 +18,7 @@ type DeviantArtCommentSiblingsPagedResult = {
     context: DeviantArtCommentSiblingsContext
 } with
     interface IDeviantArtResultPage<PagingOffset, DeviantArtComment> with
-        member this.Cursor =
+        member this.NextPage =
             match (this.next_offset, this.has_more) with
             | (Some offset, true) -> Some (PagingOffset offset)
             | _ -> None

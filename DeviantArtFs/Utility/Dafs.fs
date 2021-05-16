@@ -42,7 +42,7 @@ module internal Dafs =
             let! resp = f cursor
             for r in resp.Items do
                 yield r
-            match resp.Cursor with
+            match resp.NextPage with
             | Some c -> cursor <- c
             | None -> has_more <- false
     }
