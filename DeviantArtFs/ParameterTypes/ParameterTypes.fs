@@ -11,12 +11,12 @@ with static member Default = DefaultPagingLimit
 type ObjectExpansion = StatusFullText | UserDetails | UserGeo | UserProfile | UserStats | UserWatch
 with
     static member All = [StatusFullText; UserDetails; UserGeo; UserProfile; UserStats; UserWatch]
-    static member None = Seq.empty<ObjectExpansion>
+    static member None = List.empty<ObjectExpansion>
 
 type ExtParams = ExtSubmission | ExtCamera | ExtStats
 with
     static member All = [ExtSubmission; ExtCamera; ExtStats]
-    static member None = Seq.empty<ExtParams>
+    static member None = List.empty<ExtParams>
 
 type DailyDeviationDate = DailyDeviationsToday | DailyDeviationsFor of DateTime
 with static member Default = DailyDeviationsToday
@@ -38,6 +38,18 @@ with static member Default = CollectionsFolderCalculateSize false
 
 type CollectionsFolderPreload = CollectionsFolderPreload of bool
 with static member Default = CollectionsFolderPreload false
+
+type CommentSubject = OnDeviation of Guid | OnProfile of string | OnStatus of Guid
+
+type CommentReplyType = DirectReply | InReplyToComment of Guid
+with static member Default = DirectReply
+
+type CommentDepth = CommentDepth of int
+with
+    static member Default = CommentDepth 0
+    static member Max = CommentDepth 5
+
+type IncludeRelatedItem = IncludeRelatedItem of bool
 
 module QueryFor =
     let offset offset = seq {
@@ -125,4 +137,21 @@ module QueryFor =
         match extPreload with
         | CollectionsFolderPreload true -> yield "ext_preload=1"
         | CollectionsFolderPreload false -> yield "ext_preload=0"
+    }
+
+    let commentReplyType commentReplyType = seq {
+        match commentReplyType with
+        | DirectReply -> ()
+        | InReplyToComment g -> sprintf "commentid=%O" g
+    }
+
+    let commentDepth depth = seq {
+        match depth with
+        | CommentDepth x -> sprintf "maxdepth=%d" (min x 5)
+    }
+
+    let includeRelatedItem inc = seq {
+        match inc with
+        | IncludeRelatedItem true -> "ext_item=1"
+        | IncludeRelatedItem false -> "ext_item=0"
     }

@@ -9,6 +9,20 @@ let get_token =
     printf "Please enter a DeviantArt access token: "
     Console.ReadLine()
 
+let rec print_all_comments token subject prefix replyType = async {
+    let! comments =
+        DeviantArtFs.Api.Comments.AsyncGetComments token (CommentDepth 0) subject replyType PagingLimit.MaximumPagingLimit PagingOffset.FromStart
+        |> AsyncSeq.truncate 10
+        |> AsyncSeq.toListAsync
+    for c in comments do
+        let str = sprintf "%s%s" prefix c.body
+        if str.Length > 119 then
+            printfn "%s..." (str.Substring(0, 116))
+        else
+            printfn "%s" str
+        do! print_all_comments token subject (sprintf "  %s" prefix) (InReplyToComment c.commentid)
+}
+
 let sandbox token_string = async {
     let token = create_token_obj token_string
 
@@ -32,6 +46,9 @@ let sandbox token_string = async {
         printfn "%s" profile.tagline
     printfn "%d deviations" profile.stats.user_deviations
 
+    printfn ""
+
+    do! print_all_comments token (OnProfile username) "" DirectReply
     printfn ""
 
     let! first_deviation =
@@ -70,6 +87,9 @@ let sandbox token_string = async {
 
         printfn ""
 
+        do! print_all_comments token (OnDeviation s.deviationid) "  " DirectReply
+        printfn ""
+
     let! recent_deviations =
         DeviantArtFs.Api.Gallery.AsyncPageAllView
             token
@@ -102,7 +122,7 @@ let sandbox token_string = async {
 
     printfn ""
 
-    printfn "Sta.sh stacks:"
+    printfn "Your Sta.sh stacks:"
 
     let! all_stacks =
         DeviantArtFs.Api.Stash.AsyncGetContents
