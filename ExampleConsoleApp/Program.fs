@@ -54,7 +54,7 @@ let sandbox token_string = async {
     let! first_deviation =
         DeviantArtFs.Api.Gallery.AsyncGetAllView
             token
-            (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
+            (ForUser username)
             DefaultPagingLimit
             FromStart
         |> AsyncSeq.filter (fun d -> not d.is_deleted)
@@ -68,9 +68,7 @@ let sandbox token_string = async {
         | Some true -> printfn "Downloadable (size = %d)" (s.download_filesize |> Option.defaultValue -1)
         | _ -> printfn "Not downloadable"
 
-        let! metadata_response =
-            new DeviantArtFs.Api.Deviation.MetadataRequest([s.deviationid], ExtCollection = true, ExtParams = [])
-            |> DeviantArtFs.Api.Deviation.AsyncGetMetadata token
+        let! metadata_response = DeviantArtFs.Api.Deviation.AsyncGetMetadata token [ExtCollection] [s.deviationid]
         for m in metadata_response.metadata do
             m.tags |> Seq.map (fun t -> sprintf "#%s" t.tag_name) |> String.concat " " |> printfn "%s"
 
@@ -93,7 +91,7 @@ let sandbox token_string = async {
     let! recent_deviations =
         DeviantArtFs.Api.Gallery.AsyncPageAllView
             token
-            (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
+            (ForUser username)
             (PagingLimit 9)
             (PagingOffset 1)
     printfn "Deviations 2-10:"
@@ -109,7 +107,7 @@ let sandbox token_string = async {
     let! old_deviations =
         DeviantArtFs.Api.Gallery.AsyncPageAllView
             token
-            (DeviantArtFs.Api.Gallery.GalleryAllViewRequest(Username = username))
+            (ForUser username)
             (PagingLimit 5)
             (PagingOffset 100)
     printfn "Deviations 100-105:"

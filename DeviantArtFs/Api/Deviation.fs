@@ -31,12 +31,10 @@ module Deviation =
         member __.Deviationid = deviationid
         member val OffsetDeviationid = Nullable<Guid>() with get, set
 
-    let AsyncPageEmbeddedContent token (req: EmbeddedContentRequest) limit offset =
+    let AsyncPageEmbeddedContent token deviationid offset_deviationid limit offset =
         seq {
-            yield sprintf "deviationid=%O" req.Deviationid
-            match Option.ofNullable req.OffsetDeviationid with
-            | Some s -> yield sprintf "offset_deviationid=%O" s
-            | None -> ()
+            yield sprintf "deviationid=%O" (Dafs.guid2str deviationid)
+            yield! QueryFor.embeddedDeviationOffset offset_deviationid
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
@@ -44,20 +42,14 @@ module Deviation =
         |> Dafs.asyncRead
         |> Dafs.thenParse<EmbeddedContentPage>
 
-    let AsyncGetEmbeddedContent token req batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageEmbeddedContent token req batchsize)
+    let AsyncGetEmbeddedContent token deviationid batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageEmbeddedContent token deviationid StartWithFirstEmbeddedDeviation batchsize)
 
-    type MetadataRequest(deviationids: seq<Guid>) =
-        member __.Deviationids = deviationids
-        member val ExtParams = ParameterTypes.ExtParams.None with get, set
-        member val ExtCollection = false with get, set
-
-    let AsyncGetMetadata token (req: MetadataRequest) =
+    let AsyncGetMetadata token extParams deviationids =
         seq {
-            yield! QueryFor.extParams req.ExtParams
-            yield sprintf "ext_collection=%b" req.ExtCollection
-            for id in req.Deviationids do
-                yield sprintf "deviationids[]=%O" id
+            yield! QueryFor.extParams extParams
+            for id in deviationids do
+                yield sprintf "deviationids[]=%O" (Dafs.guid2str id)
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/deviation/metadata"
         |> Dafs.asyncRead

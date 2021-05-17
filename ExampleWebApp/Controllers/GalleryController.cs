@@ -24,21 +24,17 @@ namespace ExampleWebApp.Controllers
             var limit_param = limit is int l
                 ? PagingLimit.NewPagingLimit(l)
                 : PagingLimit.MaximumPagingLimit;
-            ILinearPage<Deviation> resp;
-            if (folderId is Guid f) {
-                resp = await DeviantArtFs.Api.Gallery.AsyncPageGallery(
-                    token,
-                    ObjectExpansion.None,
-                    new DeviantArtFs.Api.Gallery.GalleryRequest { Folderid = f, Username = username },
-                    limit_param,
-                    offset_param).StartAsTask(cancellationToken: cancellationToken);
-            } else {
-                resp = await DeviantArtFs.Api.Gallery.AsyncPageAllView(
-                    token,
-                    new DeviantArtFs.Api.Gallery.GalleryAllViewRequest { Username = username },
-                    limit_param,
-                    offset_param).StartAsTask(cancellationToken: cancellationToken);
-            }
+            var resp = await DeviantArtFs.Api.Gallery.AsyncPageGallery(
+                token,
+                ObjectExpansion.None,
+                username != null
+                    ? UserScope.NewForUser(username)
+                    : UserScope.ForCurrentUser,
+                folderId is Guid ff
+                    ? GalleryFolderScope.NewSingleGalleryFolder(ff)
+                    : GalleryFolderScope.AllGalleryFoldersPopular,
+                limit_param,
+                offset_param).StartAsTask(cancellationToken: cancellationToken);
 
             ViewBag.Username = username;
             ViewBag.FolderId = folderId;
@@ -53,7 +49,11 @@ namespace ExampleWebApp.Controllers
 
             var list = await DeviantArtFs.Api.Gallery.AsyncGetFolders(
                 token,
-                new DeviantArtFs.Api.Gallery.GalleryFoldersRequest { CalculateSize = true, Username = username },
+                CalculateSize.NewCalculateSize(true),
+                FolderPreload.Default,
+                username != null
+                    ? UserScope.NewForUser(username)
+                    : UserScope.ForCurrentUser,
                 PagingLimit.MaximumPagingLimit,
                 PagingOffset.FromStart).ThenToList().StartAsTask(cancellationToken: cancellationToken);
 

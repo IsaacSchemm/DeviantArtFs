@@ -8,7 +8,7 @@ open DeviantArtFs.Pages
 module Collections =
     let AsyncPageCollection token expansion user folderid limit offset =
         seq {
-            yield! QueryFor.collectionsUser user
+            yield! QueryFor.userScope user
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 24
             yield! QueryFor.objectExpansion expansion
@@ -20,11 +20,11 @@ module Collections =
     let AsyncGetCollection token expansion user folderid batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageCollection token expansion user folderid batchsize)
 
-    let AsyncPageFolders token calculateSize extPreload username limit offset =
+    let AsyncPageFolders token calculateSize extPreload user limit offset =
         seq {
-            yield! QueryFor.collectionsUser username
-            yield! QueryFor.collectionsFolderCalculateSize calculateSize
-            yield! QueryFor.collectionsFolderPreload extPreload
+            yield! QueryFor.userScope user
+            yield! QueryFor.calculateSize calculateSize
+            yield! QueryFor.folderPreload extPreload
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
@@ -32,8 +32,8 @@ module Collections =
         |> Dafs.asyncRead
         |> Dafs.thenParse<Page<CollectionFolder>>
 
-    let AsyncGetFolders token extPreload calculateSize username batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageFolders token extPreload calculateSize username batchsize)
+    let AsyncGetFolders token extPreload calculateSize user batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageFolders token extPreload calculateSize user batchsize)
 
     let AsyncFave token deviationid folderids =
         seq {

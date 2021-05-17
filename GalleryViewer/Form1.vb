@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports DeviantArtFs
 Imports DeviantArtFs.Extensions
+Imports DeviantArtFs.ParameterTypes
 Imports DeviantArtFs.ResponseTypes
 Imports DeviantArtFs.WinForms
 
@@ -58,12 +59,11 @@ Public Class Form1
         TableLayoutPanel1.Controls.Clear()
         PictureBox1.ImageLocation = Nothing
 
-        Dim request As New Api.Gallery.GalleryAllViewRequest With {.Username = CurrentUsername}
         Dim page = Await Api.Gallery.AsyncPageAllView(
             Token,
-            request,
-            ParameterTypes.PagingLimit.NewPagingLimit(TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount),
-            ParameterTypes.PagingOffset.NewPagingOffset(NextOffset)).StartAsTask()
+            If(CurrentUsername Is Nothing, UserScope.ForCurrentUser, UserScope.NewForUser(CurrentUsername)),
+            PagingLimit.NewPagingLimit(TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount),
+            PagingOffset.NewPagingOffset(NextOffset)).StartAsTask()
 
         NextOffset = page.next_offset.OrNull()
         For Each r In page.results.OrEmpty()
@@ -87,8 +87,7 @@ Public Class Form1
         End If
 
         WebBrowser1.Navigate("about:blank")
-        Dim req = New Api.Deviation.MetadataRequest({deviation.deviationid})
-        Dim metadataResponse = Await Api.Deviation.AsyncGetMetadata(Token, req).StartAsTask()
+        Dim metadataResponse = Await Api.Deviation.AsyncGetMetadata(Token, ExtParams.None, {deviation.deviationid}).StartAsTask()
         Dim s = metadataResponse.metadata.Single()
         WebBrowser1.Document.Write(s.description)
     End Sub

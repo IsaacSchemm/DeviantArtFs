@@ -7,14 +7,9 @@ open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
 
 module Gallery =
-    type GalleryAllViewRequest() =
-        member val Username = null with get, set
-
-    let AsyncPageAllView token (req: GalleryAllViewRequest) limit offset =
+    let AsyncPageAllView token scope limit offset =
         seq {
-            match Option.ofObj req.Username with
-            | Some s -> yield sprintf "username=%s" (Uri.EscapeDataString s)
-            | None -> ()
+            yield! QueryFor.userScope scope
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 24
         }
@@ -22,27 +17,22 @@ module Gallery =
         |> Dafs.asyncRead
         |> Dafs.thenParse<Page<Deviation>>
 
-    let AsyncGetAllView token req batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageAllView token req batchsize)
+    let AsyncGetAllView token scope batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageAllView token scope batchsize)
 
-    type GalleryRequestMode = PopularGalleryContents | NewestGalleryContents
-
-    type GalleryRequest() =
-        member val Folderid = Nullable<Guid>() with get, set
-        member val Username = null with get, set
-        member val Mode = PopularGalleryContents with get, set
-
-    let AsyncPageGallery token expansion (req: GalleryRequest) limit offset =
+    let AsyncPageGallery token expansion scope folder limit offset =
         let folder_id_str =
-            match Option.ofNullable req.Folderid with
-            | Some s -> sprintf "%O" s
-            | None -> ""
+            match folder with
+            | SingleGalleryFolder s -> sprintf "%O" s
+            | AllGalleryFoldersNewest -> ""
+            | AllGalleryFoldersPopular -> ""
 
         seq {
-            match Option.ofObj req.Username with
-            | Some s -> yield sprintf "username=%s" (Uri.EscapeDataString s)
-            | None -> ()
-            yield sprintf "mode=%s" (match req.Mode with NewestGalleryContents -> "newest" | PopularGalleryContents -> "popular")
+            yield! QueryFor.userScope scope
+            match folder with
+            | SingleGalleryFolder s -> ()
+            | AllGalleryFoldersNewest -> "mode=newest"
+            | AllGalleryFoldersPopular -> "mode=popular"
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 24
             yield! QueryFor.objectExpansion expansion
@@ -51,21 +41,14 @@ module Gallery =
         |> Dafs.asyncRead
         |> Dafs.thenParse<FolderPage>
 
-    let AsyncGetGallery token expansion req batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageGallery token expansion req batchsize)
+    let AsyncGetGallery token expansion scope folder batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageGallery token expansion scope folder batchsize)
 
-    type GalleryFoldersRequest() =
-        member val Username = null with get, set
-        member val CalculateSize = false with get, set
-        member val ExtPreload = false with get, set
-
-    let AsyncPageFolders token (req: GalleryFoldersRequest) limit offset =
+    let AsyncPageFolders token calculateSize extPreload user limit offset =
         seq {
-            match Option.ofObj req.Username with
-            | Some s -> yield sprintf "username=%s" (Uri.EscapeDataString s)
-            | None -> ()
-            yield sprintf "calculate_size=%b" req.CalculateSize
-            yield sprintf "ext_preload=%b" req.ExtPreload
+            yield! QueryFor.userScope user
+            yield! QueryFor.calculateSize calculateSize
+            yield! QueryFor.folderPreload extPreload
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
@@ -73,10 +56,10 @@ module Gallery =
         |> Dafs.asyncRead
         |> Dafs.thenParse<Page<GalleryFolder>>
 
-    let AsyncGetFolders token req batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageFolders token req batchsize)
+    let AsyncGetFolders token calculateSize extPreload user batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageFolders token calculateSize extPreload user batchsize)
 
-    let AsyncCreateFolder token (folder: string) =
+    let AsyncCreateFolder token folder =
         seq {
             yield sprintf "folder=%s" (Uri.EscapeDataString folder)
         }
@@ -84,8 +67,8 @@ module Gallery =
         |> Dafs.asyncRead
         |> Dafs.thenParse<CollectionFolder>
 
-    let AsyncRemoveFolder token (folderid: Guid) =
+    let AsyncRemoveFolder token folderid =
         Seq.empty
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/folders/remove/%A" folderid)
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/gallery/folders/remove/%s" (Dafs.guid2str folderid))
         |> Dafs.asyncRead
         |> Dafs.thenParse<SuccessOrErrorResponse>

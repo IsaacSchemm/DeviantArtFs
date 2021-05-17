@@ -1,14 +1,14 @@
 ﻿@using DeviantArtFs.Pages
 @using DeviantArtFs.ResponseTypes
 @using DeviantArtFs.Extensions
-@model ILinearPage<Deviation>
+@model FolderPage
 @{
     ViewData["Title"] = "View Gallery";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-@foreach (var d in Model.Items) {
+@foreach (var d in Model.results) {
     if (d.is_mature.IsTrue()) {
         <div>Mature content hidden - edit Views/Gallery/Index.cshtml to show</div>
         continue;
@@ -34,7 +34,7 @@
     <a href="@Url.Action("Index", new {
         username = ViewBag.Username,
         folderId = ViewBag.FolderId,
-        offset = Model.NextOffset.OrNull(),
+        offset = Model.next_offset.OrNull(),
         limit = ViewBag.Limit
     })">Next</a>
 </div>

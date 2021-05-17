@@ -13,10 +13,19 @@ with
     static member All = [StatusFullText; UserDetails; UserGeo; UserProfile; UserStats; UserWatch]
     static member None = List.empty<ObjectExpansion>
 
-type ExtParams = ExtSubmission | ExtCamera | ExtStats
+type ExtParams = ExtSubmission | ExtCamera | ExtStats | ExtCollection
 with
-    static member All = [ExtSubmission; ExtCamera; ExtStats]
+    static member All = [ExtSubmission; ExtCamera; ExtStats; ExtCollection]
     static member None = List.empty<ExtParams>
+
+type UserScope = ForCurrentUser | ForUser of string
+with static member Default = ForCurrentUser
+
+type CalculateSize = CalculateSize of bool
+with static member Default = CalculateSize false
+
+type FolderPreload = FolderPreload of bool
+with static member Default = FolderPreload false
 
 type DailyDeviationDate = DailyDeviationsToday | DailyDeviationsFor of DateTime
 with static member Default = DailyDeviationsToday
@@ -30,15 +39,6 @@ with static member Default = UnspecifiedPopularTimeRange
 type UserJournalFilter = NoUserJournalFilter | FeaturedJournalsOnly
 with static member Default = FeaturedJournalsOnly
 
-type CollectionsUser = CollectionsForCurrentUser | CollectionsForUser of string
-with static member Default = CollectionsForCurrentUser
-
-type CollectionsFolderCalculateSize = CollectionsFolderCalculateSize of bool
-with static member Default = CollectionsFolderCalculateSize false
-
-type CollectionsFolderPreload = CollectionsFolderPreload of bool
-with static member Default = CollectionsFolderPreload false
-
 type CommentSubject = OnDeviation of Guid | OnProfile of string | OnStatus of Guid
 
 type CommentReplyType = DirectReply | InReplyToComment of Guid
@@ -50,6 +50,11 @@ with
     static member Max = CommentDepth 5
 
 type IncludeRelatedItem = IncludeRelatedItem of bool
+
+type EmbeddedDeviationOffset = StartWithFirstEmbeddedDeviation | StartWithEmbeddedDeviation of Guid
+with static member Default = StartWithFirstEmbeddedDeviation
+
+type GalleryFolderScope = SingleGalleryFolder of Guid | AllGalleryFoldersNewest | AllGalleryFoldersPopular
 
 module QueryFor =
     let offset offset = seq {
@@ -92,6 +97,25 @@ module QueryFor =
             | ExtSubmission -> "ext_submission=1"
             | ExtCamera -> "ext_camera=1"
             | ExtStats -> "ext_stats=1"
+            | ExtCollection -> "ext_collection=1"
+    }
+
+    let userScope scope = seq {
+        match scope with
+        | ForUser s -> yield sprintf "username=%s" (System.Uri.EscapeDataString s)
+        | ForCurrentUser -> ()
+    }
+
+    let calculateSize calculateSize = seq {
+        match calculateSize with
+        | CalculateSize true -> yield "calculate_size=1"
+        | CalculateSize false -> yield "calculate_size=0"
+    }
+
+    let folderPreload extPreload = seq {
+        match extPreload with
+        | FolderPreload true -> yield "ext_preload=1"
+        | FolderPreload false -> yield "ext_preload=0"
     }
 
     let dailyDeviationDate date = seq {
@@ -121,24 +145,6 @@ module QueryFor =
         | FeaturedJournalsOnly -> yield "featured=1"
     }
 
-    let collectionsUser user = seq {
-        match user with
-        | CollectionsForUser s -> yield sprintf "username=%s" (System.Uri.EscapeDataString s)
-        | CollectionsForCurrentUser -> ()
-    }
-
-    let collectionsFolderCalculateSize calculateSize = seq {
-        match calculateSize with
-        | CollectionsFolderCalculateSize true -> yield "calculate_size=1"
-        | CollectionsFolderCalculateSize false -> yield "calculate_size=0"
-    }
-
-    let collectionsFolderPreload extPreload = seq {
-        match extPreload with
-        | CollectionsFolderPreload true -> yield "ext_preload=1"
-        | CollectionsFolderPreload false -> yield "ext_preload=0"
-    }
-
     let commentReplyType commentReplyType = seq {
         match commentReplyType with
         | DirectReply -> ()
@@ -154,4 +160,10 @@ module QueryFor =
         match inc with
         | IncludeRelatedItem true -> "ext_item=1"
         | IncludeRelatedItem false -> "ext_item=0"
+    }
+
+    let embeddedDeviationOffset embeddedDeviationOffset = seq {
+        match embeddedDeviationOffset with
+        | StartWithFirstEmbeddedDeviation -> ()
+        | StartWithEmbeddedDeviation g -> sprintf "offset_deviationid=%O" g
     }

@@ -23,11 +23,10 @@ namespace ExampleConsoleApp2 {
             Console.WriteLine($"{allStashItems.Length} sta.sh items");
             Console.WriteLine();
 
-            var req = new DeviantArtFs.Api.Gallery.GalleryAllViewRequest();
             int i = 0;
-            Stopwatch st = new Stopwatch();
+            Stopwatch st = new();
             st.Start();
-            await foreach (var deviation in DeviantArtFs.Api.Gallery.AsyncGetAllView(token, req, PagingLimit.MaximumPagingLimit, PagingOffset.FromStart).ToAsyncEnumerable()) {
+            await foreach (var deviation in DeviantArtFs.Api.Gallery.AsyncGetAllView(token, UserScope.ForCurrentUser, PagingLimit.MaximumPagingLimit, PagingOffset.FromStart).ToAsyncEnumerable()) {
                 Console.WriteLine($"[{st.Elapsed}] {i + 1}. {deviation.title}");
                 i++;
                 if (i > 100) break;
