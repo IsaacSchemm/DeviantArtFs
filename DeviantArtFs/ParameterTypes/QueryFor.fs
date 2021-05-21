@@ -1,5 +1,7 @@
 ﻿namespace DeviantArtFs.ParameterTypes
 
+open System
+
 module QueryFor =
     let offset offset = seq {
         match offset with
@@ -105,4 +107,35 @@ module QueryFor =
         match embeddedDeviationOffset with
         | StartWithFirstEmbeddedDeviation -> ()
         | StartWithEmbeddedDeviation g -> sprintf "offset_deviationid=%O" g
+    }
+
+    let messageFolder folder = seq {
+        match folder with
+        | MessageFolder g -> sprintf "folderid=%O" g
+        | Inbox -> ()
+    }
+
+    let messageMode mode = seq {
+        match mode with
+        | StackedMessageMode -> "stack=1"
+        | FlatMessageMode -> "stack=0"
+    }
+
+    let messageCursor cursor = seq {
+        match cursor with
+        | MessageCursor s -> sprintf "cursor=%s" (Uri.EscapeDataString s)
+        | StartingCursor -> ()
+    }
+
+    let messageDeletionTarget target = seq {
+        match target with
+        | DeleteMessage s -> sprintf "messageid=%s" (Uri.EscapeDataString s)
+        | DeleteStack s -> sprintf "stackid=%s" (Uri.EscapeDataString s)
+    }
+
+    let feedbackMessageType t = seq {
+        match t with
+        | Comments -> "type=comments"
+        | Replies -> "type=replies"
+        | Activity -> "type=activity"
     }

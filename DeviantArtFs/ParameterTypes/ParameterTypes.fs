@@ -55,3 +55,16 @@ type EmbeddedDeviationOffset = StartWithFirstEmbeddedDeviation | StartWithEmbedd
 with static member Default = StartWithFirstEmbeddedDeviation
 
 type GalleryFolderScope = SingleGalleryFolder of Guid | AllGalleryFoldersNewest | AllGalleryFoldersPopular
+
+type MessageFolder = MessageFolder of Guid | Inbox
+with static member Default = Inbox
+
+type MessageMode = StackedMessageMode | FlatMessageMode
+with static member Default = StackedMessageMode
+
+type MessageCursor = MessageCursor of string | StartingCursor
+with static member Default = StartingCursor
+
+type MessageDeletionTarget = DeleteMessage of string | DeleteStack of string
+
+type FeedbackMessageType = Comments | Replies | Activity

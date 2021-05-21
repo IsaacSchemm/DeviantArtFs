@@ -7,39 +7,23 @@ open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
 
 module Messages =
-    type MessagesFeedRequest() =
-        member val Folderid = Nullable<Guid>() with get, set
-        member val Stack = true with get, set
-
-    let AsyncPageFeed token (req: MessagesFeedRequest) (cursor: string option) =
+    let AsyncPageFeed token mode folderid cursor =
         seq {
-            if req.Folderid.HasValue then
-                yield sprintf "folderid=%O" req.Folderid
-            yield sprintf "stack=%b" req.Stack
-            match cursor with
-            | Some c -> yield sprintf "cursor=%s" c
-            | None -> ()
+            yield! QueryFor.messageMode mode
+            yield! QueryFor.messageFolder folderid
+            yield! QueryFor.messageCursor cursor
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/messages/feed"
         |> Dafs.asyncRead
         |> Dafs.thenParse<MessageCursorResult>
 
-    let AsyncGetFeed token req cursor =
-        Dafs.toAsyncSeq cursor (AsyncPageFeed token req)
+    let AsyncGetFeed token mode folderid cursor =
+        Dafs.toAsyncSeq cursor (AsyncPageFeed token mode folderid)
 
-    type DeleteMessageRequest() =
-        member val Folderid = Nullable<Guid>() with get, set
-        member val Messageid = null with get, set
-        member val Stackid = null with get, set
-
-    let AsyncDelete token (req: DeleteMessageRequest) =
+    let AsyncDelete token folderid target =
         seq {
-            if req.Folderid.HasValue then
-                yield sprintf "folderid=%O" req.Folderid
-            if req.Messageid <> null then
-                yield sprintf "messageid=%s" req.Messageid
-            if req.Stackid <> null then
-                yield sprintf "stackid=%s" req.Stackid
+            yield! QueryFor.messageFolder folderid
+            yield! QueryFor.messageDeletionTarget target
         }
         |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/messages/delete"
         |> Dafs.asyncRead
@@ -55,16 +39,11 @@ module Messages =
         member val Folderid = Nullable<Guid>() with get, set
         member val Stack = true with get, set
 
-    let AsyncPageFeedbackMessages token (req: FeedbackMessagesRequest) limit offset =
+    let AsyncPageFeedbackMessages token ``type`` mode folderid limit offset =
         seq {
-            match req.Type with
-            | FeedbackMessageType.Comments -> yield "type=comments"
-            | FeedbackMessageType.Replies -> yield "type=replies"
-            | FeedbackMessageType.Activity -> yield "type=activity"
-            | _ -> invalidArg "req" "Invalid feedback message type"
-            if req.Folderid.HasValue then
-                yield sprintf "folderid=%O" req.Folderid
-            yield sprintf "stack=%b" req.Stack
+            yield! QueryFor.feedbackMessageType ``type``
+            yield! QueryFor.messageMode mode
+            yield! QueryFor.messageFolder folderid
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 5
         }
@@ -72,10 +51,10 @@ module Messages =
         |> Dafs.asyncRead
         |> Dafs.thenParse<Page<Message>>
 
-    let AsyncGetFeedbackMessages token req batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageFeedbackMessages token req batchsize)
+    let AsyncGetFeedbackMessages token ``type`` mode folderid batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageFeedbackMessages token ``type`` mode folderid batchsize)
 
-    let AsyncPageFeedbackStack token (stackid: string) limit offset =
+    let AsyncPageFeedbackStack token stackid limit offset =
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
@@ -86,16 +65,11 @@ module Messages =
 
     let AsyncGetFeedbackStack token stackid batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageFeedbackStack token stackid batchsize)
-        
-    type MentionsMessagesRequest() =
-        member val Folderid = Nullable<Guid>() with get, set
-        member val Stack = true with get, set
 
-    let AsyncPageMentions token (req: MentionsMessagesRequest) limit offset =
+    let AsyncPageMentions token mode folderid limit offset =
         seq {
-            if req.Folderid.HasValue then
-                yield sprintf "folderid=%O" req.Folderid
-            yield sprintf "stack=%b" req.Stack
+            yield! QueryFor.messageMode mode
+            yield! QueryFor.messageFolder folderid
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
@@ -103,10 +77,10 @@ module Messages =
         |> Dafs.asyncRead
         |> Dafs.thenParse<Page<Message>>
 
-    let AsyncGetMentions token req batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageMentions token req batchsize)
+    let AsyncGetMentions token mode folderid batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageMentions token mode folderid batchsize)
 
-    let AsyncPageMentionsStack token (stackid: string) limit offset =
+    let AsyncPageMentionsStack token stackid limit offset =
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
