@@ -7,9 +7,9 @@ open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
 
 module Messages =
-    let AsyncPageFeed token mode folderid cursor =
+    let AsyncPageFeed token stack folderid cursor =
         seq {
-            yield! QueryFor.messageMode mode
+            yield! QueryFor.stackMessages stack
             yield! QueryFor.messageFolder folderid
             yield! QueryFor.messageCursor cursor
         }
@@ -17,8 +17,8 @@ module Messages =
         |> Dafs.asyncRead
         |> Dafs.thenParse<MessageCursorResult>
 
-    let AsyncGetFeed token mode folderid cursor =
-        Dafs.toAsyncSeq cursor (AsyncPageFeed token mode folderid)
+    let AsyncGetFeed token stack folderid cursor =
+        Dafs.toAsyncSeq cursor (AsyncPageFeed token stack folderid)
 
     let AsyncDelete token folderid target =
         seq {
@@ -29,20 +29,10 @@ module Messages =
         |> Dafs.asyncRead
         |> Dafs.thenParse<SuccessOrErrorResponse>
 
-    type FeedbackMessageType =
-    | Comments = 1
-    | Replies = 2
-    | Activity = 3
-
-    type FeedbackMessagesRequest(``type``: FeedbackMessageType) =
-        member __.Type = ``type``
-        member val Folderid = Nullable<Guid>() with get, set
-        member val Stack = true with get, set
-
-    let AsyncPageFeedbackMessages token ``type`` mode folderid limit offset =
+    let AsyncPageFeedbackMessages token ``type`` stack folderid limit offset =
         seq {
             yield! QueryFor.feedbackMessageType ``type``
-            yield! QueryFor.messageMode mode
+            yield! QueryFor.stackMessages stack
             yield! QueryFor.messageFolder folderid
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 5
@@ -51,8 +41,8 @@ module Messages =
         |> Dafs.asyncRead
         |> Dafs.thenParse<Page<Message>>
 
-    let AsyncGetFeedbackMessages token ``type`` mode folderid batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageFeedbackMessages token ``type`` mode folderid batchsize)
+    let AsyncGetFeedbackMessages token ``type`` stack folderid batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageFeedbackMessages token ``type`` stack folderid batchsize)
 
     let AsyncPageFeedbackStack token stackid limit offset =
         seq {
@@ -66,9 +56,9 @@ module Messages =
     let AsyncGetFeedbackStack token stackid batchsize offset =
         Dafs.toAsyncSeq offset (AsyncPageFeedbackStack token stackid batchsize)
 
-    let AsyncPageMentions token mode folderid limit offset =
+    let AsyncPageMentions token stack folderid limit offset =
         seq {
-            yield! QueryFor.messageMode mode
+            yield! QueryFor.stackMessages stack
             yield! QueryFor.messageFolder folderid
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
@@ -77,8 +67,8 @@ module Messages =
         |> Dafs.asyncRead
         |> Dafs.thenParse<Page<Message>>
 
-    let AsyncGetMentions token mode folderid batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageMentions token mode folderid batchsize)
+    let AsyncGetMentions token stack folderid batchsize offset =
+        Dafs.toAsyncSeq offset (AsyncPageMentions token stack folderid batchsize)
 
     let AsyncPageMentionsStack token stackid limit offset =
         seq {

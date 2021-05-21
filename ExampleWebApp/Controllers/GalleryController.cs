@@ -55,7 +55,7 @@ namespace ExampleWebApp.Controllers
                     ? UserScope.NewForUser(username)
                     : UserScope.ForCurrentUser,
                 PagingLimit.MaximumPagingLimit,
-                PagingOffset.FromStart).ThenToList().StartAsTask(cancellationToken: cancellationToken);
+                PagingOffset.StartingOffset).ThenToList().StartAsTask(cancellationToken: cancellationToken);
 
             ViewBag.Username = username;
             return View(list);

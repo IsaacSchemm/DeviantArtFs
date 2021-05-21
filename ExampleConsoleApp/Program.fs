@@ -11,7 +11,7 @@ let get_token =
 
 let rec print_all_comments token subject prefix replyType = async {
     let! comments =
-        DeviantArtFs.Api.Comments.AsyncGetComments token (CommentDepth 0) subject replyType PagingLimit.MaximumPagingLimit PagingOffset.FromStart
+        DeviantArtFs.Api.Comments.AsyncGetComments token (CommentDepth 0) subject replyType MaximumPagingLimit StartingOffset
         |> AsyncSeq.truncate 10
         |> AsyncSeq.toListAsync
     for c in comments do
@@ -56,7 +56,7 @@ let sandbox token_string = async {
             token
             (ForUser username)
             DefaultPagingLimit
-            FromStart
+            StartingOffset
         |> AsyncSeq.filter (fun d -> not d.is_deleted)
         |> AsyncSeq.take 1
         |> AsyncSeq.tryFirst
@@ -73,7 +73,7 @@ let sandbox token_string = async {
             m.tags |> Seq.map (fun t -> sprintf "#%s" t.tag_name) |> String.concat " " |> printfn "%s"
 
         let! all_favorites =
-            DeviantArtFs.Api.Deviation.AsyncGetWhoFaved token [] s.deviationid MaximumPagingLimit FromStart
+            DeviantArtFs.Api.Deviation.AsyncGetWhoFaved token [] s.deviationid MaximumPagingLimit StartingOffset
             |> AsyncSeq.toListAsync
         match all_favorites with
         | [] ->
@@ -127,7 +127,7 @@ let sandbox token_string = async {
             token
             DeviantArtFs.Api.Stash.RootStack
             MaximumPagingLimit
-            FromStart
+            StartingOffset
         |> AsyncSeq.toListAsync
     for s in all_stacks do
         printfn "%s (%A)" s.title s.stackid
@@ -143,7 +143,7 @@ let sandbox token_string = async {
                     token
                     stackid
                     MaximumPagingLimit
-                    FromStart
+                    StartingOffset
                 |> AsyncSeq.toListAsync
             for c in contents do
                 printfn "%s (%A -> %A)" c.title c.parentid c.stackid

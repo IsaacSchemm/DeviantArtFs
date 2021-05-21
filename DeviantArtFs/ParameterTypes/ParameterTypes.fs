@@ -2,8 +2,8 @@
 
 open System
 
-type PagingOffset = FromStart | PagingOffset of int
-with static member Default = FromStart
+type PagingOffset = StartingOffset | PagingOffset of int
+with static member Default = StartingOffset
 
 type PagingLimit = PagingLimit of int | MaximumPagingLimit | DefaultPagingLimit
 with static member Default = DefaultPagingLimit
@@ -56,15 +56,15 @@ with static member Default = StartWithFirstEmbeddedDeviation
 
 type GalleryFolderScope = SingleGalleryFolder of Guid | AllGalleryFoldersNewest | AllGalleryFoldersPopular
 
-type MessageFolder = MessageFolder of Guid | Inbox
+type MessageFolder = Inbox | MessageFolder of Guid
 with static member Default = Inbox
 
-type MessageMode = StackedMessageMode | FlatMessageMode
-with static member Default = StackedMessageMode
+type StackMessages = StackMessages of bool
+with static member Default = StackMessages true
 
-type MessageCursor = MessageCursor of string | StartingCursor
+type MessageCursor = StartingCursor | MessageCursor of string
 with static member Default = StartingCursor
 
 type MessageDeletionTarget = DeleteMessage of string | DeleteStack of string
 
-type FeedbackMessageType = Comments | Replies | Activity
+type FeedbackMessageType = CommentFeedbackMessages | ReplyFeedbackMessages | ActivityFeedbackMessages

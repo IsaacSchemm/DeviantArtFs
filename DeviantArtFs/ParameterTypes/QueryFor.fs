@@ -5,7 +5,7 @@ open System
 module QueryFor =
     let offset offset = seq {
         match offset with
-        | FromStart -> ()
+        | StartingOffset -> ()
         | PagingOffset o -> sprintf "offset=%d" o
     }
 
@@ -115,10 +115,10 @@ module QueryFor =
         | Inbox -> ()
     }
 
-    let messageMode mode = seq {
-        match mode with
-        | StackedMessageMode -> "stack=1"
-        | FlatMessageMode -> "stack=0"
+    let stackMessages stack = seq {
+        match stack with
+        | StackMessages true -> "stack=1"
+        | StackMessages false -> "stack=0"
     }
 
     let messageCursor cursor = seq {
@@ -135,7 +135,7 @@ module QueryFor =
 
     let feedbackMessageType t = seq {
         match t with
-        | Comments -> "type=comments"
-        | Replies -> "type=replies"
-        | Activity -> "type=activity"
+        | CommentFeedbackMessages -> "type=comments"
+        | ReplyFeedbackMessages -> "type=replies"
+        | ActivityFeedbackMessages -> "type=activity"
     }
