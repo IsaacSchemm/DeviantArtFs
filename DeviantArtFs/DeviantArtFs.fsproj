@@ -22,6 +22,7 @@
     <Compile Include="Transforms\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Tokens.fs" />
     <Compile Include="ParameterTypes\ParameterTypes.fs" />
+    <Compile Include="ParameterTypes\QueryFor.fs" />
     <Compile Include="ResponseTypes\BaseResponse.fs" />
     <Compile Include="ResponseTypes\SuccessOrErrorResponse.fs" />
     <Compile Include="ResponseTypes\TextOnlyResponse.fs" />
