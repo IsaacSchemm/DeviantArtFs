@@ -58,6 +58,7 @@ module internal Dafs =
                         member __.Current = current
                         member __.MoveNextAsync() =
                             let moveNextAsync = async {
+                                token.ThrowIfCancellationRequested()
                                 if List.isEmpty buffer then
                                     do! reload
                                 match buffer with

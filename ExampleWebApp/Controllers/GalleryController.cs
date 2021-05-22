@@ -55,8 +55,8 @@ namespace ExampleWebApp.Controllers
                 username != null
                     ? UserScope.NewForUser(username)
                     : UserScope.ForCurrentUser,
-                PagingLimit.NewPagingLimit(6),
-                PagingOffset.StartingOffset).ToListAsync();
+                PagingLimit.MaximumPagingLimit,
+                PagingOffset.StartingOffset).ToListAsync(cancellationToken);
 
             ViewBag.Username = username;
             return View(list);

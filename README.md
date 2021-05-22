@@ -20,6 +20,18 @@ not to request too much data or you might hit API usage limits.
 
 ## Interoperability
 
+In order to maximize ease of use from within F#, the response objects in this
+library are .NET records using F# `option` types to represent missing fields.
+This means that you will need extension methods (see below) to extract a null
+value or another placeholder value from these fields.
+
+Since these extension methods are required to use the library outside F#, I've
+also decided to reduce the amount of duplicate code in the library by exposing
+`Async<T>` directly and relying on C# and VB.NET consumers to use another
+extension method to create a `Task<T>`. This has the additional benefit of
+(hopefully) allowing the consumer to pass a cancellation token to any method;
+let me know if there are any bugs in this regard.
+
 The following types are used in response objects:
 
 * `FSharpAsync<T>`: An F# asynchronous workflow. An extension method (see
