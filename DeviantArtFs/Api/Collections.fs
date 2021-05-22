@@ -18,7 +18,7 @@ module Collections =
         |> Dafs.thenParse<FolderPage>
 
     let AsyncGetCollection token expansion user folderid batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageCollection token expansion user folderid batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageCollection token expansion user folderid batchsize)
 
     let AsyncPageFolders token calculateSize extPreload user limit offset =
         seq {
@@ -33,7 +33,7 @@ module Collections =
         |> Dafs.thenParse<Page<CollectionFolder>>
 
     let AsyncGetFolders token extPreload calculateSize user batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageFolders token extPreload calculateSize user batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageFolders token extPreload calculateSize user batchsize)
 
     let AsyncFave token deviationid folderids =
         seq {

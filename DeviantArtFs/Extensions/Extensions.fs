@@ -1,7 +1,6 @@
 ﻿namespace DeviantArtFs.Extensions
 
 open System.Runtime.CompilerServices
-open FSharp.Control
 open System.Threading.Tasks
 open System.Runtime.InteropServices
 open System
@@ -42,25 +41,5 @@ module OptionListExtensions =
 [<Extension>]
 module AsyncExtensions =
     [<Extension>]
-    let StartAsTask (this, [<Optional; DefaultParameterValue(TaskCreationOptions.None)>]taskCreationOptions, [<Optional; DefaultParameterValue(Nullable())>]cancellationToken) =
-        Async.StartAsTask (this, taskCreationOptions, cancellationToken |> Option.ofNullable |> Option.defaultValue CancellationToken.None)
-
-[<Extension>]
-module AsyncSeqExtensions =
-    [<Extension>]
-    let Take this count =
-        AsyncSeq.take count this
-
-    [<Extension>]
-    let ThenToArray this =
-        AsyncSeq.toArrayAsync this
-
-    [<Extension>]
-    let ThenToList this =
-        AsyncSeq.toListAsync this
-
-#if NET5_0
-    [<Extension>]
-    let ToAsyncEnumerable this =
-        AsyncSeq.toAsyncEnum this
-#endif
+    let StartAsTask (this, [<Optional; DefaultParameterValue(TaskCreationOptions.None)>]taskCreationOptions, [<Optional; DefaultParameterValue(Nullable())>]cancellationToken: Nullable<CancellationToken>) =
+        Async.StartAsTask (this, taskCreationOptions, if cancellationToken.HasValue then cancellationToken.Value else CancellationToken.None)

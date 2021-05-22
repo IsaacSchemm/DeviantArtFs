@@ -3,6 +3,7 @@ using DeviantArtFs.Extensions;
 using DeviantArtFs.ParameterTypes;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ExampleConsoleApp2 {
@@ -19,14 +20,14 @@ namespace ExampleConsoleApp2 {
                 token,
                 new DeviantArtFs.Api.Stash.DeltaRequest(),
                 PagingLimit.MaximumPagingLimit,
-                PagingOffset.StartingOffset).ThenToList().StartAsTask();
-            Console.WriteLine($"{allStashItems.Length} sta.sh items");
+                PagingOffset.StartingOffset).ToListAsync();
+            Console.WriteLine($"{allStashItems.Count} sta.sh items");
             Console.WriteLine();
 
             int i = 0;
             Stopwatch st = new();
             st.Start();
-            await foreach (var deviation in DeviantArtFs.Api.Gallery.AsyncGetAllView(token, UserScope.ForCurrentUser, PagingLimit.MaximumPagingLimit, PagingOffset.StartingOffset).ToAsyncEnumerable()) {
+            await foreach (var deviation in DeviantArtFs.Api.Gallery.AsyncGetAllView(token, UserScope.ForCurrentUser, PagingLimit.MaximumPagingLimit, PagingOffset.StartingOffset)) {
                 Console.WriteLine($"[{st.Elapsed}] {i + 1}. {deviation.title}");
                 i++;
                 if (i > 100) break;

@@ -18,7 +18,7 @@ module Messages =
         |> Dafs.thenParse<MessageCursorResult>
 
     let AsyncGetFeed token stack folderid cursor =
-        Dafs.toAsyncSeq cursor (AsyncPageFeed token stack folderid)
+        Dafs.toAsyncEnum cursor (AsyncPageFeed token stack folderid)
 
     let AsyncDelete token folderid target =
         seq {
@@ -42,7 +42,7 @@ module Messages =
         |> Dafs.thenParse<Page<Message>>
 
     let AsyncGetFeedbackMessages token ``type`` stack folderid batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageFeedbackMessages token ``type`` stack folderid batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageFeedbackMessages token ``type`` stack folderid batchsize)
 
     let AsyncPageFeedbackStack token stackid limit offset =
         seq {
@@ -54,7 +54,7 @@ module Messages =
         |> Dafs.thenParse<Page<Message>>
 
     let AsyncGetFeedbackStack token stackid batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageFeedbackStack token stackid batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageFeedbackStack token stackid batchsize)
 
     let AsyncPageMentions token stack folderid limit offset =
         seq {
@@ -68,7 +68,7 @@ module Messages =
         |> Dafs.thenParse<Page<Message>>
 
     let AsyncGetMentions token stack folderid batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageMentions token stack folderid batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageMentions token stack folderid batchsize)
 
     let AsyncPageMentionsStack token stackid limit offset =
         seq {
@@ -80,4 +80,4 @@ module Messages =
         |> Dafs.thenParse<Page<Message>>
 
     let AsyncGetMentionsStack token stackid batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageMentionsStack token stackid batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageMentionsStack token stackid batchsize)

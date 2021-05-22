@@ -25,7 +25,7 @@ module Comments =
         |> Dafs.thenParse<CommentPage>
 
     let AsyncGetComments token maxdepth subject scope batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageComments token maxdepth subject scope batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageComments token maxdepth subject scope batchsize)
 
     let AsyncPageCommentSiblings token commentid ext_item limit offset =
         seq {
@@ -39,7 +39,7 @@ module Comments =
         |> Dafs.thenParse<CommentSiblingsPage>
 
     let AsyncGetCommentSiblings token commentid ext_item batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageCommentSiblings token commentid ext_item batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageCommentSiblings token commentid ext_item batchsize)
 
     let AsyncPostComment token subject replyType body =
         let url =

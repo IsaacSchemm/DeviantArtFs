@@ -8,6 +8,7 @@ using System.Threading;
 using DeviantArtFs.ParameterTypes;
 using DeviantArtFs.ResponseTypes;
 using DeviantArtFs.Pages;
+using System.Linq;
 
 namespace ExampleWebApp.Controllers
 {
@@ -54,8 +55,8 @@ namespace ExampleWebApp.Controllers
                 username != null
                     ? UserScope.NewForUser(username)
                     : UserScope.ForCurrentUser,
-                PagingLimit.MaximumPagingLimit,
-                PagingOffset.StartingOffset).ThenToList().StartAsTask(cancellationToken: cancellationToken);
+                PagingLimit.NewPagingLimit(6),
+                PagingOffset.StartingOffset).ToListAsync();
 
             ViewBag.Username = username;
             return View(list);

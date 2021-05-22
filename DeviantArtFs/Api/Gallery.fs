@@ -18,7 +18,7 @@ module Gallery =
         |> Dafs.thenParse<Page<Deviation>>
 
     let AsyncGetAllView token scope batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageAllView token scope batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageAllView token scope batchsize)
 
     let AsyncPageGallery token expansion scope folder limit offset =
         let folder_id_str =
@@ -42,7 +42,7 @@ module Gallery =
         |> Dafs.thenParse<FolderPage>
 
     let AsyncGetGallery token expansion scope folder batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageGallery token expansion scope folder batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageGallery token expansion scope folder batchsize)
 
     let AsyncPageFolders token calculateSize extPreload user limit offset =
         seq {
@@ -57,7 +57,7 @@ module Gallery =
         |> Dafs.thenParse<Page<GalleryFolder>>
 
     let AsyncGetFolders token calculateSize extPreload user batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageFolders token calculateSize extPreload user batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageFolders token calculateSize extPreload user batchsize)
 
     let AsyncCreateFolder token folder =
         seq {

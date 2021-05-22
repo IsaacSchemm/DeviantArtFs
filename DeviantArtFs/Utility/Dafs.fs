@@ -1,6 +1,7 @@
 ﻿namespace DeviantArtFs
 
-open FSharp.Control
+open System.Threading.Tasks
+open System.Collections.Generic
 open FSharp.Json
 open DeviantArtFs.Pages
 
@@ -37,15 +38,39 @@ module internal Dafs =
         workflow
         |> thenMap parse<'a>
 
-    /// Builds an AsyncSeq from an initial cursor and a function that uses that cursor to generate an IResultPage with the same cursor type.
-    let toAsyncSeq (cursor: 'a) (f: 'a -> Async<'b> when 'b :> IPage<'a, 'item>) = asyncSeq {
-        let mutable cursor = cursor
-        let mutable has_more = true
-        while has_more do
-            let! resp = f cursor
-            for r in resp.Items do
-                yield r
-            match resp.NextPage with
-            | Some c -> cursor <- c
-            | None -> has_more <- false
+    /// Build an IAsyncEnumerable from an initial cursor and a function that uses that cursor to generate an IResultPage with the same cursor type.
+    let toAsyncEnum (cursor: 'a) (f: 'a -> Async<'b> when 'b :> IPage<'a, 'item>) = {
+        new IAsyncEnumerable<'item> with
+            member __.GetAsyncEnumerator (token: System.Threading.CancellationToken) =
+                let mutable buffer = []
+                let mutable cursor = Some cursor
+                let reload = async {
+                    match (buffer, cursor) with
+                    | ([], Some c) ->
+                        let! new_page = f c
+                        buffer <- new_page.Items
+                        cursor <- new_page.NextPage
+                    | _ -> ()
+                }
+                let mutable current = Unchecked.defaultof<_>
+                {
+                    new IAsyncEnumerator<'item> with
+                        member __.Current = current
+                        member __.MoveNextAsync() =
+                            let moveNextAsync = async {
+                                if List.isEmpty buffer then
+                                    do! reload
+                                match buffer with
+                                | head::tail ->
+                                    current <- head
+                                    buffer <- tail
+                                    return true
+                                | [] ->
+                                    return false
+                            }
+
+                            Async.StartAsTask (moveNextAsync, cancellationToken = token) |> ValueTask<bool>
+                        member __.DisposeAsync() =
+                            ValueTask ()
+                }
     }

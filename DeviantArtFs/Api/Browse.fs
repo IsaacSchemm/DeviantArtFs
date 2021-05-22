@@ -25,7 +25,7 @@ module Browse =
         |> Dafs.thenParse<Page<Deviation>>
 
     let AsyncGetByDeviantsYouWatch token batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageByDeviantsYouWatch token batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageByDeviantsYouWatch token batchsize)
 
     let AsyncGetMoreLikeThis token expansion seed =
         seq {
@@ -48,7 +48,7 @@ module Browse =
         |> Dafs.thenParse<BrowsePage>
 
     let AsyncGetNewest token expansion q batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageNewest token expansion q batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageNewest token expansion q batchsize)
 
     let AsyncPagePopular token expansion timerange q limit offset =
         seq {
@@ -63,7 +63,7 @@ module Browse =
         |> Dafs.thenParse<BrowsePage>
 
     let AsyncGetPopular token expansion timerange q batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPagePopular token expansion timerange q batchsize)
+        Dafs.toAsyncEnum offset (AsyncPagePopular token expansion timerange q batchsize)
 
     let AsyncPagePostsByDeviantsYouWatch token limit offset =
         seq {
@@ -75,7 +75,7 @@ module Browse =
         |> Dafs.thenParse<Page<Post>>
 
     let AsyncGetPostsByDeviantsYouWatch token batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPagePostsByDeviantsYouWatch token batchsize)
+        Dafs.toAsyncEnum offset (AsyncPagePostsByDeviantsYouWatch token batchsize)
 
     let AsyncPageRecommended token expansion q limit offset =
         seq {
@@ -89,7 +89,7 @@ module Browse =
         |> Dafs.thenParse<RecommendedPage>
 
     let AsyncGetRecommended token expansion q batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageRecommended token expansion q batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageRecommended token expansion q batchsize)
 
     let AsyncPageTags token expansion tag limit offset =
         seq {
@@ -103,7 +103,7 @@ module Browse =
         |> Dafs.thenParse<BrowsePage>
 
     let AsyncGetTags token expansion tag batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageTags token expansion tag batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageTags token expansion tag batchsize)
 
     let AsyncSearchTags token tag_name =
         seq {
@@ -125,7 +125,7 @@ module Browse =
         |> Dafs.thenParse<Page<Deviation>>
 
     let AsyncGetTopic token expansion topic batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageTopic token expansion topic batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageTopic token expansion topic batchsize)
 
     let AsyncPageTopics token limit offset =
         seq {
@@ -137,7 +137,7 @@ module Browse =
         |> Dafs.thenParse<Page<Topic>>
 
     let AsyncGetTopics token batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageTopics token batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageTopics token batchsize)
 
     let AsyncGetTopTopics token =
         Seq.empty
@@ -158,4 +158,4 @@ module Browse =
         |> Dafs.thenParse<Page<Deviation>>
 
     let AsyncGetUserJournals token expansion filter username batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageUserJournals token expansion filter username batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageUserJournals token expansion filter username batchsize)

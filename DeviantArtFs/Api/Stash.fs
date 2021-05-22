@@ -26,7 +26,7 @@ module Stash =
         |> Dafs.thenParse<Page<StashMetadata>>
 
     let AsyncGetContents token stackid batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageContents token stackid batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageContents token stackid batchsize)
 
     let AsyncDelete token (itemid: int64) =
         seq {
@@ -54,7 +54,7 @@ module Stash =
         |> Dafs.thenParse<StashDelta>
 
     let AsyncGetDelta token req batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageDelta token req batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageDelta token req batchsize)
 
     type ItemRequest(itemid: int64) = 
         member __.Itemid = itemid

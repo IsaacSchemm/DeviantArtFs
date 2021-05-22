@@ -27,7 +27,7 @@ module User =
         |> Dafs.thenParse<Page<FriendRecord>>
 
     let AsyncGetFriends token expansion req batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageFriends token expansion req batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageFriends token expansion req batchsize)
 
     type FriendsSearchRequest(query: string) =
         member __.Query = query
@@ -155,7 +155,7 @@ module User =
         |> Dafs.thenParse<Page<Status>>
 
     let AsyncGetStatuses token username batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageStatuses token username batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageStatuses token username batchsize)
 
     type StatusPostRequest(body: string) =
         member __.Body = body
@@ -196,7 +196,7 @@ module User =
         |> Dafs.thenParse<Page<WatcherRecord>>
 
     let AsyncGetWatchers token expansion req batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageWatchers token expansion req batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageWatchers token expansion req batchsize)
 
     let AsyncWhoami token expansion =
         seq {

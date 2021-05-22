@@ -43,7 +43,7 @@ module Deviation =
         |> Dafs.thenParse<EmbeddedContentPage>
 
     let AsyncGetEmbeddedContent token deviationid batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageEmbeddedContent token deviationid StartWithFirstEmbeddedDeviation batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageEmbeddedContent token deviationid StartWithFirstEmbeddedDeviation batchsize)
 
     let AsyncGetMetadata token extParams deviationids =
         seq {
@@ -67,4 +67,4 @@ module Deviation =
         |> Dafs.thenParse<Page<WhoFavedUser>>
 
     let AsyncGetWhoFaved token expansion req batchsize offset =
-        Dafs.toAsyncSeq offset (AsyncPageWhoFaved token expansion req batchsize)
+        Dafs.toAsyncEnum offset (AsyncPageWhoFaved token expansion req batchsize)
