@@ -156,3 +156,44 @@ type ProfileExtParams = ExtCollections | ExtGalleries
 with
     static member None = Set.empty<ProfileExtParams>
     static member All = Set.ofList [ExtCollections; ExtGalleries]
+
+type ArtistLevel =
+| None=0
+| Student=1
+| Hobbyist=2
+| Professional=3
+
+type ArtistSpecialty =
+| None=0
+| ArtisanCrafts = 1
+| DesignAndInterfaces = 2
+| DigitalArt = 3
+| FilmAndAnimation = 4
+| Literature = 5
+| Photography = 6
+| TraditionalArt = 7
+| Other = 8
+| Varied = 9
+
+type ProfileModification =
+| UserIsArtist of bool
+| ArtistLevel of ArtistLevel
+| ArtistSpecialty of ArtistSpecialty
+| Tagline of string
+| Countryid of int
+| Website of string
+
+type EmbeddableObject = DeviationToEmbed of Guid | StatusToEmbed of Guid | NoEmbeddableObject
+type EmbeddableObjectParent = ParentStatus of Guid | NoEmbeddableObjectParent
+type EmbeddableStashItem = EmbeddableStashItem of StashItem | NoEmbeddableStashItem
+
+type EmbeddableStatusContent = {
+    object: EmbeddableObject
+    parent: EmbeddableObjectParent
+    stash_item: EmbeddableStashItem
+} with
+    static member None = {
+        object = NoEmbeddableObject
+        parent = NoEmbeddableObjectParent
+        stash_item = NoEmbeddableStashItem
+    }

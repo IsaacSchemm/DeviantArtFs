@@ -38,10 +38,7 @@ let sandbox token_string = async {
         | "" -> me.username
         | s -> s
 
-    let! profile =
-        username
-        |> DeviantArtFs.Api.User.ProfileRequest
-        |> DeviantArtFs.Api.User.AsyncGetProfile token []
+    let! profile = DeviantArtFs.Api.User.AsyncGetProfile token [] [] (UserScope.ForUser username)
     printfn "%s" profile.real_name
     if not (String.IsNullOrEmpty profile.tagline) then
         printfn "%s" profile.tagline

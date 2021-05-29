@@ -131,9 +131,9 @@ module Stash =
             | NoArtistComments -> ()
 
             match parameters.tags with
-            | TagSet set ->
+            | TagList s ->
                 let mutable index = 0
-                for t in set do
+                for t in s do
                     w h2
                     w (sprintf "Content-Disposition: form-data; name=\"tags[%d]\"" index)
                     w ""

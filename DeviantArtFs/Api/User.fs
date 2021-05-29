@@ -13,9 +13,6 @@ module User =
         |> Dafs.asyncRead
         |> Dafs.thenParse<MessagingNetworkToken>
 
-    type FriendsRequest() =
-        member val Username: string = null with get, set
-
     let AsyncPageFriends token expansion user limit offset =
         let username = match user with | ForUser u -> u | ForCurrentUser -> ""
 
@@ -30,10 +27,6 @@ module User =
 
     let AsyncGetFriends token expansion req batchsize offset =
         Dafs.toAsyncEnum offset (AsyncPageFriends token expansion req batchsize)
-
-    type FriendsSearchRequest(query: string) =
-        member __.Query = query
-        member val Username = null with get, set
 
     let AsyncSearchFriends token user additionalUser q =
         seq {
@@ -65,11 +58,6 @@ module User =
         |> Dafs.asyncRead
         |> Dafs.thenParse<WatchingResponse>
 
-    type ProfileRequest(username: string) =
-        member __.Username = username
-        member val ExtCollections = false with get, set
-        member val ExtGalleries = false with get, set
-
     let AsyncGetProfile token expansion profile_ext_params user =
         let username = match user with | ForUser u -> u | ForCurrentUser -> ""
 
@@ -81,43 +69,9 @@ module User =
         |> Dafs.asyncRead
         |> Dafs.thenParse<Profile>
 
-    type ArtistLevel =
-        | None=0
-        | Student=1
-        | Hobbyist=2
-        | Professional=3
-
-    type ArtistSpecialty =
-        | None=0
-        | ArtisanCrafts = 1
-        | DesignAndInterfaces = 2
-        | DigitalArt = 3
-        | FilmAndAnimation = 4
-        | Literature = 5
-        | Photography = 6
-        | TraditionalArt = 7
-        | Other = 8
-        | Varied = 9
-
-    [<RequireQualifiedAccess>]
-    type ProfileUpdateField =
-        | UserIsArtist of bool
-        | ArtistLevel of ArtistLevel
-        | ArtistSpecialty of ArtistSpecialty
-        | Tagline of string
-        | Countryid of int
-        | Website of string
-
-    let AsyncUpdateProfile token (updates: ProfileUpdateField seq) =
+    let AsyncUpdateProfile token modifications =
         seq {
-            for update in updates do
-                match update with
-                | ProfileUpdateField.UserIsArtist v -> sprintf "user_is_artist=%b" v
-                | ProfileUpdateField.ArtistLevel v -> sprintf "artist_level=%s" (v.ToString "d")
-                | ProfileUpdateField.ArtistSpecialty v -> sprintf "artist_specialty=%s" (v.ToString "d")
-                | ProfileUpdateField.Tagline v -> sprintf "tagline=%s" (Uri.EscapeDataString v)
-                | ProfileUpdateField.Countryid v -> sprintf "countryid=%d" v
-                | ProfileUpdateField.Website v -> sprintf "website=%s" (Uri.EscapeDataString v)
+            yield! QueryFor.profileModifications modifications
         }
         |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/user/profile/update"
         |> Dafs.asyncRead
@@ -129,7 +83,7 @@ module User =
         |> Dafs.asyncRead
         |> Dafs.thenParse<Status>
 
-    let AsyncPageStatuses token (username: string) limit offset =
+    let AsyncPageStatuses token username limit offset =
         seq {
             yield sprintf "username=%s" (Uri.EscapeDataString username)
             yield! QueryFor.offset offset
@@ -142,41 +96,26 @@ module User =
     let AsyncGetStatuses token username batchsize offset =
         Dafs.toAsyncEnum offset (AsyncPageStatuses token username batchsize)
 
-    type StatusPostRequest(body: string) =
-        member __.Body = body
-        member val Statusid = Nullable<Guid>() with get, set
-        member val Parentid = Nullable<Guid>() with get, set
-        member val Stashid = Nullable<int64>() with get, set
-
-    let AsyncPostStatus token (ps: StatusPostRequest) =
+    let AsyncPostStatus token embeddable_content body =
         seq {
-            match Option.ofObj ps.Body with
+            match Option.ofObj body with
             | Some s -> yield sprintf "body=%s" (Uri.EscapeDataString s)
             | None -> ()
-            match Option.ofNullable ps.Parentid with
-            | Some s -> yield sprintf "parentid=%O" s
-            | None -> ()
-            match Option.ofNullable ps.Statusid with
-            | Some s -> yield sprintf "id=%O" s
-            | None -> ()
-            match Option.ofNullable ps.Stashid with
-            | Some s -> yield sprintf "stashid=%O" s
-            | None -> ()
+            yield! QueryFor.embeddableStatusContent embeddable_content
         }
         |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/user/statuses/post"
         |> Dafs.asyncRead
         |> Dafs.thenParse<StatusPostResponse>
 
-    type WatchersRequest() =
-        member val Username: string = null with get, set
+    let AsyncPageWatchers token expansion user limit offset =
+        let username = match user with | ForUser u -> u | ForCurrentUser -> ""
 
-    let AsyncPageWatchers token expansion (req: FriendsRequest) limit offset =
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/watchers/%s" (Uri.EscapeDataString req.Username))
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/watchers/%s" (Uri.EscapeDataString username))
         |> Dafs.asyncRead
         |> Dafs.thenParse<Page<WatcherRecord>>
 

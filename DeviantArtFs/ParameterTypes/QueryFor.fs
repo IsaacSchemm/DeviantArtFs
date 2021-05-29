@@ -248,3 +248,28 @@ module QueryFor =
         yield sprintf "ext_collections=%b" (Seq.contains ExtCollections c)
         yield sprintf "ext_galleries=%b" (Seq.contains ExtGalleries c)
     }
+
+    let profileModifications profileModifications = seq {
+        let c = Seq.cache profileModifications
+        for update in c do
+            match update with
+            | UserIsArtist v -> sprintf "user_is_artist=%b" v
+            | ArtistLevel v -> sprintf "artist_level=%d" (int v)
+            | ArtistSpecialty v -> sprintf "artist_specialty=%d" (int v)
+            | Tagline v -> sprintf "tagline=%s" (Uri.EscapeDataString v)
+            | Countryid v -> sprintf "countryid=%d" v
+            | Website v -> sprintf "website=%s" (Uri.EscapeDataString v)
+    }
+
+    let embeddableStatusContent embeddableStatusContent = seq {
+        match embeddableStatusContent.parent with
+        | ParentStatus s -> yield sprintf "parentid=%O" s
+        | NoEmbeddableObjectParent -> ()
+        match embeddableStatusContent.object with
+        | DeviationToEmbed s -> yield sprintf "id=%O" s
+        | StatusToEmbed s -> yield sprintf "id=%O" s
+        | NoEmbeddableObject -> ()
+        match embeddableStatusContent.stash_item with
+        | EmbeddableStashItem (StashItem s) -> yield sprintf "stashid=%O" s
+        | NoEmbeddableStashItem -> ()
+    }
