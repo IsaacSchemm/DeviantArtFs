@@ -108,6 +108,11 @@ module CreativeCommons =
 
 type License = CreativeCommonsLicense of CreativeCommons.License | DefaultLicense
 
+type GallerySet = GallerySet of Guid Set
+with
+    static member Create x = GallerySet (Set.ofSeq x)
+    static member Empty = GallerySet Set.empty
+
 type PublishParameters = {
     maturity: Maturity
     submissionPolicyAgreement: bool
@@ -118,10 +123,11 @@ type PublishParameters = {
     displayResolution: DisplayResolution
     sharing: Sharing
     license: License
-    destinationGalleries: Guid seq
+    destinations: GallerySet
     allowFreeDownload: bool
     addWatermark: bool
 } with
+    static member CreateSet x = Set.ofSeq x
     static member Default = {
         maturity = NotMature
         submissionPolicyAgreement = false
@@ -132,39 +138,10 @@ type PublishParameters = {
         displayResolution = DisplayResolution.Original
         sharing = AllowSharing
         license = DefaultLicense
-        destinationGalleries = Seq.empty
+        destinations = GallerySet.Empty
         allowFreeDownload = false
         addWatermark = false
     }
-
-type FormFile = {
-    filename: string
-    data: byte[]
-    content_type: string
-}
-
-type SubmissionTitle = SubmissionTitle of string | DefaultSubmissionTitle
-type ArtistComments = ArtistComments of string | NoArtistComments
-type OriginalUrl = OriginalUrl of string | NoOriginalUrl
-
-type StashSubmissionParameters = {
-    title: SubmissionTitle
-    artist_comments: ArtistComments
-    tags: string seq
-    original_url: OriginalUrl
-    is_dirty: bool
-} with
-    static member Default = {
-        title = DefaultSubmissionTitle
-        artist_comments = NoArtistComments
-        tags = Seq.empty
-        original_url = NoOriginalUrl
-        is_dirty = false
-    }
-
-type SubmissionDestination = ReplaceExisting of StashItem | SubmitToStack of StashStack | SubmitToStackWithName of string
-with
-    static member Default = SubmitToStack RootStack
 
 type StackModification = ModifyStackTitle of string | ModifyStackDescription of string | ClearStackDescription
 

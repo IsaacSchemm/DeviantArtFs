@@ -4,6 +4,7 @@ open System
 open System.IO
 open DeviantArtFs
 open DeviantArtFs.ParameterTypes
+open DeviantArtFs.SubmissionTypes
 open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
 
@@ -97,7 +98,7 @@ module Stash =
         |> Dafs.asyncRead
         |> Dafs.thenParse<StashSpaceResult>
 
-    let AsyncSubmit token (destination: SubmissionDestination) (parameters: StashSubmissionParameters) (file: FormFile) = async {
+    let AsyncSubmit token (destination: SubmissionDestination) (parameters: SubmissionParameters) (file: IFormFile) = async {
         // multipart separators
         let h1 = sprintf "-----------------------------%d" DateTime.UtcNow.Ticks
         let h2 = sprintf "--%s" h1
@@ -129,13 +130,15 @@ module Stash =
                 w s
             | NoArtistComments -> ()
 
-            let mutable index = 0
-            for t in parameters.tags do
-                w h2
-                w (sprintf "Content-Disposition: form-data; name=\"tags[%d]\"" index)
-                w ""
-                w t
-                index <- index + 1
+            match parameters.tags with
+            | TagSet set ->
+                let mutable index = 0
+                for t in set do
+                    w h2
+                    w (sprintf "Content-Disposition: form-data; name=\"tags[%d]\"" index)
+                    w ""
+                    w t
+                    index <- index + 1
 
             match parameters.original_url with
             | OriginalUrl s ->
@@ -169,11 +172,11 @@ module Stash =
             | SubmitToStack RootStack -> ()
 
             w h2
-            w (sprintf "Content-Disposition: form-data; name=\"submission\"; filename=\"%s\"" file.filename)
-            w (sprintf "Content-Type: %s" file.content_type)
+            w (sprintf "Content-Disposition: form-data; name=\"submission\"; filename=\"%s\"" file.Filename)
+            w (sprintf "Content-Type: %s" file.ContentType)
             w ""
             ms.Flush()
-            ms.Write(file.data, 0, file.data.Length)
+            ms.Write(file.Data, 0, file.Data.Length)
             ms.Flush()
             w ""
             w h3

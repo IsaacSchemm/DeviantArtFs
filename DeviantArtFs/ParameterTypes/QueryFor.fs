@@ -205,8 +205,10 @@ module QueryFor =
             | Some CreativeCommons.NoDerivatives -> "license_options[modify]=no"
             | Some CreativeCommons.ShareAlike -> "license_options[modify]=share"
 
-        for g in publishParameters.destinationGalleries do
-            sprintf "galleryids[]=%O" g
+        match publishParameters.destinations with
+        | GallerySet set ->
+            for g in set do
+                sprintf "galleryids[]=%O" g
 
         match publishParameters.allowFreeDownload with
         | true -> "allow_free_download=1"
