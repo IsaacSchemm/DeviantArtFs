@@ -128,7 +128,7 @@ let sandbox token_string = async {
     let! all_stacks =
         DeviantArtFs.Api.Stash.AsyncGetContents
             token
-            DeviantArtFs.Api.Stash.RootStack
+            RootStack
             MaximumPagingLimit
             StartingOffset
         |> AsyncSeq.ofAsyncEnum
@@ -145,7 +145,7 @@ let sandbox token_string = async {
             let! contents =
                 DeviantArtFs.Api.Stash.AsyncGetContents
                     token
-                    stackid
+                    (StashStack stackid)
                     MaximumPagingLimit
                     StartingOffset
                 |> AsyncSeq.ofAsyncEnum

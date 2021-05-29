@@ -18,7 +18,8 @@ namespace ExampleConsoleApp2 {
 
             var allStashItems = await DeviantArtFs.Api.Stash.AsyncGetDelta(
                 token,
-                new DeviantArtFs.Api.Stash.DeltaRequest(),
+                ExtParams.None,
+                StashDeltaCursor.InitialStashDeltaRequest,
                 PagingLimit.MaximumPagingLimit,
                 PagingOffset.StartingOffset).ToListAsync();
             Console.WriteLine($"{allStashItems.Count} sta.sh items");

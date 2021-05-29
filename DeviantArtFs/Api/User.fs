@@ -16,13 +16,15 @@ module User =
     type FriendsRequest() =
         member val Username: string = null with get, set
 
-    let AsyncPageFriends token expansion (req: FriendsRequest) limit offset =
+    let AsyncPageFriends token expansion user limit offset =
+        let username = match user with | ForUser u -> u | ForCurrentUser -> ""
+
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/%s" (Uri.EscapeDataString req.Username))
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/%s" (Uri.EscapeDataString username))
         |> Dafs.asyncRead
         |> Dafs.thenParse<Page<FriendRecord>>
 
@@ -33,39 +35,21 @@ module User =
         member __.Query = query
         member val Username = null with get, set
 
-    let AsyncSearchFriends token (req: FriendsSearchRequest) =
+    let AsyncSearchFriends token user additionalUser q =
         seq {
-            yield req.Query |> Uri.EscapeDataString |> sprintf "query=%s"
-            if req.Username |> isNull |> not then
-                yield req.Username |> Uri.EscapeDataString |> sprintf "username=%s"
+            yield! QueryFor.userScope user
+            yield! QueryFor.additionalUser additionalUser
+            yield sprintf "q=%s" (Uri.EscapeDataString q)
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/user/friends/search"
         |> Dafs.asyncRead
         |> Dafs.thenParse<ListOnlyResponse<User>>
-        
-    type WatchRequest(username: string) =
-        member __.Username = username
-        member val Friend = true with get, set
-        member val Deviations = true with get, set
-        member val Journals = true with get, set
-        member val ForumThreads = true with get, set
-        member val Critiques = true with get, set
-        member val Scraps = false with get, set
-        member val Activity = true with get, set
-        member val Collections = true with get, set
 
-    let AsyncWatch token (ps: WatchRequest) =
+    let AsyncWatch token watchTypes username =
         seq {
-            yield sprintf "watch[friend]=%b" ps.Friend
-            yield sprintf "watch[deviations]=%b" ps.Deviations
-            yield sprintf "watch[journals]=%b" ps.Journals
-            yield sprintf "watch[forum_threads]=%b" ps.ForumThreads
-            yield sprintf "watch[critiques]=%b" ps.Critiques
-            yield sprintf "watch[scraps]=%b" ps.Scraps
-            yield sprintf "watch[activity]=%b" ps.Activity
-            yield sprintf "watch[collections]=%b" ps.Collections
+            yield! QueryFor.watchTypes watchTypes
         }
-        |> Dafs.createRequest Dafs.Method.POST token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/watch/%s" (Uri.EscapeDataString ps.Username))
+        |> Dafs.createRequest Dafs.Method.POST token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/friends/watch/%s" (Uri.EscapeDataString username))
         |> Dafs.asyncRead
         |> Dafs.thenParse<SuccessOrErrorResponse>
 
@@ -86,13 +70,14 @@ module User =
         member val ExtCollections = false with get, set
         member val ExtGalleries = false with get, set
 
-    let AsyncGetProfile token expansion (req: ProfileRequest) =
+    let AsyncGetProfile token expansion profile_ext_params user =
+        let username = match user with | ForUser u -> u | ForCurrentUser -> ""
+
         seq {
-            yield sprintf "ext_collections=%b" req.ExtCollections
-            yield sprintf "ext_galleries=%b" req.ExtGalleries
+            yield! QueryFor.profileExtParams profile_ext_params
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/profile/%s" (Uri.EscapeDataString req.Username))
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/user/profile/%s" (Uri.EscapeDataString username))
         |> Dafs.asyncRead
         |> Dafs.thenParse<Profile>
 
