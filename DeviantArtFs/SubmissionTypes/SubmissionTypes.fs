@@ -45,5 +45,8 @@ type SubmissionParameters = {
         is_dirty = false
     }
     
-type SubmissionDestination = ReplaceExisting of StashItem | SubmitToStack of StashStack | SubmitToStackWithName of string
+type SubmissionDestination =
+| ReplaceExisting of StashItem
+| SubmitToStack of StashStack
+| SubmitToStackWithName of string
 with static member Default = SubmitToStack RootStack

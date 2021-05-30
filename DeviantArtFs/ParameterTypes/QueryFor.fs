@@ -77,7 +77,7 @@ module QueryFor =
         | PopularOneWeek -> yield "timerange=1week"
         | PopularOneMonth -> yield "timerange=1month"
         | PopularAllTime -> yield "timerange=alltime"
-        | UnspecifiedPopularTimeRange -> ()
+        | PopularTimeRangeUnspecified -> ()
     }
 
     let userJournalFilter filter = seq {
@@ -155,7 +155,7 @@ module QueryFor =
         match publishParameters.maturity with
         | NotMature ->
             "is_mature=0"
-        | Mature (level, classifications) ->
+        | Mature (level, MatureClassificationSet classifications) ->
             "is_mature=1"
             match level with
             | MatureStrict -> "mature_level=strict"
@@ -263,13 +263,13 @@ module QueryFor =
 
     let embeddableStatusContent embeddableStatusContent = seq {
         match embeddableStatusContent.parent with
-        | ParentStatus s -> yield sprintf "parentid=%O" s
+        | EmbeddableObjectParentStatus s -> yield sprintf "parentid=%O" s
         | NoEmbeddableObjectParent -> ()
         match embeddableStatusContent.object with
         | DeviationToEmbed s -> yield sprintf "id=%O" s
         | StatusToEmbed s -> yield sprintf "id=%O" s
         | NoEmbeddableObject -> ()
         match embeddableStatusContent.stash_item with
-        | EmbeddableStashItem (StashItem s) -> yield sprintf "stashid=%O" s
+        | EmbeddableStashItem s -> yield sprintf "stashid=%O" s
         | NoEmbeddableStashItem -> ()
     }
