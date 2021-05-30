@@ -236,7 +236,7 @@ type ProfileModification =
 
 type EmbeddableObject = DeviationToEmbed of Guid | StatusToEmbed of Guid | NoEmbeddableObject
 type EmbeddableObjectParent = EmbeddableObjectParentStatus of Guid | NoEmbeddableObjectParent
-type EmbeddableStashItem = EmbeddableStashItem of Guid | NoEmbeddableStashItem
+type EmbeddableStashItem = EmbeddableStashItem of int64 | NoEmbeddableStashItem
 
 type EmbeddableStatusContent = {
     object: EmbeddableObject
