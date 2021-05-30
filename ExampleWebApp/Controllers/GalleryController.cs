@@ -1,11 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using ExampleWebApp.Data;
 using DeviantArtFs.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using DeviantArtFs;
 using System.Threading;
+using DeviantArtFs.ParameterTypes;
+using DeviantArtFs.ResponseTypes;
+using DeviantArtFs.Pages;
+using System.Linq;
 
 namespace ExampleWebApp.Controllers
 {
@@ -18,20 +21,21 @@ namespace ExampleWebApp.Controllers
             var token = await GetAccessTokenAsync();
             if (token == null) return Forbid();
 
-            var paging = new DeviantArtPagingParams(offset, limit);
-            IDeviantArtResultPage<DeviantArtPagingParams, Deviation> resp;
-            if (folderId is Guid f) {
-                resp = await DeviantArtFs.Api.Gallery.AsyncPageGallery(
-                    token,
-                    DeviantArtObjectExpansion.None,
-                    new DeviantArtFs.Api.Gallery.GalleryRequest { Folderid = f, Username = username },
-                    paging).StartAsTask(cancellationToken: cancellationToken);
-            } else {
-                resp = await DeviantArtFs.Api.Gallery.AsyncPageAllView(
-                    token,
-                    new DeviantArtFs.Api.Gallery.GalleryAllViewRequest { Username = username },
-                    paging).StartAsTask(cancellationToken: cancellationToken);
-            }
+            var offset_param = PagingOffset.NewPagingOffset(offset);
+            var limit_param = limit is int l
+                ? PagingLimit.NewPagingLimit(l)
+                : PagingLimit.MaximumPagingLimit;
+            var resp = await DeviantArtFs.Api.Gallery.AsyncPageGallery(
+                token,
+                ObjectExpansion.None,
+                username != null
+                    ? UserScope.NewForUser(username)
+                    : UserScope.ForCurrentUser,
+                folderId is Guid ff
+                    ? GalleryFolderScope.NewSingleGalleryFolder(ff)
+                    : GalleryFolderScope.AllGalleryFoldersPopular,
+                limit_param,
+                offset_param).StartAsTask(cancellationToken: cancellationToken);
 
             ViewBag.Username = username;
             ViewBag.FolderId = folderId;
@@ -46,8 +50,13 @@ namespace ExampleWebApp.Controllers
 
             var list = await DeviantArtFs.Api.Gallery.AsyncGetFolders(
                 token,
-                new DeviantArtFs.Api.Gallery.GalleryFoldersRequest { CalculateSize = true, Username = username },
-                0).ThenToList().StartAsTask(cancellationToken: cancellationToken);
+                CalculateSize.NewCalculateSize(true),
+                FolderPreload.Default,
+                username != null
+                    ? UserScope.NewForUser(username)
+                    : UserScope.ForCurrentUser,
+                PagingLimit.MaximumPagingLimit,
+                PagingOffset.StartingOffset).ToListAsync(cancellationToken);
 
             ViewBag.Username = username;
             return View(list);

@@ -1,4 +1,4 @@
-﻿namespace DeviantArtFs
+﻿namespace DeviantArtFs.ResponseTypes
 
 type StashSpaceResult = {
     available_space: int64

@@ -2,8 +2,9 @@
 
 open System
 open System.Net
+open DeviantArtFs.ResponseTypes
 
-type DeviantArtException(resp: WebResponse, body: DeviantArtBaseResponse, body_raw: string) =
+type DeviantArtException(resp: WebResponse, body: BaseResponse, body_raw: string) =
     inherit Exception(body.error_description |> Option.defaultValue "An unknown DeviantArt error occurred.")
 
     member __.ResponseBody = body

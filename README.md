@@ -6,22 +6,11 @@ A .NET / F# library to interact with the [DeviantArt / Sta.sh API.](https://www.
 
 Each request that can be made to DeviantArt is represented by a function
 in one of the modules (static classes) in the `DeviantArtFs.Api` namespace.
-Each static method takes one or more parameters:
-
-* `token` (an object that implements the `IDeviantArtAccessToken` interface
-  and provides the library with the API credentials)
-* `expansion` (on some requests; allows user object expansion)
-* A parameter specific to the request (if any)
-* A range specifier (for endpoints that ask the user to request a particular
-  range of results
-    * `paging`: a `DeviantArtPagingParams` record, which specifies an offset
-      and an optional limit / page size
-        * DeviantArtFs is aware of the maximum limits for each API request; to
-          request the maximum page size, use `DeviantArtPagingParams.MaxFrom`
-    * `cursor`: a string provided in the previous page's result (use `null` to
-      start at the beginning)
-    * `offset` / `limit`: used in place of `paging` or `cursor` in methods
-      which return `AsyncSeq<T>`
+Each static method takes an `IDeviantArtAccessToken` as its first parameter.
+Most methods have additional parameters, many of which are discriminated
+unions in the `DeviantArtFs.ParameterTypes` namespace; hopefully this makes
+it easy to see exactly what your code is doing and ensures that parameters
+can't get mixed up.
 
 In some cases, two methods are available for an API call. Functions whose
 names begin with `Page` will return a single page of results, while the
@@ -31,31 +20,43 @@ not to request too much data or you might hit API usage limits.
 
 ## Interoperability
 
-All return types from API calls are wrapped in either F# asynchronous
-workflows (`FSharpAsync<T>`) or F# asynchronous sequences (using the package
-[FSharp.Control.AsyncSeq](https://www.nuget.org/packages/FSharp.Control.AsyncSeq)),
-and the `FSharpOption<T>` type is used extensively in object models. To help
-you work with these types in C# or VB.NET, DeviantArtFs provides extension
-methods in the namespace `DeviantArtFs.Extensions`:
+In order to maximize ease of use from within F#, the response objects in this
+library are .NET records using F# `option` types to represent missing fields.
+This means that you will need extension methods (see below) to extract a null
+value or another placeholder value from these fields.
+
+Since these extension methods are required to use the library outside F#, I've
+also decided to reduce the amount of duplicate code in the library by exposing
+`Async<T>` directly and relying on C# and VB.NET consumers to use another
+extension method to create a `Task<T>`. This has the additional benefit of
+(hopefully) allowing the consumer to pass a cancellation token to any method;
+let me know if there are any bugs in this regard.
+
+The following types are used in response objects:
+
+* `FSharpAsync<T>`: An F# asynchronous workflow. An extension method (see
+  below) allows C# or VB.NET users to create a `Task<T>` that can be awaited.
+* `IAsyncEnumerable<T>`: A .NET asynchronous enumerable. F# users can use
+  `FSharp.Control.AsyncSeq` and its `ofAsyncEnum` function to create an
+  `AsyncSeq<T>`, while C# users can use the extension methods in the NuGet
+  package `System.Linq.Async` or consume the enumerable directly with
+  `await foreach`.
+* `FSharpOption<T>`: Used to represent fields that may be missing or null on
+  the response object. Extension methods (see below) allow C# and VB.NET users
+  to extract these values by converting `None` to `null` or to an empty list.
+* `FSharpList<T>`: An immutable linked list. Implements `IReadOnlyList<T>` and
+  `IEnumerable<T>`, so other .NET languages can use `foreach`, LINQ, or access
+  the list's properties directly.
+
+The following extension methods are provided in the namespace `DeviantArtFs.Extensions`:
 
 * Option types
     * `.OrNull()`: converts any option type to an equivalent nullable type
     * `.IsTrue()`: checks whether a `bool option` type (which might be `true`, `false`, or `None`) is true
     * `.IsFalse()`: checks whether a `bool option` type (which might be `true`, `false`, or `None`) is false
-    * `.OrEmpty()`: returns the items contained by a `list option` type, or an empty list if the field is `None`
+    * `.OrEmpty()`: returns the items in the list, or an empty list if the field is `None`
 * Asynchronous types
-    * `.Take(int count)`: sets a limit on the amount of items returned by an F# asynchronous sequence
-    * `.ThenToArray()`: converts an F# asynchronous sequence into an asynchronous workflow that collects all items in a single array
-    * `.ThenToList()`: converts an F# asynchronous sequence into an asynchronous workflow that collects all items in a single immutable list
-    * `.ToAsyncEnumerable()`: converts an F# asynchronous sequence into a .NET `IAsyncEnumerable<T>` (.NET 5.0+ only)
     * `.StartAsTask(TaskCreationOptions options = null, CancellationToken? token = null)`: executes a "cool" F# asynchronous workflow by creating a "hot" .NET task that can be awaited
-
-The `FSharpList<T>` type also appears often, but this type implements
-`IEnumerable<T>` and can be converted to a normal list or array using LINQ.
-
-Any C# or VB.NET code that uses this library to call the DeviantArt API is
-expected to use either `.ToAsyncEnumerable()` or `.StartAsTask()` on each API
-call.
 
 ### Deleted deviations and status updates
 
@@ -63,25 +64,6 @@ call.
 update that has been deleted; this is why most of the fields on those two
 types are marked optional. Check the `is_deleted` field (or `IsDeleted`
 property) before attempting to access any of the other fields.
-
-## Partial updates
-
-`Stash.Update` and `User.ProfileUpdate` allow you to choose which fields to
-update on the object. DeviantArtFs uses discriminated unions to represent
-these updates:
-
-    await Requests.User.ProfileUpdate.ExecuteAsync(token, new[] {
-        ProfileUpdateField.NewArtistLevel(ArtistLevel.Student),
-        ProfileUpdateField.NewWebsite("https://www.example.com")
-    });
-
-    await Requests.Stash.Update.ExecuteAsync(token, 12345678L, new[] {
-        UpdateField.NewTitle("new stack title"),
-        UpdateField.ClearDescription
-    });
-
-Note that DeviantArt allows a null value for the "description" field on a
-Sta.sh stack, and this is represented by its own union case.
 
 ## Known issues
 

@@ -2,6 +2,9 @@
 
 open DeviantArtFs
 open System
+open DeviantArtFs.ParameterTypes
+open DeviantArtFs.ResponseTypes
+open DeviantArtFs.Pages
 
 module Deviation =
     let AsyncGet token expansion (id: Guid) =
@@ -16,58 +19,52 @@ module Deviation =
         Seq.empty
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/content?deviationid=%O" deviationid)
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviationTextContent>
+        |> Dafs.thenParse<TextContent>
 
     let AsyncDownload token (deviationid: Guid) =
         Seq.empty
         |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/download/%O" deviationid)
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviationDownload>
+        |> Dafs.thenParse<Download>
 
     type EmbeddedContentRequest(deviationid: Guid) =
         member __.Deviationid = deviationid
         member val OffsetDeviationid = Nullable<Guid>() with get, set
 
-    let AsyncPageEmbeddedContent token (req: EmbeddedContentRequest) paging =
+    let AsyncPageEmbeddedContent token deviationid offset_deviationid limit offset =
         seq {
-            yield sprintf "deviationid=%O" req.Deviationid
-            match Option.ofNullable req.OffsetDeviationid with
-            | Some s -> yield sprintf "offset_deviationid=%O" s
-            | None -> ()
-            yield! QueryFor.paging paging 50
+            yield sprintf "deviationid=%O" (Dafs.guid2str deviationid)
+            yield! QueryFor.embeddedDeviationOffset offset_deviationid
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/deviation/embeddedcontent"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtEmbeddedContentPagedResult>
+        |> Dafs.thenParse<EmbeddedContentPage>
 
-    let AsyncGetEmbeddedContent token req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageEmbeddedContent token req)
+    let AsyncGetEmbeddedContent token deviationid batchsize offset =
+        Dafs.toAsyncEnum offset (AsyncPageEmbeddedContent token deviationid StartWithFirstEmbeddedDeviation batchsize)
 
-    type MetadataRequest(deviationids: seq<Guid>) =
-        member __.Deviationids = deviationids
-        member val ExtParams = DeviantArtExtParams.None with get, set
-        member val ExtCollection = false with get, set
-
-    let AsyncGetMetadata token (req: MetadataRequest) =
+    let AsyncGetMetadata token extParams deviationids =
         seq {
-            yield! QueryFor.extParams req.ExtParams
-            yield sprintf "ext_collection=%b" req.ExtCollection
-            for id in req.Deviationids do
-                yield sprintf "deviationids[]=%O" id
+            yield! QueryFor.extParams extParams
+            for id in deviationids do
+                yield sprintf "deviationids[]=%O" (Dafs.guid2str id)
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/deviation/metadata"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviationMetadataResponse>
+        |> Dafs.thenParse<MetadataResponse>
 
-    let AsyncPageWhoFaved token expansion (deviationid: Guid) paging =
+    let AsyncPageWhoFaved token expansion (deviationid: Guid) limit offset =
         seq {
             yield sprintf "deviationid=%O" deviationid
-            yield! QueryFor.paging paging 50
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
             yield! QueryFor.objectExpansion expansion
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/deviation/whofaved"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtWhoFavedUser>>
+        |> Dafs.thenParse<Page<WhoFavedUser>>
 
-    let AsyncGetWhoFaved token expansion req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageWhoFaved token expansion req)
+    let AsyncGetWhoFaved token expansion req batchsize offset =
+        Dafs.toAsyncEnum offset (AsyncPageWhoFaved token expansion req batchsize)

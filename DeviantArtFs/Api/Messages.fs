@@ -2,111 +2,82 @@
 
 open System
 open DeviantArtFs
+open DeviantArtFs.ParameterTypes
+open DeviantArtFs.ResponseTypes
+open DeviantArtFs.Pages
 
 module Messages =
-    type MessagesFeedRequest() =
-        member val Folderid = Nullable<Guid>() with get, set
-        member val Stack = true with get, set
-
-    let AsyncPageFeed token (req: MessagesFeedRequest) (cursor: string option) =
+    let AsyncPageFeed token stack folderid cursor =
         seq {
-            if req.Folderid.HasValue then
-                yield sprintf "folderid=%O" req.Folderid
-            yield sprintf "stack=%b" req.Stack
-            match cursor with
-            | Some c -> yield sprintf "cursor=%s" c
-            | None -> ()
+            yield! QueryFor.stackMessages stack
+            yield! QueryFor.messageFolder folderid
+            yield! QueryFor.messageCursor cursor
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/messages/feed"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtMessageCursorResult>
+        |> Dafs.thenParse<MessageCursorResult>
 
-    let AsyncGetFeed token req cursor =
-        Dafs.toAsyncSeq cursor (AsyncPageFeed token req)
+    let AsyncGetFeed token stack folderid cursor =
+        Dafs.toAsyncEnum cursor (AsyncPageFeed token stack folderid)
 
-    type DeleteMessageRequest() =
-        member val Folderid = Nullable<Guid>() with get, set
-        member val Messageid = null with get, set
-        member val Stackid = null with get, set
-
-    let AsyncDelete token (req: DeleteMessageRequest) =
+    let AsyncDelete token folderid target =
         seq {
-            if req.Folderid.HasValue then
-                yield sprintf "folderid=%O" req.Folderid
-            if req.Messageid <> null then
-                yield sprintf "messageid=%s" req.Messageid
-            if req.Stackid <> null then
-                yield sprintf "stackid=%s" req.Stackid
+            yield! QueryFor.messageFolder folderid
+            yield! QueryFor.messageDeletionTarget target
         }
         |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/messages/delete"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtSuccessOrErrorResponse>
+        |> Dafs.thenParse<SuccessOrErrorResponse>
 
-    type FeedbackMessageType =
-    | Comments = 1
-    | Replies = 2
-    | Activity = 3
-
-    type FeedbackMessagesRequest(``type``: FeedbackMessageType) =
-        member __.Type = ``type``
-        member val Folderid = Nullable<Guid>() with get, set
-        member val Stack = true with get, set
-
-    let AsyncPageFeedbackMessages token (req: FeedbackMessagesRequest) paging =
+    let AsyncPageFeedbackMessages token ``type`` stack folderid limit offset =
         seq {
-            match req.Type with
-            | FeedbackMessageType.Comments -> yield "type=comments"
-            | FeedbackMessageType.Replies -> yield "type=replies"
-            | FeedbackMessageType.Activity -> yield "type=activity"
-            | _ -> invalidArg "req" "Invalid feedback message type"
-            if req.Folderid.HasValue then
-                yield sprintf "folderid=%O" req.Folderid
-            yield sprintf "stack=%b" req.Stack
-            yield! QueryFor.paging paging 5
+            yield! QueryFor.feedbackMessageType ``type``
+            yield! QueryFor.stackMessages stack
+            yield! QueryFor.messageFolder folderid
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 5
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/messages/feedback"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
+        |> Dafs.thenParse<Page<Message>>
 
-    let AsyncGetFeedbackMessages token req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageFeedbackMessages token req)
+    let AsyncGetFeedbackMessages token ``type`` stack folderid batchsize offset =
+        Dafs.toAsyncEnum offset (AsyncPageFeedbackMessages token ``type`` stack folderid batchsize)
 
-    let AsyncPageFeedbackStack token (stackid: string) paging =
+    let AsyncPageFeedbackStack token stackid limit offset =
         seq {
-            yield! QueryFor.paging paging 50
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
         }
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/messages/feedback/%s" (Dafs.urlEncode stackid))
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/messages/feedback/%s" (Uri.EscapeDataString stackid))
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
+        |> Dafs.thenParse<Page<Message>>
 
-    let AsyncGetFeedbackStack token offset stackid =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageFeedbackStack token stackid)
-        
-    type MentionsMessagesRequest() =
-        member val Folderid = Nullable<Guid>() with get, set
-        member val Stack = true with get, set
+    let AsyncGetFeedbackStack token stackid batchsize offset =
+        Dafs.toAsyncEnum offset (AsyncPageFeedbackStack token stackid batchsize)
 
-    let AsyncPageMentions token (req: MentionsMessagesRequest) paging =
+    let AsyncPageMentions token stack folderid limit offset =
         seq {
-            if req.Folderid.HasValue then
-                yield sprintf "folderid=%O" req.Folderid
-            yield sprintf "stack=%b" req.Stack
-            yield! QueryFor.paging paging 50
+            yield! QueryFor.stackMessages stack
+            yield! QueryFor.messageFolder folderid
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
         }
         |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/messages/mentions"
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
+        |> Dafs.thenParse<Page<Message>>
 
-    let AsyncGetMentions token req offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageMentions token req)
+    let AsyncGetMentions token stack folderid batchsize offset =
+        Dafs.toAsyncEnum offset (AsyncPageMentions token stack folderid batchsize)
 
-    let AsyncPageMentionsStack token (stackid: string) paging =
+    let AsyncPageMentionsStack token stackid limit offset =
         seq {
-            yield! QueryFor.paging paging 50
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
         }
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/messages/mentions/%s" (Dafs.urlEncode stackid))
+        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/messages/mentions/%s" (Uri.EscapeDataString stackid))
         |> Dafs.asyncRead
-        |> Dafs.thenParse<DeviantArtPagedResult<DeviantArtMessage>>
+        |> Dafs.thenParse<Page<Message>>
 
-    let AsyncGetMentionsStack token stackid offset =
-        Dafs.toAsyncSeq (DeviantArtPagingParams.MaxFrom offset) (AsyncPageMentionsStack token stackid)
+    let AsyncGetMentionsStack token stackid batchsize offset =
+        Dafs.toAsyncEnum offset (AsyncPageMentionsStack token stackid batchsize)

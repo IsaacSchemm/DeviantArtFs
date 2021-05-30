@@ -1,22 +1,22 @@
-﻿namespace DeviantArtFs
+﻿namespace DeviantArtFs.ResponseTypes
 
 open System
 open FSharp.Json
 open DeviantArtFs.Transforms
 
-type DeviationStats = {
+type Stats = {
     comments: int
     favourites: int
 }
 
-type DeviationVideo = {
+type Video = {
     src: string
     quality: string
     filesize: int
     duration: int
 }
 
-type DeviationFlash = {
+type Flash = {
     src: string
     height: int
     width: int
@@ -25,9 +25,13 @@ type DeviationFlash = {
 type DailyDeviation = {
     body: string
     time: DateTimeOffset
-    giver: DeviantArtUser
-    suggester: DeviantArtUser option
+    giver: User
+    suggester: User option
 }
+
+type SuggestedReason =
+| WatchingUser = 1
+| SimilarToRecentEngagement = 4
 
 type Deviation = {
     deviationid: Guid
@@ -39,19 +43,20 @@ type Deviation = {
     is_favourited: bool option
     is_deleted: bool
     is_published: bool option
-    author: DeviantArtUser option
-    stats: DeviationStats option
+    author: User option
+    stats: Stats option
     [<JsonField(Transform=typeof<DateTimeOffsetEpochAsString>)>]
     published_time: DateTimeOffset option
     allows_comments: bool option
-    preview: DeviationPreview option
-    content: DeviationContent option
-    thumbs: DeviationPreview list option
-    videos: DeviationVideo list option
-    flash: DeviationFlash option
+    preview: Preview option
+    content: Content option
+    thumbs: Preview list option
+    videos: Video list option
+    flash: Flash option
     daily_deviation: DailyDeviation option
     excerpt: string option
     is_mature: bool option
     is_downloadable: bool option
     download_filesize: int option
+    suggested_reasons: SuggestedReason list option
 }

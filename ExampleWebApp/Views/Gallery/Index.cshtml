@@ -1,17 +1,15 @@
-﻿@using DeviantArtFs
+﻿@using DeviantArtFs.Pages
+@using DeviantArtFs.ResponseTypes
 @using DeviantArtFs.Extensions
-@model IDeviantArtResultPage<DeviantArtPagingParams, Deviation>
-
+@model FolderPage
 @{
     ViewData["Title"] = "View Gallery";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-@foreach (var d in Model.Items)
-{
-    if (d.is_mature.IsTrue())
-    {
+@foreach (var d in Model.results) {
+    if (d.is_mature.IsTrue()) {
         <div>Mature content hidden - edit Views/Gallery/Index.cshtml to show</div>
         continue;
     }
@@ -22,8 +20,7 @@
         .Select(x => x.src)
         .FirstOrDefault();
     <div>
-        @if (thumb != null)
-        {
+        @if (thumb != null) {
             <img align="left" src="@thumb" style="max-width: 128px; max-height: 128px" />
         }
         <h3><a href="@d.url.OrNull()">@d.title.OrNull()</a></h3>
@@ -34,13 +31,10 @@
 }
 
 <div style="text-align: center">
-    @if (Model.HasMore)
-    {
-        <a href="@Url.Action("Index", new {
-            username = ViewBag.Username,
-            folderId = ViewBag.FolderId,
-            offset = Model.Cursor.Offset,
-            limit = ViewBag.Limit
-        })">Next</a>
-    }
+    <a href="@Url.Action("Index", new {
+        username = ViewBag.Username,
+        folderId = ViewBag.FolderId,
+        offset = Model.next_offset.OrNull(),
+        limit = ViewBag.Limit
+    })">Next</a>
 </div>

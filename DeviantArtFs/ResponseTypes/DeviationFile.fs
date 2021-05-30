@@ -1,20 +1,20 @@
-﻿namespace DeviantArtFs
+﻿namespace DeviantArtFs.ResponseTypes
 
-type DeviationPreview = {
+type Preview = {
     src: string
     height: int
     width: int
     transparency: bool
 }
 
-type DeviationDownload = {
+type Download = {
     src: string
     height: int
     width: int
     filesize: int
 }
 
-type DeviationContent = {
+type Content = {
     src: string
     height: int
     width: int

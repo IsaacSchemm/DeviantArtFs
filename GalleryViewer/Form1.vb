@@ -1,6 +1,8 @@
 ﻿Imports System.IO
 Imports DeviantArtFs
 Imports DeviantArtFs.Extensions
+Imports DeviantArtFs.ParameterTypes
+Imports DeviantArtFs.ResponseTypes
 Imports DeviantArtFs.WinForms
 
 Public Class Form1
@@ -14,7 +16,7 @@ Public Class Form1
             Dim t = AccessToken.ReadFrom("refresh_token.txt")
 
             Try
-                Dim user = Await Api.User.AsyncWhoami(t, DeviantArtObjectExpansion.None).StartAsTask()
+                Dim user = Await Api.User.AsyncWhoami(t, ParameterTypes.ObjectExpansion.None).StartAsTask()
                 If MsgBox($"Log in as {user.username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
                     Token = t
                 End If
@@ -36,7 +38,7 @@ Public Class Form1
         End If
 
         If Token IsNot Nothing Then
-            Dim user = Await Api.User.AsyncWhoami(Token, DeviantArtObjectExpansion.None).StartAsTask()
+            Dim user = Await Api.User.AsyncWhoami(Token, ParameterTypes.ObjectExpansion.None).StartAsTask()
             ToolStripStatusLabel1.Text = $"Logged in as {user.username}"
 
             CurrentUsername = user.username
@@ -57,9 +59,11 @@ Public Class Form1
         TableLayoutPanel1.Controls.Clear()
         PictureBox1.ImageLocation = Nothing
 
-        Dim paging = New DeviantArtPagingParams(NextOffset, TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount)
-        Dim request As New Api.Gallery.GalleryAllViewRequest With {.Username = CurrentUsername}
-        Dim page = Await Api.Gallery.AsyncPageAllView(Token, request, paging).StartAsTask()
+        Dim page = Await Api.Gallery.AsyncPageAllView(
+            Token,
+            If(CurrentUsername Is Nothing, UserScope.ForCurrentUser, UserScope.NewForUser(CurrentUsername)),
+            PagingLimit.NewPagingLimit(TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount),
+            PagingOffset.NewPagingOffset(NextOffset)).StartAsTask()
 
         NextOffset = page.next_offset.OrNull()
         For Each r In page.results.OrEmpty()
@@ -83,8 +87,7 @@ Public Class Form1
         End If
 
         WebBrowser1.Navigate("about:blank")
-        Dim req = New Api.Deviation.MetadataRequest({deviation.deviationid})
-        Dim metadataResponse = Await Api.Deviation.AsyncGetMetadata(Token, req).StartAsTask()
+        Dim metadataResponse = Await Api.Deviation.AsyncGetMetadata(Token, ExtParams.None, {deviation.deviationid}).StartAsTask()
         Dim s = metadataResponse.metadata.Single()
         WebBrowser1.Document.Write(s.description)
     End Sub
