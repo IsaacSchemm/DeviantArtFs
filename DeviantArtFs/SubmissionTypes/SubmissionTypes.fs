@@ -36,7 +36,6 @@ type SubmissionParameters = {
     original_url: OriginalUrl
     is_dirty: bool
 } with
-    static member CreateSet x = Set.ofSeq x
     static member Default = {
         title = DefaultSubmissionTitle
         artist_comments = NoArtistComments

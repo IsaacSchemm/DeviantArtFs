@@ -109,22 +109,45 @@ type DisplayResolution =
 
 type Sharing = AllowSharing | HideShareButtons | HideShareButtonsAndMembersOnly
 
-module CreativeCommons =
-    type AttributionClause = Attribution
-    type CommercialUseClause = NonCommercial
-    type DerivativeWorksClause = NoDerivatives | ShareAlike
+type AttributionRestriction = Attribution
+type CommercialUseRestriction = NonCommercial | CommercialUsePermitted
+type DerivativeWorksRestriction = NoDerivatives | ShareAlike | DerivativeWorksPermitted
 
-    let BY = Attribution
-    let NC = Some NonCommercial
-    let ND = Some NoDerivatives
-    let SA = Some ShareAlike
+type CreativeCommonsLicenseDefinition = {
+    attribution: AttributionRestriction
+    commercialUse: CommercialUseRestriction
+    derivativeWorks: DerivativeWorksRestriction
+} with
+    //member this.Name = String.concat "" [
+    //    "CC BY"
+    //    match this.commercialUse with
+    //    | NonCommercial -> "-NC"
+    //    | CommercialUsePermitted -> ()
+    //    match this.derivativeWorks with
+    //    | NoDerivatives -> "-ND"
+    //    | ShareAlike -> "-SA"
+    //    | DerivativeWorksPermitted -> ()
+    //]
+    static member All = [
+        for att in [Attribution] do
+            for comm in [CommercialUsePermitted; NonCommercial] do
+                for deriv in [DerivativeWorksPermitted; NoDerivatives; ShareAlike] do
+                    yield { attribution = att; commercialUse = comm; derivativeWorks = deriv }
+    ]
 
-    let NoCommercialUseClause: CommercialUseClause option = None
-    let NoDerivativeWorksClause: DerivativeWorksClause option = None
-
-    type License = AttributionClause * CommercialUseClause option * DerivativeWorksClause option
-
-type License = CreativeCommonsLicense of CreativeCommons.License | DefaultLicense
+type License =
+| CreativeCommonsLicense of CreativeCommonsLicenseDefinition
+| DefaultLicense
+with
+    //member this.Name =
+    //    match this with
+    //    | CreativeCommonsLicense l -> l.Name
+    //    | DefaultLicense -> "Default"
+    static member All = [
+        yield DefaultLicense
+        for l in CreativeCommonsLicenseDefinition.All do
+            yield CreativeCommonsLicense l
+    ]
 
 type GallerySet = GallerySet of Guid Set
 with

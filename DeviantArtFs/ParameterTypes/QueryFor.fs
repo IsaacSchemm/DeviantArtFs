@@ -195,15 +195,15 @@ module QueryFor =
         match publishParameters.license with
         | DefaultLicense ->
             "license_options[creative_commons]=0"
-        | CreativeCommonsLicense (CreativeCommons.Attribution, c, d) ->
+        | CreativeCommonsLicense license ->
             "license_options[creative_commons]=1"
-            match c with
-            | None -> "license_options[commercial]=yes"
-            | Some CreativeCommons.NonCommercial -> "license_options[commercial]=no"
-            match d with
-            | None -> "license_options[modify]=yes"
-            | Some CreativeCommons.NoDerivatives -> "license_options[modify]=no"
-            | Some CreativeCommons.ShareAlike -> "license_options[modify]=share"
+            match license.commercialUse with
+            | CommercialUsePermitted -> "license_options[commercial]=yes"
+            | NonCommercial -> "license_options[commercial]=no"
+            match license.derivativeWorks with
+            | DerivativeWorksPermitted -> "license_options[modify]=yes"
+            | NoDerivatives -> "license_options[modify]=no"
+            | ShareAlike -> "license_options[modify]=share"
 
         match publishParameters.destinations with
         | GallerySet set ->
