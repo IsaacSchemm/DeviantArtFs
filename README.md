@@ -8,9 +8,8 @@ Each request that can be made to DeviantArt is represented by a function
 in one of the modules (static classes) in the `DeviantArtFs.Api` namespace.
 Each static method takes an `IDeviantArtAccessToken` as its first parameter.
 Most methods have additional parameters, many of which are discriminated
-unions in the `DeviantArtFs.ParameterTypes` namespace; hopefully this makes
-it easy to see exactly what your code is doing and ensures that parameters
-can't get mixed up.
+unions; hopefully this makes it easy to see exactly what your code is doing
+and ensures that parameters can't get mixed up.
 
 In some cases, two methods are available for an API call. Functions whose
 names begin with `Page` will return a single page of results, while the
@@ -25,22 +24,15 @@ library are .NET records using F# `option` types to represent missing fields.
 This means that you will need extension methods (see below) to extract a null
 value or another placeholder value from these fields.
 
-Since these extension methods are required to use the library outside F#, I've
-also decided to reduce the amount of duplicate code in the library by exposing
-`Async<T>` directly and relying on C# and VB.NET consumers to use another
-extension method to create a `Task<T>`. This has the additional benefit of
-(hopefully) allowing the consumer to pass a cancellation token to any method;
-let me know if there are any bugs in this regard.
+Version 9.x of this library moves from using F# `Async<T>` to using `Task<T>`
+and `IAsyncEnumerable<T>` as used in other .NET languages. C# users can use
+the extension methods in the NuGet package `System.Linq.Async` or consume the
+enumerable directly with `await foreach`. (As a result of this, I've dropped
+support for cancellation tokens in `Task<T>` functions; let me know if you'd
+like it back.)
 
 The following types are used in response objects:
 
-* `FSharpAsync<T>`: An F# asynchronous workflow. An extension method (see
-  below) allows C# or VB.NET users to create a `Task<T>` that can be awaited.
-* `IAsyncEnumerable<T>`: A .NET asynchronous enumerable. F# users can use
-  `FSharp.Control.AsyncSeq` and its `ofAsyncEnum` function to create an
-  `AsyncSeq<T>`, while C# users can use the extension methods in the NuGet
-  package `System.Linq.Async` or consume the enumerable directly with
-  `await foreach`.
 * `FSharpOption<T>`: Used to represent fields that may be missing or null on
   the response object. Extension methods (see below) allow C# and VB.NET users
   to extract these values by converting `None` to `null` or to an empty list.
@@ -50,13 +42,10 @@ The following types are used in response objects:
 
 The following extension methods are provided in the namespace `DeviantArtFs.Extensions`:
 
-* Option types
-    * `.OrNull()`: converts any option type to an equivalent nullable type
-    * `.IsTrue()`: checks whether a `bool option` type (which might be `true`, `false`, or `None`) is true
-    * `.IsFalse()`: checks whether a `bool option` type (which might be `true`, `false`, or `None`) is false
-    * `.OrEmpty()`: returns the items in the list, or an empty list if the field is `None`
-* Asynchronous types
-    * `.StartAsTask(TaskCreationOptions options = null, CancellationToken? token = null)`: executes a "cool" F# asynchronous workflow by creating a "hot" .NET task that can be awaited
+* `.OrNull()`: converts an option type to an equivalent nullable type
+* `.IsTrue()`: checks whether a `bool option` type (which might be `true`, `false`, or `None`) is true
+* `.IsFalse()`: checks whether a `bool option` type (which might be `true`, `false`, or `None`) is false
+* `.OrEmpty()`: returns the items in the list, or an empty list if the field is `None`
 
 ### Deleted deviations and status updates
 
@@ -67,15 +56,8 @@ property) before attempting to access any of the other fields.
 
 ## Known issues
 
-* Mature content filtering is not supported (use the `is_mature` flag on the deviation instead).
+* The ability to turn off mature content filtering is not yet implemented.
 * The profile_pic field in the user.profile expansion is not supported due to circular type definitions. Get it from the full profile object instead.
-* The following fields in the deviation object are not supported:
-  * challenge
-  * challenge_entry
-  * motion_book
-  * premium_folder_data
-  * text_content
-  * suggested_reasons
 * The api_session return object is not supported.
 
 ## Examples
@@ -104,8 +86,6 @@ code or token from the user using either grant type.
 
 If you need to store the access token somewhere (such as in a database or
 file), you may want to create your own class that implements the
-`IDeviantArtAccessToken`, `IDeviantArtRefreshToken`, or
-`IDeviantArtAutomaticRefreshToken` interface. Using the latter will allow
-DeviantArtFs to automatically refresh the token and store the new value when
-it recieves an HTTP 401 response. (An InvalidRefreshTokenException is thrown
-if the token cannot be refreshed.)
+`IDeviantArtAccessToken` or `IDeviantArtRefreshableAccessToken` interface.
+Using the latter will allow DeviantArtFs to automatically refresh the token
+and store the new value when it recieves an HTTP 401 response.
