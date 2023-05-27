@@ -5,53 +5,113 @@ open DeviantArtFs
 open DeviantArtFs.ParameterTypes
 open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
+open FSharp.Control
 
 module Comments =
-    let AsyncPageComments token maxdepth subject replyType limit offset =
+    type Subject = OnDeviation of Guid | OnProfile of string | OnStatus of Guid
+
+    type ReplyType = DirectReply | InReplyToComment of Guid with static member Default = DirectReply
+
+    type Depth = Depth of int with static member Default = Depth 0; static member Max = Depth 5
+
+    type CommentPage = {
+        has_more: bool
+        next_offset: int option
+        has_less: bool
+        prev_offset: int option
+        total: int option
+        thread: Comment list
+    }
+
+    let PageCommentsAsync token expansion maxdepth subject replyType limit offset =
         let url =
             match subject with
-            | OnDeviation g -> sprintf "https://www.deviantart.com/api/v1/oauth2/comments/deviation/%O" g
-            | OnProfile username -> sprintf "https://www.deviantart.com/api/v1/oauth2/comments/profile/%s" (Uri.EscapeDataString username)
-            | OnStatus g -> sprintf "https://www.deviantart.com/api/v1/oauth2/comments/status/%O" g
+            | OnDeviation g -> $"https://www.deviantart.com/api/v1/oauth2/comments/deviation/{Utils.guidString g}"
+            | OnProfile username -> $"https://www.deviantart.com/api/v1/oauth2/comments/profile/{Uri.EscapeDataString username}"
+            | OnStatus g -> $"https://www.deviantart.com/api/v1/oauth2/comments/status/{Utils.guidString g}"
 
         seq {
-            yield! QueryFor.commentReplyType replyType
-            yield! QueryFor.commentDepth maxdepth
+            match replyType with
+            | DirectReply -> ()
+            | InReplyToComment g -> yield "commentid", string g
+            match maxdepth with
+            | Depth x -> yield "maxdepth", string (min x 5)
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
+            yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token url
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<CommentPage>
+        |> Utils.get token url
+        |> Utils.readAsync
+        |> Utils.thenParse<CommentPage>
 
-    let AsyncGetComments token maxdepth subject scope batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageComments token maxdepth subject scope batchsize)
+    let GetCommentsAsync token expansion maxdepth subject scope batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageCommentsAsync token expansion maxdepth subject scope batchsize offset
+            yield! data.thread
+            has_more <- data.has_more
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    let AsyncPageCommentSiblings token commentid ext_item limit offset =
+    type IncludeRelatedItem = IncludeRelatedItem of bool
+
+    type CommentSiblingsContext = {
+        parent: Comment option
+        item_profile: User option
+        item_deviation: Deviation option
+        item_status: Status option
+    }
+
+    type CommentSiblingsPage = {
+        has_more: bool
+        next_offset: int option
+        has_less: bool
+        prev_offset: int option
+        thread: Comment list
+        context: CommentSiblingsContext
+    }
+
+    let PageCommentSiblingsAsync token expansion commentid ext_item limit offset =
         seq {
-            yield! QueryFor.includeRelatedItem ext_item
+            match ext_item with
+            | IncludeRelatedItem true -> "ext_item", "1"
+            | IncludeRelatedItem false -> "ext_item", "0"
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
+            yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/comments/%s/siblings" (Dafs.guid2str commentid))
-        |> Dafs.asyncRead
-        |> Dafs.thenMap (fun str -> str.Replace(""""context": list""", """"context":{}"""))
-        |> Dafs.thenParse<CommentSiblingsPage>
+        |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/comments/{Utils.guidString commentid}/siblings"
+        |> Utils.readAsync
+        |> Utils.thenMap (fun str -> str.Replace(""""context": list""", """"context":{}"""))
+        |> Utils.thenParse<CommentSiblingsPage>
 
-    let AsyncGetCommentSiblings token commentid ext_item batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageCommentSiblings token commentid ext_item batchsize)
+    let GetCommentSiblingsAsync token expansion commentid ext_item batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageCommentSiblingsAsync token expansion commentid ext_item batchsize offset
+            yield! data.thread
+            has_more <- data.has_more
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    let AsyncPostComment token subject replyType body =
+    let PostCommentAsync token expansion subject replyType body =
         let url =
             match subject with
-            | OnDeviation g -> sprintf "https://www.deviantart.com/api/v1/oauth2/comments/post/deviation/%O" g
-            | OnProfile username -> sprintf "https://www.deviantart.com/api/v1/oauth2/comments/post/profile/%s" (Uri.EscapeDataString username)
-            | OnStatus g -> sprintf "https://www.deviantart.com/api/v1/oauth2/comments/post/status/%O" g
+            | OnDeviation g -> $"https://www.deviantart.com/api/v1/oauth2/comments/post/deviation/{Utils.guidString g}"
+            | OnProfile username -> $"https://www.deviantart.com/api/v1/oauth2/comments/post/profile/{Uri.EscapeDataString username}"
+            | OnStatus g -> $"https://www.deviantart.com/api/v1/oauth2/comments/post/status/{Utils.guidString g}"
 
         seq {
-            yield! QueryFor.commentReplyType replyType
-            yield sprintf "body=%s" (Uri.EscapeDataString body)
+            match replyType with
+            | DirectReply -> ()
+            | InReplyToComment g -> yield "commentid", string g
+            yield "body", body
+            yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.POST token url
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<Comment>
+        |> Utils.post token url
+        |> Utils.readAsync
+        |> Utils.thenParse<Comment>

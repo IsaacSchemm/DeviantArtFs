@@ -2,25 +2,25 @@
 Imports DeviantArtFs
 
 Public Class AccessToken
-    Implements IDeviantArtAutomaticRefreshToken
+    Implements IDeviantArtRefreshableAccessToken
 
     Private ReadOnly Property Path As String
 
     Public Property A As String Implements IDeviantArtAccessToken.AccessToken
 
-    Public Property R As String Implements IDeviantArtAutomaticRefreshToken.RefreshToken
+    Public Property R As String
 
-    Public ReadOnly Property App As DeviantArtApp Implements IDeviantArtAutomaticRefreshToken.App
+    Public Shared ReadOnly Property App As DeviantArtApp
         Get
             Return New DeviantArtApp(DeviantArtClientId, DeviantArtClientSecret)
         End Get
     End Property
 
-    Public Sub New(path As String, Optional token As IDeviantArtRefreshToken = Nothing)
+    Public Sub New(path As String, Optional token As DeviantArtTokenResponse = Nothing)
         Me.Path = path
         If token IsNot Nothing Then
-            A = token.AccessToken
-            R = token.RefreshToken
+            A = token.access_token
+            R = token.refresh_token
         End If
     End Sub
 
@@ -43,10 +43,10 @@ Public Class AccessToken
         End Using
     End Function
 
-    Public Function UpdateTokenAsync(newToken As IDeviantArtRefreshToken) As Task Implements IDeviantArtAutomaticRefreshToken.UpdateTokenAsync
-        A = newToken.AccessToken
-        R = newToken.RefreshToken
+    Public Async Function RefreshAccessTokenAsync() As Task Implements IDeviantArtRefreshableAccessToken.RefreshAccessTokenAsync
+        Dim newToken = Await DeviantArtAuth.RefreshAsync(App, R)
+        A = newToken.access_token
+        R = newToken.refresh_token
         Write()
-        Return Task.CompletedTask
     End Function
 End Class

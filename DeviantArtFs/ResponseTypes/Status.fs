@@ -18,4 +18,5 @@ and Status = {
     is_deleted: bool
     author: User option
     items: StatusItem list option
+    text_content: EditorText option
 }

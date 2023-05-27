@@ -5,66 +5,415 @@ open System
 open DeviantArtFs.ParameterTypes
 open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
+open FSharp.Control
+open FSharp.Json
 
 module Deviation =
-    let AsyncGet token expansion (id: Guid) =
+    let GetAsync token expansion id =
         seq {
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/%O" id)
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<Deviation>
+        |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/deviation/{Utils.guidString id}"
+        |> Utils.readAsync
+        |> Utils.thenParse<Deviation>
 
-    let AsyncGetContent token (deviationid: Guid) =
-        Seq.empty
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/content?deviationid=%O" deviationid)
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<TextContent>
+    type TextContent = {
+        html: string option
+        css: string option
+        css_fonts: string list option
+    }
 
-    let AsyncDownload token (deviationid: Guid) =
-        Seq.empty
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/deviation/download/%O" deviationid)
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<Download>
-
-    type EmbeddedContentRequest(deviationid: Guid) =
-        member __.Deviationid = deviationid
-        member val OffsetDeviationid = Nullable<Guid>() with get, set
-
-    let AsyncPageEmbeddedContent token deviationid offset_deviationid limit offset =
+    let GetContentAsync token deviationid =
         seq {
-            yield sprintf "deviationid=%O" (Dafs.guid2str deviationid)
-            yield! QueryFor.embeddedDeviationOffset offset_deviationid
+            "deviationid", Utils.guidString deviationid
+        }
+        |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/deviation/content"
+        |> Utils.readAsync
+        |> Utils.thenParse<TextContent>
+
+    type Download = {
+        src: string
+        filename: string
+        height: int
+        width: int
+        filesize: int
+    }
+
+    let DownloadAsync token deviationid =
+        Seq.empty
+        |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/deviation/download/{Utils.guidString deviationid}"
+        |> Utils.readAsync
+        |> Utils.thenParse<Download>
+
+    type DeviationCreateResponse = {
+        deviationid: Guid
+    }
+
+    type DeviationUpdateResponse = {
+        status: string
+        url: string
+        deviationid: Guid
+    }
+
+    type MutableDeviationField =
+    | Title of string
+    | Maturity of Maturity
+    | AllowComments of bool
+    | GalleryId of Guid
+    | AllowFreeDownload of bool
+    | AddWatermark of bool
+    | License of License
+    | Tag of string
+
+    let EditDeviationAsync token deviationid deviationFields =
+        seq {
+            for f in deviationFields do
+                match f with
+                | Title x -> "title", x
+                | Maturity NotMature ->
+                    "is_mature", "0"
+                | Maturity (Mature (level, classifications)) ->
+                    "is_mature", "1"
+                    match level with
+                    | MatureStrict -> "mature_level", "strict"
+                    | MatureModerate -> "mature_level", "moderate"
+                    for classification in classifications do
+                        match classification with
+                        | Nudity -> "mature_classification[]", "nudity"
+                        | Sexual -> "mature_classification[]", "sexual"
+                        | Gore -> "mature_classification[]", "gore"
+                        | Language -> "mature_classification[]", "language"
+                        | Ideology -> "mature_classification[]", "ideology"
+                | AllowComments false -> "allow_comments", "0"
+                | AllowComments true -> "allow_comments", "1"
+                | GalleryId g ->
+                    "galleryids[]", Utils.guidString g
+                | AllowFreeDownload false -> "allow_free_download", "0"
+                | AllowFreeDownload true -> "allow_free_download", "1"
+                | AddWatermark false -> "add_watermark", "0"
+                | AddWatermark true -> "add_watermark", "1"
+                | License DefaultLicense ->
+                    "license_options[creative_commons]", "0"
+                | License (CreativeCommonsLicense license) ->
+                    "license_options[creative_commons]", "1"
+                    match license.commercialUse with
+                    | CommercialUsePermitted -> "license_options[commercial]", "yes"
+                    | NonCommercial -> "license_options[commercial]", "no"
+                    match license.derivativeWorks with
+                    | DerivativeWorksPermitted -> "license_options[modify]", "yes"
+                    | NoDerivatives -> "license_options[modify]", "no"
+                    | ShareAlike -> "license_options[modify]", "share"
+                | Tag t ->
+                    "tags[]", t
+        }
+        |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/deviation/edit/{Utils.guidString deviationid}"
+        |> Utils.readAsync
+        |> Utils.thenParse<DeviationUpdateResponse>
+
+    type EmbeddedDeviationOffset = StartWithFirst | StartWith of Guid with static member Default = StartWithFirst
+
+    type EmbeddedContentPage = {
+        has_more: bool
+        next_offset: int option
+        has_less: bool option
+        prev_offset: int option
+        results: Deviation list
+    }
+
+    let PageEmbeddedContentAsync token deviationid offset_deviationid limit offset =
+        seq {
+            yield "deviationid", Utils.guidString deviationid
+            match offset_deviationid with
+            | StartWithFirst -> ()
+            | StartWith g -> yield "offset_deviationid", string g
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/deviation/embeddedcontent"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<EmbeddedContentPage>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/deviation/embeddedcontent"
+        |> Utils.readAsync
+        |> Utils.thenParse<EmbeddedContentPage>
 
-    let AsyncGetEmbeddedContent token deviationid batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageEmbeddedContent token deviationid StartWithFirstEmbeddedDeviation batchsize)
+    let GetEmbeddedContentAsync token deviationid batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageEmbeddedContentAsync token deviationid StartWithFirst batchsize offset
+            yield! data.results
+            has_more <- data.has_more
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    let AsyncGetMetadata token extParams deviationids =
+    module Journal =
+        type MutableField =
+        | Title of string
+        | Tag of string
+        | CoverImageDeviationId of Guid
+        | ResetCoverImageDeviationId
+        | IsMature of bool
+        | AllowComments of bool
+        | License of License
+
+        type ImmutableField =
+        | Body of string
+        | EmbeddedImageDeviationId of Guid
+
+        let CreateAsync token immutableFields mutableFields =
+            seq {
+                for f in immutableFields do
+                    match f with
+                    | Body x ->
+                        "body", x
+                    | EmbeddedImageDeviationId c ->
+                        "embedded_image_deviation_id", Utils.guidString c
+                for f in mutableFields do
+                    match f with
+                    | Title t ->
+                        "title", t
+                    | Tag t ->
+                        "tags[]", t
+                    | CoverImageDeviationId c ->
+                        "cover_image_deviation_id", Utils.guidString c
+                    | ResetCoverImageDeviationId ->
+                        ()
+                    | IsMature m ->
+                        "is_mature", if m then "1" else "0"
+                    | AllowComments a ->
+                        "allow_comments", if a then "1" else "0"
+                    | License DefaultLicense ->
+                        "license_options[creative_commons]", "0"
+                    | License (CreativeCommonsLicense license) ->
+                        "license_options[creative_commons]", "1"
+                        match license.commercialUse with
+                        | CommercialUsePermitted -> "license_options[commercial]", "yes"
+                        | NonCommercial -> "license_options[commercial]", "no"
+                        match license.derivativeWorks with
+                        | DerivativeWorksPermitted -> "license_options[modify]", "yes"
+                        | NoDerivatives -> "license_options[modify]", "no"
+                        | ShareAlike -> "license_options[modify]", "share"
+            }
+            |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/deviation/journal/create"
+            |> Utils.readAsync
+            |> Utils.thenParse<DeviationCreateResponse>
+
+        let UpdateAsync token deviationid mutableFields =
+            seq {
+                for f in mutableFields do
+                    match f with
+                    | Title t ->
+                        "title", t
+                    | Tag t ->
+                        "tags[]", t
+                    | CoverImageDeviationId c ->
+                        "cover_image_deviation_id", Utils.guidString c
+                    | ResetCoverImageDeviationId ->
+                        "reset_cover_image_deviation_id", "1"
+                    | IsMature m ->
+                        "is_mature", if m then "1" else "0"
+                    | AllowComments a ->
+                        "allow_comments", if a then "1" else "0"
+                    | License DefaultLicense ->
+                        "license_options[creative_commons]", "0"
+                    | License (CreativeCommonsLicense license) ->
+                        "license_options[creative_commons]", "1"
+                        match license.commercialUse with
+                        | CommercialUsePermitted -> "license_options[commercial]", "yes"
+                        | NonCommercial -> "license_options[commercial]", "no"
+                        match license.derivativeWorks with
+                        | DerivativeWorksPermitted -> "license_options[modify]", "yes"
+                        | NoDerivatives -> "license_options[modify]", "no"
+                        | ShareAlike -> "license_options[modify]", "share"
+            }
+            |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/deviation/journal/update/{Utils.guidString deviationid}"
+            |> Utils.readAsync
+            |> Utils.thenParse<DeviationUpdateResponse>
+
+    module Literature =
+        type MutableField =
+        | Title of string
+        | Tag of string
+        | GalleryId of Guid
+        | Maturity of Maturity
+        | AllowComments of bool
+        | License of License
+
+        type ImmutableField =
+        | Body of string
+        | Description of string
+        | EmbeddedImageDeviationId of Guid
+
+        let CreateAsync token immutableFields mutableFields =
+            seq {
+                for f in immutableFields do
+                    match f with
+                    | Body x ->
+                        "body", x
+                    | Description x ->
+                        "description", x
+                    | EmbeddedImageDeviationId c ->
+                        "embedded_image_deviation_id", Utils.guidString c
+                for f in mutableFields do
+                    match f with
+                    | Title t ->
+                        "title", t
+                    | Tag t ->
+                        "tags[]", t
+                    | GalleryId g ->
+                        "galleryids[]", Utils.guidString g
+                    | Maturity NotMature ->
+                        "is_mature", "0"
+                    | Maturity (Mature (level, classifications)) ->
+                        "is_mature", "1"
+                        match level with
+                        | MatureStrict -> "mature_level", "strict"
+                        | MatureModerate -> "mature_level", "moderate"
+                        for classification in classifications do
+                            match classification with
+                            | Nudity -> "mature_classification[]", "nudity"
+                            | Sexual -> "mature_classification[]", "sexual"
+                            | Gore -> "mature_classification[]", "gore"
+                            | Language -> "mature_classification[]", "language"
+                            | Ideology -> "mature_classification[]", "ideology"
+                    | AllowComments a ->
+                        "allow_comments", if a then "1" else "0"
+                    | License DefaultLicense ->
+                        "license_options[creative_commons]", "0"
+                    | License (CreativeCommonsLicense license) ->
+                        "license_options[creative_commons]", "1"
+                        match license.commercialUse with
+                        | CommercialUsePermitted -> "license_options[commercial]", "yes"
+                        | NonCommercial -> "license_options[commercial]", "no"
+                        match license.derivativeWorks with
+                        | DerivativeWorksPermitted -> "license_options[modify]", "yes"
+                        | NoDerivatives -> "license_options[modify]", "no"
+                        | ShareAlike -> "license_options[modify]", "share"
+            }
+            |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/deviation/literature/create"
+            |> Utils.readAsync
+            |> Utils.thenParse<DeviationCreateResponse>
+
+        let UpdateAsync token deviationid mutableFields =
+            seq {
+                for f in mutableFields do
+                    match f with
+                    | Title t ->
+                        "title", t
+                    | Tag t ->
+                        "tags[]", t
+                    | GalleryId g ->
+                        "galleryids[]", Utils.guidString g
+                    | Maturity NotMature ->
+                        "is_mature", "0"
+                    | Maturity (Mature (level, classifications)) ->
+                        "is_mature", "1"
+                        match level with
+                        | MatureStrict -> "mature_level", "strict"
+                        | MatureModerate -> "mature_level", "moderate"
+                        for classification in classifications do
+                            match classification with
+                            | Nudity -> "mature_classification[]", "nudity"
+                            | Sexual -> "mature_classification[]", "sexual"
+                            | Gore -> "mature_classification[]", "gore"
+                            | Language -> "mature_classification[]", "language"
+                            | Ideology -> "mature_classification[]", "ideology"
+                    | AllowComments a ->
+                        "allow_comments", if a then "1" else "0"
+                    | License DefaultLicense ->
+                        "license_options[creative_commons]", "0"
+                    | License (CreativeCommonsLicense license) ->
+                        "license_options[creative_commons]", "1"
+                        match license.commercialUse with
+                        | CommercialUsePermitted -> "license_options[commercial]", "yes"
+                        | NonCommercial -> "license_options[commercial]", "no"
+                        match license.derivativeWorks with
+                        | DerivativeWorksPermitted -> "license_options[modify]", "yes"
+                        | NoDerivatives -> "license_options[modify]", "no"
+                        | ShareAlike -> "license_options[modify]", "share"
+            }
+            |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/deviation/journal/literature/{Utils.guidString deviationid}"
+            |> Utils.readAsync
+            |> Utils.thenParse<DeviationUpdateResponse>
+
+    type Tag = {
+        tag_name: string
+        sponsored: bool
+        sponsor: string option
+    }
+
+    type MetadataSubmission = {
+        creation_time: DateTimeOffset
+        category: string
+        file_size: string option
+        resolution: string option
+        submitted_with: SubmittedWith
+    }
+
+    type MetadataStats = {
+        views: int
+        views_today: int
+        favourites: int
+        comments: int
+        downloads: int
+        downloads_today: int
+    }
+
+    type Metadata = {
+        deviationid: Guid
+        printid: Guid option
+        author: User
+        is_watching: bool
+        title: string
+        description: string
+        license: string
+        allows_comments: bool
+        tags: Tag list
+        is_favourited: bool
+        is_mature: bool
+        submission: MetadataSubmission option
+        stats: MetadataStats option
+        camera: Map<string, string> option
+        collections: CollectionFolder list option
+        can_post_comment: bool
+    }
+
+    type MetadataResponse = {
+        metadata: Metadata list
+    }
+
+    let GetMetadataAsync token extParams deviationids =
         seq {
             yield! QueryFor.extParams extParams
             for id in deviationids do
-                yield sprintf "deviationids[]=%O" (Dafs.guid2str id)
+                yield "deviationids[]", Utils.guidString id
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/deviation/metadata"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<MetadataResponse>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/deviation/metadata"
+        |> Utils.readAsync
+        |> Utils.thenParse<MetadataResponse>
 
-    let AsyncPageWhoFaved token expansion (deviationid: Guid) limit offset =
+    type WhoFavedUser = {
+        user: User
+        [<JsonField(Transform=typeof<Transforms.DateTimeOffsetEpoch>)>]
+        time: DateTimeOffset
+    }
+
+    let PageWhoFavedAsync token expansion deviationid limit offset =
         seq {
-            yield sprintf "deviationid=%O" deviationid
+            yield "deviationid", Utils.guidString deviationid
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/deviation/whofaved"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<Page<WhoFavedUser>>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/deviation/whofaved"
+        |> Utils.readAsync
+        |> Utils.thenParse<Page<WhoFavedUser>>
 
-    let AsyncGetWhoFaved token expansion req batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageWhoFaved token expansion req batchsize)
+    let GetWhoFavedAsync token expansion req batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageWhoFavedAsync token expansion req batchsize offset
+            yield! data.results.Value
+            has_more <- data.has_more.Value
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }

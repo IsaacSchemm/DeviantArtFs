@@ -2,7 +2,19 @@
 
 open System
 open FSharp.Json
-open System.Collections.Generic
+
+type StashSubmission = {
+    file_size: string option
+    resolution: string option
+    submitted_with: SubmittedWith option
+}
+
+type StashStats = {
+    views: int option
+    views_today: int option
+    downloads: int option
+    downloads_today: int option
+}
 
 type StashMetadata = {
     title: string

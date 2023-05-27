@@ -1,18 +1,17 @@
 ﻿namespace DeviantArtFs
 
 open System
-open System.Net
+open System.Net.Http
 open DeviantArtFs.ResponseTypes
 
-type DeviantArtException(resp: WebResponse, body: BaseResponse, body_raw: string) =
+type DeviantArtException(resp: HttpResponseMessage, body: BaseResponse, body_raw: string) =
     inherit Exception(body.error_description |> Option.defaultValue "An unknown DeviantArt error occurred.")
 
     member __.ResponseBody = body
     member __.ResponseBodyRaw = body_raw
-    member __.StatusCode =
-        match resp with
-        | :? HttpWebResponse as h -> Nullable h.StatusCode
-        | _ -> Nullable()
+    member __.StatusCode = resp.StatusCode
 
-type InvalidRefreshTokenException(ex: Exception) =
-    inherit Exception("The refresh token is invalid.", ex)
+type InvalidRefreshTokenException(resp: HttpResponseMessage) =
+    inherit Exception("The refresh token is invalid.")
+
+    member __.Response = resp

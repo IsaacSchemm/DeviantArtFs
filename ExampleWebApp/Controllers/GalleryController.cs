@@ -25,7 +25,7 @@ namespace ExampleWebApp.Controllers
             var limit_param = limit is int l
                 ? PagingLimit.NewPagingLimit(l)
                 : PagingLimit.MaximumPagingLimit;
-            var resp = await DeviantArtFs.Api.Gallery.AsyncPageGallery(
+            var resp = await DeviantArtFs.Api.Gallery.PageGalleryAsync(
                 token,
                 ObjectExpansion.None,
                 username != null
@@ -35,7 +35,7 @@ namespace ExampleWebApp.Controllers
                     ? GalleryFolderScope.NewSingleGalleryFolder(ff)
                     : GalleryFolderScope.AllGalleryFoldersPopular,
                 limit_param,
-                offset_param).StartAsTask(cancellationToken: cancellationToken);
+                offset_param);
 
             ViewBag.Username = username;
             ViewBag.FolderId = folderId;
@@ -48,15 +48,16 @@ namespace ExampleWebApp.Controllers
             var token = await GetAccessTokenAsync();
             if (token == null) return Forbid();
 
-            var list = await DeviantArtFs.Api.Gallery.AsyncGetFolders(
+            var list = await DeviantArtFs.Api.Gallery.GetFoldersAsync(
                 token,
                 CalculateSize.NewCalculateSize(true),
                 FolderPreload.Default,
+                FilterEmptyFolder.Default,
                 username != null
                     ? UserScope.NewForUser(username)
                     : UserScope.ForCurrentUser,
                 PagingLimit.MaximumPagingLimit,
-                PagingOffset.StartingOffset).ToListAsync(cancellationToken);
+                PagingOffset.StartingOffset).ToListAsync();
 
             ViewBag.Username = username;
             return View(list);

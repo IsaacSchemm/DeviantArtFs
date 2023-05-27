@@ -17,5 +17,9 @@ type Comment = {
     [<JsonField(EnumValue = EnumMode.Name)>]
     hidden: CommentHideType option
     body: string
+    is_liked: bool
+    is_featured: bool
+    likes: int
     user: User
+    text_content: EditorText option
 }

@@ -5,39 +5,35 @@ using System.Threading.Tasks;
 
 namespace ExampleWebApp.Models
 {
-    public class TokenWrapper : IDeviantArtAutomaticRefreshToken
+    public class TokenWrapper : IDeviantArtRefreshableAccessToken
     {
-        public IDeviantArtRefreshToken CurrentToken { get; private set; }
-        public DeviantArtApp App { get; private set; }
-
-        private readonly Token _originalToken;
+        private readonly DeviantArtApp _app;
         private readonly ExampleDbContext _context;
+        private Token _currentToken;
 
-        public Guid IdInDatabase => _originalToken.Id;
+        public Guid IdInDatabase => _currentToken.Id;
+
+        public string AccessToken => _currentToken.AccessToken;
+
+        public string RefreshToken => _currentToken.RefreshToken;
 
         public TokenWrapper(Token originalToken, DeviantArtApp app, ExampleDbContext context)
         {
-            _originalToken = originalToken;
+            _app = app;
             _context = context;
-
-            CurrentToken = originalToken;
-            App = app;
+            _currentToken = originalToken;
         }
 
-        public string AccessToken => CurrentToken.AccessToken;
-        public string RefreshToken => CurrentToken.RefreshToken;
-
-        public async Task UpdateTokenAsync(IDeviantArtRefreshToken value)
+        public async Task RefreshAccessTokenAsync()
         {
-            CurrentToken = value;
+            var newToken = await DeviantArtAuth.RefreshAsync(_app, _currentToken.RefreshToken);
 
-            var t = await _context.Tokens.FindAsync(_originalToken.Id);
-            if (t != null)
-            {
-                t.AccessToken = value.AccessToken;
-                t.RefreshToken = value.RefreshToken;
-                await _context.SaveChangesAsync();
-            }
+            _currentToken =
+                await _context.Tokens.FindAsync(_currentToken.Id) // if still in database
+                ?? _currentToken; // if removed from database (no changes will be saved to database)
+            _currentToken.AccessToken = newToken.access_token;
+            _currentToken.RefreshToken = newToken.refresh_token;
+            await _context.SaveChangesAsync();
         }
     }
 }

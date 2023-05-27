@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;netstandard2.0</TargetFrameworks>
-    <Version>8.0.0-beta4</Version>
+    <TargetFrameworks>net6.0</TargetFrameworks>
+    <Version>9.0.0-alpha1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Isaac Schemm</Authors>
     <Company></Company>
@@ -10,76 +10,42 @@
     <PackageProjectUrl>https://github.com/IsaacSchemm/DeviantArtFs</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Description>An F# library to interact with the DeviantArt / Sta.sh API</Description>
-    <PackageReleaseNotes>Refactoring to use discriminated unions for most request types</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>(C) 2021 Isaac Schemm</Copyright>
+    <Copyright>(C) 2023 Isaac Schemm</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="Utility\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="AssemblyAttributes.fs" />
-    <Compile Include="Extensions\Extensions.fs" />
+    <Compile Include="Extensions.fs" />
     <Compile Include="Transforms\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Tokens.fs" />
-    <Compile Include="ParameterTypes\ParameterTypes.fs" />
-    <Compile Include="ParameterTypes\QueryFor.fs" />
-    <Compile Include="SubmissionTypes\SubmissionTypes.fs" />
+    <Compile Include="ParameterTypes.fs" />
     <Compile Include="ResponseTypes\BaseResponse.fs" />
     <Compile Include="ResponseTypes\SuccessOrErrorResponse.fs" />
     <Compile Include="ResponseTypes\TextOnlyResponse.fs" />
     <Compile Include="ResponseTypes\ListOnlyResponse.fs" />
     <Compile Include="ResponseTypes\User.fs" />
-    <Compile Include="ResponseTypes\WhoFavedUser.fs" />
     <Compile Include="ResponseTypes\Gallection.fs" />
-    <Compile Include="ResponseTypes\DeviationFile.fs" />
+    <Compile Include="ResponseTypes\Preview.fs" />
     <Compile Include="ResponseTypes\Deviation.fs" />
     <Compile Include="ResponseTypes\GalleryFolder.fs" />
     <Compile Include="ResponseTypes\CollectionFolder.fs" />
-    <Compile Include="ResponseTypes\FaveResult.fs" />
-    <Compile Include="ResponseTypes\Category.fs" />
-    <Compile Include="ResponseTypes\MoreLikeThisPreviewResult.fs" />
-    <Compile Include="ResponseTypes\TextContent.fs" />
-    <Compile Include="ResponseTypes\TagSearchResult.fs" />
-    <Compile Include="ResponseTypes\Tag.fs" />
     <Compile Include="ResponseTypes\SubmittedWith.fs" />
-    <Compile Include="ResponseTypes\MetadataSubmission.fs" />
-    <Compile Include="ResponseTypes\MetadataStats.fs" />
-    <Compile Include="ResponseTypes\Metadata.fs" />
     <Compile Include="ResponseTypes\Status.fs" />
-    <Compile Include="ResponseTypes\Post.fs" />
-    <Compile Include="ResponseTypes\ProfileStats.fs" />
-    <Compile Include="ResponseTypes\Profile.fs" />
-    <Compile Include="ResponseTypes\StashStats.fs" />
-    <Compile Include="ResponseTypes\StashSubmission.fs" />
     <Compile Include="ResponseTypes\StashMetadata.fs" />
-    <Compile Include="ResponseTypes\StashMoveResult.fs" />
-    <Compile Include="ResponseTypes\StashDeltaEntry.fs" />
-    <Compile Include="ResponseTypes\StashSpaceResult.fs" />
-    <Compile Include="ResponseTypes\StashSubmitResult.fs" />
-    <Compile Include="ResponseTypes\StashPublishUserdataResult.fs" />
-    <Compile Include="ResponseTypes\StashPublishResponse.fs" />
-    <Compile Include="ResponseTypes\RelationshipRecords.fs" />
     <Compile Include="ResponseTypes\Comment.fs" />
-    <Compile Include="ResponseTypes\Message.fs" />
-    <Compile Include="ResponseTypes\Topic.fs" />
-    <Compile Include="ResponseTypes\Country.fs" />
-    <Compile Include="ResponseTypes\MessagingNetworkToken.fs" />
-    <Compile Include="ResponseTypes\WatchingResponse.fs" />
-    <Compile Include="ResponseTypes\StatusPostResponse.fs" />
-    <Compile Include="Pages\IPage.fs" />
     <Compile Include="Pages\Page.fs" />
-    <Compile Include="Pages\EmbeddedContentPage.fs" />
-    <Compile Include="Pages\BrowsePage.fs" />
-    <Compile Include="Pages\RecommendedPage.fs" />
     <Compile Include="Pages\FolderPage.fs" />
-    <Compile Include="Pages\StashDelta.fs" />
-    <Compile Include="Pages\CommentPage.fs" />
-    <Compile Include="Pages\CommentSiblingsPage.fs" />
-    <Compile Include="Pages\MessageCursorResult.fs" />
     <Compile Include="Exceptions.fs" />
+    <Compile Include="DeviantArtHttp.fs" />
     <Compile Include="DeviantArtAuth.fs" />
-    <Compile Include="DeviantArtRequest.fs" />
-    <Compile Include="Utility\Dafs.fs" />
+    <Compile Include="Utils.fs" />
     <Compile Include="Api\Browse.fs" />
     <Compile Include="Api\Collections.fs" />
     <Compile Include="Api\Comments.fs" />
@@ -93,12 +59,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FSharp.Json" Version="0.4.0" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
+    <PackageReference Include="FSharp.Json" Version="0.4.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="FSharp.Core" Version="5.0.1" />
+    <PackageReference Update="FSharp.Core" Version="7.0.300" />
+  </ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="FSharp.Control.TaskSeq">
+			<Version>0.3.0</Version>
+		</PackageReference>
+	</ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces">
+      <Version>7.0.0</Version>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

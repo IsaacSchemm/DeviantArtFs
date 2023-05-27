@@ -4,26 +4,31 @@ open DeviantArtFs
 open DeviantArtFs.ResponseTypes
 
 module Data =
-    let AsyncGetCountries token =
-        Seq.empty
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/data/countries"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<ListOnlyResponse<Country>>
+    type Country = {
+       countryid: int
+       name: string
+    }
 
-    let AsyncGetPrivacyPolicy token =
+    let GetCountriesAsync token =
         Seq.empty
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/data/privacy"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<TextOnlyResponse>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/data/countries"
+        |> Utils.readAsync
+        |> Utils.thenParse<ListOnlyResponse<Country>>
 
-    let AsyncGetSubmissionPolicy token =
+    let GetPrivacyPolicyAsync token =
         Seq.empty
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/data/submission"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<TextOnlyResponse>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/data/privacy"
+        |> Utils.readAsync
+        |> Utils.thenParse<TextOnlyResponse>
 
-    let AsyncGetTermsOfService token =
+    let GetSubmissionPolicyAsync token =
         Seq.empty
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/data/tos"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<TextOnlyResponse>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/data/submission"
+        |> Utils.readAsync
+        |> Utils.thenParse<TextOnlyResponse>
+
+    let GetTermsOfServiceAsync token =
+        Seq.empty
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/data/tos"
+        |> Utils.readAsync
+        |> Utils.thenParse<TextOnlyResponse>

@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
-    <Version>2.0.0</Version>
+    <TargetFramework>net48</TargetFramework>
+    <Version>9.0.0-alpha1</Version>
     <Description>A set of Windows Forms dialogs for DeviantArt OAuth2 flow</Description>
-    <Copyright>(C) 2021 Isaac Schemm</Copyright>
+    <Copyright>(C) 2023 Isaac Schemm</Copyright>
     <Authors>Isaac Schemm</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>deviantart winforms oauth2</PackageTags>
     <PackageProjectUrl>https://github.com/IsaacSchemm/DeviantArtFs</PackageProjectUrl>
-    <PackageReleaseNotes>This version no longer calls INTERNET_OPTION_END_BROWSER_SESSION; if you still want to do this, you can do it in your own code.</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
     <RepositoryUrl>https://github.com/IsaacSchemm/DeviantArtFs</RepositoryUrl>
   </PropertyGroup>
 

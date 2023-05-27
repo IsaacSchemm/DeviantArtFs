@@ -4,111 +4,300 @@ open System
 open System.IO
 open DeviantArtFs
 open DeviantArtFs.ParameterTypes
-open DeviantArtFs.SubmissionTypes
 open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
+open System.Net.Http
+open FSharp.Control
 
 module Stash =
-    let AsyncGetStack token stack =
-        Seq.empty
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d" (StashStack.id stack))
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<StashMetadata>
+    type Stack = Stack of int64 | RootStack
+    type Item = Item of int64
 
-    let AsyncPageContents token stack limit offset =
+    let private stackid stack = match stack with Stack x -> x | RootStack -> 0L
+    let private itemid item = match item with Item x -> x
+
+    type DeltaCursor = DeltaCursor of string | Initial
+
+    type SubmissionDestination =
+    | ReplaceExisting of Item
+    | SubmitToStack of Stack
+    | SubmitToStackWithName of string
+    with static member Default = SubmitToStack RootStack
+
+    let GetStackAsync token stack =
+        Seq.empty
+        |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/stash/{stackid stack}"
+        |> Utils.readAsync
+        |> Utils.thenParse<StashMetadata>
+
+    let PageContentsAsync token extParams stack limit offset =
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
+            yield! QueryFor.extParams extParams
         }
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/%d/contents" (StashStack.id stack))
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<Page<StashMetadata>>
+        |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/stash/{stackid stack}/contents"
+        |> Utils.readAsync
+        |> Utils.thenParse<Page<StashMetadata>>
 
-    let AsyncGetContents token stack batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageContents token stack batchsize)
+    let GetContentsAsync token extParams stack batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageContentsAsync token extParams stack batchsize offset
+            yield! data.results.Value
+            has_more <- data.has_more.Value
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    let AsyncDelete token item =
+    let DeleteAsync token item =
         seq {
-            yield! QueryFor.stashItem item
+            "itemid", string (itemid item)
         }
-        |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/stash/delete"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<SuccessOrErrorResponse>
+        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/stash/delete"
+        |> Utils.readAsync
+        |> Utils.thenParse<SuccessOrErrorResponse>
 
-    let AsyncPageDelta token extParams cursor limit offset =
+    type StashDeltaEntry = {
+        itemid: int64 option
+        stackid: int64 option
+        metadata: StashMetadata option
+        position: int option
+    }
+
+    type StashDelta = {
+        cursor: string
+        has_more: bool
+        next_offset: int option
+        reset: bool
+        entries: StashDeltaEntry list
+    }
+
+    let PageDeltaAsync token extParams cursor limit offset =
         seq {
-            yield! QueryFor.stashDeltaCursor cursor
+            match cursor with
+            | DeltaCursor c -> "cursor", c
+            | Initial -> ()
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 120
             yield! QueryFor.extParams extParams
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/stash/delta"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<StashDelta>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/stash/delta"
+        |> Utils.readAsync
+        |> Utils.thenParse<StashDelta>
 
-    let AsyncGetDelta token extParams cursor batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageDelta token extParams cursor batchsize)
+    let GetDeltaAsync token extParams cursor batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageDeltaAsync token extParams cursor batchsize offset
+            yield! data.entries
+            has_more <- data.has_more
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    type ItemRequest(itemid: int64) = 
-        member __.Itemid = itemid
-        member val ExtParams = ParameterTypes.ExtParams.None with get, set
-
-    let AsyncGetItem token extParams item =
+    let GetItemAsync token extParams item =
         seq {
             yield! QueryFor.extParams extParams
         }
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/item/%d" (StashItem.id item))
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<StashMetadata>
+        |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/stash/item/{itemid item}"
+        |> Utils.readAsync
+        |> Utils.thenParse<StashMetadata>
 
-    let AsyncMoveItem token stack (targetid: int64) =
+    type StashMoveResult = {
+        target: StashMetadata
+        changes: StashMetadata list
+    }
+
+    let MoveItemAsync token stack (targetid: int64) =
         seq {
-            yield sprintf "targetid=%d" targetid
+            yield "targetid", string targetid
         }
-        |> Dafs.createRequest Dafs.Method.POST token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/move/%d" (StashStack.id stack))
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<StashMoveResult>
+        |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/stash/move/{stackid stack}"
+        |> Utils.readAsync
+        |> Utils.thenParse<StashMoveResult>
 
-    let AsyncPositionItem token stack (position: int) =
+    let PositionItemAsync token stack (position: int) =
         seq {
-            yield sprintf "position=%d" position
+            yield "position", string position
         }
-        |> Dafs.createRequest Dafs.Method.POST token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/position/%d" (StashStack.id stack))
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<SuccessOrErrorResponse>
+        |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/stash/position/{stackid stack}"
+        |> Utils.readAsync
+        |> Utils.thenParse<SuccessOrErrorResponse>
 
-    let AsyncPublish token parameters item =
+    type GallerySet = GallerySet of Guid Set
+    with
+        static member Create x = GallerySet (Set.ofSeq x)
+        static member Empty = GallerySet Set.empty
+
+    type DisplayResolution =
+    | Original=0
+    | Max400Px=1
+    | Max600px=2
+    | Max800px=3
+    | Max900px=4
+    | Max1024px=5
+    | Max1280px=6
+    | Max1600px=7
+    | Max1920px=8
+
+    type Sharing = AllowSharing | HideShareButtons | HideShareButtonsAndMembersOnly
+
+    type PublishParameter =
+    | Maturity of Maturity
+    | SubmissionPolicyAgreement of bool
+    | TermsOfServiceAgreement of bool
+    | Featured of bool
+    | AllowComments of bool
+    | RequestCritique of bool
+    | DisplayResolution of DisplayResolution
+    | Sharing of Sharing
+    | License of License
+    | GalleryId of Guid
+    | AllowFreeDownload of bool
+    | AddWatermark of bool
+
+    type StashPublishResponse = {
+        status: string
+        url: string
+        deviationid: Guid
+    }
+
+    let PublishAsync token publishParameters item =
         seq {
-            yield! QueryFor.publishParameters parameters
-            yield! QueryFor.stashItem item
-        }
-        |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/stash/publish"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<StashPublishResponse>
+            for p in publishParameters do
+                match p with
+                | Maturity NotMature ->
+                    "is_mature", "0"
+                | Maturity (Mature (level, classifications)) ->
+                    "is_mature", "1"
+                    match level with
+                    | MatureStrict -> "mature_level", "strict"
+                    | MatureModerate -> "mature_level", "moderate"
+                    for classification in classifications do
+                        match classification with
+                        | Nudity -> "mature_classification[]", "nudity"
+                        | Sexual -> "mature_classification[]", "sexual"
+                        | Gore -> "mature_classification[]", "gore"
+                        | Language -> "mature_classification[]", "language"
+                        | Ideology -> "mature_classification[]", "ideology"
+                | SubmissionPolicyAgreement true -> "agree_submission", "1"
+                | SubmissionPolicyAgreement false -> "agree_submission", "0"
+                | TermsOfServiceAgreement true -> "agree_tos", "1"
+                | TermsOfServiceAgreement false -> "agree_tos", "0"
+                | Featured true -> "feature", "1"
+                | Featured false -> "feature", "0"
+                | AllowComments true -> "allow_comments", "1"
+                | AllowComments false -> "allow_comments", "0"
+                | RequestCritique true -> "request_critique", "1"
+                | RequestCritique false -> "request_critique", "0"
+                | DisplayResolution d -> "display_resolution", string (int d)
+                | Sharing AllowSharing -> "sharing", "allow"
+                | Sharing HideShareButtons -> "sharing", "hide_share_buttons"
+                | Sharing HideShareButtonsAndMembersOnly -> "sharing", "hide_and_members_only"
+                | License DefaultLicense ->
+                    "license_options[creative_commons]", "0"
+                | License (CreativeCommonsLicense license) ->
+                    "license_options[creative_commons]", "1"
+                    match license.commercialUse with
+                    | CommercialUsePermitted -> "license_options[commercial]", "yes"
+                    | NonCommercial -> "license_options[commercial]", "no"
+                    match license.derivativeWorks with
+                    | DerivativeWorksPermitted -> "license_options[modify]", "yes"
+                    | NoDerivatives -> "license_options[modify]", "no"
+                    | ShareAlike -> "license_options[modify]", "share"
+                | GalleryId g ->
+                    "galleryids[]", string g
+                | AllowFreeDownload true -> "allow_free_download", "1"
+                | AllowFreeDownload false -> "allow_free_download", "0"
+                | AddWatermark true -> "add_watermark", "1"
+                | AddWatermark false -> "add_watermark", "0"
 
-    let AsyncGetPublishUserdata token =
+            "itemid", string (itemid item)
+        }
+        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/stash/publish"
+        |> Utils.readAsync
+        |> Utils.thenParse<StashPublishResponse>
+
+    type StashPublishUserdataResult = {
+        features: string list
+        agreements: string list
+    }
+
+    let GetPublishUserdataAsync token =
         Seq.empty
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/stash/publish/userdata"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<StashPublishUserdataResult>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/stash/publish/userdata"
+        |> Utils.readAsync
+        |> Utils.thenParse<StashPublishUserdataResult>
 
-    let AsyncGetSpace token =
+    type StashSpaceResult = {
+        available_space: int64
+        total_space: int64
+    }
+
+    let GetSpaceAsync token =
         Seq.empty
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/stash/space"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<StashSpaceResult>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/stash/space"
+        |> Utils.readAsync
+        |> Utils.thenParse<StashSpaceResult>
 
-    let AsyncSubmit token (destination: SubmissionDestination) (parameters: SubmissionParameters) (file: IFormFile) = async {
-        // multipart separators
-        let h1 = sprintf "-----------------------------%d" DateTime.UtcNow.Ticks
-        let h2 = sprintf "--%s" h1
-        let h3 = sprintf "--%s--" h1
+    type IFormFile =
+        abstract member Filename: string
+        abstract member ContentType: string
+        abstract member Data: byte[]
 
-        let req = Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/stash/submit" Seq.empty
-        req.Method <- "POST"
-        req.ContentType <- sprintf "multipart/form-data; boundary=%s" h1
+    module FormFile =
+        let Create filename content_type data = {
+            new IFormFile with
+                member __.Filename = filename
+                member __.ContentType = content_type
+                member __.Data = data
+        }
+    
+    type SubmissionTitle = SubmissionTitle of string | DefaultSubmissionTitle
+    with static member Default = DefaultSubmissionTitle
 
-        do! async {
+    type ArtistComments = ArtistComments of string | NoArtistComments
+    with static member Default = NoArtistComments
+
+    type OriginalUrl = OriginalUrl of string | NoOriginalUrl
+    with static member Default = NoOriginalUrl
+
+    type TagList = TagList of string list
+    with
+        static member Create x = TagList (List.ofSeq x)
+        static member Empty = TagList []
+    
+    type SubmissionParameters = {
+        title: SubmissionTitle
+        artist_comments: ArtistComments
+        tags: TagList
+        original_url: OriginalUrl
+        is_dirty: bool
+    } with
+        static member Default = {
+            title = DefaultSubmissionTitle
+            artist_comments = NoArtistComments
+            tags = TagList.Empty
+            original_url = NoOriginalUrl
+            is_dirty = false
+        }
+
+    type StashSubmitResult = {
+        status: string
+        itemid: int64
+        stack: string
+        stackid: int64
+    }
+
+    let SubmitAsync token (destination: SubmissionDestination) (parameters: SubmissionParameters) (file: IFormFile) = task {
+        let h1 = $"-----------------------------{DateTime.UtcNow.Ticks}"
+        let h2 = $"--{h1}"
+        let h3 = $"--{h1}--"
+
+        let! multipartBody = async {
             use ms = new MemoryStream()
             let w (s: string) =
                 let bytes = System.Text.Encoding.UTF8.GetBytes(sprintf "%s\n" s)
@@ -154,7 +343,7 @@ module Stash =
             w (sprintf "%b" parameters.is_dirty)
 
             match destination with
-            | ReplaceExisting (StashItem itemId) ->
+            | ReplaceExisting (Item itemId) ->
                 w h2
                 w "Content-Disposition: form-data; name=\"itemid\""
                 w ""
@@ -164,7 +353,7 @@ module Stash =
                 w "Content-Disposition: form-data; name=\"stack\""
                 w ""
                 w s
-            | SubmitToStack (StashStack stackId) ->
+            | SubmitToStack (Stack stackId) ->
                 w h2
                 w "Content-Disposition: form-data; name=\"stackid\""
                 w ""
@@ -181,19 +370,38 @@ module Stash =
             w ""
             w h3
 
-            req.RequestBody <- ms.ToArray()
+            return ms.ToArray()
+        }
+
+        let content = new ByteArrayContent(multipartBody)
+        content.Headers.Remove("Content-Type") |> ignore
+        content.Headers.Add("Content-Type", "multipart/form-data; boundary=%s")
+
+        let req = {
+            Utils.Method = HttpMethod.Post
+            Utils.Token = token
+            Utils.Url = "https://www.deviantart.com/api/v1/oauth2/stash/submit"
+            Utils.Content = content
         }
 
         return! req
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<StashSubmitResult>
+        |> Utils.readAsync
+        |> Utils.thenParse<StashSubmitResult>
     }
 
-    let AsyncUpdate token stackModifications stack =
+    type StackModification =
+    | ModifyStackTitle of string
+    | ModifyStackDescription of string
+    | ClearStackDescription
+
+    let UpdateAsync token stackModifications stack =
         seq {
             for s in stackModifications do
-               yield! QueryFor.stackModification s
+                match s with
+                | ModifyStackTitle v -> yield "title", v
+                | ModifyStackDescription v -> yield "description", v
+                | ClearStackDescription -> yield "description", "null"
         }
-        |> Dafs.createRequest Dafs.Method.POST token (sprintf "https://www.deviantart.com/api/v1/oauth2/stash/update/%d" (StashStack.id stack))
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<SuccessOrErrorResponse>
+        |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/stash/update/{stackid stack}"
+        |> Utils.readAsync
+        |> Utils.thenParse<SuccessOrErrorResponse>

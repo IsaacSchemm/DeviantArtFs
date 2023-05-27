@@ -33,14 +33,14 @@ namespace ExampleWebApp.Controllers
 
         public async Task<IActionResult> Callback(string code, string state = null)
         {
-            IDeviantArtRefreshToken result = await DeviantArtAuth.GetTokenAsync(_appReg, code, new Uri($"https://{HttpContext.Request.Host}/Home/Callback"));
-            var me = await DeviantArtFs.Api.User.AsyncWhoami(result, ObjectExpansion.None).StartAsTask();
+            var result = await DeviantArtAuth.GetTokenAsync(_appReg, code, new Uri($"https://{HttpContext.Request.Host}/Home/Callback"));
+            var me = await DeviantArtFs.Api.User.WhoamiAsync(result, ObjectExpansion.None);
             var token = new Token
             {
                 Id = Guid.NewGuid(),
                 UserId = me.userid,
-                AccessToken = result.AccessToken,
-                RefreshToken = result.RefreshToken
+                AccessToken = result.access_token,
+                RefreshToken = result.refresh_token
             };
             _context.Tokens.Add(token);
             await _context.SaveChangesAsync();
@@ -62,7 +62,7 @@ namespace ExampleWebApp.Controllers
             if (t == null)
                 return RedirectToAction("Login");
 
-            var me = await DeviantArtFs.Api.User.AsyncWhoami(t, ObjectExpansion.None).StartAsTask();
+            var me = await DeviantArtFs.Api.User.WhoamiAsync(t, ObjectExpansion.None);
             return Json(me);
         }
 

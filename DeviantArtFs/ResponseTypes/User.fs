@@ -29,14 +29,30 @@ type UserStats = {
     friends: int
 }
 
+type UserLinkSubnav = {
+    content_type: string
+}
+
+type UserSidebarWatched = {
+    has_new_content: bool
+    link_subnav: UserLinkSubnav
+    is_pinned: bool
+}
+
+type UserSidebar = {
+    watched: UserSidebarWatched option
+}
+
 type User = {
     userid: Guid
     username: string
     usericon: string
     ``type``: string
     is_watching: bool option
+    is_subscribed: bool option
     details: UserDetails option
     geo: UserGeo option
     profile: UserProfile option
     stats: UserStats option
+    sidebar: UserSidebar option
 }

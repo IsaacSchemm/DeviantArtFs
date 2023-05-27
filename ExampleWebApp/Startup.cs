@@ -26,7 +26,7 @@ namespace ExampleWebApp
             services.AddDbContext<ExampleDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(o => o.EnableEndpointRouting = false).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSingleton(
                 typeof(DeviantArtApp),
@@ -43,7 +43,6 @@ namespace ExampleWebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {

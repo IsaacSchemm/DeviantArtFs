@@ -16,7 +16,7 @@ Public Class Form1
             Dim t = AccessToken.ReadFrom("refresh_token.txt")
 
             Try
-                Dim user = Await Api.User.AsyncWhoami(t, ParameterTypes.ObjectExpansion.None).StartAsTask()
+                Dim user = Await Api.User.WhoamiAsync(t, ObjectExpansion.None)
                 If MsgBox($"Log in as {user.username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
                     Token = t
                 End If
@@ -38,7 +38,7 @@ Public Class Form1
         End If
 
         If Token IsNot Nothing Then
-            Dim user = Await Api.User.AsyncWhoami(Token, ParameterTypes.ObjectExpansion.None).StartAsTask()
+            Dim user = Await Api.User.WhoamiAsync(Token, ObjectExpansion.None)
             ToolStripStatusLabel1.Text = $"Logged in as {user.username}"
 
             CurrentUsername = user.username
@@ -59,11 +59,11 @@ Public Class Form1
         TableLayoutPanel1.Controls.Clear()
         PictureBox1.ImageLocation = Nothing
 
-        Dim page = Await Api.Gallery.AsyncPageAllView(
+        Dim page = Await Api.Gallery.PageAllViewAsync(
             Token,
             If(CurrentUsername Is Nothing, UserScope.ForCurrentUser, UserScope.NewForUser(CurrentUsername)),
             PagingLimit.NewPagingLimit(TableLayoutPanel1.ColumnCount * TableLayoutPanel1.RowCount),
-            PagingOffset.NewPagingOffset(NextOffset)).StartAsTask()
+            PagingOffset.NewPagingOffset(NextOffset))
 
         NextOffset = page.next_offset.OrNull()
         For Each r In page.results.OrEmpty()
@@ -87,7 +87,7 @@ Public Class Form1
         End If
 
         WebBrowser1.Navigate("about:blank")
-        Dim metadataResponse = Await Api.Deviation.AsyncGetMetadata(Token, ExtParams.None, {deviation.deviationid}).StartAsTask()
+        Dim metadataResponse = Await Api.Deviation.GetMetadataAsync(Token, ExtParams.None, {deviation.deviationid})
         Dim s = metadataResponse.metadata.Single()
         WebBrowser1.Document.Write(s.description)
     End Sub

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ExampleWebApp.Models
 {
-    public class Token : IDeviantArtRefreshToken
+    public class Token
     {
         public Guid Id { get; set; }
 

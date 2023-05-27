@@ -4,158 +4,300 @@ open DeviantArtFs
 open DeviantArtFs.ParameterTypes
 open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
+open FSharp.Control
+open System
 
 module Browse =
-    let AsyncGetDailyDeviations token expansion date =
+    type DailyDeviationDate = DailyDeviationsToday | DailyDeviationsFor of DateTime with static member Default = DailyDeviationsToday
+
+    let GetDailyDeviationsAsync token expansion date =
         seq {
-            yield! QueryFor.dailyDeviationDate date
+            match date with
+            | DailyDeviationsFor d -> yield "date", d.ToString("YYYY-MM-dd")
+            | DailyDeviationsToday -> ()
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/dailydeviations"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<ListOnlyResponse<Deviation>>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/dailydeviations"
+        |> Utils.readAsync
+        |> Utils.thenParse<ListOnlyResponse<Deviation>>
 
-    let AsyncPageByDeviantsYouWatch token limit offset =
+    let PageByDeviantsYouWatchAsync token limit offset =
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/deviantsyouwatch"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<Page<Deviation>>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/deviantsyouwatch"
+        |> Utils.readAsync
+        |> Utils.thenParse<Page<Deviation>>
 
-    let AsyncGetByDeviantsYouWatch token batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageByDeviantsYouWatch token batchsize)
+    let GetByDeviantsYouWatchAsync token batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageByDeviantsYouWatchAsync token batchsize offset
+            yield! data.results.Value
+            has_more <- data.has_more.Value
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    let AsyncGetMoreLikeThis token expansion seed =
+    type SuggestedCollection = {
+        collection: Gallection
+        deviations: Deviation list
+    }
+
+    type MoreLikeThisPreviewResult = {
+        seed: Guid
+        author: User
+        more_from_artist: Deviation list
+        more_from_da: Deviation list
+        suggested_collections: SuggestedCollection list option
+    }
+
+    let MoreLikeThisPreviewAsync token expansion seed =
         seq {
-            yield sprintf "seed=%s" (Dafs.guid2str seed)
+            yield "seed", Utils.guidString seed
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/morelikethis/preview"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<MoreLikeThisPreviewResult>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/morelikethis/preview"
+        |> Utils.readAsync
+        |> Utils.thenParse<MoreLikeThisPreviewResult>
 
-    let AsyncPageNewest token expansion q limit offset =
+    type SearchQuery = NoSearchQuery | SearchQuery of string with static member Default = NoSearchQuery
+
+    type BrowsePage = {
+        has_more: bool
+        next_offset: int option
+        error_code: int option
+        estimated_total: int option
+        results: Deviation list
+    }
+
+    let PageNewestAsync token expansion q limit offset =
         seq {
-            yield! QueryFor.searchQuery q
+            match q with
+            | SearchQuery s -> yield "q", s
+            | NoSearchQuery -> ()
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 120
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/newest"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<BrowsePage>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/newest"
+        |> Utils.readAsync
+        |> Utils.thenParse<BrowsePage>
 
-    let AsyncGetNewest token expansion q batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageNewest token expansion q batchsize)
+    let GetNewestAsync token expansion q batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageNewestAsync token expansion q batchsize offset
+            yield! data.results
+            has_more <- data.has_more
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    let AsyncPagePopular token expansion timerange q limit offset =
+    type PopularTimeRange = Unspecified | Now | OneWeek | OneMonth | AllTime with static member Default = Unspecified
+
+    let PagePopularAsync token expansion timerange q limit offset =
         seq {
-            yield! QueryFor.searchQuery q
-            yield! QueryFor.timeRange timerange
+            match q with
+            | SearchQuery s -> yield "q", s
+            | NoSearchQuery -> ()
+            match timerange with
+            | Now -> yield "timerange", "now"
+            | OneWeek -> yield "timerange", "1week"
+            | OneMonth -> yield "timerange", "1month"
+            | AllTime -> yield "timerange", "alltime"
+            | Unspecified -> ()
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 120
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/popular"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<BrowsePage>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/popular"
+        |> Utils.readAsync
+        |> Utils.thenParse<BrowsePage>
 
-    let AsyncGetPopular token expansion timerange q batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPagePopular token expansion timerange q batchsize)
+    let GetPopularAsync token expansion timerange q batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PagePopularAsync token expansion timerange q batchsize offset
+            yield! data.results
+            has_more <- data.has_more
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    let AsyncPagePostsByDeviantsYouWatch token limit offset =
+    type Post = {
+        journal: Deviation option
+        status: Status option
+    }
+
+    let PagePostsByDeviantsYouWatchAsync token expansion limit offset =
         seq {
-            yield! QueryFor.offset offset
-            yield! QueryFor.limit limit 50
-        }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/posts/deviantsyouwatch"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<Page<Post>>
-
-    let AsyncGetPostsByDeviantsYouWatch token batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPagePostsByDeviantsYouWatch token batchsize)
-
-    let AsyncPageRecommended token expansion q limit offset =
-        seq {
-            yield! QueryFor.searchQuery q
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/recommended"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<RecommendedPage>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/posts/deviantsyouwatch"
+        |> Utils.readAsync
+        |> Utils.thenParse<Page<Post>>
 
-    let AsyncGetRecommended token expansion q batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageRecommended token expansion q batchsize)
+    let GetPostsByDeviantsYouWatchAsync token expansion batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PagePostsByDeviantsYouWatchAsync token expansion batchsize offset
+            yield! data.results.Value
+            has_more <- data.has_more.Value
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    let AsyncPageTags token expansion tag limit offset =
+    type RecommendedPage = {
+        has_more: bool
+        next_offset: int option
+        estimated_total: int option
+        results: Deviation list
+    }
+
+    let PageRecommendedAsync token expansion q limit offset =
         seq {
-            yield sprintf "tag=%s" (System.Uri.EscapeDataString tag)
+            match q with
+            | SearchQuery s -> yield "q", s
+            | NoSearchQuery -> ()
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/tags"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<BrowsePage>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/recommended"
+        |> Utils.readAsync
+        |> Utils.thenParse<RecommendedPage>
 
-    let AsyncGetTags token expansion tag batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageTags token expansion tag batchsize)
+    let GetRecommendedAsync token expansion q batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageRecommendedAsync token expansion q batchsize offset
+            yield! data.results
+            has_more <- data.has_more
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    let AsyncSearchTags token tag_name =
+    let PageTagsAsync token expansion tag limit offset =
         seq {
-            yield sprintf "tag_name=%s" (System.Uri.EscapeDataString tag_name)
+            yield "tag", tag
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
+            yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/tags/search"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<ListOnlyResponse<TagSearchResult>>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/tags"
+        |> Utils.readAsync
+        |> Utils.thenParse<BrowsePage>
 
-    let AsyncPageTopic token expansion topic limit offset =
+    let GetTagsAsync token expansion tag batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageTagsAsync token expansion tag batchsize offset
+            yield! data.results
+            has_more <- data.has_more
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
+
+    type TagSearchResult = {
+        tag_name: string
+    }
+
+    let SearchTagsAsync token tag_name =
         seq {
-            yield sprintf "topic=%s" (System.Uri.EscapeDataString topic)
+            yield "tag_name", tag_name
+        }
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/tags/search"
+        |> Utils.readAsync
+        |> Utils.thenParse<ListOnlyResponse<TagSearchResult>>
+
+    let PageTopicAsync token expansion topic limit offset =
+        seq {
+            yield "topic", topic
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 24
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/topic"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<Page<Deviation>>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/topic"
+        |> Utils.readAsync
+        |> Utils.thenParse<Page<Deviation>>
 
-    let AsyncGetTopic token expansion topic batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageTopic token expansion topic batchsize)
+    let GetTopicAsync token expansion topic batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageTopicAsync token expansion topic batchsize offset
+            yield! data.results.Value
+            has_more <- data.has_more.Value
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    let AsyncPageTopics token limit offset =
+    type Topic = {
+        name: string
+        canonical_name: string
+        example_deviations: Deviation list option
+        deviations: Deviation list option
+    }
+
+    let PageTopicsAsync token limit offset =
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 10
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/topics"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<Page<Topic>>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/topics"
+        |> Utils.readAsync
+        |> Utils.thenParse<Page<Topic>>
 
-    let AsyncGetTopics token batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageTopics token batchsize)
+    let GetTopicsAsync token batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageTopicsAsync token batchsize offset
+            yield! data.results.Value
+            has_more <- data.has_more.Value
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    let AsyncGetTopTopics token =
+    let GetTopTopicsAsync token =
         Seq.empty
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/toptopics"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<ListOnlyResponse<Topic>>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/toptopics"
+        |> Utils.readAsync
+        |> Utils.thenParse<ListOnlyResponse<Topic>>
 
-    let AsyncPageUserJournals token expansion filter username limit offset =
+    type UserJournalFilter = NoUserJournalFilter | FeaturedJournalsOnly with static member Default = FeaturedJournalsOnly
+
+    let PageUserJournalsAsync token expansion filter username limit offset =
         seq {
-            yield sprintf "username=%s" (System.Uri.EscapeDataString username)
-            yield! QueryFor.userJournalFilter filter
+            yield "username", username
+            match filter with
+            | NoUserJournalFilter -> yield "featured", "0"
+            | FeaturedJournalsOnly -> yield "featured", "1"
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/browse/user/journals"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<Page<Deviation>>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/user/journals"
+        |> Utils.readAsync
+        |> Utils.thenParse<Page<Deviation>>
 
-    let AsyncGetUserJournals token expansion filter username batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageUserJournals token expansion filter username batchsize)
+    let GetUserJournalsAsync token expansion filter username batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageUserJournalsAsync token expansion filter username batchsize offset
+            yield! data.results.Value
+            has_more <- data.has_more.Value
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }

@@ -11,7 +11,7 @@ let get_token =
 
 let rec print_all_comments token subject prefix replyType = async {
     let! comments =
-        DeviantArtFs.Api.Comments.AsyncGetComments token (CommentDepth 0) subject replyType MaximumPagingLimit StartingOffset
+        DeviantArtFs.Api.Comments.GetCommentsAsync token ObjectExpansion.None (DeviantArtFs.Api.Comments.Depth 0) subject replyType MaximumPagingLimit StartingOffset
         |> AsyncSeq.ofAsyncEnum
         |> AsyncSeq.truncate 10
         |> AsyncSeq.toListAsync
@@ -21,7 +21,7 @@ let rec print_all_comments token subject prefix replyType = async {
             printfn "%s..." (str.Substring(0, 116))
         else
             printfn "%s" str
-        do! print_all_comments token subject (sprintf "  %s" prefix) (InReplyToComment c.commentid)
+        do! print_all_comments token subject (sprintf "  %s" prefix) (DeviantArtFs.Api.Comments.InReplyToComment c.commentid)
 }
 
 let sandbox token_string = async {
@@ -31,14 +31,14 @@ let sandbox token_string = async {
     let read = Console.ReadLine()
     printfn ""
 
-    let! me = DeviantArtFs.Api.User.AsyncWhoami token []
+    let! me = DeviantArtFs.Api.User.WhoamiAsync token ObjectExpansion.None |> Async.AwaitTask
 
     let username =
         match read with
         | "" -> me.username
         | s -> s
 
-    let! profile = DeviantArtFs.Api.User.AsyncGetProfile token [] [] (UserScope.ForUser username)
+    let! profile = DeviantArtFs.Api.User.GetProfileAsync token ObjectExpansion.None DeviantArtFs.Api.User.ProfileExtParams.None (UserScope.ForUser username) |> Async.AwaitTask
     printfn "%s" profile.real_name
     if not (String.IsNullOrEmpty profile.tagline) then
         printfn "%s" profile.tagline
@@ -46,11 +46,11 @@ let sandbox token_string = async {
 
     printfn ""
 
-    do! print_all_comments token (OnProfile username) "" DirectReply
+    do! print_all_comments token (Api.Comments.OnProfile username) "" Api.Comments.DirectReply
     printfn ""
 
     let! first_deviation =
-        DeviantArtFs.Api.Gallery.AsyncGetAllView
+        DeviantArtFs.Api.Gallery.GetAllViewAsync
             token
             (ForUser username)
             DefaultPagingLimit
@@ -67,12 +67,12 @@ let sandbox token_string = async {
         | Some true -> printfn "Downloadable (size = %d)" (s.download_filesize |> Option.defaultValue -1)
         | _ -> printfn "Not downloadable"
 
-        let! metadata_response = DeviantArtFs.Api.Deviation.AsyncGetMetadata token [ExtCollection] [s.deviationid]
+        let! metadata_response = DeviantArtFs.Api.Deviation.GetMetadataAsync token [ExtParams.Collection] [s.deviationid] |> Async.AwaitTask
         for m in metadata_response.metadata do
             m.tags |> Seq.map (fun t -> sprintf "#%s" t.tag_name) |> String.concat " " |> printfn "%s"
 
         let! all_favorites =
-            DeviantArtFs.Api.Deviation.AsyncGetWhoFaved token [] s.deviationid MaximumPagingLimit StartingOffset
+            DeviantArtFs.Api.Deviation.GetWhoFavedAsync token ObjectExpansion.None s.deviationid MaximumPagingLimit StartingOffset
             |> AsyncSeq.ofAsyncEnum
             |> AsyncSeq.toListAsync
         match all_favorites with
@@ -85,15 +85,16 @@ let sandbox token_string = async {
 
         printfn ""
 
-        do! print_all_comments token (OnDeviation s.deviationid) "  " DirectReply
+        do! print_all_comments token (Api.Comments.OnDeviation s.deviationid) "  " Api.Comments.DirectReply
         printfn ""
 
     let! recent_deviations =
-        DeviantArtFs.Api.Gallery.AsyncPageAllView
+        DeviantArtFs.Api.Gallery.PageAllViewAsync
             token
             (ForUser username)
             (PagingLimit 9)
             (PagingOffset 1)
+        |> Async.AwaitTask
     printfn "Deviations 2-10:"
     for d in recent_deviations.results |> Option.defaultValue List.empty do
         match (d.title, d.published_time) with
@@ -105,11 +106,12 @@ let sandbox token_string = async {
     printfn ""
 
     let! old_deviations =
-        DeviantArtFs.Api.Gallery.AsyncPageAllView
+        DeviantArtFs.Api.Gallery.PageAllViewAsync
             token
             (ForUser username)
             (PagingLimit 5)
             (PagingOffset 100)
+        |> Async.AwaitTask
     printfn "Deviations 100-105:"
     for d in old_deviations.results |> Option.defaultValue List.empty do
         match (d.title, d.published_time) with
@@ -123,9 +125,10 @@ let sandbox token_string = async {
     printfn "Your Sta.sh stacks:"
 
     let! all_stacks =
-        DeviantArtFs.Api.Stash.AsyncGetContents
+        DeviantArtFs.Api.Stash.GetContentsAsync
             token
-            RootStack
+            ExtParams.None
+            Api.Stash.RootStack
             MaximumPagingLimit
             StartingOffset
         |> AsyncSeq.ofAsyncEnum
@@ -140,9 +143,10 @@ let sandbox token_string = async {
             printfn ""
             printfn "Stack %d:" stackid
             let! contents =
-                DeviantArtFs.Api.Stash.AsyncGetContents
+                DeviantArtFs.Api.Stash.GetContentsAsync
                     token
-                    (StashStack stackid)
+                    ExtParams.None
+                    (Api.Stash.Stack stackid)
                     MaximumPagingLimit
                     StartingOffset
                 |> AsyncSeq.ofAsyncEnum

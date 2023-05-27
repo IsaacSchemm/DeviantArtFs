@@ -1,5 +1,4 @@
 ﻿using DeviantArtFs;
-using DeviantArtFs.Extensions;
 using DeviantArtFs.ParameterTypes;
 using System;
 using System.Diagnostics;
@@ -16,10 +15,10 @@ namespace ExampleConsoleApp2 {
             Console.Write("Please enter a DeviantArt access token: ");
             var token = new Token { AccessToken = Console.ReadLine() };
 
-            var allStashItems = await DeviantArtFs.Api.Stash.AsyncGetDelta(
+            var allStashItems = await DeviantArtFs.Api.Stash.GetDeltaAsync(
                 token,
                 ExtParams.None,
-                StashDeltaCursor.InitialStashDeltaRequest,
+                DeviantArtFs.Api.Stash.DeltaCursor.Initial,
                 PagingLimit.MaximumPagingLimit,
                 PagingOffset.StartingOffset).ToListAsync();
             Console.WriteLine($"{allStashItems.Count} sta.sh items");
@@ -28,12 +27,20 @@ namespace ExampleConsoleApp2 {
             int i = 0;
             Stopwatch st = new();
             st.Start();
-            await foreach (var deviation in DeviantArtFs.Api.Gallery.AsyncGetAllView(token, UserScope.ForCurrentUser, PagingLimit.MaximumPagingLimit, PagingOffset.StartingOffset)) {
+            await foreach (var deviation in DeviantArtFs.Api.Gallery.GetAllViewAsync(token, UserScope.ForCurrentUser, PagingLimit.MaximumPagingLimit, PagingOffset.StartingOffset)) {
                 Console.WriteLine($"[{st.Elapsed}] {i + 1}. {deviation.title}");
                 i++;
                 if (i > 100) break;
             }
             st.Stop();
+
+            var user = await DeviantArtFs.Api.User.WhoamiAsync(token, ObjectExpansion.None);
+            i = 0;
+            await foreach (var deviation in DeviantArtFs.Api.User.GetProfilePostsAsync(token, ObjectExpansion.None, user.username, DeviantArtFs.Api.User.ProfilePostsCursor.FromBeginning)) {
+                Console.WriteLine($"{i + 1}. {deviation.title}");
+                i++;
+                if (i > 100) break;
+            }
         }
     }
 }

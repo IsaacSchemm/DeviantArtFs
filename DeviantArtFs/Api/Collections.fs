@@ -4,71 +4,174 @@ open DeviantArtFs
 open DeviantArtFs.ParameterTypes
 open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
+open FSharp.Control
 
 module Collections =
-    let AsyncPageCollection token expansion user folderid limit offset =
+    let PageCollectionAsync token expansion user folderid limit offset =
         seq {
             yield! QueryFor.userScope user
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 24
             yield! QueryFor.objectExpansion expansion
         }
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/collections/%s" (Dafs.guid2str folderid))
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<FolderPage>
+        |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/collections/{Utils.guidString folderid}"
+        |> Utils.readAsync
+        |> Utils.thenParse<FolderPage>
 
-    let AsyncGetCollection token expansion user folderid batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageCollection token expansion user folderid batchsize)
+    let GetCollectionAsync token expansion user folderid batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageCollectionAsync token expansion user folderid batchsize offset
+            yield! data.results
+            has_more <- data.has_more
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    let AsyncPageFolders token calculateSize extPreload user limit offset =
+    let PageAllAsync token user limit offset =
+        seq {
+            yield! QueryFor.userScope user
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 24
+        }
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/collections/all"
+        |> Utils.readAsync
+        |> Utils.thenParse<FolderPage>
+
+    let GetAllAsync token user batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageAllAsync token user batchsize offset
+            yield! data.results
+            has_more <- data.has_more
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
+
+    let PageFoldersAsync token calculateSize extPreload filterEmptyFolder user limit offset =
         seq {
             yield! QueryFor.userScope user
             yield! QueryFor.calculateSize calculateSize
             yield! QueryFor.folderPreload extPreload
+            yield! QueryFor.filterEmptyFolder filterEmptyFolder
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
-        |> Dafs.createRequest Dafs.Method.GET token "https://www.deviantart.com/api/v1/oauth2/collections/folders"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<Page<CollectionFolder>>
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/collections/folders"
+        |> Utils.readAsync
+        |> Utils.thenParse<Page<CollectionFolder>>
 
-    let AsyncGetFolders token extPreload calculateSize user batchsize offset =
-        Dafs.toAsyncEnum offset (AsyncPageFolders token extPreload calculateSize user batchsize)
+    let GetFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset = taskSeq {
+        let mutable offset = offset
+        let mutable has_more = true
+        while has_more do
+            let! data = PageFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset
+            yield! data.results.Value
+            has_more <- data.has_more.Value
+            if has_more then
+                offset <- PagingOffset data.next_offset.Value
+    }
 
-    let AsyncFave token deviationid folderids =
+    let CopyDeviationsAsync token target_folderid deviationids =
         seq {
-            yield sprintf "deviationid=%s" (Dafs.guid2str deviationid)
+            "target_folderid", Utils.guidString target_folderid
+            for d in deviationids do
+                "deviationids[]", Utils.guidString d
+        }
+        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/collections/folders/copy_deviations"
+        |> Utils.readAsync
+        |> Utils.thenParse<SuccessOrErrorResponse>
+
+    let MoveDeviationsAsync token source_folderid target_folderid deviationids =
+        seq {
+            "source_folderid", Utils.guidString source_folderid
+            "target_folderid", Utils.guidString target_folderid
+            for d in deviationids do
+                "deviationids[]", Utils.guidString d
+        }
+        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/collections/folders/move_deviations"
+        |> Utils.readAsync
+        |> Utils.thenParse<SuccessOrErrorResponse>
+
+    let RemoveDeviationsAsync token folderid deviationids =
+        seq {
+            "folderid", Utils.guidString folderid
+            for d in deviationids do
+                "deviationids[]", Utils.guidString d
+        }
+        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/collections/folders/move_deviations"
+        |> Utils.readAsync
+        |> Utils.thenParse<SuccessOrErrorResponse>
+
+    type FaveResult = {
+        success: bool
+        favourites: int
+    }
+
+    let FaveAsync token deviationid folderids =
+        seq {
+            yield "deviationid", Utils.guidString deviationid
             let mutable index = 0
             for f in folderids do
-                yield sprintf "folderid[%d]=%O" index (Dafs.guid2str f)
+                yield $"folderid[{index}]", Utils.guidString f
                 index <- index + 1
         }
-        |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/collections/fave"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<FaveResult>
+        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/collections/fave"
+        |> Utils.readAsync
+        |> Utils.thenParse<FaveResult>
 
-    let AsyncUnfave token deviationid folderids =
+    let UnfaveAsync token deviationid folderids =
         seq {
-            yield sprintf "deviationid=%s" (Dafs.guid2str deviationid)
+            yield "deviationid", Utils.guidString deviationid
             let mutable index = 0
             for f in folderids do
-                yield sprintf "folderid[%d]=%O" index (Dafs.guid2str f)
+                yield $"folderid[{index}]", Utils.guidString f
                 index <- index + 1
         }
-        |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/collections/unfave"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<FaveResult>
+        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/collections/unfave"
+        |> Utils.readAsync
+        |> Utils.thenParse<FaveResult>
 
-    let AsyncCreateFolder token folder =
+    let CreateFolderAsync token folder =
         seq {
-            yield sprintf "folder=%s" (System.Uri.EscapeDataString folder)
+            yield "folder", folder
         }
-        |> Dafs.createRequest Dafs.Method.POST token "https://www.deviantart.com/api/v1/oauth2/collections/folders/create"
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<CollectionFolder>
+        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/collections/folders/create"
+        |> Utils.readAsync
+        |> Utils.thenParse<CollectionFolder>
 
-    let AsyncRemoveFolder token folderid =
+    let RemoveFolderAsync token folderid =
         Seq.empty
-        |> Dafs.createRequest Dafs.Method.GET token (sprintf "https://www.deviantart.com/api/v1/oauth2/collections/folders/remove/%s" (Dafs.guid2str folderid))
-        |> Dafs.asyncRead
-        |> Dafs.thenParse<SuccessOrErrorResponse>
+        |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/collections/folders/remove/{Utils.guidString folderid}"
+        |> Utils.readAsync
+        |> Utils.thenParse<SuccessOrErrorResponse>
+
+    let UpdateFolderAsync token folderid folderUpdates =
+        seq {
+            yield "folderid", Utils.guidString folderid
+            yield! QueryFor.folderUpdates folderUpdates
+        }
+        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/collections/folders/update"
+        |> Utils.readAsync
+        |> Utils.thenParse<SuccessOrErrorResponse>
+
+    let UpdateDeviationOrderAsync token folderid deviationid position =
+        seq {
+            yield "folderid", Utils.guidString folderid
+            yield "deviationid", deviationid
+            yield "position", Utils.intString position
+        }
+        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/collections/folders/update_deviation_order"
+        |> Utils.readAsync
+        |> Utils.thenMap ignore
+
+    let UpdateOrderAsync token folderid position =
+        seq {
+            yield "folderid", Utils.guidString folderid
+            yield "position", Utils.intString position
+        }
+        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/collections/folders/update_order"
+        |> Utils.readAsync
+        |> Utils.thenParse<SuccessOrErrorResponse>
