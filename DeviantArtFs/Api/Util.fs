@@ -9,7 +9,7 @@ module Util =
         |> Utils.readAsync
         |> Utils.thenMap ignore
 
-    let AsyncIsValid token = task {
+    let IsValidAsync token = task {
         try
             do! PlaceboAsync token
             return true

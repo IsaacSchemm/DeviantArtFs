@@ -124,11 +124,6 @@ module Stash =
         |> Utils.readAsync
         |> Utils.thenParse<SuccessOrErrorResponse>
 
-    type GallerySet = GallerySet of Guid Set
-    with
-        static member Create x = GallerySet (Set.ofSeq x)
-        static member Empty = GallerySet Set.empty
-
     type DisplayResolution =
     | Original=0
     | Max400Px=1

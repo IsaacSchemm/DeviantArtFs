@@ -29,12 +29,10 @@ type GalleryFolderScope = SingleGalleryFolder of Guid | AllGalleryFoldersNewest 
 type MatureLevel = MatureStrict | MatureModerate
 
 type MatureClassification = Nudity | Sexual | Gore | Language | Ideology
-with
-    static member Multiple x = Set.ofSeq<MatureClassification> x
-    static member Single x = Set.ofSeq<MatureClassification> [x]
-    static member None = Set.empty<MatureClassification>
 
 type Maturity = Mature of MatureLevel * Set<MatureClassification> | NotMature
+with
+    static member MatureBecause l c = Mature (l, Set.ofSeq c)
 
 type CC_AttributionRestriction = CC_Attribution
 type CC_CommercialUseRestriction = CC_NonCommercial | CC_CommercialUsePermitted
@@ -44,7 +42,6 @@ type License = CreativeCommons of CC_AttributionRestriction * CC_CommercialUseRe
 with
     static member All = [
         DefaultLicense
-
         CreativeCommons (CC_Attribution, CC_CommercialUsePermitted, CC_DerivativeWorksPermitted)
         CreativeCommons (CC_Attribution, CC_CommercialUsePermitted, CC_NoDerivatives)
         CreativeCommons (CC_Attribution, CC_CommercialUsePermitted, CC_ShareAlike)
