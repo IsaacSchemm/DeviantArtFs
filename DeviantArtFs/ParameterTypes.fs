@@ -36,30 +36,21 @@ with
 
 type Maturity = Mature of MatureLevel * Set<MatureClassification> | NotMature
 
-type AttributionRestriction = Attribution
-type CommercialUseRestriction = NonCommercial | CommercialUsePermitted
-type DerivativeWorksRestriction = NoDerivatives | ShareAlike | DerivativeWorksPermitted
+type CC_AttributionRestriction = CC_Attribution
+type CC_CommercialUseRestriction = CC_NonCommercial | CC_CommercialUsePermitted
+type CC_DerivativeWorksRestriction = CC_NoDerivatives | CC_ShareAlike | CC_DerivativeWorksPermitted
 
-type CreativeCommonsLicenseDefinition = {
-    attribution: AttributionRestriction
-    commercialUse: CommercialUseRestriction
-    derivativeWorks: DerivativeWorksRestriction
-}
-
-type License = CreativeCommonsLicense of CreativeCommonsLicenseDefinition | DefaultLicense
+type License = CreativeCommons of CC_AttributionRestriction * CC_CommercialUseRestriction * CC_DerivativeWorksRestriction | DefaultLicense
 with
     static member All = [
         DefaultLicense
 
-        let cc x y z =
-            CreativeCommonsLicense { attribution = x; commercialUse = y; derivativeWorks = z }
-
-        cc Attribution CommercialUsePermitted DerivativeWorksPermitted
-        cc Attribution CommercialUsePermitted NoDerivatives
-        cc Attribution CommercialUsePermitted ShareAlike
-        cc Attribution NonCommercial DerivativeWorksPermitted
-        cc Attribution NonCommercial NoDerivatives
-        cc Attribution NonCommercial ShareAlike
+        CreativeCommons (CC_Attribution, CC_CommercialUsePermitted, CC_DerivativeWorksPermitted)
+        CreativeCommons (CC_Attribution, CC_CommercialUsePermitted, CC_NoDerivatives)
+        CreativeCommons (CC_Attribution, CC_CommercialUsePermitted, CC_ShareAlike)
+        CreativeCommons (CC_Attribution, CC_NonCommercial, CC_DerivativeWorksPermitted)
+        CreativeCommons (CC_Attribution, CC_NonCommercial, CC_NoDerivatives)
+        CreativeCommons (CC_Attribution, CC_NonCommercial, CC_ShareAlike)
     ]
 
 module internal QueryFor =

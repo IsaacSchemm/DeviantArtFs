@@ -196,15 +196,15 @@ module Stash =
                 | Sharing HideShareButtonsAndMembersOnly -> "sharing", "hide_and_members_only"
                 | License DefaultLicense ->
                     "license_options[creative_commons]", "0"
-                | License (CreativeCommonsLicense license) ->
+                | License (CreativeCommons (_, commercialUse, derivativeWorks)) ->
                     "license_options[creative_commons]", "1"
-                    match license.commercialUse with
-                    | CommercialUsePermitted -> "license_options[commercial]", "yes"
-                    | NonCommercial -> "license_options[commercial]", "no"
-                    match license.derivativeWorks with
-                    | DerivativeWorksPermitted -> "license_options[modify]", "yes"
-                    | NoDerivatives -> "license_options[modify]", "no"
-                    | ShareAlike -> "license_options[modify]", "share"
+                    match commercialUse with
+                    | CC_CommercialUsePermitted -> "license_options[commercial]", "yes"
+                    | CC_NonCommercial -> "license_options[commercial]", "no"
+                    match derivativeWorks with
+                    | CC_DerivativeWorksPermitted -> "license_options[modify]", "yes"
+                    | CC_NoDerivatives -> "license_options[modify]", "no"
+                    | CC_ShareAlike -> "license_options[modify]", "share"
                 | GalleryId g ->
                     "galleryids[]", string g
                 | AllowFreeDownload true -> "allow_free_download", "1"
