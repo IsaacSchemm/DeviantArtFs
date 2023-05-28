@@ -95,7 +95,7 @@ grant type (getting tokens from an authorization code and refreshing tokens).
 
 If you are writing a Windows desktop application, the package
 DeviantArtFs.WinForms package uses Internet Explorer to provide a way to get a
-code or token from the user using either grant type.
+code or token from the user.
 
 If you need to store the access token somewhere (such as in a database or
 file), you may want to create your own class that implements the
