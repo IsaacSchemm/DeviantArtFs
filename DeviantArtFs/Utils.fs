@@ -5,6 +5,7 @@ open System.Net.Http
 open System.Threading
 open FSharp.Control
 open FSharp.Json
+open DeviantArtFs.ParameterTypes
 open DeviantArtFs.ResponseTypes
 
 module internal Utils =
@@ -18,26 +19,36 @@ module internal Utils =
     [<RequireQualifiedAccess>]
     type Method = GET | POST
 
+    let private tokenQuery (t: IDeviantArtAccessToken) =
+        match t with
+        | :? IDeviantArtAccessTokenWithOptionalParameters as x -> QueryFor.optionalParameters x.OptionalParameters
+        | _ -> Seq.empty
+
     let get token url query = {
         Method = HttpMethod.Get
         Token = token
-        Url = $"{url}?{DeviantArtHttp.createQueryString query}"
+        Url = $"{url}?{DeviantArtHttp.createQueryString query}&{DeviantArtHttp.createQueryString (tokenQuery token)}"
         Content = null
     }
 
-    let post token url query = {
+    let postContent token url content = {
         Method = HttpMethod.Post
         Token = token
-        Url = url
-        Content = DeviantArtHttp.createForm query
+        Url = $"{url}?{DeviantArtHttp.createQueryString (tokenQuery token)}"
+        Content = content
     }
+
+    let post token url query =
+        postContent token url (DeviantArtHttp.createForm query)
 
     let mutable private retry429 = 500
 
     module internal RefreshLock =
         let Semaphore = new SemaphoreSlim(1, 1)
 
-    let rec private getResponseAsync (ir: ImmutableRequest) = task {
+    type internal RefreshMode = TokenRefreshable | TokenNonRefreshable
+
+    let rec private getResponseAsync (refreshMode: RefreshMode) (ir: ImmutableRequest) = task {
         let accessToken = ir.Token.AccessToken
         use reqMessage = new HttpRequestMessage(ir.Method, ir.Url)
         reqMessage.Content <- ir.Content
@@ -49,20 +60,20 @@ module internal Utils =
                 return failwithf "Client is rate-limited (too many 429 responses)"
             else
                 do! Async.Sleep retry429
-                return! getResponseAsync ir
+                return! getResponseAsync refreshMode ir
         else if not respMessage.IsSuccessStatusCode && ["application/json"; "text/json"] |> List.contains respMessage.Content.Headers.ContentType.MediaType then
             let! json = respMessage.Content.ReadAsStringAsync()
             let obj = Json.deserialize<BaseResponse> json
 
             match (ir.Token, obj.error) with
-            | (:? IDeviantArtRefreshableAccessToken as fetcher, Some "invalid_token") ->
+            | (:? IDeviantArtRefreshableAccessToken as fetcher, Some "invalid_token") when refreshMode = TokenRefreshable ->
                 do! RefreshLock.Semaphore.WaitAsync()
                 try
                     if accessToken = ir.Token.AccessToken then
                         do! fetcher.RefreshAccessTokenAsync()
                 finally
                     RefreshLock.Semaphore.Release() |> ignore
-                return! getResponseAsync { ir with Token = { new IDeviantArtAccessToken with member __.AccessToken = fetcher.AccessToken } }
+                return! getResponseAsync TokenNonRefreshable ir
             | _ ->
                 return raise (new DeviantArtException(respMessage, obj, json))
         else
@@ -71,7 +82,7 @@ module internal Utils =
     }
 
     let readAsync (req: ImmutableRequest) = task {
-        use! resp = getResponseAsync req
+        use! resp = getResponseAsync TokenRefreshable req
         let! json = resp.Content.ReadAsStringAsync()
         let obj = Json.deserialize<BaseResponse> json
         if obj.status = Some "error" then

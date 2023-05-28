@@ -9,10 +9,8 @@ open FSharp.Control
 open FSharp.Json
 
 module Deviation =
-    let GetAsync token expansion id =
-        seq {
-            yield! QueryFor.objectExpansion expansion
-        }
+    let GetAsync token id =
+        Seq.empty
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/deviation/{Utils.guidString id}"
         |> Utils.readAsync
         |> Utils.thenParse<Deviation>
@@ -380,9 +378,8 @@ module Deviation =
         metadata: Metadata list
     }
 
-    let GetMetadataAsync token extParams deviationids =
+    let GetMetadataAsync token deviationids =
         seq {
-            yield! QueryFor.extParams extParams
             for id in deviationids do
                 yield "deviationids[]", Utils.guidString id
         }
@@ -396,22 +393,21 @@ module Deviation =
         time: DateTimeOffset
     }
 
-    let PageWhoFavedAsync token expansion deviationid limit offset =
+    let PageWhoFavedAsync token deviationid limit offset =
         seq {
             yield "deviationid", Utils.guidString deviationid
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
-            yield! QueryFor.objectExpansion expansion
         }
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/deviation/whofaved"
         |> Utils.readAsync
         |> Utils.thenParse<Page<WhoFavedUser>>
 
-    let GetWhoFavedAsync token expansion req batchsize offset = taskSeq {
+    let GetWhoFavedAsync token req batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
         while has_more do
-            let! data = PageWhoFavedAsync token expansion req batchsize offset
+            let! data = PageWhoFavedAsync token req batchsize offset
             yield! data.results.Value
             has_more <- data.has_more.Value
             if has_more then

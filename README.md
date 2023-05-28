@@ -47,6 +47,19 @@ The following extension methods are provided in the namespace `DeviantArtFs.Exte
 * `.IsFalse()`: checks whether a `bool option` type (which might be `true`, `false`, or `None`) is false
 * `.OrEmpty()`: returns the items in the list, or an empty list if the field is `None`
 
+### Optional parameters
+
+Optional parameters for object expansion, `ext_params`, and mature content
+filtering must be included through the token object. Use the interface
+`IDeviantArtAccessTokenWithOptionalParameters` and include the optional
+parameters in the `OptionalParameters` property; for example:
+
+    public IEnumerable<OptionalParameter> => new OptionalParameter[] {
+        OptionalParameter.NewExpansion(Expansion.UserProfile),
+        OptionalParameter.NewExtParam(ExtParam.Gallery),
+        OptionalParameter.NewMatureContent(true)
+    }
+
 ### Deleted deviations and status updates
 
 `Deviation` and `DeviantArtStatus` objects can represent a deviation or status
@@ -56,7 +69,6 @@ property) before attempting to access any of the other fields.
 
 ## Known issues
 
-* The ability to turn off mature content filtering is not yet implemented.
 * The profile_pic field in the user.profile expansion is not supported due to circular type definitions. Get it from the full profile object instead.
 * The api_session return object is not supported.
 
@@ -65,6 +77,8 @@ property) before attempting to access any of the other fields.
 * **ExampleConsoleApp**: An F# console application that shows some data on the
   current user's recent (and not-so-recent) submissions, along with some of
   their Sta.sh info. Reads the access token interactively from standard input.
+* **ExampleConsoleApp3**: An F# console application that submits a picture to
+  Sta.sh and then publishes it to DeviantArt.
 * **GalleryViewer**: A VB.NET app that lets you see the "All" view of
   someone's gallery and read the descriptions of individual submissions.
   Uses the Client Credentials grant and stores tokens in a file.
@@ -76,7 +90,6 @@ property) before attempting to access any of the other fields.
 
 See also: https://www.deviantart.com/developers/authentication
 
-Both Authorization Code (recommended) and Implicit grant types are supported.
 The DeviantArtAuth module provides methods to support the Authorization Code
 grant type (getting tokens from an authorization code and refreshing tokens).
 

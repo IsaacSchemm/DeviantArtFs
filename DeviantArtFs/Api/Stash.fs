@@ -8,6 +8,7 @@ open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
 open System.Net.Http
 open FSharp.Control
+open System.Net.Http.Headers
 
 module Stash =
     type Stack = Stack of int64 | RootStack
@@ -30,21 +31,20 @@ module Stash =
         |> Utils.readAsync
         |> Utils.thenParse<StashMetadata>
 
-    let PageContentsAsync token extParams stack limit offset =
+    let PageContentsAsync token stack limit offset =
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
-            yield! QueryFor.extParams extParams
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/stash/{stackid stack}/contents"
         |> Utils.readAsync
         |> Utils.thenParse<Page<StashMetadata>>
 
-    let GetContentsAsync token extParams stack batchsize offset = taskSeq {
+    let GetContentsAsync token stack batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
         while has_more do
-            let! data = PageContentsAsync token extParams stack batchsize offset
+            let! data = PageContentsAsync token stack batchsize offset
             yield! data.results.Value
             has_more <- data.has_more.Value
             if has_more then
@@ -74,34 +74,31 @@ module Stash =
         entries: StashDeltaEntry list
     }
 
-    let PageDeltaAsync token extParams cursor limit offset =
+    let PageDeltaAsync token cursor limit offset =
         seq {
             match cursor with
             | DeltaCursor c -> "cursor", c
             | Initial -> ()
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 120
-            yield! QueryFor.extParams extParams
         }
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/stash/delta"
         |> Utils.readAsync
         |> Utils.thenParse<StashDelta>
 
-    let GetDeltaAsync token extParams cursor batchsize offset = taskSeq {
+    let GetDeltaAsync token cursor batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
         while has_more do
-            let! data = PageDeltaAsync token extParams cursor batchsize offset
+            let! data = PageDeltaAsync token cursor batchsize offset
             yield! data.entries
             has_more <- data.has_more
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
 
-    let GetItemAsync token extParams item =
-        seq {
-            yield! QueryFor.extParams extParams
-        }
+    let GetItemAsync token item =
+        Seq.empty
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/stash/item/{itemid item}"
         |> Utils.readAsync
         |> Utils.thenParse<StashMetadata>
@@ -375,16 +372,10 @@ module Stash =
 
         let content = new ByteArrayContent(multipartBody)
         content.Headers.Remove("Content-Type") |> ignore
-        content.Headers.Add("Content-Type", "multipart/form-data; boundary=%s")
+        content.Headers.Add("Content-Type", $"multipart/form-data; boundary={h1}")
 
-        let req = {
-            Utils.Method = HttpMethod.Post
-            Utils.Token = token
-            Utils.Url = "https://www.deviantart.com/api/v1/oauth2/stash/submit"
-            Utils.Content = content
-        }
-
-        return! req
+        return! content
+        |> Utils.postContent token "https://www.deviantart.com/api/v1/oauth2/stash/submit"
         |> Utils.readAsync
         |> Utils.thenParse<StashSubmitResult>
     }

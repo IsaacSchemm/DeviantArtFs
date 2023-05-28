@@ -27,7 +27,6 @@ namespace ExampleWebApp.Controllers
                 : PagingLimit.MaximumPagingLimit;
             var resp = await DeviantArtFs.Api.Gallery.PageGalleryAsync(
                 token,
-                ObjectExpansion.None,
                 username != null
                     ? UserScope.NewForUser(username)
                     : UserScope.ForCurrentUser,

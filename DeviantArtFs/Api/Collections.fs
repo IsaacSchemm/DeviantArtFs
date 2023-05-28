@@ -7,22 +7,21 @@ open DeviantArtFs.Pages
 open FSharp.Control
 
 module Collections =
-    let PageCollectionAsync token expansion user folderid limit offset =
+    let PageCollectionAsync token user folderid limit offset =
         seq {
             yield! QueryFor.userScope user
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 24
-            yield! QueryFor.objectExpansion expansion
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/collections/{Utils.guidString folderid}"
         |> Utils.readAsync
         |> Utils.thenParse<FolderPage>
 
-    let GetCollectionAsync token expansion user folderid batchsize offset = taskSeq {
+    let GetCollectionAsync token user folderid batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
         while has_more do
-            let! data = PageCollectionAsync token expansion user folderid batchsize offset
+            let! data = PageCollectionAsync token user folderid batchsize offset
             yield! data.results
             has_more <- data.has_more
             if has_more then

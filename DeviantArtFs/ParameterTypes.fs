@@ -1,20 +1,13 @@
 ﻿namespace DeviantArtFs.ParameterTypes
 
 open System
+open DeviantArtFs
 
 type PagingOffset = StartingOffset | PagingOffset of int
 with static member Default = StartingOffset
 
 type PagingLimit = PagingLimit of int | MaximumPagingLimit | DefaultPagingLimit
 with static member Default = DefaultPagingLimit
-
-[<RequireQualifiedAccess>]
-type ObjectExpansion = CommentFullText | DeviationPinned | DeviationFullText | StatusFullText | UserDetails | UserGeo | UserProfile | UserStats | UserWatch
-with static member None = Seq.empty<ObjectExpansion>
-
-[<RequireQualifiedAccess>]
-type ExtParams = Submission | Camera | Stats | Collection | Gallery
-with static member None = Seq.empty<ExtParams>
 
 type UserScope = ForCurrentUser | ForUser of string
 with static member Default = ForCurrentUser
@@ -70,6 +63,33 @@ with
     ]
 
 module internal QueryFor =
+    let optionalParameters ops = seq {
+        for o in ops do
+        match o with
+        | OptionalParameter.Expansion s ->
+            "expand", String.concat "," (seq {
+                for x in s do
+                    match x with
+                    | Expansion.CommentFullText -> "comment.fulltext"
+                    | Expansion.DeviationPinned -> "deviation.pinned"
+                    | Expansion.DeviationFullText -> "deviation.fulltext"
+                    | Expansion.StatusFullText -> "status.fulltext"
+                    | Expansion.UserDetails -> "user.details"
+                    | Expansion.UserGeo -> "user.geo"
+                    | Expansion.UserProfile -> "user.profile"
+                    | Expansion.UserStats -> "user.stats"
+                    | Expansion.UserWatch -> "user.watch"
+            })
+        | OptionalParameter.ExtParam ExtParam.Submission -> "ext_submission", "1"
+        | OptionalParameter.ExtParam ExtParam.Camera -> "ext_camera", "1"
+        | OptionalParameter.ExtParam ExtParam.Stats -> "ext_stats", "1"
+        | OptionalParameter.ExtParam ExtParam.Collection -> "ext_collection", "1"
+        | OptionalParameter.ExtParam ExtParam.Gallery -> "ext_collection", "1"
+        | OptionalParameter.MatureContent true -> "is_mature", "true"
+        | OptionalParameter.MatureContent false -> "is_mature", "false"
+        | OptionalParameter.CustomParameter (key, value) -> key, value
+    }
+
     let offset offset = seq {
         match offset with
         | StartingOffset -> ()
@@ -81,33 +101,6 @@ module internal QueryFor =
         | PagingLimit l -> "limit", string (min l maximum)
         | MaximumPagingLimit -> "limit", string maximum
         | DefaultPagingLimit -> ()
-    }
-
-    let objectExpansion o = seq {
-        if not (Seq.isEmpty o) then
-            "expand", String.concat "," [
-                for x in o do
-                    match x with
-                    | ObjectExpansion.CommentFullText -> "comment.fulltext"
-                    | ObjectExpansion.DeviationPinned -> "deviation.pinned"
-                    | ObjectExpansion.DeviationFullText -> "deviation.fulltext"
-                    | ObjectExpansion.StatusFullText -> "status.fulltext"
-                    | ObjectExpansion.UserDetails -> "user.details"
-                    | ObjectExpansion.UserGeo -> "user.geo"
-                    | ObjectExpansion.UserProfile -> "user.profile"
-                    | ObjectExpansion.UserStats -> "user.stats"
-                    | ObjectExpansion.UserWatch -> "user.watch"
-            ]
-    }
-
-    let extParams o = seq {
-        for x in o do
-            match x with
-            | ExtParams.Submission -> "ext_submission", "1"
-            | ExtParams.Camera -> "ext_camera", "1"
-            | ExtParams.Stats -> "ext_stats", "1"
-            | ExtParams.Collection -> "ext_collection", "1"
-            | ExtParams.Gallery -> "ext_collection", "1"
     }
 
     let userScope scope = seq {

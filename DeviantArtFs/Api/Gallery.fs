@@ -29,7 +29,7 @@ module Gallery =
                 offset <- PagingOffset data.next_offset.Value
     }
 
-    let PageGalleryAsync token expansion scope folder limit offset =
+    let PageGalleryAsync token scope folder limit offset =
         let folder_id_str =
             match folder with
             | SingleGalleryFolder s -> Utils.guidString s
@@ -43,17 +43,16 @@ module Gallery =
             | AllGalleryFoldersPopular -> "mode", "popular"
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 24
-            yield! QueryFor.objectExpansion expansion
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/gallery/{folder_id_str}"
         |> Utils.readAsync
         |> Utils.thenParse<FolderPage>
 
-    let GetGalleryAsync token expansion scope folder batchsize offset = taskSeq {
+    let GetGalleryAsync token scope folder batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
         while has_more do
-            let! data = PageGalleryAsync token expansion scope folder batchsize offset
+            let! data = PageGalleryAsync token scope folder batchsize offset
             yield! data.results
             has_more <- data.has_more
             if has_more then

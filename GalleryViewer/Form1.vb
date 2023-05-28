@@ -16,7 +16,7 @@ Public Class Form1
             Dim t = AccessToken.ReadFrom("refresh_token.txt")
 
             Try
-                Dim user = Await Api.User.WhoamiAsync(t, ObjectExpansion.None)
+                Dim user = Await Api.User.WhoamiAsync(t)
                 If MsgBox($"Log in as {user.username}?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
                     Token = t
                 End If
@@ -38,7 +38,7 @@ Public Class Form1
         End If
 
         If Token IsNot Nothing Then
-            Dim user = Await Api.User.WhoamiAsync(Token, ObjectExpansion.None)
+            Dim user = Await Api.User.WhoamiAsync(Token)
             ToolStripStatusLabel1.Text = $"Logged in as {user.username}"
 
             CurrentUsername = user.username
@@ -87,7 +87,7 @@ Public Class Form1
         End If
 
         WebBrowser1.Navigate("about:blank")
-        Dim metadataResponse = Await Api.Deviation.GetMetadataAsync(Token, ExtParams.None, {deviation.deviationid})
+        Dim metadataResponse = Await Api.Deviation.GetMetadataAsync(Token, {deviation.deviationid})
         Dim s = metadataResponse.metadata.Single()
         WebBrowser1.Document.Write(s.description)
     End Sub

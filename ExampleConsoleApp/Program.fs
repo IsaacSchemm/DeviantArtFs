@@ -3,7 +3,14 @@ open FSharp.Control
 open DeviantArtFs
 open DeviantArtFs.ParameterTypes
 
-let create_token_obj str = { new IDeviantArtAccessToken with member __.AccessToken = str }
+let create_token_obj str = {
+    new IDeviantArtAccessTokenWithOptionalParameters with
+        member _.AccessToken = str
+        member _.OptionalParameters = [
+            OptionalParameter.ExtParam ExtParam.Collection
+            OptionalParameter.MatureContent true
+        ]
+}
 
 let get_token =
     printf "Please enter a DeviantArt access token: "
@@ -11,7 +18,7 @@ let get_token =
 
 let rec print_all_comments token subject prefix replyType = async {
     let! comments =
-        DeviantArtFs.Api.Comments.GetCommentsAsync token ObjectExpansion.None (DeviantArtFs.Api.Comments.Depth 0) subject replyType MaximumPagingLimit StartingOffset
+        DeviantArtFs.Api.Comments.GetCommentsAsync token (DeviantArtFs.Api.Comments.Depth 0) subject replyType MaximumPagingLimit StartingOffset
         |> AsyncSeq.ofAsyncEnum
         |> AsyncSeq.truncate 10
         |> AsyncSeq.toListAsync
@@ -31,14 +38,14 @@ let sandbox token_string = async {
     let read = Console.ReadLine()
     printfn ""
 
-    let! me = DeviantArtFs.Api.User.WhoamiAsync token ObjectExpansion.None |> Async.AwaitTask
+    let! me = DeviantArtFs.Api.User.WhoamiAsync token |> Async.AwaitTask
 
     let username =
         match read with
         | "" -> me.username
         | s -> s
 
-    let! profile = DeviantArtFs.Api.User.GetProfileAsync token ObjectExpansion.None DeviantArtFs.Api.User.ProfileExtParams.None (UserScope.ForUser username) |> Async.AwaitTask
+    let! profile = DeviantArtFs.Api.User.GetProfileAsync token DeviantArtFs.Api.User.ProfileExtParams.None (UserScope.ForUser username) |> Async.AwaitTask
     printfn "%s" profile.real_name
     if not (String.IsNullOrEmpty profile.tagline) then
         printfn "%s" profile.tagline
@@ -67,12 +74,12 @@ let sandbox token_string = async {
         | Some true -> printfn "Downloadable (size = %d)" (s.download_filesize |> Option.defaultValue -1)
         | _ -> printfn "Not downloadable"
 
-        let! metadata_response = DeviantArtFs.Api.Deviation.GetMetadataAsync token [ExtParams.Collection] [s.deviationid] |> Async.AwaitTask
+        let! metadata_response = DeviantArtFs.Api.Deviation.GetMetadataAsync token [s.deviationid] |> Async.AwaitTask
         for m in metadata_response.metadata do
             m.tags |> Seq.map (fun t -> sprintf "#%s" t.tag_name) |> String.concat " " |> printfn "%s"
 
         let! all_favorites =
-            DeviantArtFs.Api.Deviation.GetWhoFavedAsync token ObjectExpansion.None s.deviationid MaximumPagingLimit StartingOffset
+            DeviantArtFs.Api.Deviation.GetWhoFavedAsync token s.deviationid MaximumPagingLimit StartingOffset
             |> AsyncSeq.ofAsyncEnum
             |> AsyncSeq.toListAsync
         match all_favorites with
@@ -127,7 +134,6 @@ let sandbox token_string = async {
     let! all_stacks =
         DeviantArtFs.Api.Stash.GetContentsAsync
             token
-            ExtParams.None
             Api.Stash.RootStack
             MaximumPagingLimit
             StartingOffset
@@ -145,7 +151,6 @@ let sandbox token_string = async {
             let! contents =
                 DeviantArtFs.Api.Stash.GetContentsAsync
                     token
-                    ExtParams.None
                     (Api.Stash.Stack stackid)
                     MaximumPagingLimit
                     StartingOffset

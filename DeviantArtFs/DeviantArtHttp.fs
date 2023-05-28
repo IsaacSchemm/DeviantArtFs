@@ -2,6 +2,7 @@
 
 open System.Net.Http
 open System.Collections.Generic
+open System.IO
 
 module DeviantArtHttp =
     let mutable HttpClient =
@@ -16,5 +17,7 @@ module DeviantArtHttp =
         ])
 
     let internal createQueryString items =
-        let content = createForm items
-        content.ReadAsStringAsync().GetAwaiter().GetResult()
+        use content = createForm items
+        use s = content.ReadAsStream()
+        use sr = new StreamReader(s)
+        sr.ReadToEnd()

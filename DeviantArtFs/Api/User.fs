@@ -43,23 +43,22 @@ module User =
         watch: WatchInfo
     }
 
-    let PageFriendsAsync token expansion user limit offset =
+    let PageFriendsAsync token user limit offset =
         let username = match user with | ForUser u -> u | ForCurrentUser -> ""
 
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
-            yield! QueryFor.objectExpansion expansion
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/friends/{Uri.EscapeDataString username}"
         |> Utils.readAsync
         |> Utils.thenParse<Page<FriendRecord>>
 
-    let GetFriendsAsync token expansion req batchsize offset = taskSeq {
+    let GetFriendsAsync token req batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
         while has_more do
-            let! data = PageFriendsAsync token expansion req batchsize offset
+            let! data = PageFriendsAsync token req batchsize offset
             yield! data.results.Value
             has_more <- data.has_more.Value
             if has_more then
@@ -178,13 +177,12 @@ module User =
         galleries: GalleryFolder list option
     }
 
-    let GetProfileAsync token expansion profile_ext_params user =
+    let GetProfileAsync token profile_ext_params user =
         let username = match user with | ForUser u -> u | ForCurrentUser -> ""
 
         seq {
             yield "ext_collections", if profile_ext_params.ext_collections then "1" else "0"
             yield "ext_galleries", if profile_ext_params.ext_galleries then "1" else "0"
-            yield! QueryFor.objectExpansion expansion
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/profile/{Uri.EscapeDataString username}"
         |> Utils.readAsync
@@ -199,9 +197,8 @@ module User =
 
     type ProfilePostsCursor = ProfilePostsCursor of string | FromBeginning
 
-    let PageProfilePostsAsync token expansion username cursor =
+    let PageProfilePostsAsync token username cursor =
         seq {
-            yield! QueryFor.objectExpansion expansion
             yield "username", username
             match cursor with
             | ProfilePostsCursor c -> yield "cursor", c
@@ -211,11 +208,11 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<ProfilePostsPage>
 
-    let GetProfilePostsAsync token expansion username cursor = taskSeq {
+    let GetProfilePostsAsync token username cursor = taskSeq {
         let mutable cursor = cursor
         let mutable has_more = true
         while has_more do
-            let! data = PageProfilePostsAsync token expansion username cursor
+            let! data = PageProfilePostsAsync token username cursor
             yield! data.results
             has_more <- data.has_more
             if has_more then
@@ -300,30 +297,27 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<SuccessOrErrorResponse>
 
-    let GetStatusAsync token expansion id =
-        seq {
-            yield! QueryFor.objectExpansion expansion
-        }
+    let GetStatusAsync token id =
+        Seq.empty
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/statuses/{Utils.guidString id}"
         |> Utils.readAsync
         |> Utils.thenParse<Status>
 
-    let PageStatusesAsync token expansion username limit offset =
+    let PageStatusesAsync token username limit offset =
         seq {
             yield "username", username
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
-            yield! QueryFor.objectExpansion expansion
         }
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/user/statuses"
         |> Utils.readAsync
         |> Utils.thenParse<Page<Status>>
 
-    let GetStatusesAsync token expansion username batchsize offset = taskSeq {
+    let GetStatusesAsync token username batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
         while has_more do
-            let! data = PageStatusesAsync expansion token username batchsize offset
+            let! data = PageStatusesAsync token username batchsize offset
             yield! data.results.Value
             has_more <- data.has_more.Value
             if has_more then
@@ -375,42 +369,38 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<ListOnlyResponse<Deviation>>
 
-    let PageWatchersAsync token expansion user limit offset =
+    let PageWatchersAsync token user limit offset =
         let username = match user with | ForUser u -> u | ForCurrentUser -> ""
 
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
-            yield! QueryFor.objectExpansion expansion
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/watchers/{Uri.EscapeDataString username}"
         |> Utils.readAsync
         |> Utils.thenParse<Page<WatcherRecord>>
 
-    let GetWatchersAsync token expansion user limit offset = taskSeq {
+    let GetWatchersAsync token user limit offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
         while has_more do
-            let! data = PageWatchersAsync token expansion user limit offset
+            let! data = PageWatchersAsync token user limit offset
             yield! data.results.Value
             has_more <- data.has_more.Value
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
 
-    let WhoamiAsync token expansion =
-        seq {
-            yield! QueryFor.objectExpansion expansion
-        }
+    let WhoamiAsync token =
+        Seq.empty
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/user/whoami"
         |> Utils.readAsync
         |> Utils.thenParse<User>
 
-    let WhoisAsync token expansion usernames =
+    let WhoisAsync token usernames =
         seq {
             for u in usernames do
                 yield "usernames[]", u
-                yield! QueryFor.objectExpansion expansion
         }
         |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/user/whois"
         |> Utils.readAsync
