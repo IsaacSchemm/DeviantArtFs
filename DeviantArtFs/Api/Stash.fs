@@ -8,7 +8,6 @@ open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
 open System.Net.Http
 open FSharp.Control
-open System.Net.Http.Headers
 
 module Stash =
     type Stack = Stack of int64 | RootStack
@@ -191,15 +190,10 @@ module Stash =
                 | Sharing HideShareButtonsAndMembersOnly -> "sharing", "hide_and_members_only"
                 | License DefaultLicense ->
                     "license_options[creative_commons]", "0"
-                | License (CreativeCommons (_, commercialUse, derivativeWorks)) ->
+                | License (CreativeCommons restrictionSet) ->
                     "license_options[creative_commons]", "1"
-                    match commercialUse with
-                    | CC_CommercialUsePermitted -> "license_options[commercial]", "yes"
-                    | CC_NonCommercial -> "license_options[commercial]", "no"
-                    match derivativeWorks with
-                    | CC_DerivativeWorksPermitted -> "license_options[modify]", "yes"
-                    | CC_NoDerivatives -> "license_options[modify]", "no"
-                    | CC_ShareAlike -> "license_options[modify]", "share"
+                    "license_options[commercial]", match restrictionSet.commercial with CommericalNo -> "no" | CommericalYes -> "yes"
+                    "license_options[modify]", match restrictionSet.modify with ModifyNo -> "no" | ModifyShare -> "share" | ModifyYes -> "yes"
                 | GalleryId g ->
                     "galleryids[]", string g
                 | AllowFreeDownload true -> "allow_free_download", "1"

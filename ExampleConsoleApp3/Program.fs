@@ -2,6 +2,7 @@
 open DeviantArtFs
 open DeviantArtFs.ParameterTypes
 open FSharp.Control
+open DeviantArtFs.CreativeCommons
 
 task {
     let token = { new IDeviantArtAccessToken with member _.AccessToken = Console.ReadLine().Trim() }
@@ -41,7 +42,7 @@ task {
             Api.Stash.GalleryId (Guid.Parse "fb8a1a56-a5f0-4949-8442-e3b0732174ff")
             Api.Stash.AllowComments true
             Api.Stash.RequestCritique false
-            Api.Stash.License (CreativeCommons (CC_Attribution, CC_NonCommercial, CC_ShareAlike))
+            Api.Stash.License (CreativeCommons { commercial = CommericalNo; modify = ModifyShare })
             Api.Stash.AllowFreeDownload true
             Api.Stash.AddWatermark false
         ] (Api.Stash.Item r.itemid)

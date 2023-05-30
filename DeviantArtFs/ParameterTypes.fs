@@ -34,21 +34,32 @@ type Maturity = Mature of MatureLevel * Set<MatureClassification> | NotMature
 with
     static member MatureBecause l c = Mature (l, Set.ofSeq c)
 
-type CC_AttributionRestriction = CC_Attribution
-type CC_CommercialUseRestriction = CC_NonCommercial | CC_CommercialUsePermitted
-type CC_DerivativeWorksRestriction = CC_NoDerivatives | CC_ShareAlike | CC_DerivativeWorksPermitted
+type Commerical = CommericalYes | CommericalNo
+type Modify = ModifyYes | ModifyNo | ModifyShare
 
-type License = CreativeCommons of CC_AttributionRestriction * CC_CommercialUseRestriction * CC_DerivativeWorksRestriction | DefaultLicense
+type RestrictionSet = {
+    commercial: Commerical
+    modify: Modify
+}
+
+type License = CreativeCommons of RestrictionSet | DefaultLicense
 with
     static member All = [
         DefaultLicense
-        CreativeCommons (CC_Attribution, CC_CommercialUsePermitted, CC_DerivativeWorksPermitted)
-        CreativeCommons (CC_Attribution, CC_CommercialUsePermitted, CC_NoDerivatives)
-        CreativeCommons (CC_Attribution, CC_CommercialUsePermitted, CC_ShareAlike)
-        CreativeCommons (CC_Attribution, CC_NonCommercial, CC_DerivativeWorksPermitted)
-        CreativeCommons (CC_Attribution, CC_NonCommercial, CC_NoDerivatives)
-        CreativeCommons (CC_Attribution, CC_NonCommercial, CC_ShareAlike)
+        for c in [CommericalYes; CommericalNo] do
+            for m in [ModifyYes; ModifyNo; ModifyShare] do
+                CreativeCommons { commercial = c; modify = m }
     ]
+    override this.ToString() =
+        match this with
+        | DefaultLicense -> "Default"
+        | CreativeCommons restrictionSet ->
+            let abbr = String.concat "-" [
+                "BY"
+                match restrictionSet.commercial with | CommericalYes -> () | CommericalNo -> "NC"
+                match restrictionSet.modify with | ModifyYes -> () | ModifyNo -> "ND" | ModifyShare -> "SA"
+            ]
+            $"CC {abbr}"
 
 module internal QueryFor =
     let optionalParameters ops = seq {

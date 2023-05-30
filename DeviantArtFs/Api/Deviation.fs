@@ -92,15 +92,10 @@ module Deviation =
                 | AddWatermark true -> "add_watermark", "1"
                 | License DefaultLicense ->
                     "license_options[creative_commons]", "0"
-                | License (CreativeCommons (_, commercialUse, derivativeWorks)) ->
+                | License (CreativeCommons restrictionSet) ->
                     "license_options[creative_commons]", "1"
-                    match commercialUse with
-                    | CC_CommercialUsePermitted -> "license_options[commercial]", "yes"
-                    | CC_NonCommercial -> "license_options[commercial]", "no"
-                    match derivativeWorks with
-                    | CC_DerivativeWorksPermitted -> "license_options[modify]", "yes"
-                    | CC_NoDerivatives -> "license_options[modify]", "no"
-                    | CC_ShareAlike -> "license_options[modify]", "share"
+                    "license_options[commercial]", match restrictionSet.commercial with CommericalNo -> "no" | CommericalYes -> "yes"
+                    "license_options[modify]", match restrictionSet.modify with ModifyNo -> "no" | ModifyShare -> "share" | ModifyYes -> "yes"
                 | Tag t ->
                     "tags[]", t
         }
@@ -180,15 +175,10 @@ module Deviation =
                         "allow_comments", if a then "1" else "0"
                     | License DefaultLicense ->
                         "license_options[creative_commons]", "0"
-                    | License (CreativeCommons (_, commercialUse, derivativeWorks)) ->
+                    | License (CreativeCommons restrictionSet) ->
                         "license_options[creative_commons]", "1"
-                        match commercialUse with
-                        | CC_CommercialUsePermitted -> "license_options[commercial]", "yes"
-                        | CC_NonCommercial -> "license_options[commercial]", "no"
-                        match derivativeWorks with
-                        | CC_DerivativeWorksPermitted -> "license_options[modify]", "yes"
-                        | CC_NoDerivatives -> "license_options[modify]", "no"
-                        | CC_ShareAlike -> "license_options[modify]", "share"
+                        "license_options[commercial]", match restrictionSet.commercial with CommericalNo -> "no" | CommericalYes -> "yes"
+                        "license_options[modify]", match restrictionSet.modify with ModifyNo -> "no" | ModifyShare -> "share" | ModifyYes -> "yes"
             }
             |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/deviation/journal/create"
             |> Utils.readAsync
@@ -212,15 +202,10 @@ module Deviation =
                         "allow_comments", if a then "1" else "0"
                     | License DefaultLicense ->
                         "license_options[creative_commons]", "0"
-                    | License (CreativeCommons (_, commercialUse, derivativeWorks)) ->
+                    | License (CreativeCommons restrictionSet) ->
                         "license_options[creative_commons]", "1"
-                        match commercialUse with
-                        | CC_CommercialUsePermitted -> "license_options[commercial]", "yes"
-                        | CC_NonCommercial -> "license_options[commercial]", "no"
-                        match derivativeWorks with
-                        | CC_DerivativeWorksPermitted -> "license_options[modify]", "yes"
-                        | CC_NoDerivatives -> "license_options[modify]", "no"
-                        | CC_ShareAlike -> "license_options[modify]", "share"
+                        "license_options[commercial]", match restrictionSet.commercial with CommericalNo -> "no" | CommericalYes -> "yes"
+                        "license_options[modify]", match restrictionSet.modify with ModifyNo -> "no" | ModifyShare -> "share" | ModifyYes -> "yes"
             }
             |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/deviation/journal/update/{Utils.guidString deviationid}"
             |> Utils.readAsync
@@ -276,15 +261,10 @@ module Deviation =
                         "allow_comments", if a then "1" else "0"
                     | License DefaultLicense ->
                         "license_options[creative_commons]", "0"
-                    | License (CreativeCommons (_, commercialUse, derivativeWorks)) ->
+                    | License (CreativeCommons restrictionSet) ->
                         "license_options[creative_commons]", "1"
-                        match commercialUse with
-                        | CC_CommercialUsePermitted -> "license_options[commercial]", "yes"
-                        | CC_NonCommercial -> "license_options[commercial]", "no"
-                        match derivativeWorks with
-                        | CC_DerivativeWorksPermitted -> "license_options[modify]", "yes"
-                        | CC_NoDerivatives -> "license_options[modify]", "no"
-                        | CC_ShareAlike -> "license_options[modify]", "share"
+                        "license_options[commercial]", match restrictionSet.commercial with CommericalNo -> "no" | CommericalYes -> "yes"
+                        "license_options[modify]", match restrictionSet.modify with ModifyNo -> "no" | ModifyShare -> "share" | ModifyYes -> "yes"
             }
             |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/deviation/literature/create"
             |> Utils.readAsync
@@ -318,15 +298,10 @@ module Deviation =
                         "allow_comments", if a then "1" else "0"
                     | License DefaultLicense ->
                         "license_options[creative_commons]", "0"
-                    | License (CreativeCommons (_, commercialUse, derivativeWorks)) ->
+                    | License (CreativeCommons restrictionSet) ->
                         "license_options[creative_commons]", "1"
-                        match commercialUse with
-                        | CC_CommercialUsePermitted -> "license_options[commercial]", "yes"
-                        | CC_NonCommercial -> "license_options[commercial]", "no"
-                        match derivativeWorks with
-                        | CC_DerivativeWorksPermitted -> "license_options[modify]", "yes"
-                        | CC_NoDerivatives -> "license_options[modify]", "no"
-                        | CC_ShareAlike -> "license_options[modify]", "share"
+                        "license_options[commercial]", match restrictionSet.commercial with CommericalNo -> "no" | CommericalYes -> "yes"
+                        "license_options[modify]", match restrictionSet.modify with ModifyNo -> "no" | ModifyShare -> "share" | ModifyYes -> "yes"
             }
             |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/deviation/journal/literature/{Utils.guidString deviationid}"
             |> Utils.readAsync
