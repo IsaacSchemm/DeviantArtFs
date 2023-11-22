@@ -14,22 +14,19 @@ and ensures that parameters can't get mixed up.
 In some cases, two methods are available for an API call. Functions whose
 names begin with `Page` will return a single page of results, while the
 corresponding `Get` function will return an asynchronous sequence which
-begins at the offset you specify (see "Interoperability" below). Be careful
-not to request too much data or you might hit API usage limits.
+begins at the offset you specify (see "Interoperability" below, and also note
+that `Get` methods returning an `IAsyncEnumerable<T>` are not available in the
+.NET Framework build and you'll have to use the corresponding `Page` method
+instead). Be careful not to request too much data or you might hit API usage
+limits.
 
 ## Interoperability
 
 In order to maximize ease of use from within F#, the response objects in this
 library are .NET records using F# `option` types to represent missing fields.
-This means that you will need extension methods (see below) to extract a null
-value or another placeholder value from these fields.
-
-Version 9.x of this library moves from using F# `Async<T>` to using `Task<T>`
-and `IAsyncEnumerable<T>` as used in other .NET languages. C# users can use
-the extension methods in the NuGet package `System.Linq.Async` or consume the
-enumerable directly with `await foreach`. (As a result of this, I've dropped
-support for cancellation tokens in `Task<T>` functions; let me know if you'd
-like it back.)
+You can interact with `option` types from C# / VB.Net using `FSharpOption<T>`
+and `OptionModule`, but it may be easier to use extension methods (see below)
+when working with these values.
 
 The following types are used in response objects:
 
@@ -54,7 +51,15 @@ filtering must be included through the token object. Use the interface
 `IDeviantArtAccessTokenWithOptionalParameters` and include the optional
 parameters in the `OptionalParameters` property; for example:
 
-    public IEnumerable<OptionalParameter> => new OptionalParameter[] {
+    member _.OptionalParameters = [
+        OptionalParameter.Expansion [Expansion.UserProfile]
+        OptionalParameter.ExtParam ExtParam.Collection
+        OptionalParameter.MatureContent true
+    ]
+
+or:
+
+    public IEnumerable<OptionalParameter> OptionalParameters => new OptionalParameter[] {
         OptionalParameter.NewExpansion(Expansion.UserProfile),
         OptionalParameter.NewExtParam(ExtParam.Gallery),
         OptionalParameter.NewMatureContent(true)
@@ -64,8 +69,8 @@ parameters in the `OptionalParameters` property; for example:
 
 `Deviation` and `DeviantArtStatus` objects can represent a deviation or status
 update that has been deleted; this is why most of the fields on those two
-types are marked optional. Check the `is_deleted` field (or `IsDeleted`
-property) before attempting to access any of the other fields.
+types are marked optional. Check the `is_deleted` field before attempting to
+access any of the other fields.
 
 ## Known issues
 

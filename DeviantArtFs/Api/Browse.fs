@@ -29,6 +29,7 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Deviation>>
 
+#if NET
     let GetByDeviantsYouWatchAsync token batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -39,6 +40,7 @@ module Browse =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     type SuggestedCollection = {
         collection: Gallection
@@ -83,6 +85,7 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<BrowsePage>
 
+#if NET
     let GetNewestAsync token q batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -93,6 +96,7 @@ module Browse =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     type PopularTimeRange = Unspecified | Now | OneWeek | OneMonth | AllTime with static member Default = Unspecified
 
@@ -114,6 +118,7 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<BrowsePage>
 
+#if NET
     let GetPopularAsync token timerange q batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -124,6 +129,7 @@ module Browse =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     type Post = {
         journal: Deviation option
@@ -139,6 +145,7 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Post>>
 
+#if NET
     let GetPostsByDeviantsYouWatchAsync token batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -149,6 +156,7 @@ module Browse =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     type RecommendedPage = {
         has_more: bool
@@ -169,6 +177,7 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<RecommendedPage>
 
+#if NET
     let GetRecommendedAsync token q batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -179,6 +188,7 @@ module Browse =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let PageTagsAsync token tag limit offset =
         seq {
@@ -190,6 +200,7 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<BrowsePage>
 
+#if NET
     let GetTagsAsync token tag batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -200,6 +211,7 @@ module Browse =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     type TagSearchResult = {
         tag_name: string
@@ -223,6 +235,7 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Deviation>>
 
+#if NET
     let GetTopicAsync token topic batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -233,6 +246,7 @@ module Browse =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     type Topic = {
         name: string
@@ -250,6 +264,7 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Topic>>
 
+#if NET
     let GetTopicsAsync token batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -260,6 +275,7 @@ module Browse =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let GetTopTopicsAsync token =
         Seq.empty
@@ -282,6 +298,7 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Deviation>>
 
+#if NET
     let GetUserJournalsAsync token filter username batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -292,3 +309,4 @@ module Browse =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif

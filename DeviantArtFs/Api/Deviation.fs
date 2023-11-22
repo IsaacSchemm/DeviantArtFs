@@ -126,6 +126,7 @@ module Deviation =
         |> Utils.readAsync
         |> Utils.thenParse<EmbeddedContentPage>
 
+#if NET
     let GetEmbeddedContentAsync token deviationid batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -136,6 +137,7 @@ module Deviation =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     module Journal =
         type MutableField =
@@ -378,6 +380,7 @@ module Deviation =
         |> Utils.readAsync
         |> Utils.thenParse<Page<WhoFavedUser>>
 
+#if NET
     let GetWhoFavedAsync token req batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -388,3 +391,4 @@ module Deviation =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif

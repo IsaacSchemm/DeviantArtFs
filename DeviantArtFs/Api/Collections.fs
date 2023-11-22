@@ -17,6 +17,7 @@ module Collections =
         |> Utils.readAsync
         |> Utils.thenParse<FolderPage>
 
+#if NET
     let GetCollectionAsync token user folderid batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -27,6 +28,7 @@ module Collections =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let PageAllAsync token user limit offset =
         seq {
@@ -38,6 +40,7 @@ module Collections =
         |> Utils.readAsync
         |> Utils.thenParse<FolderPage>
 
+#if NET
     let GetAllAsync token user batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -48,6 +51,7 @@ module Collections =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let PageFoldersAsync token calculateSize extPreload filterEmptyFolder user limit offset =
         seq {
@@ -62,6 +66,7 @@ module Collections =
         |> Utils.readAsync
         |> Utils.thenParse<Page<CollectionFolder>>
 
+#if NET
     let GetFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -72,6 +77,7 @@ module Collections =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let CopyDeviationsAsync token target_folderid deviationids =
         seq {

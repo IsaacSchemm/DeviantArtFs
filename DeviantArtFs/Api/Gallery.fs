@@ -18,6 +18,7 @@ module Gallery =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Deviation>>
 
+#if NET
     let GetAllViewAsync token scope batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -28,6 +29,7 @@ module Gallery =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let PageGalleryAsync token scope folder limit offset =
         let folder_id_str =
@@ -48,6 +50,7 @@ module Gallery =
         |> Utils.readAsync
         |> Utils.thenParse<FolderPage>
 
+#if NET
     let GetGalleryAsync token scope folder batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -58,6 +61,7 @@ module Gallery =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let PageFoldersAsync token calculateSize extPreload filterEmptyFolder user limit offset =
         seq {
@@ -72,6 +76,7 @@ module Gallery =
         |> Utils.readAsync
         |> Utils.thenParse<Page<GalleryFolder>>
 
+#if NET
     let GetFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -82,6 +87,7 @@ module Gallery =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let CopyDeviationsAsync token target_folderid deviationids =
         seq {

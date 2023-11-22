@@ -63,6 +63,7 @@ module Messages =
         |> Utils.readAsync
         |> Utils.thenParse<MessageCursorResult>
 
+#if NET
     let GetFeedAsync token stack folderid cursor = taskSeq {
         let mutable cursor = cursor
         let mutable has_more = true
@@ -73,6 +74,7 @@ module Messages =
             if has_more then
                 cursor <- MessageCursor data.cursor
     }
+#endif
 
     type MessageDeletionTarget = DeleteMessage of string | DeleteStack of string
 
@@ -110,6 +112,7 @@ module Messages =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Message>>
 
+#if NET
     let GetFeedbackMessagesAsync token ``type`` stack folderid batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -120,6 +123,7 @@ module Messages =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let PageFeedbackStackAsync token stackid limit offset =
         seq {
@@ -130,6 +134,7 @@ module Messages =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Message>>
 
+#if NET
     let GetFeedbackStackAsync token stackid batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -140,6 +145,7 @@ module Messages =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let PageMentionsAsync token stack folderid limit offset =
         seq {
@@ -156,6 +162,7 @@ module Messages =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Message>>
 
+#if NET
     let GetMentionsAsync token stack folderid batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -166,6 +173,7 @@ module Messages =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let PageMentionsStackAsync token stackid limit offset =
         seq {
@@ -176,6 +184,7 @@ module Messages =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Message>>
 
+#if NET
     let GetMentionsStackAsync token stackid batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -186,3 +195,4 @@ module Messages =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif

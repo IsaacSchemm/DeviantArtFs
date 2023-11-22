@@ -39,6 +39,7 @@ module Stash =
         |> Utils.readAsync
         |> Utils.thenParse<Page<StashMetadata>>
 
+#if NET
     let GetContentsAsync token stack batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -49,6 +50,7 @@ module Stash =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let DeleteAsync token item =
         seq {
@@ -85,6 +87,7 @@ module Stash =
         |> Utils.readAsync
         |> Utils.thenParse<StashDelta>
 
+#if NET
     let GetDeltaAsync token cursor batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -95,6 +98,7 @@ module Stash =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let GetItemAsync token item =
         Seq.empty

@@ -43,6 +43,7 @@ module Comments =
         |> Utils.readAsync
         |> Utils.thenParse<CommentPage>
 
+#if NET
     let GetCommentsAsync token maxdepth subject scope batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -53,6 +54,7 @@ module Comments =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     type IncludeRelatedItem = IncludeRelatedItem of bool
 
@@ -85,6 +87,7 @@ module Comments =
         |> Utils.thenMap (fun str -> str.Replace(""""context": list""", """"context":{}"""))
         |> Utils.thenParse<CommentSiblingsPage>
 
+#if NET
     let GetCommentSiblingsAsync token commentid ext_item batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -95,6 +98,7 @@ module Comments =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let PostCommentAsync token subject replyType body =
         let url =

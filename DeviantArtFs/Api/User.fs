@@ -54,6 +54,7 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<Page<FriendRecord>>
 
+#if NET
     let GetFriendsAsync token req batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -64,6 +65,7 @@ module User =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     type AdditionalUser = AdditionalUser of string | NoAdditionalUser
 
@@ -208,6 +210,7 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<ProfilePostsPage>
 
+#if NET
     let GetProfilePostsAsync token username cursor = taskSeq {
         let mutable cursor = cursor
         let mutable has_more = true
@@ -218,6 +221,7 @@ module User =
             if has_more then
                 cursor <- ProfilePostsCursor data.next_cursor.Value
     }
+#endif
 
     type Interest =
     | FavoriteVisualArtist = 1
@@ -313,6 +317,7 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Status>>
 
+#if NET
     let GetStatusesAsync token username batchsize offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -323,6 +328,7 @@ module User =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     type EmbeddableObject = Deviation of Guid | Status of Guid | Nothing
     type EmbeddableObjectParent = ParentStatus of Guid | NoParent
@@ -380,6 +386,7 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<Page<WatcherRecord>>
 
+#if NET
     let GetWatchersAsync token user limit offset = taskSeq {
         let mutable offset = offset
         let mutable has_more = true
@@ -390,6 +397,7 @@ module User =
             if has_more then
                 offset <- PagingOffset data.next_offset.Value
     }
+#endif
 
     let WhoamiAsync token =
         Seq.empty

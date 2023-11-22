@@ -18,6 +18,6 @@ module DeviantArtHttp =
 
     let internal createQueryString items =
         use content = createForm items
-        use s = content.ReadAsStream()
+        use s = content.ReadAsStreamAsync().GetAwaiter().GetResult()
         use sr = new StreamReader(s)
         sr.ReadToEnd()
