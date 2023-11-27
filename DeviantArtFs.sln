@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleConsoleApp2", "Examp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviantArtFs.WinForms", "DeviantArtFs.WinForms\DeviantArtFs.WinForms.csproj", "{75B54961-2B75-460A-A13F-92003092F956}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ExampleConsoleApp3", "ExampleConsoleApp3\ExampleConsoleApp3.fsproj", "{69473FF0-6CB8-480A-BC14-F0A5FBCFF4F6}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "ExampleConsoleApp3", "ExampleConsoleApp3\ExampleConsoleApp3.fsproj", "{69473FF0-6CB8-480A-BC14-F0A5FBCFF4F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -39,18 +39,13 @@ module Stash =
         |> Utils.readAsync
         |> Utils.thenParse<Page<StashMetadata>>
 
-#if NET
-    let GetContentsAsync token stack batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageContentsAsync token stack batchsize offset
-            yield! data.results.Value
-            has_more <- data.has_more.Value
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetContentsAsync token stack batchsize offset = Utils.buildAsyncSeq {
+        get_page = (fun offset -> PageContentsAsync token stack batchsize offset)
+        extract_data = (fun page -> page.results.Value)
+        has_more = (fun page -> page.has_more.Value)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
+        initial_offset = offset
     }
-#endif
 
     let DeleteAsync token item =
         seq {
@@ -87,18 +82,13 @@ module Stash =
         |> Utils.readAsync
         |> Utils.thenParse<StashDelta>
 
-#if NET
-    let GetDeltaAsync token cursor batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageDeltaAsync token cursor batchsize offset
-            yield! data.entries
-            has_more <- data.has_more
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetDeltaAsync token cursor batchsize offset = Utils.buildAsyncSeq {
+        get_page = (fun offset -> PageDeltaAsync token cursor batchsize offset)
+        extract_data = (fun page -> page.entries)
+        has_more = (fun page -> page.has_more)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
+        initial_offset = offset
     }
-#endif
 
     let GetItemAsync token item =
         Seq.empty

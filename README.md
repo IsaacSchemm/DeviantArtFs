@@ -14,11 +14,8 @@ and ensures that parameters can't get mixed up.
 In some cases, two methods are available for an API call. Functions whose
 names begin with `Page` will return a single page of results, while the
 corresponding `Get` function will return an asynchronous sequence which
-begins at the offset you specify (see "Interoperability" below, and also note
-that `Get` methods returning an `IAsyncEnumerable<T>` are not available in the
-.NET Framework build and you'll have to use the corresponding `Page` method
-instead). Be careful not to request too much data or you might hit API usage
-limits.
+begins at the offset you specify (see "Interoperability" below). Be careful
+not to request too much data or you might hit API usage limits.
 
 ## Interoperability
 

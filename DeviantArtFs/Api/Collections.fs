@@ -17,18 +17,13 @@ module Collections =
         |> Utils.readAsync
         |> Utils.thenParse<FolderPage>
 
-#if NET
-    let GetCollectionAsync token user folderid batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageCollectionAsync token user folderid batchsize offset
-            yield! data.results
-            has_more <- data.has_more
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetCollectionAsync token user folderid batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PageCollectionAsync token user folderid batchsize offset)
+        extract_data = (fun page -> page.results)
+        has_more = (fun page -> page.has_more)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif
 
     let PageAllAsync token user limit offset =
         seq {
@@ -40,18 +35,13 @@ module Collections =
         |> Utils.readAsync
         |> Utils.thenParse<FolderPage>
 
-#if NET
-    let GetAllAsync token user batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageAllAsync token user batchsize offset
-            yield! data.results
-            has_more <- data.has_more
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetAllAsync token user batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PageAllAsync token user batchsize offset)
+        extract_data = (fun page -> page.results)
+        has_more = (fun page -> page.has_more)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif
 
     let PageFoldersAsync token calculateSize extPreload filterEmptyFolder user limit offset =
         seq {
@@ -66,18 +56,13 @@ module Collections =
         |> Utils.readAsync
         |> Utils.thenParse<Page<CollectionFolder>>
 
-#if NET
-    let GetFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset
-            yield! data.results.Value
-            has_more <- data.has_more.Value
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PageFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset)
+        extract_data = (fun page -> page.results.Value)
+        has_more = (fun page -> page.has_more.Value)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif
 
     let CopyDeviationsAsync token target_folderid deviationids =
         seq {

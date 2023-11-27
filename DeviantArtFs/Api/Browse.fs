@@ -29,18 +29,13 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Deviation>>
 
-#if NET
-    let GetByDeviantsYouWatchAsync token batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageByDeviantsYouWatchAsync token batchsize offset
-            yield! data.results.Value
-            has_more <- data.has_more.Value
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetByDeviantsYouWatchAsync token batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PageByDeviantsYouWatchAsync token batchsize offset)
+        extract_data = (fun page -> page.results.Value)
+        has_more = (fun page -> page.has_more.Value)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif
 
     type SuggestedCollection = {
         collection: Gallection
@@ -85,18 +80,13 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<BrowsePage>
 
-#if NET
-    let GetNewestAsync token q batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageNewestAsync token q batchsize offset
-            yield! data.results
-            has_more <- data.has_more
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetNewestAsync token q batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PageNewestAsync token q batchsize offset)
+        extract_data = (fun page -> page.results)
+        has_more = (fun page -> page.has_more)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif
 
     type PopularTimeRange = Unspecified | Now | OneWeek | OneMonth | AllTime with static member Default = Unspecified
 
@@ -118,18 +108,13 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<BrowsePage>
 
-#if NET
-    let GetPopularAsync token timerange q batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PagePopularAsync token timerange q batchsize offset
-            yield! data.results
-            has_more <- data.has_more
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetPopularAsync token timerange q batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PagePopularAsync token timerange q batchsize offset)
+        extract_data = (fun page -> page.results)
+        has_more = (fun page -> page.has_more)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif
 
     type Post = {
         journal: Deviation option
@@ -145,18 +130,13 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Post>>
 
-#if NET
-    let GetPostsByDeviantsYouWatchAsync token batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PagePostsByDeviantsYouWatchAsync token batchsize offset
-            yield! data.results.Value
-            has_more <- data.has_more.Value
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetPostsByDeviantsYouWatchAsync token batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PagePostsByDeviantsYouWatchAsync token batchsize offset)
+        extract_data = (fun page -> page.results.Value)
+        has_more = (fun page -> page.has_more.Value)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif
 
     type RecommendedPage = {
         has_more: bool
@@ -177,18 +157,13 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<RecommendedPage>
 
-#if NET
-    let GetRecommendedAsync token q batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageRecommendedAsync token q batchsize offset
-            yield! data.results
-            has_more <- data.has_more
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetRecommendedAsync token q batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PageRecommendedAsync token q batchsize offset)
+        extract_data = (fun page -> page.results)
+        has_more = (fun page -> page.has_more)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif
 
     let PageTagsAsync token tag limit offset =
         seq {
@@ -200,18 +175,13 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<BrowsePage>
 
-#if NET
-    let GetTagsAsync token tag batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageTagsAsync token tag batchsize offset
-            yield! data.results
-            has_more <- data.has_more
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetTagsAsync token tag batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PageTagsAsync token tag batchsize offset)
+        extract_data = (fun page -> page.results)
+        has_more = (fun page -> page.has_more)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif
 
     type TagSearchResult = {
         tag_name: string
@@ -235,18 +205,13 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Deviation>>
 
-#if NET
-    let GetTopicAsync token topic batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageTopicAsync token topic batchsize offset
-            yield! data.results.Value
-            has_more <- data.has_more.Value
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetTopicAsync token topic batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PageTopicAsync token topic batchsize offset)
+        extract_data = (fun page -> page.results.Value)
+        has_more = (fun page -> page.has_more.Value)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif
 
     type Topic = {
         name: string
@@ -264,18 +229,13 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Topic>>
 
-#if NET
-    let GetTopicsAsync token batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageTopicsAsync token batchsize offset
-            yield! data.results.Value
-            has_more <- data.has_more.Value
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetTopicsAsync token batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PageTopicsAsync token batchsize offset)
+        extract_data = (fun page -> page.results.Value)
+        has_more = (fun page -> page.has_more.Value)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif
 
     let GetTopTopicsAsync token =
         Seq.empty
@@ -298,15 +258,10 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Deviation>>
 
-#if NET
-    let GetUserJournalsAsync token filter username batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageUserJournalsAsync token filter username batchsize offset
-            yield! data.results.Value
-            has_more <- data.has_more.Value
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetUserJournalsAsync token filter username batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PageUserJournalsAsync token filter username batchsize offset)
+        extract_data = (fun page -> page.results.Value)
+        has_more = (fun page -> page.has_more.Value)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif

@@ -43,18 +43,13 @@ module Comments =
         |> Utils.readAsync
         |> Utils.thenParse<CommentPage>
 
-#if NET
-    let GetCommentsAsync token maxdepth subject scope batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageCommentsAsync token maxdepth subject scope batchsize offset
-            yield! data.thread
-            has_more <- data.has_more
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetCommentsAsync token maxdepth subject scope batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PageCommentsAsync token maxdepth subject scope batchsize offset)
+        extract_data = (fun page -> page.thread)
+        has_more = (fun page -> page.has_more)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif
 
     type IncludeRelatedItem = IncludeRelatedItem of bool
 
@@ -87,18 +82,13 @@ module Comments =
         |> Utils.thenMap (fun str -> str.Replace(""""context": list""", """"context":{}"""))
         |> Utils.thenParse<CommentSiblingsPage>
 
-#if NET
-    let GetCommentSiblingsAsync token commentid ext_item batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageCommentSiblingsAsync token commentid ext_item batchsize offset
-            yield! data.thread
-            has_more <- data.has_more
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetCommentSiblingsAsync token commentid ext_item batchsize offset = Utils.buildAsyncSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PageCommentSiblingsAsync token commentid ext_item batchsize offset)
+        extract_data = (fun page -> page.thread)
+        has_more = (fun page -> page.has_more)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
-#endif
 
     let PostCommentAsync token subject replyType body =
         let url =

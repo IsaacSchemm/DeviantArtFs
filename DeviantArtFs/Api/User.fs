@@ -54,18 +54,13 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<Page<FriendRecord>>
 
-#if NET
-    let GetFriendsAsync token req batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageFriendsAsync token req batchsize offset
-            yield! data.results.Value
-            has_more <- data.has_more.Value
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetFriendsAsync token req batchsize offset = Utils.buildAsyncSeq {
+        get_page = (fun offset -> PageFriendsAsync token req batchsize offset)
+        extract_data = (fun page -> page.results.Value)
+        has_more = (fun page -> page.has_more.Value)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
+        initial_offset = offset
     }
-#endif
 
     type AdditionalUser = AdditionalUser of string | NoAdditionalUser
 
@@ -210,18 +205,13 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<ProfilePostsPage>
 
-#if NET
-    let GetProfilePostsAsync token username cursor = taskSeq {
-        let mutable cursor = cursor
-        let mutable has_more = true
-        while has_more do
-            let! data = PageProfilePostsAsync token username cursor
-            yield! data.results
-            has_more <- data.has_more
-            if has_more then
-                cursor <- ProfilePostsCursor data.next_cursor.Value
+    let GetProfilePostsAsync token username cursor = Utils.buildAsyncSeq {
+        get_page = (fun cursor -> PageProfilePostsAsync token username cursor)
+        extract_data = (fun page -> page.results)
+        has_more = (fun page -> page.has_more)
+        extract_next_offset = (fun page -> ProfilePostsCursor page.next_cursor.Value)
+        initial_offset = cursor
     }
-#endif
 
     type Interest =
     | FavoriteVisualArtist = 1
@@ -317,18 +307,13 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Status>>
 
-#if NET
-    let GetStatusesAsync token username batchsize offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageStatusesAsync token username batchsize offset
-            yield! data.results.Value
-            has_more <- data.has_more.Value
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetStatusesAsync token username batchsize offset = Utils.buildAsyncSeq {
+        get_page = (fun offset -> PageStatusesAsync token username batchsize offset)
+        extract_data = (fun page -> page.results.Value)
+        has_more = (fun page -> page.has_more.Value)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
+        initial_offset = offset
     }
-#endif
 
     type EmbeddableObject = Deviation of Guid | Status of Guid | Nothing
     type EmbeddableObjectParent = ParentStatus of Guid | NoParent
@@ -386,18 +371,13 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<Page<WatcherRecord>>
 
-#if NET
-    let GetWatchersAsync token user limit offset = taskSeq {
-        let mutable offset = offset
-        let mutable has_more = true
-        while has_more do
-            let! data = PageWatchersAsync token user limit offset
-            yield! data.results.Value
-            has_more <- data.has_more.Value
-            if has_more then
-                offset <- PagingOffset data.next_offset.Value
+    let GetWatchersAsync token user limit offset = Utils.buildAsyncSeq {
+        get_page = (fun offset -> PageWatchersAsync token user limit offset)
+        extract_data = (fun page -> page.results.Value)
+        has_more = (fun page -> page.has_more.Value)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
+        initial_offset = offset
     }
-#endif
 
     let WhoamiAsync token =
         Seq.empty

@@ -1,8 +1,10 @@
 ﻿namespace DeviantArtFs
 
 open System
+open System.Collections.Generic
 open System.Net.Http
 open System.Threading
+open System.Threading.Tasks
 open FSharp.Control
 open FSharp.Json
 open DeviantArtFs.ParameterTypes
@@ -104,3 +106,45 @@ module internal Utils =
 
     let thenParse<'a> t =
         t |> thenMap parse<'a>
+
+    type AsyncSeqBuilderParameters<'TPage, 'TItem, 'TOffset> = {
+        initial_offset: 'TOffset
+        get_page: 'TOffset -> System.Threading.Tasks.Task<'TPage>
+        extract_data: 'TPage -> seq<'TItem>
+        has_more: 'TPage -> bool
+        extract_next_offset: 'TPage -> 'TOffset
+    }
+
+    let buildAsyncSeq (parameters: AsyncSeqBuilderParameters<'TPage, 'TItem, 'TOffset>) = {
+        new IAsyncEnumerable<'TItem> with
+            member _.GetAsyncEnumerator (token: System.Threading.CancellationToken) =
+                let mutable buffer = []
+                let mutable offset = parameters.initial_offset
+                let mutable finished = false
+                let mutable current = Unchecked.defaultof<_>
+                {
+                    new IAsyncEnumerator<'TItem> with
+                        member _.Current = current
+                        member _.MoveNextAsync() =
+                            let workflow = async {
+                                if List.isEmpty buffer && not finished then
+                                    let! page = parameters.get_page offset |> Async.AwaitTask
+                                    buffer <- parameters.extract_data page |> List.ofSeq
+                                    if parameters.has_more page then
+                                        offset <- parameters.extract_next_offset page
+                                    else
+                                        finished <- true
+                                match buffer with
+                                | head::tail ->
+                                    current <- head
+                                    buffer <- tail
+                                    return true
+                                | [] ->
+                                    return false
+                            }
+
+                            Async.StartAsTask(workflow, cancellationToken = token) |> ValueTask<bool>
+                        member _.DisposeAsync() =
+                            new ValueTask()
+                }
+    }
