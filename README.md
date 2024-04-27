@@ -71,8 +71,9 @@ access any of the other fields.
 
 ## Known issues
 
-* The profile_pic field in the user.profile expansion is not supported due to circular type definitions. Get it from the full profile object instead.
-* The api_session return object is not supported.
+* The `profile_pic` field in the `user.profile` expansion is not supported due to circular type definitions. Get it from the full profile object instead.
+* The `tier.stats` field is not supported due to serialization issues on DeviantArt's end (the empty object `{}` can be rendered as `[]` by the server).
+* The `api_session` return object is not supported.
 
 ## Examples
 

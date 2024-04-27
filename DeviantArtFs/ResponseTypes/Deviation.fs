@@ -37,13 +37,6 @@ type TierSettings = {
     access_settings: string
 }
 
-type TierStats = {
-    subscribers: int option
-    deviations: int option
-    posts: int option
-    total: int option
-}
-
 type Tier = {
     state: string option
     is_user_subscribed: bool option
@@ -51,7 +44,6 @@ type Tier = {
     subproductid: int option
     dollar_price: string option
     settings: TierSettings option
-    stats: TierStats option
 }
 
 type PremiumFolderData = {
