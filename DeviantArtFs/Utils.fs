@@ -43,26 +43,25 @@ module internal Utils =
     let post token url query =
         postContent token url (DeviantArtHttp.createForm query)
 
-    let mutable private retry429 = 500
-
     module internal RefreshLock =
         let Semaphore = new SemaphoreSlim(1, 1)
 
     type internal RefreshMode = TokenRefreshable | TokenNonRefreshable
 
-    let rec private getResponseAsync (refreshMode: RefreshMode) (ir: ImmutableRequest) = task {
+    let mutable MaximumDelayBetween429Retries = TimeSpan.FromSeconds(30)
+
+    let rec private getResponseAsync (refreshMode: RefreshMode) (ir: ImmutableRequest) (retry429: int) = task {
         let accessToken = ir.Token.AccessToken
         use reqMessage = new HttpRequestMessage(ir.Method, ir.Url)
         reqMessage.Content <- ir.Content
         reqMessage.Headers.Add("Authorization", $"Bearer {accessToken}")
         let! respMessage = DeviantArtHttp.HttpClient.SendAsync(reqMessage)
         if int respMessage.StatusCode = 429 then
-            retry429 <- Math.Max(retry429 * 2, 30000)
-            if retry429 >= 30000 then
+            if float retry429 >= MaximumDelayBetween429Retries.TotalSeconds then
                 return failwithf "Client is rate-limited (too many 429 responses)"
             else
                 do! Async.Sleep retry429
-                return! getResponseAsync refreshMode ir
+                return! getResponseAsync refreshMode ir (retry429 * 2)
         else if not respMessage.IsSuccessStatusCode && ["application/json"; "text/json"] |> List.contains respMessage.Content.Headers.ContentType.MediaType then
             let! json = respMessage.Content.ReadAsStringAsync()
             let obj = Json.deserialize<BaseResponse> json
@@ -75,7 +74,7 @@ module internal Utils =
                         do! fetcher.RefreshAccessTokenAsync()
                 finally
                     RefreshLock.Semaphore.Release() |> ignore
-                return! getResponseAsync TokenNonRefreshable ir
+                return! getResponseAsync TokenNonRefreshable ir retry429
             | _ ->
                 return raise (new DeviantArtException(respMessage, obj, json))
         else
@@ -84,7 +83,7 @@ module internal Utils =
     }
 
     let readAsync (req: ImmutableRequest) = task {
-        use! resp = getResponseAsync TokenRefreshable req
+        use! resp = getResponseAsync TokenRefreshable req 500
         let! json = resp.Content.ReadAsStringAsync()
         let obj = Json.deserialize<BaseResponse> json
         if obj.status = Some "error" then
