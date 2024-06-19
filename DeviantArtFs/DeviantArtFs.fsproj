@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net6.0;net48</TargetFrameworks>
-    <Version>9.2.0-beta1</Version>
+    <Version>9.2.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Isaac Schemm</Authors>
     <Company></Company>
@@ -14,7 +14,7 @@
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageTags>deviantart fsharp</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>(C) 2023 Isaac Schemm</Copyright>
+    <Copyright>(C) 2024 Isaac Schemm</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
