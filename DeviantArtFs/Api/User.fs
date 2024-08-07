@@ -33,6 +33,7 @@ module User =
         user: User
         is_watching: bool
         watches_you: bool
+        lastvisit: DateTimeOffset option
         watch: WatchInfo
     }
 
