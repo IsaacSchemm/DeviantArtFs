@@ -19,10 +19,10 @@ not to request too much data or you might hit API usage limits.
 
 ## Interoperability
 
-In order to maximize ease of use from within F#, the response objects in this
-library are .NET records using F# `option` types to represent missing fields.
-You can interact with `option` types from C# / VB.Net using `FSharpOption<T>`
-and `OptionModule`, but it may be easier to use extension methods (see below)
+The response objects in this library are F# records using F# `option` types to
+represent missing fields.
+You can interact with `option` types from C# / VB.NET using `FSharpOption<T>`
+and `OptionModule`, or you can use the provided extension methods (see below)
 when working with these values.
 
 The following types are used in response objects:
@@ -31,15 +31,14 @@ The following types are used in response objects:
   the response object. Extension methods (see below) allow C# and VB.NET users
   to extract these values by converting `None` to `null` or to an empty list.
 * `FSharpList<T>`: An immutable linked list. Implements `IReadOnlyList<T>` and
-  `IEnumerable<T>`, so other .NET languages can use `foreach`, LINQ, or access
-  the list's properties directly.
+  `IEnumerable<T>`.
 
 The following extension methods are provided in the namespace `DeviantArtFs.Extensions`:
 
 * `.OrNull()`: converts an option type to an equivalent nullable type
 * `.IsTrue()`: checks whether a `bool option` type (which might be `true`, `false`, or `None`) is true
 * `.IsFalse()`: checks whether a `bool option` type (which might be `true`, `false`, or `None`) is false
-* `.OrEmpty()`: returns the items in the list, or an empty list if the field is `None`
+* `.OrEmpty()`: returns the items in `IEnumerable<T> option`, or an empty list if the field is `None`
 
 ### Optional parameters
 

@@ -4,7 +4,6 @@ open DeviantArtFs
 open DeviantArtFs.ParameterTypes
 open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
-open FSharp.Control
 open System
 
 module Browse =
@@ -66,103 +65,6 @@ module Browse =
         error_code: int option
         estimated_total: int option
         results: Deviation list
-    }
-
-    let PageNewestAsync token q limit offset =
-        seq {
-            match q with
-            | SearchQuery s -> yield "q", s
-            | NoSearchQuery -> ()
-            yield! QueryFor.offset offset
-            yield! QueryFor.limit limit 120
-        }
-        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/newest"
-        |> Utils.readAsync
-        |> Utils.thenParse<BrowsePage>
-
-    let GetNewestAsync token q batchsize offset = Utils.buildAsyncSeq {
-        initial_offset = offset
-        get_page = (fun offset -> PageNewestAsync token q batchsize offset)
-        extract_data = (fun page -> page.results)
-        has_more = (fun page -> page.has_more)
-        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
-    }
-
-    type PopularTimeRange = Unspecified | Now | OneWeek | OneMonth | AllTime with static member Default = Unspecified
-
-    let PagePopularAsync token timerange q limit offset =
-        seq {
-            match q with
-            | SearchQuery s -> yield "q", s
-            | NoSearchQuery -> ()
-            match timerange with
-            | Now -> yield "timerange", "now"
-            | OneWeek -> yield "timerange", "1week"
-            | OneMonth -> yield "timerange", "1month"
-            | AllTime -> yield "timerange", "alltime"
-            | Unspecified -> ()
-            yield! QueryFor.offset offset
-            yield! QueryFor.limit limit 120
-        }
-        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/popular"
-        |> Utils.readAsync
-        |> Utils.thenParse<BrowsePage>
-
-    let GetPopularAsync token timerange q batchsize offset = Utils.buildAsyncSeq {
-        initial_offset = offset
-        get_page = (fun offset -> PagePopularAsync token timerange q batchsize offset)
-        extract_data = (fun page -> page.results)
-        has_more = (fun page -> page.has_more)
-        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
-    }
-
-    type Post = {
-        journal: Deviation option
-        status: Status option
-    }
-
-    let PagePostsByDeviantsYouWatchAsync token limit offset =
-        seq {
-            yield! QueryFor.offset offset
-            yield! QueryFor.limit limit 50
-        }
-        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/posts/deviantsyouwatch"
-        |> Utils.readAsync
-        |> Utils.thenParse<Page<Post>>
-
-    let GetPostsByDeviantsYouWatchAsync token batchsize offset = Utils.buildAsyncSeq {
-        initial_offset = offset
-        get_page = (fun offset -> PagePostsByDeviantsYouWatchAsync token batchsize offset)
-        extract_data = (fun page -> page.results.Value)
-        has_more = (fun page -> page.has_more.Value)
-        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
-    }
-
-    type RecommendedPage = {
-        has_more: bool
-        next_offset: int option
-        estimated_total: int option
-        results: Deviation list
-    }
-
-    let PageRecommendedAsync token q limit offset =
-        seq {
-            match q with
-            | SearchQuery s -> yield "q", s
-            | NoSearchQuery -> ()
-            yield! QueryFor.offset offset
-            yield! QueryFor.limit limit 50
-        }
-        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/recommended"
-        |> Utils.readAsync
-        |> Utils.thenParse<RecommendedPage>
-
-    let GetRecommendedAsync token q batchsize offset = Utils.buildAsyncSeq {
-        initial_offset = offset
-        get_page = (fun offset -> PageRecommendedAsync token q batchsize offset)
-        extract_data = (fun page -> page.results)
-        has_more = (fun page -> page.has_more)
-        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
 
     let PageTagsAsync token tag limit offset =
@@ -242,26 +144,3 @@ module Browse =
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/toptopics"
         |> Utils.readAsync
         |> Utils.thenParse<ListOnlyResponse<Topic>>
-
-    type UserJournalFilter = NoUserJournalFilter | FeaturedJournalsOnly with static member Default = FeaturedJournalsOnly
-
-    let PageUserJournalsAsync token filter username limit offset =
-        seq {
-            yield "username", username
-            match filter with
-            | NoUserJournalFilter -> yield "featured", "0"
-            | FeaturedJournalsOnly -> yield "featured", "1"
-            yield! QueryFor.offset offset
-            yield! QueryFor.limit limit 50
-        }
-        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/user/journals"
-        |> Utils.readAsync
-        |> Utils.thenParse<Page<Deviation>>
-
-    let GetUserJournalsAsync token filter username batchsize offset = Utils.buildAsyncSeq {
-        initial_offset = offset
-        get_page = (fun offset -> PageUserJournalsAsync token filter username batchsize offset)
-        extract_data = (fun page -> page.results.Value)
-        has_more = (fun page -> page.has_more.Value)
-        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
-    }

@@ -133,7 +133,7 @@ module Gallery =
             for d in deviationids do
                 "deviationids[]", Utils.guidString d
         }
-        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/gallery/folders/move_deviations"
+        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/gallery/folders/remove_deviations"
         |> Utils.readAsync
         |> Utils.thenParse<SuccessOrErrorResponse>
 

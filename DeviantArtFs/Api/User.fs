@@ -298,24 +298,6 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<Status>
 
-    let PageStatusesAsync token username limit offset =
-        seq {
-            yield "username", username
-            yield! QueryFor.offset offset
-            yield! QueryFor.limit limit 50
-        }
-        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/user/statuses"
-        |> Utils.readAsync
-        |> Utils.thenParse<Page<Status>>
-
-    let GetStatusesAsync token username batchsize offset = Utils.buildAsyncSeq {
-        get_page = (fun offset -> PageStatusesAsync token username batchsize offset)
-        extract_data = (fun page -> page.results.Value)
-        has_more = (fun page -> page.has_more.Value)
-        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
-        initial_offset = offset
-    }
-
     type EmbeddableObject = Deviation of Guid | Status of Guid | Nothing
     type EmbeddableObjectParent = ParentStatus of Guid | NoParent
     type EmbeddableStashItem = StashItem of int64 | NoStashItem

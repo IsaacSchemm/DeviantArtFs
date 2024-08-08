@@ -2,7 +2,6 @@
 open DeviantArtFs
 open DeviantArtFs.ParameterTypes
 open FSharp.Control
-open DeviantArtFs.CreativeCommons
 
 task {
     let token = { new IDeviantArtAccessToken with member _.AccessToken = Console.ReadLine().Trim() }
@@ -17,20 +16,6 @@ task {
     let f = Api.Stash.FormFile.Create "test.png" "image/png" (System.IO.File.ReadAllBytes @"C:\Users\isaac\Pictures\ipod2.png")
 
     let! r = Api.Stash.SubmitAsync token (Api.Stash.SubmissionDestination.SubmitToStack (Api.Stash.Stack 8955911093015225L)) o f
-
-    //let! g =
-    //    Api.Gallery.GetFoldersAsync
-    //        token
-    //        CalculateSize.Default
-    //        FolderPreload.Default
-    //        FilterEmptyFolder.Default
-    //        UserScope.ForCurrentUser
-    //        PagingLimit.Default
-    //        PagingOffset.StartingOffset
-    //    |> AsyncSeq.ofAsyncEnum
-    //    |> AsyncSeq.toListAsync
-
-    //printfn "%A" g
 
     let! rr =
         Api.Stash.PublishAsync token [

@@ -103,37 +103,6 @@ module Deviation =
         |> Utils.readAsync
         |> Utils.thenParse<DeviationUpdateResponse>
 
-    type EmbeddedDeviationOffset = StartWithFirst | StartWith of Guid with static member Default = StartWithFirst
-
-    type EmbeddedContentPage = {
-        has_more: bool
-        next_offset: int option
-        has_less: bool option
-        prev_offset: int option
-        results: Deviation list
-    }
-
-    let PageEmbeddedContentAsync token deviationid offset_deviationid limit offset =
-        seq {
-            yield "deviationid", Utils.guidString deviationid
-            match offset_deviationid with
-            | StartWithFirst -> ()
-            | StartWith g -> yield "offset_deviationid", string g
-            yield! QueryFor.offset offset
-            yield! QueryFor.limit limit 50
-        }
-        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/deviation/embeddedcontent"
-        |> Utils.readAsync
-        |> Utils.thenParse<EmbeddedContentPage>
-
-    let GetEmbeddedContentAsync token deviationid batchsize offset = Utils.buildAsyncSeq {
-        initial_offset = offset
-        get_page = (fun offset -> PageEmbeddedContentAsync token deviationid StartWithFirst batchsize offset)
-        extract_data = (fun page -> page.results)
-        has_more = (fun page -> page.has_more)
-        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
-    }
-
     module Journal =
         type MutableField =
         | Title of string
@@ -300,7 +269,7 @@ module Deviation =
                         "license_options[commercial]", match restrictionSet.commercial with CommericalNo -> "no" | CommericalYes -> "yes"
                         "license_options[modify]", match restrictionSet.modify with ModifyNo -> "no" | ModifyShare -> "share" | ModifyYes -> "yes"
             }
-            |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/deviation/journal/literature/{Utils.guidString deviationid}"
+            |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/deviation/journal/literature/update/{Utils.guidString deviationid}"
             |> Utils.readAsync
             |> Utils.thenParse<DeviationUpdateResponse>
 

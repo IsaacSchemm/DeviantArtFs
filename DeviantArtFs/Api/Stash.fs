@@ -4,8 +4,6 @@ open System
 open System.IO
 open DeviantArtFs
 open DeviantArtFs.ParameterTypes
-open DeviantArtFs.ResponseTypes
-open DeviantArtFs.Pages
 open System.Net.Http
 open FSharp.Control
 
@@ -13,7 +11,6 @@ module Stash =
     type Stack = Stack of int64 | RootStack
     type Item = Item of int64
 
-    let private stackid stack = match stack with Stack x -> x | RootStack -> 0L
     let private itemid item = match item with Item x -> x
 
     type DeltaCursor = DeltaCursor of string | Initial
@@ -23,99 +20,6 @@ module Stash =
     | SubmitToStack of Stack
     | SubmitToStackWithName of string
     with static member Default = SubmitToStack RootStack
-
-    let GetStackAsync token stack =
-        Seq.empty
-        |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/stash/{stackid stack}"
-        |> Utils.readAsync
-        |> Utils.thenParse<StashMetadata>
-
-    let PageContentsAsync token stack limit offset =
-        seq {
-            yield! QueryFor.offset offset
-            yield! QueryFor.limit limit 50
-        }
-        |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/stash/{stackid stack}/contents"
-        |> Utils.readAsync
-        |> Utils.thenParse<Page<StashMetadata>>
-
-    let GetContentsAsync token stack batchsize offset = Utils.buildAsyncSeq {
-        get_page = (fun offset -> PageContentsAsync token stack batchsize offset)
-        extract_data = (fun page -> page.results.Value)
-        has_more = (fun page -> page.has_more.Value)
-        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
-        initial_offset = offset
-    }
-
-    let DeleteAsync token item =
-        seq {
-            "itemid", string (itemid item)
-        }
-        |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/stash/delete"
-        |> Utils.readAsync
-        |> Utils.thenParse<SuccessOrErrorResponse>
-
-    type StashDeltaEntry = {
-        itemid: int64 option
-        stackid: int64 option
-        metadata: StashMetadata option
-        position: int option
-    }
-
-    type StashDelta = {
-        cursor: string
-        has_more: bool
-        next_offset: int option
-        reset: bool
-        entries: StashDeltaEntry list
-    }
-
-    let PageDeltaAsync token cursor limit offset =
-        seq {
-            match cursor with
-            | DeltaCursor c -> "cursor", c
-            | Initial -> ()
-            yield! QueryFor.offset offset
-            yield! QueryFor.limit limit 120
-        }
-        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/stash/delta"
-        |> Utils.readAsync
-        |> Utils.thenParse<StashDelta>
-
-    let GetDeltaAsync token cursor batchsize offset = Utils.buildAsyncSeq {
-        get_page = (fun offset -> PageDeltaAsync token cursor batchsize offset)
-        extract_data = (fun page -> page.entries)
-        has_more = (fun page -> page.has_more)
-        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
-        initial_offset = offset
-    }
-
-    let GetItemAsync token item =
-        Seq.empty
-        |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/stash/item/{itemid item}"
-        |> Utils.readAsync
-        |> Utils.thenParse<StashMetadata>
-
-    type StashMoveResult = {
-        target: StashMetadata
-        changes: StashMetadata list
-    }
-
-    let MoveItemAsync token stack (targetid: int64) =
-        seq {
-            yield "targetid", string targetid
-        }
-        |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/stash/move/{stackid stack}"
-        |> Utils.readAsync
-        |> Utils.thenParse<StashMoveResult>
-
-    let PositionItemAsync token stack (position: int) =
-        seq {
-            yield "position", string position
-        }
-        |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/stash/position/{stackid stack}"
-        |> Utils.readAsync
-        |> Utils.thenParse<SuccessOrErrorResponse>
 
     type DisplayResolution =
     | Original=0
@@ -200,28 +104,6 @@ module Stash =
         |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/stash/publish"
         |> Utils.readAsync
         |> Utils.thenParse<StashPublishResponse>
-
-    type StashPublishUserdataResult = {
-        features: string list
-        agreements: string list
-    }
-
-    let GetPublishUserdataAsync token =
-        Seq.empty
-        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/stash/publish/userdata"
-        |> Utils.readAsync
-        |> Utils.thenParse<StashPublishUserdataResult>
-
-    type StashSpaceResult = {
-        available_space: int64
-        total_space: int64
-    }
-
-    let GetSpaceAsync token =
-        Seq.empty
-        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/stash/space"
-        |> Utils.readAsync
-        |> Utils.thenParse<StashSpaceResult>
 
     type IFormFile =
         abstract member Filename: string
@@ -362,20 +244,3 @@ module Stash =
         |> Utils.readAsync
         |> Utils.thenParse<StashSubmitResult>
     }
-
-    type StackModification =
-    | ModifyStackTitle of string
-    | ModifyStackDescription of string
-    | ClearStackDescription
-
-    let UpdateAsync token stackModifications stack =
-        seq {
-            for s in stackModifications do
-                match s with
-                | ModifyStackTitle v -> yield "title", v
-                | ModifyStackDescription v -> yield "description", v
-                | ClearStackDescription -> yield "description", "null"
-        }
-        |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/stash/update/{stackid stack}"
-        |> Utils.readAsync
-        |> Utils.thenParse<SuccessOrErrorResponse>

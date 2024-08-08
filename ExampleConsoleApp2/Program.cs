@@ -14,14 +14,6 @@ namespace ExampleConsoleApp2 {
             Console.Write("Please enter a DeviantArt access token: ");
             var token = new Token(Console.ReadLine());
 
-            var allStashItems = await DeviantArtFs.Api.Stash.GetDeltaAsync(
-                token,
-                DeviantArtFs.Api.Stash.DeltaCursor.Initial,
-                PagingLimit.MaximumPagingLimit,
-                PagingOffset.StartingOffset).ToListAsync();
-            Console.WriteLine($"{allStashItems.Count} sta.sh items");
-            Console.WriteLine();
-
             int i = 0;
             Stopwatch st = new();
             st.Start();
