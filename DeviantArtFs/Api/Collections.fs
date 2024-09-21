@@ -17,7 +17,7 @@ module Collections =
         |> Utils.readAsync
         |> Utils.thenParse<FolderPage>
 
-    let GetCollectionAsync token user folderid batchsize offset = Utils.buildAsyncSeq {
+    let GetCollectionAsync token user folderid batchsize offset = Utils.buildTaskSeq {
         initial_offset = offset
         get_page = (fun offset -> PageCollectionAsync token user folderid batchsize offset)
         extract_data = (fun page -> page.results)
@@ -35,7 +35,7 @@ module Collections =
         |> Utils.readAsync
         |> Utils.thenParse<FolderPage>
 
-    let GetAllAsync token user batchsize offset = Utils.buildAsyncSeq {
+    let GetAllAsync token user batchsize offset = Utils.buildTaskSeq {
         initial_offset = offset
         get_page = (fun offset -> PageAllAsync token user batchsize offset)
         extract_data = (fun page -> page.results)
@@ -56,7 +56,7 @@ module Collections =
         |> Utils.readAsync
         |> Utils.thenParse<Page<CollectionFolder>>
 
-    let GetFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset = Utils.buildAsyncSeq {
+    let GetFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset = Utils.buildTaskSeq {
         initial_offset = offset
         get_page = (fun offset -> PageFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset)
         extract_data = (fun page -> page.results.Value)

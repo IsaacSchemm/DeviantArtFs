@@ -54,6 +54,7 @@
     <Compile Include="Api\Deviation.fs" />
     <Compile Include="Api\Gallery.fs" />
     <Compile Include="Api\Messages.fs" />
+    <Compile Include="Api\Notes.fs" />
     <Compile Include="Api\Stash.fs" />
     <Compile Include="Api\User.fs" />
     <Compile Include="Api\Util.fs" />

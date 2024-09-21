@@ -344,7 +344,7 @@ module Deviation =
         |> Utils.readAsync
         |> Utils.thenParse<Page<WhoFavedUser>>
 
-    let GetWhoFavedAsync token req batchsize offset = Utils.buildAsyncSeq {
+    let GetWhoFavedAsync token req batchsize offset = Utils.buildTaskSeq {
         initial_offset = offset
         get_page = (fun offset -> PageWhoFavedAsync token req batchsize offset)
         extract_data = (fun page -> page.results.Value)

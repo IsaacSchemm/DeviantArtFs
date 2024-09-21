@@ -43,7 +43,7 @@ module Comments =
         |> Utils.readAsync
         |> Utils.thenParse<CommentPage>
 
-    let GetCommentsAsync token maxdepth subject scope batchsize offset = Utils.buildAsyncSeq {
+    let GetCommentsAsync token maxdepth subject scope batchsize offset = Utils.buildTaskSeq {
         initial_offset = offset
         get_page = (fun offset -> PageCommentsAsync token maxdepth subject scope batchsize offset)
         extract_data = (fun page -> page.thread)
@@ -82,7 +82,7 @@ module Comments =
         |> Utils.thenMap (fun str -> str.Replace(""""context": list""", """"context":{}"""))
         |> Utils.thenParse<CommentSiblingsPage>
 
-    let GetCommentSiblingsAsync token commentid ext_item batchsize offset = Utils.buildAsyncSeq {
+    let GetCommentSiblingsAsync token commentid ext_item batchsize offset = Utils.buildTaskSeq {
         initial_offset = offset
         get_page = (fun offset -> PageCommentSiblingsAsync token commentid ext_item batchsize offset)
         extract_data = (fun page -> page.thread)

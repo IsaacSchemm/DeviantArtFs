@@ -114,7 +114,7 @@ module internal Utils =
         extract_next_offset: 'TPage -> 'TOffset
     }
 
-    let buildAsyncSeq (parameters: AsyncSeqBuilderParameters<'TPage, 'TItem, 'TOffset>) = {
+    let buildTaskSeq (parameters: AsyncSeqBuilderParameters<'TPage, 'TItem, 'TOffset>) = {
         new IAsyncEnumerable<'TItem> with
             member _.GetAsyncEnumerator (token: System.Threading.CancellationToken) =
                 let mutable buffer = []

@@ -55,7 +55,7 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<Page<FriendRecord>>
 
-    let GetFriendsAsync token req batchsize offset = Utils.buildAsyncSeq {
+    let GetFriendsAsync token req batchsize offset = Utils.buildTaskSeq {
         get_page = (fun offset -> PageFriendsAsync token req batchsize offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)
@@ -206,7 +206,7 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<ProfilePostsPage>
 
-    let GetProfilePostsAsync token username cursor = Utils.buildAsyncSeq {
+    let GetProfilePostsAsync token username cursor = Utils.buildTaskSeq {
         get_page = (fun cursor -> PageProfilePostsAsync token username cursor)
         extract_data = (fun page -> page.results)
         has_more = (fun page -> page.has_more)
@@ -354,7 +354,7 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<Page<WatcherRecord>>
 
-    let GetWatchersAsync token user limit offset = Utils.buildAsyncSeq {
+    let GetWatchersAsync token user limit offset = Utils.buildTaskSeq {
         get_page = (fun offset -> PageWatchersAsync token user limit offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)

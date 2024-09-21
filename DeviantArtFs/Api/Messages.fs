@@ -63,7 +63,7 @@ module Messages =
         |> Utils.readAsync
         |> Utils.thenParse<MessageCursorResult>
 
-    let GetFeedAsync token stack folderid cursor = Utils.buildAsyncSeq {
+    let GetFeedAsync token stack folderid cursor = Utils.buildTaskSeq {
         get_page = (fun cursor -> PageFeedAsync token stack folderid cursor)
         extract_data = (fun page -> page.results)
         has_more = (fun page -> page.has_more)
@@ -107,7 +107,7 @@ module Messages =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Message>>
 
-    let GetFeedbackMessagesAsync token ``type`` stack folderid batchsize offset = Utils.buildAsyncSeq {
+    let GetFeedbackMessagesAsync token ``type`` stack folderid batchsize offset = Utils.buildTaskSeq {
         get_page = (fun offset -> PageFeedbackMessagesAsync token ``type`` stack folderid batchsize offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)
@@ -124,7 +124,7 @@ module Messages =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Message>>
 
-    let GetFeedbackStackAsync token stackid batchsize offset = Utils.buildAsyncSeq {
+    let GetFeedbackStackAsync token stackid batchsize offset = Utils.buildTaskSeq {
         get_page = (fun offset -> PageFeedbackStackAsync token stackid batchsize offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)
@@ -147,7 +147,7 @@ module Messages =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Message>>
 
-    let GetMentionsAsync token stack folderid batchsize offset = Utils.buildAsyncSeq {
+    let GetMentionsAsync token stack folderid batchsize offset = Utils.buildTaskSeq {
         get_page = (fun offset -> PageMentionsAsync token stack folderid batchsize offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)
@@ -164,7 +164,7 @@ module Messages =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Message>>
 
-    let GetMentionsStackAsync token stackid batchsize offset = Utils.buildAsyncSeq {
+    let GetMentionsStackAsync token stackid batchsize offset = Utils.buildTaskSeq {
         get_page = (fun offset -> PageMentionsStackAsync token stackid batchsize offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)

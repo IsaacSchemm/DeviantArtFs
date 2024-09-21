@@ -18,7 +18,7 @@ module Gallery =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Deviation>>
 
-    let GetAllViewAsync token scope batchsize offset = Utils.buildAsyncSeq {
+    let GetAllViewAsync token scope batchsize offset = Utils.buildTaskSeq {
         get_page = (fun offset -> PageAllViewAsync token scope batchsize offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)
@@ -45,7 +45,7 @@ module Gallery =
         |> Utils.readAsync
         |> Utils.thenParse<FolderPage>
 
-    let GetGalleryAsync token scope folder batchsize offset = Utils.buildAsyncSeq {
+    let GetGalleryAsync token scope folder batchsize offset = Utils.buildTaskSeq {
         get_page = (fun offset -> PageGalleryAsync token scope folder batchsize offset)
         extract_data = (fun page -> page.results)
         has_more = (fun page -> page.has_more)
@@ -66,7 +66,7 @@ module Gallery =
         |> Utils.readAsync
         |> Utils.thenParse<Page<GalleryFolder>>
 
-    let GetFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset = Utils.buildAsyncSeq {
+    let GetFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset = Utils.buildTaskSeq {
         get_page = (fun offset -> PageFoldersAsync token calculateSize extPreload filterEmptyFolder user batchsize offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)

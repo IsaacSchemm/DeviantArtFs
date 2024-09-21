@@ -28,7 +28,7 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Deviation>>
 
-    let GetByDeviantsYouWatchAsync token batchsize offset = Utils.buildAsyncSeq {
+    let GetByDeviantsYouWatchAsync token batchsize offset = Utils.buildTaskSeq {
         initial_offset = offset
         get_page = (fun offset -> PageByDeviantsYouWatchAsync token batchsize offset)
         extract_data = (fun page -> page.results.Value)
@@ -77,7 +77,7 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<BrowsePage>
 
-    let GetTagsAsync token tag batchsize offset = Utils.buildAsyncSeq {
+    let GetTagsAsync token tag batchsize offset = Utils.buildTaskSeq {
         initial_offset = offset
         get_page = (fun offset -> PageTagsAsync token tag batchsize offset)
         extract_data = (fun page -> page.results)
@@ -107,7 +107,7 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Deviation>>
 
-    let GetTopicAsync token topic batchsize offset = Utils.buildAsyncSeq {
+    let GetTopicAsync token topic batchsize offset = Utils.buildTaskSeq {
         initial_offset = offset
         get_page = (fun offset -> PageTopicAsync token topic batchsize offset)
         extract_data = (fun page -> page.results.Value)
@@ -131,7 +131,7 @@ module Browse =
         |> Utils.readAsync
         |> Utils.thenParse<Page<Topic>>
 
-    let GetTopicsAsync token batchsize offset = Utils.buildAsyncSeq {
+    let GetTopicsAsync token batchsize offset = Utils.buildTaskSeq {
         initial_offset = offset
         get_page = (fun offset -> PageTopicsAsync token batchsize offset)
         extract_data = (fun page -> page.results.Value)
