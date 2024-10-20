@@ -34,6 +34,15 @@ module Stash =
 
     type Sharing = AllowSharing | HideShareButtons | HideShareButtonsAndMembersOnly
 
+    type SubjectTagType =
+    | Artist = 5
+    | Model = 1
+    | Object = 3
+    | Character = 4
+
+    type Group = Group of Guid
+    type GroupFolder = GroupFolder of Guid
+
     type PublishParameter =
     | Maturity of Maturity
     | SubmissionPolicyAgreement of bool
@@ -47,6 +56,14 @@ module Stash =
     | GalleryId of Guid
     | AllowFreeDownload of bool
     | AddWatermark of bool
+    | Tag of string
+    | SubjectTag of string * SubjectTagType
+    | LocationTag of string
+    | Group of Group * GroupFolder
+    | IsAiGenerated
+    | IsNotAiGenerated
+    | NoThirdPartyAi
+    | ThirdPartyAiOk
 
     type StashPublishResponse = {
         status: string
@@ -98,6 +115,20 @@ module Stash =
                 | AllowFreeDownload false -> "allow_free_download", "0"
                 | AddWatermark true -> "add_watermark", "1"
                 | AddWatermark false -> "add_watermark", "0"
+                | Tag tag ->
+                    "tags[]", tag
+                | SubjectTag (tag, tagType) ->
+                    "subject_tags[]", tag
+                    "subject_tag_types[]", $"{int tagType}"
+                | LocationTag tag ->
+                    "location_tag", tag
+                | Group (group, groupFolder) ->
+                    "groups[]", string group
+                    "group_folders[]", string groupFolder
+                | IsAiGenerated -> "is_ai_generated", "1"
+                | IsNotAiGenerated -> "is_ai_generated", "0"
+                | NoThirdPartyAi -> "noai", "1"
+                | ThirdPartyAiOk -> "noai", "0"
 
             "itemid", string (itemid item)
         }
