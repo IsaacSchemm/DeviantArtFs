@@ -292,12 +292,6 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<SuccessOrErrorResponse>
 
-    let GetStatusAsync token id =
-        Seq.empty
-        |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/statuses/{Utils.guidString id}"
-        |> Utils.readAsync
-        |> Utils.thenParse<Status>
-
     type EmbeddableObject = Deviation of Guid | Status of Guid | Nothing
     type EmbeddableObjectParent = ParentStatus of Guid | NoParent
     type EmbeddableStashItem = StashItem of int64 | NoStashItem
