@@ -36,6 +36,23 @@ module Browse =
         extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
 
+    let PageHomeAsync token limit offset =
+        seq {
+            yield! QueryFor.offset offset
+            yield! QueryFor.limit limit 50
+        }
+        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/browse/home"
+        |> Utils.readAsync
+        |> Utils.thenParse<Page<Deviation>>
+
+    let GetHomeAsync token batchsize offset = Utils.buildTaskSeq {
+        initial_offset = offset
+        get_page = (fun offset -> PageHomeAsync token batchsize offset)
+        extract_data = (fun page -> page.results.Value)
+        has_more = (fun page -> page.has_more.Value)
+        extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
+    }
+
     type SuggestedCollection = {
         collection: Gallection
         deviations: Deviation list
