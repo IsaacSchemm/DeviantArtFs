@@ -48,7 +48,7 @@ module internal Utils =
 
     type internal RefreshMode = TokenRefreshable | TokenNonRefreshable
 
-    let mutable MaximumDelayBetween429Retries = TimeSpan.FromSeconds(30)
+    let mutable MaximumDelayBetween429Retries = TimeSpan.FromSeconds(30.0)
 
     let rec private getResponseAsync (refreshMode: RefreshMode) (ir: ImmutableRequest) (retry429: int) = task {
         let accessToken = ir.Token.AccessToken

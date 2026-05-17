@@ -115,7 +115,7 @@ module Messages =
         initial_offset = offset
     }
 
-    let PageFeedbackStackAsync token stackid limit offset =
+    let PageFeedbackStackAsync token (stackid: string) limit offset =
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
@@ -155,7 +155,7 @@ module Messages =
         initial_offset = offset
     }
 
-    let PageMentionsStackAsync token stackid limit offset =
+    let PageMentionsStackAsync token (stackid: string) limit offset =
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50

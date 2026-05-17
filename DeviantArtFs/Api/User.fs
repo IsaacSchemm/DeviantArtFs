@@ -108,7 +108,7 @@ module User =
             collections = true
         }
 
-    let WatchAsync token watchTypes username =
+    let WatchAsync token watchTypes (username: string) =
         seq {
             yield "watch[friend]", if watchTypes.friend then "1" else "0"
             yield "watch[deviations]", if watchTypes.deviations then "1" else "0"
@@ -123,7 +123,7 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<SuccessOrErrorResponse>
 
-    let UnwatchAsync token username =
+    let UnwatchAsync token (username: string) =
         Seq.empty
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/friends/unwatch/{Uri.EscapeDataString username}"
         |> Utils.readAsync
@@ -331,7 +331,7 @@ module User =
         |> Utils.readAsync
         |> Utils.thenParse<StatusPostResponse>
 
-    let GetTiersAsync token username =
+    let GetTiersAsync token (username: string) =
         Seq.empty
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/tiers/{Uri.EscapeDataString username}"
         |> Utils.readAsync
