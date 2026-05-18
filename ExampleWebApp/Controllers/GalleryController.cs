@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using ExampleWebApp.Data;
-using DeviantArtFs.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using DeviantArtFs;
 using System.Threading;
 using DeviantArtFs.ParameterTypes;
-using DeviantArtFs.ResponseTypes;
-using DeviantArtFs.Pages;
 using System.Linq;
 
 namespace ExampleWebApp.Controllers

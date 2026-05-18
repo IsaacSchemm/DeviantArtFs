@@ -2,5 +2,5 @@
 
 open System.Runtime.CompilerServices
 
-[<assembly:Extension>]
+//[<assembly:Extension>]
 do ()

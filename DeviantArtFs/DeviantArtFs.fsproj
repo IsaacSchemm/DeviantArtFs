@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <Compile Include="AssemblyAttributes.fs" />
-    <Compile Include="Extensions.fs" />
     <Compile Include="Transforms\DateTimeOffsetEpochAsString.fs" />
     <Compile Include="Tokens.fs" />
     <Compile Include="ParameterTypes.fs" />

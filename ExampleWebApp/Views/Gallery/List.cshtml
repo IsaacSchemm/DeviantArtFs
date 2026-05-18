@@ -1,5 +1,5 @@
 ﻿@using DeviantArtFs.ResponseTypes
-@using DeviantArtFs.Extensions
+@using Microsoft.FSharp.Core
 @model IEnumerable<GalleryFolder>
 
 @{
@@ -20,8 +20,8 @@
             <a href="@Url.Action("Index", "Gallery", new { Username = ViewBag.Username, Limit = 5, FolderId = f.folderid })">
                 @f.name
             </a>
-            @if (f.size.OrNull() != null) {
-                @:(@f.size.OrNull())
+            @if (OptionModule.ToNullable(f.size) is int size) {
+                @:@size
             }
         </li>
     }

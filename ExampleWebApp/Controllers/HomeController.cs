@@ -3,8 +3,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using DeviantArtFs;
-using DeviantArtFs.Extensions;
-using DeviantArtFs.ParameterTypes;
 using ExampleWebApp.Data;
 using ExampleWebApp.Models;
 using Microsoft.AspNetCore.Authentication;
