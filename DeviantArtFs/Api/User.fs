@@ -5,19 +5,8 @@ open DeviantArtFs
 open DeviantArtFs.ParameterTypes
 open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
-open FSharp.Control
 
 module User =
-    type MessagingNetworkToken = {
-        damntoken: string
-    }
-
-    let GetMessagingNetworkTokenAsync token =
-        Seq.empty
-        |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/user/damntoken"
-        |> Utils.readAsync
-        |> Utils.thenParse<MessagingNetworkToken>
-
     type WatchInfo = {
         friend: bool
         deviations: bool
@@ -44,19 +33,22 @@ module User =
         watch: WatchInfo
     }
 
-    let PageFriendsAsync token user limit offset =
-        let username = match user with | ForUser u -> u | ForCurrentUser -> ""
+    let AsyncPageFriends token user limit offset =
+        let username =
+            match user with
+            | ForUser u -> u
+            | ForCurrentUser -> ""
 
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/friends/{Uri.EscapeDataString username}"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<Page<FriendRecord>>
 
-    let GetFriendsAsync token req batchsize offset = Utils.buildTaskSeq {
-        get_page = (fun offset -> PageFriendsAsync token req batchsize offset)
+    let GetFriendsAsync token req batchsize offset = Utils.buildAsyncSeq {
+        get_page = (fun offset -> AsyncPageFriends token req batchsize offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)
         extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
@@ -65,7 +57,7 @@ module User =
 
     type AdditionalUser = AdditionalUser of string | NoAdditionalUser
 
-    let SearchFriendsAsync token user additionalUser q =
+    let AsyncSearchFriends token user additionalUser q =
         seq {
             yield! QueryFor.userScope user
             match additionalUser with
@@ -74,7 +66,7 @@ module User =
             yield "q", q
         }
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/user/friends/search"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<ListOnlyResponse<User>>
 
     type WatchOptions = {
@@ -108,7 +100,7 @@ module User =
             collections = true
         }
 
-    let WatchAsync token watchTypes (username: string) =
+    let AsyncWatch token watchTypes (username: string) =
         seq {
             yield "watch[friend]", if watchTypes.friend then "1" else "0"
             yield "watch[deviations]", if watchTypes.deviations then "1" else "0"
@@ -120,23 +112,23 @@ module User =
             yield "watch[collections]", if watchTypes.collections then "1" else "0"
         }
         |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/user/friends/watch/{Uri.EscapeDataString username}"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<SuccessOrErrorResponse>
 
-    let UnwatchAsync token (username: string) =
+    let AsyncUnwatch token (username: string) =
         Seq.empty
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/friends/unwatch/{Uri.EscapeDataString username}"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<SuccessOrErrorResponse>
 
     type WatchingResponse = {
         watching: bool
     }
 
-    let GetWatchingAsync token username =
+    let AsyncGetWatching token username =
         Seq.empty
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/friends/watching/{username}"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<WatchingResponse>
 
     type ProfileExtParams = {
@@ -175,7 +167,7 @@ module User =
         galleries: GalleryFolder list option
     }
 
-    let GetProfileAsync token profile_ext_params user =
+    let AsyncGetProfile token profile_ext_params user =
         let username = match user with | ForUser u -> u | ForCurrentUser -> ""
 
         seq {
@@ -183,7 +175,7 @@ module User =
             yield "ext_galleries", if profile_ext_params.ext_galleries then "1" else "0"
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/profile/{Uri.EscapeDataString username}"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<Profile>
 
     type ProfilePostsPage = {
@@ -195,7 +187,7 @@ module User =
 
     type ProfilePostsCursor = ProfilePostsCursor of string | FromBeginning
 
-    let PageProfilePostsAsync token username cursor =
+    let AsyncPageProfilePosts token username cursor =
         seq {
             yield "username", username
             match cursor with
@@ -203,11 +195,11 @@ module User =
             | FromBeginning -> ()
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/profile/posts"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<ProfilePostsPage>
 
-    let GetProfilePostsAsync token username cursor = Utils.buildTaskSeq {
-        get_page = (fun cursor -> PageProfilePostsAsync token username cursor)
+    let GetProfilePostsAsync token username cursor = Utils.buildAsyncSeq {
+        get_page = (fun cursor -> AsyncPageProfilePosts token username cursor)
         extract_data = (fun page -> page.results)
         has_more = (fun page -> page.has_more)
         extract_next_offset = (fun page -> ProfilePostsCursor page.next_cursor.Value)
@@ -243,14 +235,14 @@ module User =
     | Vimeo = 14
     | YouTube = 15
 
-    type ArtistLevel =
-    | None=0
-    | Student=1
-    | Hobbyist=2
-    | Professional=3
+    type ArtistLevel  = 
+    | None = 0
+    | Student = 1
+    | Hobbyist = 2
+    | Professional = 3
 
     type ArtistSpecialty =
-    | None=0
+    | None = 0
     | ArtisanCrafts = 1
     | DesignAndInterfaces = 2
     | DigitalArt = 3
@@ -273,7 +265,7 @@ module User =
     | Interest of Interest * string
     | Social of Social * string
 
-    let UpdateProfileAsync token modifications =
+    let AsyncUpdateProfile token modifications =
         seq {
             for m in modifications do
                 match m with
@@ -289,7 +281,7 @@ module User =
                 | Social (e, v) -> $"social_links[{int e}]", v
         }
         |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/user/profile/update"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<SuccessOrErrorResponse>
 
     type EmbeddableObject = Deviation of Guid | Status of Guid | Nothing
@@ -311,7 +303,7 @@ module User =
         statusid: Guid
     }
 
-    let PostStatusAsync token embeddable_content body =
+    let AsyncPostStatus token embeddable_content body =
         seq {
             match Option.ofObj body with
             | Some s -> yield "body", s
@@ -328,16 +320,16 @@ module User =
             | NoStashItem -> ()
         }
         |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/user/statuses/post"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<StatusPostResponse>
 
-    let GetTiersAsync token (username: string) =
+    let AsyncGetTiers token (username: string) =
         Seq.empty
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/tiers/{Uri.EscapeDataString username}"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<ListOnlyResponse<Deviation>>
 
-    let PageWatchersAsync token user limit offset =
+    let AsyncPageWatchers token user limit offset =
         let username = match user with | ForUser u -> u | ForCurrentUser -> ""
 
         seq {
@@ -345,28 +337,28 @@ module User =
             yield! QueryFor.limit limit 50
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/user/watchers/{Uri.EscapeDataString username}"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<Page<WatcherRecord>>
 
-    let GetWatchersAsync token user limit offset = Utils.buildTaskSeq {
-        get_page = (fun offset -> PageWatchersAsync token user limit offset)
+    let AsyncGetWatchers token user limit offset = Utils.buildAsyncSeq {
+        get_page = (fun offset -> AsyncPageWatchers token user limit offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)
         extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
         initial_offset = offset
     }
 
-    let WhoamiAsync token =
+    let AsyncWhoami token =
         Seq.empty
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/user/whoami"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<User>
 
-    let WhoisAsync token usernames =
+    let AsyncWhois token usernames =
         seq {
             for u in usernames do
                 yield "usernames[]", u
         }
         |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/user/whois"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<ListOnlyResponse<User>>

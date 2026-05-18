@@ -6,6 +6,7 @@ using DeviantArtFs;
 using System.Threading;
 using DeviantArtFs.ParameterTypes;
 using System.Linq;
+using Microsoft.FSharp.Control;
 
 namespace ExampleWebApp.Controllers
 {
@@ -22,16 +23,19 @@ namespace ExampleWebApp.Controllers
             var limit_param = limit is int l
                 ? PagingLimit.NewPagingLimit(l)
                 : PagingLimit.MaximumPagingLimit;
-            var resp = await DeviantArtFs.Api.Gallery.PageGalleryAsync(
-                token,
-                username != null
-                    ? UserScope.NewForUser(username)
-                    : UserScope.ForCurrentUser,
-                folderId is Guid ff
-                    ? GalleryFolderScope.NewSingleGalleryFolder(ff)
-                    : GalleryFolderScope.AllGalleryFoldersPopular,
-                limit_param,
-                offset_param);
+            var resp = await FSharpAsync.StartAsTask(
+                DeviantArtFs.Api.Gallery.AsyncPageGallery(
+                    token,
+                    username != null
+                        ? UserScope.NewForUser(username)
+                        : UserScope.ForCurrentUser,
+                    folderId is Guid ff
+                        ? GalleryFolderScope.NewSingleGalleryFolder(ff)
+                        : GalleryFolderScope.AllGalleryFoldersPopular,
+                    limit_param,
+                    offset_param),
+                TaskCreationOptions.None,
+                cancellationToken);
 
             ViewBag.Username = username;
             ViewBag.FolderId = folderId;

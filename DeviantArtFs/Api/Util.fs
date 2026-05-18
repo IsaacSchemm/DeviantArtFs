@@ -3,16 +3,20 @@
 open DeviantArtFs
 
 module Util =
-    let PlaceboAsync token =
+    let AsyncPlacebo token =
         Seq.empty
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/placebo"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenMap ignore
 
-    let IsValidAsync token = task {
+    let AsyncIsValid token = async {
         try
-            do! PlaceboAsync token
+            do! AsyncPlacebo token
             return true
-        with
-            | :? DeviantArtException as e when e.ResponseBody.error = Some "invalid_token" -> return false
+        with :? DeviantArtException as e when e.ResponseBody.error = Some "invalid_token" ->
+            return false
     }
+
+    let IsValidAsync token cancellationToken = Async.StartAsTask(
+        AsyncIsValid token,
+        cancellationToken)

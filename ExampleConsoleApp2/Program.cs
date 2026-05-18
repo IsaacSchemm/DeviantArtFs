@@ -1,9 +1,12 @@
 ﻿using DeviantArtFs;
 using DeviantArtFs.ParameterTypes;
+using Microsoft.FSharp.Control;
+using Microsoft.FSharp.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ExampleConsoleApp2 {
@@ -24,7 +27,10 @@ namespace ExampleConsoleApp2 {
             }
             st.Stop();
 
-            var user = await DeviantArtFs.Api.User.WhoamiAsync(token);
+            var user = await FSharpAsync.StartAsTask(
+                DeviantArtFs.Api.User.AsyncWhoami(token),
+                FSharpOption<TaskCreationOptions>.None,
+                cancellationToken: CancellationToken.None);
             i = 0;
             await foreach (var deviation in DeviantArtFs.Api.User.GetProfilePostsAsync(token, user.username, DeviantArtFs.Api.User.ProfilePostsCursor.FromBeginning)) {
                 Console.WriteLine($"{i + 1}. {deviation.title}");

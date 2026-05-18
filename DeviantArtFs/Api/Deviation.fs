@@ -5,14 +5,13 @@ open System
 open DeviantArtFs.ParameterTypes
 open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
-open FSharp.Control
 open FSharp.Json
 
 module Deviation =
-    let GetAsync token id =
+    let AsyncGet token id =
         Seq.empty
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/deviation/{Utils.guidString id}"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<Deviation>
 
     type TextContent = {
@@ -21,12 +20,12 @@ module Deviation =
         css_fonts: string list option
     }
 
-    let GetContentAsync token deviationid =
+    let AsyncGetContent token deviationid =
         seq {
             "deviationid", Utils.guidString deviationid
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/deviation/content"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<TextContent>
 
     type Download = {
@@ -37,10 +36,10 @@ module Deviation =
         filesize: int
     }
 
-    let DownloadAsync token deviationid =
+    let AsyncDownload token deviationid =
         Seq.empty
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/deviation/download/{Utils.guidString deviationid}"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<Download>
 
     type DeviationCreateResponse = {
@@ -63,7 +62,7 @@ module Deviation =
     | License of License
     | Tag of string
 
-    let EditDeviationAsync token deviationid deviationFields =
+    let AsyncEditDeviation token deviationid deviationFields =
         seq {
             for f in deviationFields do
                 match f with
@@ -100,7 +99,7 @@ module Deviation =
                     "tags[]", t
         }
         |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/deviation/edit/{Utils.guidString deviationid}"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<DeviationUpdateResponse>
 
     module Journal =
@@ -117,7 +116,7 @@ module Deviation =
         | Body of string
         | EmbeddedImageDeviationId of Guid
 
-        let CreateAsync token immutableFields mutableFields =
+        let AsyncCreate token immutableFields mutableFields =
             seq {
                 for f in immutableFields do
                     match f with
@@ -147,10 +146,10 @@ module Deviation =
                         "license_options[modify]", match restrictionSet.modify with ModifyNo -> "no" | ModifyShare -> "share" | ModifyYes -> "yes"
             }
             |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/deviation/journal/create"
-            |> Utils.readAsync
+            |> Utils.asyncRead
             |> Utils.thenParse<DeviationCreateResponse>
 
-        let UpdateAsync token deviationid mutableFields =
+        let AsyncUpdate token deviationid mutableFields =
             seq {
                 for f in mutableFields do
                     match f with
@@ -174,7 +173,7 @@ module Deviation =
                         "license_options[modify]", match restrictionSet.modify with ModifyNo -> "no" | ModifyShare -> "share" | ModifyYes -> "yes"
             }
             |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/deviation/journal/update/{Utils.guidString deviationid}"
-            |> Utils.readAsync
+            |> Utils.asyncRead
             |> Utils.thenParse<DeviationUpdateResponse>
 
     module Literature =
@@ -191,7 +190,7 @@ module Deviation =
         | Description of string
         | EmbeddedImageDeviationId of Guid
 
-        let CreateAsync token immutableFields mutableFields =
+        let AsyncCreate token immutableFields mutableFields =
             seq {
                 for f in immutableFields do
                     match f with
@@ -233,10 +232,10 @@ module Deviation =
                         "license_options[modify]", match restrictionSet.modify with ModifyNo -> "no" | ModifyShare -> "share" | ModifyYes -> "yes"
             }
             |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/deviation/literature/create"
-            |> Utils.readAsync
+            |> Utils.asyncRead
             |> Utils.thenParse<DeviationCreateResponse>
 
-        let UpdateAsync token deviationid mutableFields =
+        let AsyncUpdate token deviationid mutableFields =
             seq {
                 for f in mutableFields do
                     match f with
@@ -270,7 +269,7 @@ module Deviation =
                         "license_options[modify]", match restrictionSet.modify with ModifyNo -> "no" | ModifyShare -> "share" | ModifyYes -> "yes"
             }
             |> Utils.post token $"https://www.deviantart.com/api/v1/oauth2/deviation/journal/literature/update/{Utils.guidString deviationid}"
-            |> Utils.readAsync
+            |> Utils.asyncRead
             |> Utils.thenParse<DeviationUpdateResponse>
 
     type Tag = {
@@ -319,13 +318,13 @@ module Deviation =
         metadata: Metadata list
     }
 
-    let GetMetadataAsync token deviationids =
+    let AsyncGetMetadata token deviationids =
         seq {
             for id in deviationids do
                 yield "deviationids[]", Utils.guidString id
         }
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/deviation/metadata"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<MetadataResponse>
 
     type WhoFavedUser = {
@@ -334,19 +333,19 @@ module Deviation =
         time: DateTimeOffset
     }
 
-    let PageWhoFavedAsync token deviationid limit offset =
+    let AsyncPageWhoFaved token deviationid limit offset =
         seq {
             yield "deviationid", Utils.guidString deviationid
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/deviation/whofaved"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<Page<WhoFavedUser>>
 
-    let GetWhoFavedAsync token req batchsize offset = Utils.buildTaskSeq {
+    let GetWhoFavedAsync token req batchsize offset = Utils.buildAsyncSeq {
         initial_offset = offset
-        get_page = (fun offset -> PageWhoFavedAsync token req batchsize offset)
+        get_page = (fun offset -> AsyncPageWhoFaved token req batchsize offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)
         extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)

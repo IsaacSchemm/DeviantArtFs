@@ -22,15 +22,15 @@ module Stash =
     with static member Default = SubmitToStack RootStack
 
     type DisplayResolution =
-    | Original=0
-    | Max400Px=1
-    | Max600px=2
-    | Max800px=3
-    | Max900px=4
-    | Max1024px=5
-    | Max1280px=6
-    | Max1600px=7
-    | Max1920px=8
+    | Original = 0
+    | Max400Px = 1
+    | Max600px = 2
+    | Max800px = 3
+    | Max900px = 4
+    | Max1024px = 5
+    | Max1280px = 6
+    | Max1600px = 7
+    | Max1920px = 8
 
     type Sharing = AllowSharing | HideShareButtons | HideShareButtonsAndMembersOnly
 
@@ -71,7 +71,7 @@ module Stash =
         deviationid: Guid
     }
 
-    let PublishAsync token publishParameters item =
+    let AsyncPublish token publishParameters item =
         seq {
             for p in publishParameters do
                 match p with
@@ -133,7 +133,7 @@ module Stash =
             "itemid", string (itemid item)
         }
         |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/stash/publish"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<StashPublishResponse>
 
     type IFormFile =
@@ -150,13 +150,16 @@ module Stash =
         }
     
     type SubmissionTitle = SubmissionTitle of string | DefaultSubmissionTitle
-    with static member Default = DefaultSubmissionTitle
+    with
+        static member Default = DefaultSubmissionTitle
 
     type ArtistComments = ArtistComments of string | NoArtistComments
-    with static member Default = NoArtistComments
+    with
+        static member Default = NoArtistComments
 
     type OriginalUrl = OriginalUrl of string | NoOriginalUrl
-    with static member Default = NoOriginalUrl
+    with
+        static member Default = NoOriginalUrl
 
     type TagList = TagList of string list
     with
@@ -185,7 +188,7 @@ module Stash =
         stackid: int64
     }
 
-    let SubmitAsync token (destination: SubmissionDestination) (parameters: SubmissionParameters) (file: IFormFile) = task {
+    let AsyncSubmit token (destination: SubmissionDestination) (parameters: SubmissionParameters) (file: IFormFile) = async {
         let h1 = $"-----------------------------{DateTime.UtcNow.Ticks}"
         let h2 = $"--{h1}"
         let h3 = $"--{h1}--"
@@ -272,6 +275,6 @@ module Stash =
 
         return! content
         |> Utils.postContent token "https://www.deviantart.com/api/v1/oauth2/stash/submit"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<StashSubmitResult>
     }

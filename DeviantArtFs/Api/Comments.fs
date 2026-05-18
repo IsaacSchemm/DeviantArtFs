@@ -4,15 +4,23 @@ open System
 open DeviantArtFs
 open DeviantArtFs.ParameterTypes
 open DeviantArtFs.ResponseTypes
-open DeviantArtFs.Pages
-open FSharp.Control
 
 module Comments =
-    type Subject = OnDeviation of Guid | OnProfile of string | OnStatus of Guid
+    type Subject =
+    | OnDeviation of Guid
+    | OnProfile of string
+    | OnStatus of Guid
 
-    type ReplyType = DirectReply | InReplyToComment of Guid with static member Default = DirectReply
+    type ReplyType =
+    | DirectReply
+    | InReplyToComment of Guid
+    with
+        static member Default = DirectReply
 
-    type Depth = Depth of int with static member Default = Depth 0; static member Max = Depth 5
+    type Depth = Depth of int
+    with
+        static member Default = Depth 0
+        static member Max = Depth 5
 
     type CommentPage = {
         has_more: bool
@@ -23,7 +31,7 @@ module Comments =
         thread: Comment list
     }
 
-    let PageCommentsAsync token maxdepth subject replyType limit offset =
+    let AsyncPageComments token maxdepth subject replyType limit offset =
         let url =
             match subject with
             | OnDeviation g -> $"https://www.deviantart.com/api/v1/oauth2/comments/deviation/{Utils.guidString g}"
@@ -40,12 +48,12 @@ module Comments =
             yield! QueryFor.limit limit 50
         }
         |> Utils.get token url
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<CommentPage>
 
-    let GetCommentsAsync token maxdepth subject scope batchsize offset = Utils.buildTaskSeq {
+    let GetCommentsAsync token maxdepth subject scope batchsize offset = Utils.buildAsyncSeq {
         initial_offset = offset
-        get_page = (fun offset -> PageCommentsAsync token maxdepth subject scope batchsize offset)
+        get_page = (fun offset -> AsyncPageComments token maxdepth subject scope batchsize offset)
         extract_data = (fun page -> page.thread)
         has_more = (fun page -> page.has_more)
         extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
@@ -69,7 +77,7 @@ module Comments =
         context: CommentSiblingsContext
     }
 
-    let PageCommentSiblingsAsync token commentid ext_item limit offset =
+    let AsyncPageCommentSiblings token commentid ext_item limit offset =
         seq {
             match ext_item with
             | IncludeRelatedItem true -> "ext_item", "1"
@@ -78,19 +86,19 @@ module Comments =
             yield! QueryFor.limit limit 50
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/comments/{Utils.guidString commentid}/siblings"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenMap (fun str -> str.Replace(""""context": list""", """"context":{}"""))
         |> Utils.thenParse<CommentSiblingsPage>
 
-    let GetCommentSiblingsAsync token commentid ext_item batchsize offset = Utils.buildTaskSeq {
+    let GetCommentSiblingsAsync token commentid ext_item batchsize offset = Utils.buildAsyncSeq {
         initial_offset = offset
-        get_page = (fun offset -> PageCommentSiblingsAsync token commentid ext_item batchsize offset)
+        get_page = (fun offset -> AsyncPageCommentSiblings token commentid ext_item batchsize offset)
         extract_data = (fun page -> page.thread)
         has_more = (fun page -> page.has_more)
         extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
     }
 
-    let PostCommentAsync token subject replyType body =
+    let AsyncPostComment token subject replyType body =
         let url =
             match subject with
             | OnDeviation g -> $"https://www.deviantart.com/api/v1/oauth2/comments/post/deviation/{Utils.guidString g}"
@@ -104,5 +112,5 @@ module Comments =
             yield "body", body
         }
         |> Utils.post token url
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<Comment>

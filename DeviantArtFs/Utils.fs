@@ -50,41 +50,56 @@ module internal Utils =
 
     let mutable MaximumDelayBetween429Retries = TimeSpan.FromSeconds(30.0)
 
-    let rec private getResponseAsync (refreshMode: RefreshMode) (ir: ImmutableRequest) (retry429: int) = task {
-        let accessToken = ir.Token.AccessToken
-        use reqMessage = new HttpRequestMessage(ir.Method, ir.Url)
-        reqMessage.Content <- ir.Content
+    let rec private asyncGetResponse (refreshMode: RefreshMode) (immutableReq: ImmutableRequest) (retry429: int) = async {
+        let accessToken = immutableReq.Token.AccessToken
+
+        let! cancellationToken = Async.CancellationToken
+
+        use reqMessage = new HttpRequestMessage(
+            immutableReq.Method,
+            immutableReq.Url)
+        reqMessage.Content <- immutableReq.Content
         reqMessage.Headers.Add("Authorization", $"Bearer {accessToken}")
-        let! respMessage = DeviantArtHttp.HttpClient.SendAsync(reqMessage)
+
+        let! respMessage =
+            DeviantArtHttp.HttpClient.SendAsync(reqMessage, cancellationToken)
+            |> Async.AwaitTask
+
         if int respMessage.StatusCode = 429 then
             if float retry429 >= MaximumDelayBetween429Retries.TotalSeconds then
                 return failwithf "Client is rate-limited (too many 429 responses)"
             else
                 do! Async.Sleep retry429
-                return! getResponseAsync refreshMode ir (retry429 * 2)
+                return! asyncGetResponse refreshMode immutableReq (retry429 * 2)
+
         else if not respMessage.IsSuccessStatusCode && ["application/json"; "text/json"] |> List.contains respMessage.Content.Headers.ContentType.MediaType then
-            let! json = respMessage.Content.ReadAsStringAsync()
+            let! json =
+                respMessage.Content.ReadAsStringAsync()
+                |> Async.AwaitTask
             let obj = Json.deserialize<BaseResponse> json
 
-            match (ir.Token, obj.error) with
+            match (immutableReq.Token, obj.error) with
             | (:? IDeviantArtRefreshableAccessToken as fetcher, Some "invalid_token") when refreshMode = TokenRefreshable ->
-                do! RefreshLock.Semaphore.WaitAsync()
+                do! RefreshLock.Semaphore.WaitAsync() |> Async.AwaitTask
+
                 try
-                    if accessToken = ir.Token.AccessToken then
-                        do! fetcher.RefreshAccessTokenAsync()
+                    if accessToken = immutableReq.Token.AccessToken then
+                        do! fetcher.RefreshAccessTokenAsync(cancellationToken) |> Async.AwaitTask
                 finally
                     RefreshLock.Semaphore.Release() |> ignore
-                return! getResponseAsync TokenNonRefreshable ir retry429
+
+                return! asyncGetResponse TokenNonRefreshable immutableReq retry429
             | _ ->
                 return raise (new DeviantArtException(respMessage, obj, json))
+
         else
             ignore (respMessage.EnsureSuccessStatusCode())
             return respMessage
     }
 
-    let readAsync (req: ImmutableRequest) = task {
-        use! resp = getResponseAsync TokenRefreshable req 500
-        let! json = resp.Content.ReadAsStringAsync()
+    let asyncRead (req: ImmutableRequest) = async {
+        use! resp = asyncGetResponse TokenRefreshable req 500
+        let! json = resp.Content.ReadAsStringAsync() |> Async.AwaitTask
         let obj = Json.deserialize<BaseResponse> json
         if obj.status = Some "error" then
             return raise (new DeviantArtException(resp, obj, json))
@@ -98,7 +113,7 @@ module internal Utils =
 
     let parse<'a> str = Json.deserialize<'a> str
 
-    let thenMap f a = task {
+    let thenMap f a = async {
         let! o = a
         return f o
     }
@@ -108,42 +123,20 @@ module internal Utils =
 
     type AsyncSeqBuilderParameters<'TPage, 'TItem, 'TOffset> = {
         initial_offset: 'TOffset
-        get_page: 'TOffset -> System.Threading.Tasks.Task<'TPage>
+        get_page: 'TOffset -> Async<'TPage>
         extract_data: 'TPage -> seq<'TItem>
         has_more: 'TPage -> bool
         extract_next_offset: 'TPage -> 'TOffset
     }
 
-    let buildTaskSeq (parameters: AsyncSeqBuilderParameters<'TPage, 'TItem, 'TOffset>) = {
-        new IAsyncEnumerable<'TItem> with
-            member _.GetAsyncEnumerator (token: System.Threading.CancellationToken) =
-                let mutable buffer = []
-                let mutable offset = parameters.initial_offset
-                let mutable finished = false
-                let mutable current = Unchecked.defaultof<_>
-                {
-                    new IAsyncEnumerator<'TItem> with
-                        member _.Current = current
-                        member _.MoveNextAsync() =
-                            let workflow = async {
-                                if List.isEmpty buffer && not finished then
-                                    let! page = parameters.get_page offset |> Async.AwaitTask
-                                    buffer <- parameters.extract_data page |> List.ofSeq
-                                    if parameters.has_more page then
-                                        offset <- parameters.extract_next_offset page
-                                    else
-                                        finished <- true
-                                match buffer with
-                                | head::tail ->
-                                    current <- head
-                                    buffer <- tail
-                                    return true
-                                | [] ->
-                                    return false
-                            }
-
-                            Async.StartAsTask(workflow, cancellationToken = token) |> ValueTask<bool>
-                        member _.DisposeAsync() =
-                            new ValueTask()
-                }
+    let buildAsyncSeq (parameters: AsyncSeqBuilderParameters<'TPage, 'TItem, 'TOffset>) = asyncSeq {
+        let mutable finished = false
+        let mutable cursor = parameters.initial_offset
+        while not finished do
+            let! page = parameters.get_page cursor
+            yield! parameters.extract_data page
+            if parameters.has_more page then
+                cursor <- parameters.extract_next_offset page
+            else
+                finished <- true
     }

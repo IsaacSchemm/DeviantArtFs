@@ -2,6 +2,7 @@
 using ExampleWebApp.Data;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ExampleWebApp.Models
@@ -25,16 +26,16 @@ namespace ExampleWebApp.Models
             _currentToken = originalToken;
         }
 
-        public async Task RefreshAccessTokenAsync()
+        public async Task RefreshAccessTokenAsync(CancellationToken cancellationToken)
         {
-            var newToken = await DeviantArtAuth.RefreshAsync(_app, _currentToken.RefreshToken);
+            var newToken = await DeviantArtAuth.RefreshAsync(_app, _currentToken.RefreshToken, cancellationToken);
 
             _currentToken =
-                await _context.Tokens.FindAsync(_currentToken.Id) // if still in database
+                await _context.Tokens.FindAsync(_currentToken.Id, cancellationToken) // if still in database
                 ?? _currentToken; // if removed from database (no changes will be saved to database)
             _currentToken.AccessToken = newToken.access_token;
             _currentToken.RefreshToken = newToken.refresh_token;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

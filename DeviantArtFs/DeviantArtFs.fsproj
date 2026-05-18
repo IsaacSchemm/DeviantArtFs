@@ -52,7 +52,6 @@
     <Compile Include="Api\Deviation.fs" />
     <Compile Include="Api\Gallery.fs" />
     <Compile Include="Api\Messages.fs" />
-    <Compile Include="Api\Notes.fs" />
     <Compile Include="Api\Stash.fs" />
     <Compile Include="Api\User.fs" />
     <Compile Include="Api\Util.fs" />
@@ -60,6 +59,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FSharp.Control.AsyncSeq" Version="4.15.0" />
     <PackageReference Include="FSharp.Json" Version="0.4.1" />
     <PackageReference Update="FSharp.Core" Version="10.1.300" />
   </ItemGroup>
@@ -72,5 +72,7 @@
       <Version>10.0.8</Version>
     </PackageReference>
   </ItemGroup>
+
+  <ItemGroup />
 
 </Project>

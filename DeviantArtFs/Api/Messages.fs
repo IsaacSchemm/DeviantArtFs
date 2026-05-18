@@ -5,14 +5,24 @@ open DeviantArtFs
 open DeviantArtFs.ParameterTypes
 open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
-open FSharp.Control
 
 module Messages =
-    type StackMessages = StackMessages of bool with static member Default = StackMessages true
+    type StackMessages =
+    | StackMessages of bool
+    with
+        static member Default = StackMessages true
 
-    type MessageFolder = Inbox | MessageFolder of Guid with static member Default = Inbox
+    type MessageFolder =
+    | Inbox
+    | MessageFolder of Guid
+    with
+        static member Default = Inbox
 
-    type MessageCursor = StartingCursor | MessageCursor of string with static member Default = StartingCursor
+    type MessageCursor =
+    | StartingCursor
+    | MessageCursor of string
+    with
+        static member Default = StartingCursor
 
     type MessageSubject = {
         profile: User option
@@ -47,7 +57,7 @@ module Messages =
         results: Message list
     }
 
-    let PageFeedAsync token stack folderid cursor =
+    let AsyncPageFeed token stack folderid cursor =
         seq {
             match stack with
             | StackMessages true -> "stack", "1"
@@ -60,11 +70,11 @@ module Messages =
             | StartingCursor -> ()
         }
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/messages/feed"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<MessageCursorResult>
 
-    let GetFeedAsync token stack folderid cursor = Utils.buildTaskSeq {
-        get_page = (fun cursor -> PageFeedAsync token stack folderid cursor)
+    let GetFeedAsync token stack folderid cursor = Utils.buildAsyncSeq {
+        get_page = (fun cursor -> AsyncPageFeed token stack folderid cursor)
         extract_data = (fun page -> page.results)
         has_more = (fun page -> page.has_more)
         extract_next_offset = (fun page -> MessageCursor page.cursor)
@@ -73,7 +83,7 @@ module Messages =
 
     type MessageDeletionTarget = DeleteMessage of string | DeleteStack of string
 
-    let DeleteAsync token folderid target =
+    let AsyncDelete token folderid target =
         seq {
             match folderid with
             | MessageFolder g -> "folderid", string g
@@ -83,12 +93,15 @@ module Messages =
             | DeleteStack s -> "stackid", s
         }
         |> Utils.post token "https://www.deviantart.com/api/v1/oauth2/messages/delete"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<SuccessOrErrorResponse>
 
-    type FeedbackMessageType = CommentFeedbackMessages | ReplyFeedbackMessages | ActivityFeedbackMessages
+    type FeedbackMessageType =
+    | CommentFeedbackMessages
+    | ReplyFeedbackMessages
+    | ActivityFeedbackMessages
 
-    let PageFeedbackMessagesAsync token ``type`` stack folderid limit offset =
+    let AsyncPageFeedbackMessages token ``type`` stack folderid limit offset =
         seq {
             match ``type`` with
             | CommentFeedbackMessages -> "type", "comments"
@@ -104,35 +117,35 @@ module Messages =
             yield! QueryFor.limit limit 5
         }
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/messages/feedback"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<Page<Message>>
 
-    let GetFeedbackMessagesAsync token ``type`` stack folderid batchsize offset = Utils.buildTaskSeq {
-        get_page = (fun offset -> PageFeedbackMessagesAsync token ``type`` stack folderid batchsize offset)
+    let GetFeedbackMessagesAsync token ``type`` stack folderid batchsize offset = Utils.buildAsyncSeq {
+        get_page = (fun offset -> AsyncPageFeedbackMessages token ``type`` stack folderid batchsize offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)
         extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
         initial_offset = offset
     }
 
-    let PageFeedbackStackAsync token (stackid: string) limit offset =
+    let AsyncPageFeedbackStack token (stackid: string) limit offset =
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/messages/feedback/{Uri.EscapeDataString stackid}"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<Page<Message>>
 
-    let GetFeedbackStackAsync token stackid batchsize offset = Utils.buildTaskSeq {
-        get_page = (fun offset -> PageFeedbackStackAsync token stackid batchsize offset)
+    let GetFeedbackStackAsync token stackid batchsize offset = Utils.buildAsyncSeq {
+        get_page = (fun offset -> AsyncPageFeedbackStack token stackid batchsize offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)
         extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
         initial_offset = offset
     }
 
-    let PageMentionsAsync token stack folderid limit offset =
+    let AsyncPageMentions token stack folderid limit offset =
         seq {
             match stack with
             | StackMessages true -> "stack", "1"
@@ -144,28 +157,28 @@ module Messages =
             yield! QueryFor.limit limit 50
         }
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/messages/mentions"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<Page<Message>>
 
-    let GetMentionsAsync token stack folderid batchsize offset = Utils.buildTaskSeq {
-        get_page = (fun offset -> PageMentionsAsync token stack folderid batchsize offset)
+    let GetMentionsAsync token stack folderid batchsize offset = Utils.buildAsyncSeq {
+        get_page = (fun offset -> AsyncPageMentions token stack folderid batchsize offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)
         extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)
         initial_offset = offset
     }
 
-    let PageMentionsStackAsync token (stackid: string) limit offset =
+    let AsyncPageMentionsStack token (stackid: string) limit offset =
         seq {
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }
         |> Utils.get token $"https://www.deviantart.com/api/v1/oauth2/messages/mentions/{Uri.EscapeDataString stackid}"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<Page<Message>>
 
-    let GetMentionsStackAsync token stackid batchsize offset = Utils.buildTaskSeq {
-        get_page = (fun offset -> PageMentionsStackAsync token stackid batchsize offset)
+    let GetMentionsStackAsync token stackid batchsize offset = Utils.buildAsyncSeq {
+        get_page = (fun offset -> AsyncPageMentionsStack token stackid batchsize offset)
         extract_data = (fun page -> page.results.Value)
         has_more = (fun page -> page.has_more.Value)
         extract_next_offset = (fun page -> PagingOffset page.next_offset.Value)

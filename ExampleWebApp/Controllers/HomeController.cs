@@ -1,13 +1,15 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using DeviantArtFs;
+﻿using DeviantArtFs;
 using ExampleWebApp.Data;
 using ExampleWebApp.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FSharp.Control;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ExampleWebApp.Controllers
 {
@@ -29,10 +31,16 @@ namespace ExampleWebApp.Controllers
             return Redirect($"https://www.deviantart.com/oauth2/authorize?response_type=code&client_id={_appReg.client_id}&redirect_uri=https://{HttpContext.Request.Host}/Home/Callback&scope=browse+feed+user");
         }
 
-        public async Task<IActionResult> Callback(string code, string state = null)
+        public async Task<IActionResult> Callback(string code, string state = null, CancellationToken cancellationToken = default)
         {
-            var result = await DeviantArtAuth.GetTokenAsync(_appReg, code, new Uri($"https://{HttpContext.Request.Host}/Home/Callback"));
-            var me = await DeviantArtFs.Api.User.WhoamiAsync(result);
+            var result = await FSharpAsync.StartAsTask(
+                DeviantArtAuth.AsyncGetToken(_appReg, code, new Uri($"https://{HttpContext.Request.Host}/Home/Callback")),
+                TaskCreationOptions.None,
+                cancellationToken);
+            var me = await FSharpAsync.StartAsTask(
+                DeviantArtFs.Api.User.AsyncWhoami(result),
+                TaskCreationOptions.None,
+                cancellationToken);
             var token = new Token
             {
                 Id = Guid.NewGuid(),
@@ -41,7 +49,7 @@ namespace ExampleWebApp.Controllers
                 RefreshToken = result.refresh_token
             };
             _context.Tokens.Add(token);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             var claimsIdentity = new ClaimsIdentity(
                 new[] {
@@ -54,17 +62,21 @@ namespace ExampleWebApp.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Whoami()
+        public async Task<IActionResult> Whoami(CancellationToken cancellationToken)
         {
             var t = await GetAccessTokenAsync();
             if (t == null)
                 return RedirectToAction("Login");
 
-            var me = await DeviantArtFs.Api.User.WhoamiAsync(t);
+            var me = await FSharpAsync.StartAsTask(
+                DeviantArtFs.Api.User.AsyncWhoami(t),
+                TaskCreationOptions.None,
+                cancellationToken);
+
             return Json(me);
         }
 
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout(CancellationToken cancellationToken)
         {
             var t = await GetAccessTokenAsync();
             if (t is TokenWrapper wrapper)
@@ -73,7 +85,10 @@ namespace ExampleWebApp.Controllers
                 await _context.SaveChangesAsync();
                 await HttpContext.SignOutAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme);
-                await DeviantArtAuth.RevokeAsync(wrapper.RefreshToken, revoke_refresh_only: true);
+                await FSharpAsync.StartAsTask(
+                    DeviantArtAuth.AsyncRevoke(wrapper.RefreshToken, revoke_refresh_only: true),
+                    TaskCreationOptions.None,
+                    cancellationToken);
                 return RedirectToAction("Index");
             }
             else

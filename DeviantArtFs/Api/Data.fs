@@ -9,26 +9,26 @@ module Data =
        name: string
     }
 
-    let GetCountriesAsync token =
+    let AsyncGetCountries token =
         Seq.empty
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/data/countries"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<ListOnlyResponse<Country>>
 
-    let GetPrivacyPolicyAsync token =
+    let AsyncGetPrivacyPolicy token =
         Seq.empty
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/data/privacy"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<TextOnlyResponse>
 
-    let GetSubmissionPolicyAsync token =
+    let AsyncGetSubmissionPolicy token =
         Seq.empty
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/data/submission"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<TextOnlyResponse>
 
-    let GetTermsOfServiceAsync token =
+    let AsyncGetTermsOfService token =
         Seq.empty
         |> Utils.get token "https://www.deviantart.com/api/v1/oauth2/data/tos"
-        |> Utils.readAsync
+        |> Utils.asyncRead
         |> Utils.thenParse<TextOnlyResponse>

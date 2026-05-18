@@ -36,14 +36,18 @@ module DeviantArtAuth =
         ]
 
         use! respMessage = DeviantArtHttp.HttpClient.SendAsync(reqMessage) |> Async.AwaitTask
-        ignore (respMessage.EnsureSuccessStatusCode())
-        let! json = respMessage.Content.ReadAsStringAsync() |> Async.AwaitTask
+
+        let! json =
+            respMessage.EnsureSuccessStatusCode().Content.ReadAsStringAsync()
+            |> Async.AwaitTask
 
         let obj = Json.deserialize<DeviantArtTokenResponse> json
+
         if obj.status <> "success" then
             failwithf "An unknown error occured"
         if obj.token_type <> "Bearer" then
             failwithf "token_type was not Bearer"
+
         return obj
     }
 
@@ -63,14 +67,18 @@ module DeviantArtAuth =
         use! respMessage = DeviantArtHttp.HttpClient.SendAsync(reqMessage) |> Async.AwaitTask
         if respMessage.StatusCode = HttpStatusCode.BadRequest then
             raise (new InvalidRefreshTokenException(respMessage))
-        ignore (respMessage.EnsureSuccessStatusCode())
-        let! json = respMessage.Content.ReadAsStringAsync() |> Async.AwaitTask
+
+        let! json =
+            respMessage.EnsureSuccessStatusCode().Content.ReadAsStringAsync()
+            |> Async.AwaitTask
 
         let obj = Json.deserialize<DeviantArtTokenResponse> json
+
         if obj.status <> "success" then
             failwithf "An unknown error occured"
         if obj.token_type <> "Bearer" then
             failwithf "token_type was not Bearer"
+
         return obj
     }
 
@@ -86,18 +94,24 @@ module DeviantArtAuth =
                 ("revoke_refresh_only", "true")
         ]
 
-        use! respMessage = DeviantArtHttp.HttpClient.SendAsync(reqMessage) |> Async.AwaitTask
+        use! respMessage =
+            DeviantArtHttp.HttpClient.SendAsync(reqMessage)
+            |> Async.AwaitTask
+
         if respMessage.StatusCode = HttpStatusCode.BadRequest then
             raise (new InvalidRefreshTokenException(respMessage))
+
         ignore (respMessage.EnsureSuccessStatusCode())
     }
 
     /// Get a new token from the server, using an authorization code.
-    let GetTokenAsync app code redirect_uri =
-        AsyncGetToken app code redirect_uri |> Async.StartAsTask
+    let GetTokenAsync app code redirect_uri cancellationToken =
+        Async.StartAsTask (AsyncGetToken app code redirect_uri, cancellationToken = cancellationToken)
+
     /// Get a new token from the server, using a refresh token.
-    let RefreshAsync app refresh_token =
-        AsyncRefresh app refresh_token |> Async.StartAsTask
+    let RefreshAsync app refresh_token cancellationToken =
+        Async.StartAsTask (AsyncRefresh app refresh_token, cancellationToken = cancellationToken)
+
     /// Revoke a refresh token or access token.
-    let RevokeAsync token revoke_refresh_only =
-        AsyncRevoke token revoke_refresh_only |> Async.StartAsTask :> System.Threading.Tasks.Task
+    let RevokeAsync token revoke_refresh_only cancellationToken =
+        Async.StartAsTask (AsyncRevoke token revoke_refresh_only, cancellationToken = cancellationToken)

@@ -3,7 +3,7 @@ open DeviantArtFs
 open DeviantArtFs.ParameterTypes
 open FSharp.Control
 
-task {
+async {
     let token = { new IDeviantArtAccessToken with member _.AccessToken = Console.ReadLine().Trim() }
 
     let o = {
@@ -15,10 +15,10 @@ task {
 
     let f = Api.Stash.FormFile.Create "test.png" "image/png" (System.IO.File.ReadAllBytes @"C:\Users\isaac\Pictures\ipod2.png")
 
-    let! r = Api.Stash.SubmitAsync token (Api.Stash.SubmissionDestination.SubmitToStack (Api.Stash.Stack 8955911093015225L)) o f
+    let! r = Api.Stash.AsyncSubmit token (Api.Stash.SubmissionDestination.SubmitToStack (Api.Stash.Stack 8955911093015225L)) o f
 
     let! rr =
-        Api.Stash.PublishAsync token [
+        Api.Stash.AsyncPublish token [
             Api.Stash.SubmissionPolicyAgreement true
             Api.Stash.TermsOfServiceAgreement true
             Api.Stash.Featured false
@@ -34,5 +34,4 @@ task {
 
     printfn "%A" rr
 }
-|> Async.AwaitTask
 |> Async.RunSynchronously
