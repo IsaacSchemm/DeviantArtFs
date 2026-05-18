@@ -65,28 +65,18 @@ module internal QueryFor =
     let optionalParameters ops = seq {
         for o in ops do
         match o with
-        | OptionalParameter.Expansion s ->
-            "expand", String.concat "," (seq {
-                for x in s do
-                    match x with
-                    | Expansion.CommentFullText -> "comment.fulltext"
-                    | Expansion.DeviationPinned -> "deviation.pinned"
-                    | Expansion.DeviationFullText -> "deviation.fulltext"
-                    | Expansion.StatusFullText -> "status.fulltext"
-                    | Expansion.UserDetails -> "user.details"
-                    | Expansion.UserGeo -> "user.geo"
-                    | Expansion.UserProfile -> "user.profile"
-                    | Expansion.UserStats -> "user.stats"
-                    | Expansion.UserWatch -> "user.watch"
-            })
-        | OptionalParameter.ExtParam ExtParam.Submission -> "ext_submission", "1"
-        | OptionalParameter.ExtParam ExtParam.Camera -> "ext_camera", "1"
-        | OptionalParameter.ExtParam ExtParam.Stats -> "ext_stats", "1"
-        | OptionalParameter.ExtParam ExtParam.Collection -> "ext_collection", "1"
-        | OptionalParameter.ExtParam ExtParam.Gallery -> "ext_collection", "1"
-        | OptionalParameter.MatureContent true -> "is_mature", "true"
-        | OptionalParameter.MatureContent false -> "is_mature", "false"
-        | OptionalParameter.CustomParameter (key, value) -> key, value
+        | OptionalParameter.Expansion strs ->
+            "expand", String.concat "," strs
+        | OptionalParameter.ExtParam str when
+            str.StartsWith("ext_") -> str, "1"
+        | OptionalParameter.ExtParam str ->
+            Uri.EscapeDataString($"ext_{str}"), "1"
+        | OptionalParameter.MatureContent true ->
+            "is_mature", "true"
+        | OptionalParameter.MatureContent false ->
+            "is_mature", "false"
+        | OptionalParameter.CustomParameter (key, value) ->
+            key, value
     }
 
     let offset offset = seq {

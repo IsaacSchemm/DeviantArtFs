@@ -7,7 +7,7 @@ let create_token_obj str = {
     new IDeviantArtAccessTokenWithOptionalParameters with
         member _.AccessToken = str
         member _.OptionalParameters = [
-            OptionalParameter.ExtParam ExtParam.Collection
+            OptionalParameter.ExtParam "ext_collection"
             OptionalParameter.MatureContent true
         ]
 }
@@ -19,7 +19,6 @@ let get_token =
 let rec print_all_comments token subject prefix replyType = async {
     let! comments =
         DeviantArtFs.Api.Comments.GetCommentsAsync token (DeviantArtFs.Api.Comments.Depth 0) subject replyType MaximumPagingLimit StartingOffset
-        |> AsyncSeq.ofAsyncEnum
         |> AsyncSeq.truncate 10
         |> AsyncSeq.toListAsync
     for c in comments do

@@ -10,29 +10,9 @@ type DeviantArtApp = {
 }
 
 [<RequireQualifiedAccess>]
-type Expansion =
-| CommentFullText
-| DeviationPinned
-| DeviationFullText
-| StatusFullText
-| UserDetails
-| UserGeo
-| UserProfile
-| UserStats
-| UserWatch
-
-[<RequireQualifiedAccess>]
-type ExtParam =
-| Submission
-| Camera
-| Stats
-| Collection
-| Gallery
-
-[<RequireQualifiedAccess>]
 type OptionalParameter =
-| Expansion of seq<Expansion>
-| ExtParam of ExtParam
+| Expansion of seq<string>
+| ExtParam of string
 | MatureContent of bool
 | CustomParameter of string * string
 with
