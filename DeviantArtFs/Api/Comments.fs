@@ -14,13 +14,8 @@ module Comments =
     type ReplyType =
     | DirectReply
     | InReplyToComment of Guid
-    with
-        static member Default = DirectReply
 
-    type Depth = Depth of int
-    with
-        static member Default = Depth 0
-        static member Max = Depth 5
+    type Depth = Depth of int | MaximumDepth
 
     type CommentPage = {
         has_more: bool
@@ -42,8 +37,11 @@ module Comments =
             match replyType with
             | DirectReply -> ()
             | InReplyToComment g -> yield "commentid", string g
+
             match maxdepth with
             | Depth x -> yield "maxdepth", string (min x 5)
+            | MaximumDepth -> yield "maxdepth", "5"
+
             yield! QueryFor.offset offset
             yield! QueryFor.limit limit 50
         }

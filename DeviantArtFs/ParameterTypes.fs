@@ -4,22 +4,16 @@ open System
 open DeviantArtFs
 
 type PagingOffset = StartingOffset | PagingOffset of int
-with static member Default = StartingOffset
 
 type PagingLimit = PagingLimit of int | MaximumPagingLimit | DefaultPagingLimit
-with static member Default = DefaultPagingLimit
 
 type UserScope = ForCurrentUser | ForUser of string
-with static member Default = ForCurrentUser
 
 type CalculateSize = CalculateSize of bool
-with static member Default = CalculateSize false
 
 type FolderPreload = FolderPreload of bool
-with static member Default = FolderPreload false
 
 type FilterEmptyFolder = FilterEmptyFolder of bool
-with static member Default = FilterEmptyFolder false
 
 [<RequireQualifiedAccess>]
 type FolderUpdateType = Name of string | Description of string | CoverDeviationId of Guid

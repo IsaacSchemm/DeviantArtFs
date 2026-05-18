@@ -10,8 +10,6 @@ module Browse =
     type DailyDeviationDate =
     | DailyDeviationsToday
     | DailyDeviationsFor of DateTime
-    with
-        static member Default = DailyDeviationsToday
 
     let AsyncGetDailyDeviations token date =
         seq {
@@ -81,8 +79,6 @@ module Browse =
     type SearchQuery =
     | NoSearchQuery
     | SearchQuery of string
-    with
-        static member Default = NoSearchQuery
 
     type BrowsePage = {
         has_more: bool

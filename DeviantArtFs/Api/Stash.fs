@@ -19,7 +19,6 @@ module Stash =
     | ReplaceExisting of Item
     | SubmitToStack of Stack
     | SubmitToStackWithName of string
-    with static member Default = SubmitToStack RootStack
 
     type DisplayResolution =
     | Original = 0
@@ -150,16 +149,10 @@ module Stash =
         }
     
     type SubmissionTitle = SubmissionTitle of string | DefaultSubmissionTitle
-    with
-        static member Default = DefaultSubmissionTitle
 
     type ArtistComments = ArtistComments of string | NoArtistComments
-    with
-        static member Default = NoArtistComments
 
     type OriginalUrl = OriginalUrl of string | NoOriginalUrl
-    with
-        static member Default = NoOriginalUrl
 
     type TagList = TagList of string list
     with
@@ -172,14 +165,7 @@ module Stash =
         tags: TagList
         original_url: OriginalUrl
         is_dirty: bool
-    } with
-        static member Default = {
-            title = DefaultSubmissionTitle
-            artist_comments = NoArtistComments
-            tags = TagList.Empty
-            original_url = NoOriginalUrl
-            is_dirty = false
-        }
+    }
 
     type StashSubmitResult = {
         status: string

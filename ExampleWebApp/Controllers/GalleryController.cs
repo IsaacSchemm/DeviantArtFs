@@ -51,8 +51,8 @@ namespace ExampleWebApp.Controllers
             var list = await DeviantArtFs.Api.Gallery.GetFoldersAsync(
                 token,
                 CalculateSize.NewCalculateSize(true),
-                FolderPreload.Default,
-                FilterEmptyFolder.Default,
+                FolderPreload.NewFolderPreload(false),
+                FilterEmptyFolder.NewFilterEmptyFolder(false),
                 username != null
                     ? UserScope.NewForUser(username)
                     : UserScope.ForCurrentUser,

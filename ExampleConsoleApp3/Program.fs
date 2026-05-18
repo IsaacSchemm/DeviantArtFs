@@ -6,11 +6,12 @@ open FSharp.Control
 async {
     let token = { new IDeviantArtAccessToken with member _.AccessToken = Console.ReadLine().Trim() }
 
-    let o = {
-        Api.Stash.SubmissionParameters.Default with
-            title = Api.Stash.SubmissionTitle "test 1"
-            artist_comments = Api.Stash.ArtistComments "test comments"
-            tags = Api.Stash.TagList ["tag1"; "tag2"]
+    let o: Api.Stash.SubmissionParameters = {
+        title = Api.Stash.SubmissionTitle "test 1"
+        artist_comments = Api.Stash.ArtistComments "test comments"
+        tags = Api.Stash.TagList ["tag1"; "tag2"]
+        original_url = Api.Stash.NoOriginalUrl
+        is_dirty = false
     }
 
     let f = Api.Stash.FormFile.Create "test.png" "image/png" (System.IO.File.ReadAllBytes @"C:\Users\isaac\Pictures\ipod2.png")

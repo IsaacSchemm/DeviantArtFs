@@ -7,22 +7,15 @@ open DeviantArtFs.ResponseTypes
 open DeviantArtFs.Pages
 
 module Messages =
-    type StackMessages =
-    | StackMessages of bool
-    with
-        static member Default = StackMessages true
+    type StackMessages = StackMessages of bool
 
     type MessageFolder =
     | Inbox
     | MessageFolder of Guid
-    with
-        static member Default = Inbox
 
     type MessageCursor =
     | StartingCursor
     | MessageCursor of string
-    with
-        static member Default = StartingCursor
 
     type MessageSubject = {
         profile: User option
