@@ -1,6 +1,6 @@
 # DeviantArtFs
 
-A .NET / F# library to interact with the [DeviantArt / Sta.sh API.](https://www.deviantart.com/developers/http/v1/20200519)
+An unoffical F# library to interact with the [DeviantArt API.](www.deviantart.com/developers/http/v1/20240701)
 
 ## Design
 
@@ -12,33 +12,25 @@ unions; hopefully this makes it easy to see exactly what your code is doing
 and ensures that parameters can't get mixed up.
 
 In some cases, two methods are available for an API call. Functions whose
-names begin with `Page` will return a single page of results, while the
+names containing `Page` will return a single page of results, while the
 corresponding `Get` function will return an asynchronous sequence which
-begins at the offset you specify (see "Interoperability" below). Be careful
-not to request too much data or you might hit API usage limits.
+begins at the offset you specify. (Keep API usage limits in mind!)
 
 ## Interoperability
 
-The response objects in this library are F# records using F# `option` types to
-represent missing fields.
-You can interact with `option` types from C# / VB.NET using `FSharpOption<T>`
-and `OptionModule`, or you can use the provided extension methods (see below)
-when working with these values.
+The response objects in this library are F# records which use F# `option`
+types for optional fields. You can interact with `option` types from C# or
+VB.NET using `FSharpOption<T>` and/or `OptionModule`, for example:
 
-The following types are used in response objects:
+    string title = OptionModule.ToObj(d.title);
+    DateTimeOffset? time = OptionModule.ToNullable(d.published_time);
 
-* `FSharpOption<T>`: Used to represent fields that may be missing or null on
-  the response object. Extension methods (see below) allow C# and VB.NET users
-  to extract these values by converting `None` to `null` or to an empty list.
-* `FSharpList<T>`: An immutable linked list. Implements `IReadOnlyList<T>` and
-  `IEnumerable<T>`.
+`FSharpList<T>`, an immutable linked list that is part of the F# core library,
+implements `IReadOnlyList<T>` and `IEnumerable<T>`.
 
-The following extension methods are provided in the namespace `DeviantArtFs.Extensions`:
-
-* `.OrNull()`: converts an option type to an equivalent nullable type
-* `.IsTrue()`: checks whether a `bool option` type (which might be `true`, `false`, or `None`) is true
-* `.IsFalse()`: checks whether a `bool option` type (which might be `true`, `false`, or `None`) is false
-* `.OrEmpty()`: returns the items in `IEnumerable<T> option`, or an empty list if the field is `None`
+`IAsyncEnumerable<T>` is now the same interface between F# and other .NET
+languages, and you can interact with it using `await foreach` or extension
+methods like `ToListAsync` in .NET's `System.Linq.AsyncEnumerable` namespace.
 
 ### Optional parameters
 
@@ -74,30 +66,12 @@ access any of the other fields.
 * The `tier.stats` field is not supported due to serialization issues on DeviantArt's end (the empty object `{}` can be rendered as `[]` by the server).
 * The `api_session` return object is not supported.
 
-## Examples
-
-* **ExampleConsoleApp**: An F# console application that shows some data on the
-  current user's recent (and not-so-recent) submissions, along with some of
-  their Sta.sh info. Reads the access token interactively from standard input.
-* **ExampleConsoleApp3**: An F# console application that submits a picture to
-  Sta.sh and then publishes it to DeviantArt.
-* **GalleryViewer**: A VB.NET app that lets you see the "All" view of
-  someone's gallery and read the descriptions of individual submissions.
-  Uses the Client Credentials grant and stores tokens in a file.
-* **WebApp**: An ASP.NET Core app written in C# that lets you view
-  someone's gallery folders and corresponding submission thumbnails.
-  Uses the Client Credentials grant and stores tokens in a database.
-
 ## Authentication
 
 See also: https://www.deviantart.com/developers/authentication
 
 The DeviantArtAuth module provides methods to support the Authorization Code
 grant type (getting tokens from an authorization code and refreshing tokens).
-
-If you are writing a Windows desktop application, the package
-DeviantArtFs.WinForms package uses Internet Explorer to provide a way to get a
-code or token from the user.
 
 If you need to store the access token somewhere (such as in a database or
 file), you may want to create your own class that implements the
